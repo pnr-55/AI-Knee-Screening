@@ -1,127 +1,122 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KneeAI - AI Camera Scan</title>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
-  <style>
-    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f4f7fe; }
-    .container { position: relative; width: 640px; height: 480px; margin-top: 20px; }
-    video, canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px; }
-    .metrics-panel { margin-top: 20px; padding: 15px 25px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; gap: 20px; }
-    .metric-box { font-size: 18px; font-weight: bold; color: #2b3674; }
-  </style>
-</head>
-<body>
+<!-- ดึง Libs ของ MediaPipe Pose และ Camera Utils -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
 
-  <h2>KneeAI: AI Camera Scanning Demo</h2>
+<script>
+  const videoElement = document.getElementById('video');
+  const canvasElement = document.getElementById('canvas');
+  const canvasCtx = canvasElement.getContext('2d');
 
-  <div class="container">
-    <video id="input_video"></video>
-    <canvas id="output_canvas"></canvas>
-  </div>
+  // ฟังก์ชันคำนวณมุมระหว่างจุด 3 จุด (A, B, C) โดยมี B เป็นจุดยอด (เช่น สะโพก-เข่า-ข้อเท้า)
+  function calculateAngle(a, b, c) {
+    const radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
+    let angle = Math.abs((radians * 180.0) / Math.PI);
+    if (angle > 180.0) {
+      angle = 360 - angle;
+    }
+    return Math.round(angle);
+  }
 
-  <div class="metrics-panel">
-    <div class="metric-box">Knee Angle (L): <span id="angle_l" style="color: #4318FF;">0°</span></div>
-    <div class="metric-box">Knee Angle (R): <span id="angle_r" style="color: #4318FF;">0°</span></div>
-  </div>
+  // ฟังก์ชันประมวลผลผลลัพธ์จาก MediaPipe Pose
+  function onResults(results) {
+    // ปรับขนาด Canvas ให้ตรงกับ Video
+    canvasElement.width = videoElement.videoWidth;
+    canvasElement.height = videoElement.videoHeight;
 
-  <script>
-    const videoElement = document.getElementById('input_video');
-    const canvasElement = document.getElementById('output_canvas');
-    const canvasCtx = canvasElement.getContext('2d');
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-    // ฟังก์ชันคำนวณมุมระหว่าง 3 จุด (A: Hip, B: Knee, C: Ankle)
-    function calculateAngle(A, B, C) {
-      const radians = Math.atan2(C.y - B.y, C.x - B.x) - Math.atan2(A.y - B.y, A.x - B.x);
-      let angle = Math.abs((radians * 180.0) / Math.PI);
-      if (angle > 180.0) {
-        angle = 360 - angle;
+    if (results.poseLandmarks) {
+      const landmarks = results.poseLandmarks;
+
+      // ตำแหน่งจุดทางกายวิภาค (MediaPipe Pose Keypoints)
+      // 23: Left Hip, 25: Left Knee, 27: Left Ankle
+      // 24: Right Hip, 26: Right Knee, 28: Right Ankle
+      const leftHip = landmarks[23];
+      const leftKnee = landmarks[25];
+      const leftAnkle = landmarks[27];
+
+      const rightHip = landmarks[24];
+      const rightKnee = landmarks[26];
+      const rightAnkle = landmarks[28];
+
+      // 1. คำนวณมุม Knee Angle ซ้าย และ ขวา
+      if (leftHip && leftKnee && leftAnkle) {
+        const leftKneeAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
+        document.getElementById('angle-l').innerText = leftKneeAngle + '°';
       }
-      return angle.toFixed(1);
-    }
 
-    function onResults(results) {
-      // ตั้งค่าขนาด Canvas ให้เท่ากับ Video
-      canvasElement.width = videoElement.videoWidth;
-      canvasElement.height = videoElement.videoHeight;
-
-      canvasCtx.save();
-      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-      canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
-
-      if (results.poseLandmarks) {
-        const landmarks = results.poseLandmarks;
-
-        // ดึงจุดพิกัด (MediaPipe Landmark Indices)
-        // ขาซ้าย: 23 (Left Hip), 25 (Left Knee), 27 (Left Ankle)
-        const leftHip = landmarks[23];
-        const leftKnee = landmarks[25];
-        const leftAnkle = landmarks[27];
-
-        // ขาขวา: 24 (Right Hip), 26 (Right Knee), 28 (Right Ankle)
-        const rightHip = landmarks[24];
-        const rightKnee = landmarks[26];
-        const rightAnkle = landmarks[28];
-
-        // คำนวณมุม
-        if (leftHip && leftKnee && leftAnkle) {
-          const leftAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
-          document.getElementById('angle_l').innerText = `${leftAngle}°`;
-        }
-
-        if (rightHip && rightKnee && rightAnkle) {
-          const rightAngle = calculateAngle(rightHip, rightKnee, rightAnkle);
-          document.getElementById('angle_r').innerText = `${rightAngle}°`;
-        }
-
-        // วาดจุดและเส้นบน Canvas
-        drawLandmarks(landmarks);
+      if (rightHip && rightKnee && rightAnkle) {
+        const rightKneeAngle = calculateAngle(rightHip, rightKnee, rightAnkle);
+        document.getElementById('angle-r').innerText = rightKneeAngle + '°';
       }
-      canvasCtx.restore();
+
+      // 2. วาดจุดและเส้นโครงสร้างบน Canvas (Skeleton Overlay)
+      drawSkeleton(landmarks);
     }
+    canvasCtx.restore();
+  }
 
-    function drawLandmarks(landmarks) {
-      const keyPoints = [23, 24, 25, 26, 27, 28]; // จุดสะโพก เข่า ข้อเท้า
-      canvasCtx.fillStyle = '#00FF00';
-      canvasCtx.strokeStyle = '#00E5FF';
-      canvasCtx.lineWidth = 4;
+  // ฟังก์ชันวาดเส้นจับจุดข้อต่อบน Canvas
+  function drawSkeleton(landmarks) {
+    const pointsToDraw = [23, 24, 25, 26, 27, 28]; // เน้นเฉพาะช่วงขา
+    
+    // วาดจุดวงกลมที่ข้อต่อ
+    pointsToDraw.forEach(index => {
+      const lm = landmarks[index];
+      if (lm && lm.visibility > 0.5) {
+        canvasCtx.beginPath();
+        canvasCtx.arc(lm.x * canvasElement.width, lm.y * canvasElement.height, 6, 0, 2 * Math.PI);
+        canvasCtx.fillStyle = '#2563eb'; // สีน้ำเงิน Medical Blue
+        canvasCtx.fill();
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = '#ffffff';
+        canvasCtx.stroke();
+      }
+    });
 
-      keyPoints.forEach(idx => {
-        const pt = landmarks[idx];
-        if (pt) {
-          canvasCtx.beginPath();
-          canvasCtx.arc(pt.x * canvasElement.width, pt.y * canvasElement.height, 8, 0, 2 * Math.PI);
-          canvasCtx.fill();
-        }
-      });
+    // วาดเส้นเชื่อมขาซ้าย (สะโพก -> เข่า -> ข้อเท้า)
+    connectPoints(landmarks[23], landmarks[25]);
+    connectPoints(landmarks[25], landmarks[27]);
+
+    // วาดเส้นเชื่อมขาขวา (สะโพก -> เข่า -> ข้อเท้า)
+    connectPoints(landmarks[24], landmarks[26]);
+    connectPoints(landmarks[26], landmarks[28]);
+  }
+
+  function connectPoints(p1, p2) {
+    if (p1 && p2 && p1.visibility > 0.5 && p2.visibility > 0.5) {
+      canvasCtx.beginPath();
+      canvasCtx.moveTo(p1.x * canvasElement.width, p1.y * canvasElement.height);
+      canvasCtx.lineTo(p2.x * canvasElement.width, p2.y * canvasElement.height);
+      canvasCtx.lineWidth = 3;
+      canvasCtx.strokeStyle = '#10b981'; // สีเขียว Emerald แสดงสถานะตรวจจับได้
+      canvasCtx.stroke();
     }
+  }
 
-    // เริ่มต้นใช้งาน MediaPipe Pose
-    const pose = new Pose({
-      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
-    });
+  // ตั้งค่า MediaPipe Pose
+  const pose = new Pose({
+    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+  });
 
-    pose.setOptions({
-      modelComplexity: 1,
-      smoothLandmarks: true,
-      minDetectionConfidence: 0.5,
-      minTrackingConfidence: 0.5
-    });
+  pose.setOptions({
+    modelComplexity: 1,
+    smoothLandmarks: true,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+  });
 
-    pose.onResults(onResults);
+  pose.onResults(onResults);
 
-    const camera = new Camera(videoElement, {
-      onFrame: async () => {
-        await pose.send({image: videoElement});
-      },
-      width: 640,
-      height: 480
-    });
+  // เปิดใช้งานกล้องผ่าน Web Camera Utils
+  const camera = new Camera(videoElement, {
+    onFrame: async () => {
+      await pose.send({ image: videoElement });
+    },
+    width: 640,
+    height: 480
+  });
 
-    camera.start();
-  </script>
-</body>
-</html>
+  camera.start();
+</script>
