@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI คัดกรองโรคข้อเข่า</title>
+    <title>AI คัดกรองขาโก่ง</title>
 
     <style>
         body {
@@ -19,8 +19,8 @@
         }
 
         .container {
-            background-color: white;
-            width: 350px;
+            background: white;
+            width: 360px;
             margin: auto;
             padding: 30px;
             border-radius: 20px;
@@ -50,7 +50,6 @@
         #result {
             margin-top: 20px;
             color: #145da0;
-            font-weight: bold;
         }
     </style>
 
@@ -59,11 +58,11 @@
 
 <body>
 
-    <h1>AI คัดกรองโรคข้อเข่า</h1>
+    <h1>AI คัดกรองขาโก่ง</h1>
 
     <div class="container">
 
-        <h2>อัปโหลดภาพ X-ray</h2>
+        <h2>อัปโหลดภาพขา</h2>
 
         <input type="file" id="imageInput" accept="image/*">
 
@@ -77,16 +76,18 @@
             วิเคราะห์ภาพ
         </button>
 
-        <p id="result"></p>
+        <div id="result"></div>
 
     </div>
 
 
 <script>
 
-    // ส่วนแสดงรูปภาพ
+    // แสดงภาพที่เลือก
+
     const imageInput = document.getElementById("imageInput");
     const preview = document.getElementById("preview");
+
 
     imageInput.addEventListener("change", function(){
 
@@ -99,13 +100,23 @@
     });
 
 
-    // ส่วนปุ่มวิเคราะห์
+
+    // ปุ่มวิเคราะห์
+
     const analyzeButton = document.getElementById("analyzeButton");
+
 
     analyzeButton.addEventListener("click", function(){
 
+
         document.getElementById("result").innerHTML =
-        "กำลังวิเคราะห์ภาพด้วย AI...";
+        `
+        <h3>ผลการวิเคราะห์</h3>
+        <p>ลักษณะขา: ปกติ</p>
+        <p>ความมั่นใจของ AI: 90%</p>
+        <p>หมายเหตุ: ผลลัพธ์นี้เป็นการทดสอบระบบ</p>
+        `;
+
 
     });
 
