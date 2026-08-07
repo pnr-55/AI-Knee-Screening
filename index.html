@@ -7,30 +7,6 @@
     <title>AI คัดกรองโรคข้อเข่า</title>
 
     <style>
-       <script>
-
-const imageInput = document.getElementById("imageInput");
-const preview = document.getElementById("preview");
-
-imageInput.addEventListener("change", function() {
-
-    const file = this.files[0];
-
-    if (file) {
-        preview.src = URL.createObjectURL(file);
-    }
-
-});
-
-function analyzeImage() {
-
-    document.getElementById("result").innerHTML =
-    "กำลังวิเคราะห์ภาพด้วย AI...";
-
-}
-    </script>
-
-</body>
         body {
             font-family: Arial, sans-serif;
             background-color: #eaf4ff;
@@ -58,11 +34,24 @@ function analyzeImage() {
             padding: 12px 25px;
             border-radius: 10px;
             font-size: 16px;
+            cursor: pointer;
         }
 
         button:hover {
             background-color: #0b3d91;
         }
+
+        img {
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+
+        #result {
+            margin-top: 20px;
+            color: #145da0;
+            font-weight: bold;
+        }
+
     </style>
 
 </head>
@@ -76,20 +65,51 @@ function analyzeImage() {
 
         <h2>อัปโหลดภาพ X-ray</h2>
 
-     <input type="file" id="imageInput" accept="image/*">
+        <input type="file" id="imageInput" accept="image/*">
 
-<br><br>
+        <br><br>
 
-<img id="preview" width="300">
+        <img id="preview" width="300">
 
         <br><br>
 
         <button onclick="analyzeImage()">
-    วิเคราะห์ภาพ
-</button>
+            วิเคราะห์ภาพ
+        </button>
 
-<p id="result"></p>
+        <p id="result"></p>
 
     </div>
+
+
+<script>
+
+    // แสดงรูปที่เลือก
+    const imageInput = document.getElementById("imageInput");
+    const preview = document.getElementById("preview");
+
+    imageInput.addEventListener("change", function(){
+
+        const file = this.files[0];
+
+        if(file){
+            preview.src = URL.createObjectURL(file);
+        }
+
+    });
+
+
+    // ปุ่มวิเคราะห์
+    function analyzeImage(){
+
+        document.getElementById("result").innerHTML =
+        "กำลังวิเคราะห์ภาพด้วย AI...";
+
+    }
+
+</script>
+
+
+</body>
 
 </html>
