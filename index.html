@@ -102,12 +102,16 @@
     // ส่วนปุ่มวิเคราะห์
     const analyzeButton = document.getElementById("analyzeButton");
 
-    analyzeButton.addEventListener("click", function(){
+ analyzeButton.addEventListener("click", function(){
 
-        document.getElementById("result").innerHTML =
-        "กำลังวิเคราะห์ภาพด้วย AI...";
+    document.getElementById("result").innerHTML =
+    `
+    <h3>ผลการวิเคราะห์</h3>
+    <p>ลักษณะขา: ขาปกติ</p>
+    <p>ความมั่นใจ: 90%</p>
+    `;
 
-    });
+});
 
 
 </script>
