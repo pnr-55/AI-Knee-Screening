@@ -3,34 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KneeAI</title>
+    <title>AI คัดกรองโรคข้อเข่า</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef6ff;
+            text-align: center;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #1e5aa8;
+        }
+
+        .box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 350px;
+            margin: auto;
+            box-shadow: 0 4px 10px #ccc;
+        }
+
+        button {
+            background: #1e5aa8;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+
 </head>
 
 <body>
 
-    <div class="container">
+    <h1>AI คัดกรองโรคข้อเข่า</h1>
 
-        <img src="https://cdn-icons-png.flaticon.com/512/2966/2966486.png"
-             width="120">
+    <div class="box">
+        <h2>อัปโหลดภาพ X-ray</h2>
 
-        <h1>KneeAI</h1>
+        <input type="file" id="imageInput">
 
-        <h2>
-            AI-Based Screening<br>
-            for Knee Osteoarthritis
-        </h2>
+        <br><br>
 
-        <p>
-            ระบบคัดกรองและประเมินความเสี่ยงโรคข้อเข่าเสื่อม
-            และภาวะขาโก่งด้วย AI
-        </p>
-
-        <a href="home.html">
-            <button>เริ่มต้นใช้งาน</button>
-        </a>
-
+        <button>
+            วิเคราะห์ภาพ
+        </button>
     </div>
 
 </body>
