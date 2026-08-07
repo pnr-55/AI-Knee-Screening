@@ -1,166 +1,127 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>AI คัดกรองขาโก่ง</title>
-
-<style>
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #eaf4ff;
-    text-align: center;
-    padding: 40px;
-}
-
-h1 {
-    color: #145da0;
-}
-
-.container {
-    background: white;
-    width: 360px;
-    margin: auto;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 5px 15px #bbb;
-}
-
-button {
-    background-color: #145da0;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-button:hover {
-    background-color: #0b3d91;
-}
-
-#preview {
-    margin-top:20px;
-    max-width:300px;
-    border-radius:10px;
-}
-
-#result {
-    margin-top:20px;
-    color:#145da0;
-    font-weight:bold;
-}
-
-.loading {
-    color:#777;
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KneeAI - AI Camera Scan</title>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+  <style>
+    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f4f7fe; }
+    .container { position: relative; width: 640px; height: 480px; margin-top: 20px; }
+    video, canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px; }
+    .metrics-panel { margin-top: 20px; padding: 15px 25px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; gap: 20px; }
+    .metric-box { font-size: 18px; font-weight: bold; color: #2b3674; }
+  </style>
 </head>
-
-
 <body>
 
-<h1>AI คัดกรองขาโก่ง</h1>
+  <h2>KneeAI: AI Camera Scanning Demo</h2>
 
+  <div class="container">
+    <video id="input_video"></video>
+    <canvas id="output_canvas"></canvas>
+  </div>
 
-<div class="container">
+  <div class="metrics-panel">
+    <div class="metric-box">Knee Angle (L): <span id="angle_l" style="color: #4318FF;">0°</span></div>
+    <div class="metric-box">Knee Angle (R): <span id="angle_r" style="color: #4318FF;">0°</span></div>
+  </div>
 
-<h2>อัปโหลดภาพขา</h2>
+  <script>
+    const videoElement = document.getElementById('input_video');
+    const canvasElement = document.getElementById('output_canvas');
+    const canvasCtx = canvasElement.getContext('2d');
 
-<input type="file" id="imageInput" accept="image/*">
-
-<br><br>
-
-<img id="preview">
-
-
-<br><br>
-
-
-<button id="analyzeButton">
-    วิเคราะห์ภาพ
-</button>
-
-
-<div id="result"></div>
-
-
-</div>
-
-
-
-<script>
-
-
-// แสดงรูปภาพ
-
-const imageInput = document.getElementById("imageInput");
-const preview = document.getElementById("preview");
-
-
-imageInput.addEventListener("change", function(){
-
-    const file = imageInput.files[0];
-
-    if(file){
-
-        preview.src = URL.createObjectURL(file);
-
+    // ฟังก์ชันคำนวณมุมระหว่าง 3 จุด (A: Hip, B: Knee, C: Ankle)
+    function calculateAngle(A, B, C) {
+      const radians = Math.atan2(C.y - B.y, C.x - B.x) - Math.atan2(A.y - B.y, A.x - B.x);
+      let angle = Math.abs((radians * 180.0) / Math.PI);
+      if (angle > 180.0) {
+        angle = 360 - angle;
+      }
+      return angle.toFixed(1);
     }
 
-});
+    function onResults(results) {
+      // ตั้งค่าขนาด Canvas ให้เท่ากับ Video
+      canvasElement.width = videoElement.videoWidth;
+      canvasElement.height = videoElement.videoHeight;
 
+      canvasCtx.save();
+      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
+      if (results.poseLandmarks) {
+        const landmarks = results.poseLandmarks;
 
+        // ดึงจุดพิกัด (MediaPipe Landmark Indices)
+        // ขาซ้าย: 23 (Left Hip), 25 (Left Knee), 27 (Left Ankle)
+        const leftHip = landmarks[23];
+        const leftKnee = landmarks[25];
+        const leftAnkle = landmarks[27];
 
-// ปุ่มวิเคราะห์
+        // ขาขวา: 24 (Right Hip), 26 (Right Knee), 28 (Right Ankle)
+        const rightHip = landmarks[24];
+        const rightKnee = landmarks[26];
+        const rightAnkle = landmarks[28];
 
-const analyzeButton = document.getElementById("analyzeButton");
+        // คำนวณมุม
+        if (leftHip && leftKnee && leftAnkle) {
+          const leftAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
+          document.getElementById('angle_l').innerText = `${leftAngle}°`;
+        }
 
-const result = document.getElementById("result");
+        if (rightHip && rightKnee && rightAnkle) {
+          const rightAngle = calculateAngle(rightHip, rightKnee, rightAnkle);
+          document.getElementById('angle_r').innerText = `${rightAngle}°`;
+        }
 
+        // วาดจุดและเส้นบน Canvas
+        drawLandmarks(landmarks);
+      }
+      canvasCtx.restore();
+    }
 
-analyzeButton.addEventListener("click", function(){
+    function drawLandmarks(landmarks) {
+      const keyPoints = [23, 24, 25, 26, 27, 28]; // จุดสะโพก เข่า ข้อเท้า
+      canvasCtx.fillStyle = '#00FF00';
+      canvasCtx.strokeStyle = '#00E5FF';
+      canvasCtx.lineWidth = 4;
 
+      keyPoints.forEach(idx => {
+        const pt = landmarks[idx];
+        if (pt) {
+          canvasCtx.beginPath();
+          canvasCtx.arc(pt.x * canvasElement.width, pt.y * canvasElement.height, 8, 0, 2 * Math.PI);
+          canvasCtx.fill();
+        }
+      });
+    }
 
-    result.innerHTML =
-    "<p class='loading'>🔄 กำลังวิเคราะห์ข้อมูล...</p>";
+    // เริ่มต้นใช้งาน MediaPipe Pose
+    const pose = new Pose({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+    });
 
+    pose.setOptions({
+      modelComplexity: 1,
+      smoothLandmarks: true,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.5
+    });
 
+    pose.onResults(onResults);
 
-    setTimeout(function(){
+    const camera = new Camera(videoElement, {
+      onFrame: async () => {
+        await pose.send({image: videoElement});
+      },
+      width: 640,
+      height: 480
+    });
 
-
-        result.innerHTML = `
-
-        <h3>ผลการวิเคราะห์</h3>
-
-        <p>ลักษณะขา: มีแนวโน้มปกติ</p>
-
-        <p>ความมั่นใจของ AI: 90%</p>
-
-        <p>
-        หมายเหตุ: ผลนี้เป็นการจำลองการทำงานของระบบ
-        </p>
-
-        `;
-
-
-    },2000);
-
-
-});
-
-
-</script>
-
-
+    camera.start();
+  </script>
 </body>
-
 </html>
