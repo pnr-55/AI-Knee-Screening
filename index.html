@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KneeAI - Medical Screening</title>
+  <title>KneeAI - AI Medical Screening</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
@@ -18,150 +18,218 @@
                   radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.12) 0%, rgba(15, 23, 42, 0) 50%);
     }
     .glass-card {
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.90);
       backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.6);
     }
     .hidden-step { display: none !important; }
-    @keyframes scan {
-      0%, 100% { top: 10%; opacity: 0.3; }
-      50% { top: 85%; opacity: 0.9; }
-    }
-    .scan-line { animation: scan 2.5s infinite ease-in-out; }
   </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-3 sm:p-6 glow-bg">
 
-  <div class="w-full max-w-sm bg-gradient-to-b from-slate-50/95 via-blue-50/90 to-slate-100 rounded-[38px] shadow-2xl border border-white/60 overflow-hidden p-6 flex flex-col justify-between min-h-[720px] relative">
+  <div class="w-full max-w-sm bg-slate-50 rounded-[38px] shadow-2xl border border-white/60 overflow-hidden p-6 flex flex-col justify-between min-h-[720px] relative">
     
-    <!-- Header -->
+    <!-- Navbar / Header -->
     <div class="flex justify-between items-center w-full z-10 pt-1">
-      <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 bg-gradient-to-tr from-blue-700 to-cyan-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
-          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19 10.5h-5.5V5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v5.5H5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5h5.5V19c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-5.5H19c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z"/></svg>
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md">
+          K
         </div>
         <div>
-          <span class="font-extrabold text-xl bg-clip-text text-transparent bg-gradient-to-r from-blue-950 to-indigo-900 leading-none block">KneeAI</span>
-          <span class="text-[9px] text-blue-600 font-semibold uppercase tracking-wider">Medical AI System</span>
+          <span class="font-extrabold text-lg text-slate-900 leading-none block">KneeAI</span>
+          <span class="text-[8px] text-blue-600 font-semibold uppercase tracking-wider">Medical AI System</span>
         </div>
       </div>
-      <span id="step-tag" class="text-[10px] bg-blue-100/80 text-blue-700 px-3 py-1 rounded-full font-bold">หน้าแรก</span>
+      <button onclick="goToStep(2)" class="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-100 hover:bg-blue-100 transition-all">เข้าสู่ระบบ</button>
     </div>
 
-    <!-- ==================== STEP 1: HOME ==================== -->
-    <div id="step-1" class="my-auto py-2 z-10 space-y-4">
+    <!-- ==================== STEP 2: HOME ==================== -->
+    <div id="step-2" class="my-auto py-2 z-10 space-y-4">
       <div>
-        <div class="inline-flex items-center gap-1.5 bg-blue-100/80 border border-blue-200 px-3 py-1 rounded-full text-[10px] font-semibold text-blue-700 mb-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping"></span>
-          <span>นวัตกรรม AI คัดกรองสุขภาพเข่า</span>
-        </div>
-
         <h1 class="text-xl font-extrabold text-slate-900 leading-tight">
-          AI คัดกรองและประเมิน<br>
-          <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600">ความเสี่ยงโรคข้อเข่าเสื่อม</span><br>
-          และภาวะขาโก่ง
+          ดูแลเข่าของคุณ<br>
+          <span class="text-blue-600">ด้วยเทคโนโลยี AI</span>
         </h1>
+        <p class="text-xs text-slate-500 mt-1">วิเคราะห์ความเสี่ยงโรคข้อเข่าเสื่อมและภาวะขาโก่ง ได้อย่างแม่นยำ รวดเร็ว และปลอดภัย</p>
       </div>
 
-      <!-- Knee Graphic Preview -->
-      <div class="relative w-full h-24 rounded-2xl bg-gradient-to-br from-blue-950 to-slate-900 border border-blue-400/30 overflow-hidden shadow-inner flex items-center justify-center">
-        <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:12px_12px] opacity-40"></div>
-        <div class="scan-line absolute left-0 right-0 h-0.5 bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></div>
+      <!-- Graphic Box -->
+      <div class="relative w-full h-36 rounded-2xl bg-gradient-to-br from-blue-900 to-indigo-950 p-4 overflow-hidden flex items-center justify-between shadow-lg">
+        <div class="z-10 space-y-1">
+          <span class="text-[9px] text-cyan-300 font-semibold uppercase tracking-wider">AI Precision</span>
+          <div class="text-white text-base font-bold">คัดกรองสรีระขา<br>และองศาข้อเข่า</div>
+          <div class="text-[10px] text-slate-300">ความแม่นยำสูงมาตรฐานทางการแพทย์</div>
+        </div>
+        <div class="w-20 h-20 bg-blue-500/20 rounded-full blur-xl absolute -right-2 -bottom-2"></div>
+      </div>
 
-        <div class="relative z-10 flex items-center gap-6">
-          <div class="text-center">
-            <div class="w-9 h-9 rounded-full border-2 border-cyan-400/80 flex items-center justify-center text-cyan-300 text-xs font-bold">174°</div>
-            <span class="text-[9px] text-cyan-200/80 mt-0.5 block">เข่าซ้าย (L)</span>
+      <!-- Actions -->
+      <button onclick="goToStep(4)" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 transition-all">
+        <span>เริ่มตรวจคัดกรอง</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </button>
+    </div>
+
+    <!-- ==================== STEP 4: กรอกข้อมูลส่วนตัว ==================== -->
+    <div id="step-4" class="hidden-step my-auto py-2 z-10 space-y-3">
+      <div class="flex items-center justify-between text-[10px] font-bold text-blue-600 mb-1">
+        <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">ขั้นตอนที่ 1 จาก 3</span>
+        <span>ข้อมูลส่วนตัว</span>
+      </div>
+      <h2 class="text-base font-bold text-slate-800">กรอกข้อมูลส่วนตัว</h2>
+
+      <div class="space-y-2 text-xs">
+        <div>
+          <label class="text-slate-600 font-medium block mb-1">ชื่อ-นามสกุล</label>
+          <input type="text" placeholder="ระบุชื่อ-นามสกุล" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-blue-600">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-slate-600 font-medium block mb-1">อายุ (ปี)</label>
+            <input type="number" placeholder="25" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-blue-600">
           </div>
-          <div class="h-6 w-[1px] bg-blue-700/60"></div>
-          <div class="text-center">
-            <div class="w-9 h-9 rounded-full border-2 border-emerald-400/80 flex items-center justify-center text-emerald-300 text-xs font-bold">176°</div>
-            <span class="text-[9px] text-emerald-200/80 mt-0.5 block">เข่าขวา (R)</span>
+          <div>
+            <label class="text-slate-600 font-medium block mb-1">เพศ</label>
+            <select class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-blue-600">
+              <option>หญิง</option>
+              <option>ชาย</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-slate-600 font-medium block mb-1">น้ำหนัก (กก.)</label>
+            <input type="number" placeholder="60" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-blue-600">
+          </div>
+          <div>
+            <label class="text-slate-600 font-medium block mb-1">ส่วนสูง (ซม.)</label>
+            <input type="number" placeholder="165" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-blue-600">
           </div>
         </div>
       </div>
 
-      <!-- Action Button (เชื่อมต่อฟังก์ชันเปลี่ยนหน้าแล้ว!) -->
-      <div class="space-y-2">
-        <button onclick="goToStep(2)" class="w-full py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-semibold text-xs rounded-xl shadow-lg shadow-blue-600/30 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer">
-          <span>เริ่มตรวจประเมิน</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-        </button>
+      <div class="flex gap-2 pt-2">
+        <button onclick="goToStep(2)" class="w-1/3 py-3 bg-slate-200 text-slate-700 font-medium rounded-xl text-xs">ย้อนกลับ</button>
+        <button onclick="goToStep(5)" class="w-2/3 py-3 bg-blue-600 text-white font-semibold rounded-xl text-xs shadow-md">ถัดไป →</button>
       </div>
     </div>
 
-    <!-- ==================== STEP 2: SCAN & UPLOAD ==================== -->
-    <div id="step-2" class="hidden-step my-auto py-2 z-10 space-y-3">
-      <h2 class="text-base font-bold text-slate-800">เลือกวิธีตรวจประเมิน</h2>
-
-      <!-- Mode Selector Tabs -->
-      <div class="grid grid-cols-2 gap-2 p-1 bg-slate-200/60 rounded-xl text-xs font-medium text-center">
-        <button id="tab-camera" onclick="switchMode('camera')" class="py-2 rounded-lg bg-white shadow-sm text-blue-700 font-bold transition-all">📸 เปิดกล้องถ่ายสด</button>
-        <button id="tab-upload" onclick="switchMode('upload')" class="py-2 rounded-lg text-slate-600 transition-all">🖼️ แนบรูปภาพ</button>
+    <!-- ==================== STEP 5: แบบสอบถามอาการ ==================== -->
+    <div id="step-5" class="hidden-step my-auto py-2 z-10 space-y-3">
+      <div class="flex items-center justify-between text-[10px] font-bold text-blue-600 mb-1">
+        <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">ขั้นตอนที่ 2 จาก 3</span>
+        <span>แบบสอบถาม</span>
       </div>
+      <h2 class="text-base font-bold text-slate-800">ประเมินอาการเบื้องต้น</h2>
 
-      <!-- Display Area -->
-      <div class="relative w-full h-64 bg-slate-900 rounded-2xl overflow-hidden border-2 border-blue-400/40 shadow-inner flex items-center justify-center">
-        
-        <!-- Live Camera View -->
-        <div id="camera-container" class="w-full h-full relative">
-          <video id="webcam" class="w-full h-full object-cover transform -scale-x-100" autoplay playsinline></video>
-          <canvas id="camera_canvas" class="absolute top-0 left-0 w-full h-full transform -scale-x-100"></canvas>
-        </div>
-
-        <!-- Image Upload View -->
-        <div id="upload-container" class="hidden w-full h-full relative flex flex-col items-center justify-center p-3 text-center">
-          <img id="image_preview" class="hidden absolute inset-0 w-full h-full object-contain bg-black" />
-          <canvas id="image_canvas" class="hidden absolute inset-0 w-full h-full object-contain pointer-events-none"></canvas>
-          
-          <div id="upload-placeholder" class="space-y-2">
-            <div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center mx-auto">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            </div>
-            <p class="text-xs text-slate-300">กดปุ่มเพื่อแนบรูปถ่ายขา</p>
-            <label class="inline-block px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold cursor-pointer shadow-md">
-              เลือกรูปภาพจากเครื่อง
-              <input type="file" id="file_input" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
-            </label>
+      <div class="space-y-2 text-xs">
+        <div class="p-2.5 bg-white border border-slate-200 rounded-xl space-y-1">
+          <p class="font-medium text-slate-700">1. ปวดเข่าขณะเดินหรือขึ้นลงบันได?</p>
+          <div class="flex gap-4 text-slate-600">
+            <label><input type="radio" name="q1" class="mr-1"> ใช่</label>
+            <label><input type="radio" name="q1" class="mr-1" checked> ไม่ใช่</label>
           </div>
         </div>
-
+        <div class="p-2.5 bg-white border border-slate-200 rounded-xl space-y-1">
+          <p class="font-medium text-slate-700">2. มีเสียงกอบแกรบในข้อเข่าขณะเคลื่อนไหว?</p>
+          <div class="flex gap-4 text-slate-600">
+            <label><input type="radio" name="q2" class="mr-1"> ใช่</label>
+            <label><input type="radio" name="q2" class="mr-1" checked> ไม่ใช่</label>
+          </div>
+        </div>
+        <div class="p-2.5 bg-white border border-slate-200 rounded-xl space-y-1">
+          <p class="font-medium text-slate-700">3. เข่าตึงขัดเวลาตื่นนอน?</p>
+          <div class="flex gap-4 text-slate-600">
+            <label><input type="radio" name="q3" class="mr-1"> ใช่</label>
+            <label><input type="radio" name="q3" class="mr-1" checked> ไม่ใช่</label>
+          </div>
+        </div>
       </div>
 
-      <!-- Real-time Angles -->
-      <div class="grid grid-cols-2 gap-2 text-center">
-        <div class="bg-white/90 p-2.5 rounded-2xl border border-blue-100 shadow-sm">
-          <div class="text-[10px] text-slate-500 font-medium">มุมเข่าซ้าย (L)</div>
-          <div id="angle-l" class="text-lg font-bold text-blue-600">--°</div>
+      <div class="flex gap-2 pt-2">
+        <button onclick="goToStep(4)" class="w-1/3 py-3 bg-slate-200 text-slate-700 font-medium rounded-xl text-xs">ย้อนกลับ</button>
+        <button onclick="goToStep(6)" class="w-2/3 py-3 bg-blue-600 text-white font-semibold rounded-xl text-xs shadow-md">ไปสแกนกล้อง →</button>
+      </div>
+    </div>
+
+    <!-- ==================== STEP 6: CAMERA AI SCAN (ตรงตามภาพที่ 6) ==================== -->
+    <div id="step-6" class="hidden-step my-auto py-2 z-10 space-y-3">
+      <div class="flex items-center justify-between text-[10px] font-bold text-blue-600">
+        <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">ขั้นตอนที่ 3 จาก 3</span>
+        <span>Camera AI Scan</span>
+      </div>
+
+      <!-- Camera Area with Human Overlay Frame -->
+      <div class="relative w-full h-72 bg-slate-900 rounded-2xl overflow-hidden border-2 border-blue-500 shadow-lg flex items-center justify-center">
+        <video id="webcam" class="w-full h-full object-cover transform -scale-x-100" autoplay playsinline></video>
+        <canvas id="camera_canvas" class="absolute top-0 left-0 w-full h-full transform -scale-x-100"></canvas>
+
+        <!-- Human Overlay Guide Frame (กรอบตัวอย่างจากภาพที่ 6) -->
+        <div class="absolute inset-0 border-2 border-dashed border-cyan-400/60 rounded-2xl pointer-events-none flex flex-col items-center justify-center">
+          <svg class="w-36 h-56 text-cyan-400/40 fill-current" viewBox="0 0 100 200">
+            <!-- Simulated Human Outline Guide -->
+            <path d="M50,20 A10,10 0 1,0 50,40 A10,10 0 1,0 50,20 M35,50 L65,50 L60,110 L40,110 Z M40,110 L38,180 M60,110 L62,180" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="4"/>
+          </svg>
+          <span class="absolute top-2 text-[10px] bg-slate-900/80 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-400/30">กรุณายืนจัดท่าทางให้อยู่ในกรอบ</span>
         </div>
-        <div class="bg-white/90 p-2.5 rounded-2xl border border-blue-100 shadow-sm">
-          <div class="text-[10px] text-slate-500 font-medium">มุมเข่าขวา (R)</div>
-          <div id="angle-r" class="text-lg font-bold text-blue-600">--°</div>
+
+        <!-- Checklist status side menu -->
+        <div class="absolute right-2 top-2 bg-slate-900/80 backdrop-blur-md p-2 rounded-xl text-[9px] text-white space-y-1 border border-white/10">
+          <div class="flex items-center gap-1 text-emerald-400">✓ สะโพก</div>
+          <div class="flex items-center gap-1 text-emerald-400">✓ เข่า</div>
+          <div class="flex items-center gap-1 text-emerald-400">✓ ข้อเท้า</div>
         </div>
+      </div>
+
+      <!-- Option แนบรูปเสริมเล็กๆ ด้านล่าง -->
+      <div class="flex justify-between items-center text-[10px] text-slate-500 px-1">
+        <span>หรือเลือกแนบรูปภาพจากคลัง:</span>
+        <label class="text-blue-600 font-bold cursor-pointer hover:underline">
+          เลือกรูปภาพ
+          <input type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+        </label>
       </div>
 
       <div class="flex gap-2 pt-1">
-        <button onclick="goToStep(1)" class="w-1/3 py-3 bg-slate-200 text-slate-700 font-medium rounded-xl text-xs">ย้อนกลับ</button>
-        <button onclick="alert('ระบบบันทึกผลเรียบร้อยแล้ว')" class="w-2/3 py-3 bg-blue-600 text-white font-semibold rounded-xl text-xs shadow-md">สรุปผลประเมิน →</button>
+        <button onclick="goToStep(5)" class="w-1/3 py-3 bg-slate-200 text-slate-700 font-medium rounded-xl text-xs">ย้อนกลับ</button>
+        <button onclick="goToStep(7)" class="w-2/3 py-3 bg-blue-600 text-white font-semibold rounded-xl text-xs shadow-md">ถ่ายภาพ / วิเคราะห์ →</button>
       </div>
     </div>
 
-    <!-- 3. Feature Cards Footer -->
-    <div class="z-10">
-      <div class="grid grid-cols-3 gap-2 mb-2">
-        <div class="glass-card p-2 rounded-2xl shadow-sm text-center">
-          <div class="font-bold text-[11px] text-slate-800">แม่นยำสูง</div>
-          <div class="text-[9px] text-slate-400">ด้วย AI Pose</div>
+    <!-- ==================== STEP 7 & 8: AI กำลังวิเคราะห์ & ผลการวิเคราะห์ ==================== -->
+    <div id="step-7" class="hidden-step my-auto py-2 z-10 space-y-3">
+      <div class="text-center space-y-1">
+        <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2.5 py-0.5 rounded-full font-bold">วิเคราะห์สำเร็จ</span>
+        <h2 class="text-base font-bold text-slate-800">ผลการวิเคราะห์สรีระข้อเข่า</h2>
+      </div>
+
+      <div class="bg-white p-3 rounded-2xl border border-slate-200 space-y-2 shadow-sm text-xs">
+        <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+          <span class="text-slate-500">มุมเข่าซ้าย (Knee Angle L)</span>
+          <span id="res-l" class="font-bold text-blue-600 text-sm">174°</span>
         </div>
-        <div class="glass-card p-2 rounded-2xl shadow-sm text-center">
-          <div class="font-bold text-[11px] text-slate-800">รวดเร็ว</div>
-          <div class="text-[9px] text-slate-400">ผลใน 1 นาที</div>
+        <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+          <span class="text-slate-500">มุมเข่าขวา (Knee Angle R)</span>
+          <span id="res-r" class="font-bold text-blue-600 text-sm">176°</span>
         </div>
-        <div class="glass-card p-2 rounded-2xl shadow-sm text-center">
-          <div class="font-bold text-[11px] text-slate-800">ปลอดภัย</div>
-          <div class="text-[9px] text-slate-400">มาตรฐาน PDPA</div>
+        <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+          <span class="text-slate-500">ความน่าเชื่อถือ AI (Confidence)</span>
+          <span class="font-bold text-emerald-600">95%</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-500">ระดับความเสี่ยง</span>
+          <span class="font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">เสี่ยงต่ำ (Normal)</span>
         </div>
       </div>
+
+      <button onclick="goToStep(2)" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-lg shadow-blue-600/30">
+        เสร็จสิ้น / กลับหน้าแรก
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center z-10 pt-2 border-t border-slate-200/60">
+      <span class="text-[9px] text-slate-400">© KneeAI Project - Medical AI System</span>
     </div>
 
   </div>
@@ -169,7 +237,6 @@
   <script>
     let pose = null;
     let camera = null;
-    let currentMode = 'camera';
 
     function initPose() {
       pose = new Pose({
@@ -192,7 +259,8 @@
     }
 
     function onPoseResults(results) {
-      let canvasElement = currentMode === 'camera' ? document.getElementById('camera_canvas') : document.getElementById('image_canvas');
+      let canvasElement = document.getElementById('camera_canvas');
+      if (!canvasElement) return;
       let canvasCtx = canvasElement.getContext('2d');
 
       canvasElement.width = canvasElement.clientWidth;
@@ -206,18 +274,19 @@
         
         if (lm[23] && lm[25] && lm[27]) {
           const lAngle = calculateAngle(lm[23], lm[25], lm[27]);
-          document.getElementById('angle-l').innerText = lAngle + '°';
+          document.getElementById('res-l').innerText = lAngle + '°';
         }
         if (lm[24] && lm[26] && lm[28]) {
           const rAngle = calculateAngle(lm[24], lm[26], lm[28]);
-          document.getElementById('angle-r').innerText = rAngle + '°';
+          document.getElementById('res-r').innerText = rAngle + '°';
         }
 
+        // Draw Joints
         [23, 24, 25, 26, 27, 28].forEach(idx => {
           if (lm[idx] && lm[idx].visibility > 0.5) {
             canvasCtx.beginPath();
-            canvasCtx.arc(lm[idx].x * canvasElement.width, lm[idx].y * canvasElement.height, 6, 0, 2 * Math.PI);
-            canvasCtx.fillStyle = '#2563eb';
+            canvasCtx.arc(lm[idx].x * canvasElement.width, lm[idx].y * canvasElement.height, 5, 0, 2 * Math.PI);
+            canvasCtx.fillStyle = '#22d3ee';
             canvasCtx.fill();
             canvasCtx.lineWidth = 2;
             canvasCtx.strokeStyle = '#ffffff';
@@ -228,42 +297,20 @@
       canvasCtx.restore();
     }
 
-    // ฟังก์ชันเปลี่ยนหน้าแบบซ่อน-แสดง div
     function goToStep(step) {
-      document.getElementById('step-1').classList.add('hidden-step');
-      document.getElementById('step-2').classList.add('hidden-step');
-      
-      document.getElementById(`step-${step}`).classList.remove('hidden-step');
-      
-      if (step === 2) {
-        document.getElementById('step-tag').innerText = "สแกนสรีระขา";
-        if(!pose) initPose();
-        switchMode('camera');
-      } else {
-        document.getElementById('step-tag').innerText = "หน้าแรก";
-        if(camera) { camera.stop(); camera = null; }
-      }
-    }
+      [2, 4, 5, 6, 7].forEach(s => {
+        const el = document.getElementById(`step-${s}`);
+        if (el) el.classList.add('hidden-step');
+      });
 
-    function switchMode(mode) {
-      currentMode = mode;
-      const camTab = document.getElementById('tab-camera');
-      const uploadTab = document.getElementById('tab-upload');
-      const camCont = document.getElementById('camera-container');
-      const uploadCont = document.getElementById('upload-container');
+      const target = document.getElementById(`step-${step}`);
+      if (target) target.classList.remove('hidden-step');
 
-      if (mode === 'camera') {
-        camTab.className = "py-2 rounded-lg bg-white shadow-sm text-blue-700 font-bold transition-all";
-        uploadTab.className = "py-2 rounded-lg text-slate-600 transition-all";
-        camCont.classList.remove('hidden');
-        uploadCont.classList.add('hidden');
+      if (step === 6) {
+        if (!pose) initPose();
         startCamera();
       } else {
-        uploadTab.className = "py-2 rounded-lg bg-white shadow-sm text-blue-700 font-bold transition-all";
-        camTab.className = "py-2 rounded-lg text-slate-600 transition-all";
-        uploadCont.classList.remove('hidden');
-        camCont.classList.add('hidden');
-        if(camera) { camera.stop(); camera = null; }
+        if (camera) { camera.stop(); camera = null; }
       }
     }
 
@@ -272,7 +319,7 @@
       const videoElement = document.getElementById('webcam');
       camera = new Camera(videoElement, {
         onFrame: async () => {
-          if(currentMode === 'camera' && pose) await pose.send({ image: videoElement });
+          if (pose) await pose.send({ image: videoElement });
         },
         width: 640,
         height: 480
@@ -283,20 +330,14 @@
     function handleImageUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
-
-      const img = document.getElementById('image_preview');
-      const canvas = document.getElementById('image_canvas');
-      const placeholder = document.getElementById('upload-placeholder');
-
+      const img = new Image();
       const reader = new FileReader();
       reader.onload = function(e) {
         img.src = e.target.result;
-        img.classList.remove('hidden');
-        canvas.classList.remove('hidden');
-        placeholder.classList.add('hidden');
-
         img.onload = async () => {
-          if(pose) await pose.send({ image: img });
+          if(!pose) initPose();
+          await pose.send({ image: img });
+          goToStep(7);
         };
       };
       reader.readAsDataURL(file);
