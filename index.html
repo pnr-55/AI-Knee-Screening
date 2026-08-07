@@ -7,6 +7,24 @@
     <title>AI คัดกรองโรคข้อเข่า</title>
 
     <style>
+       <script>
+
+const imageInput = document.getElementById("imageInput");
+const preview = document.getElementById("preview");
+
+imageInput.addEventListener("change", function() {
+
+    const file = this.files[0];
+
+    if (file) {
+        preview.src = URL.createObjectURL(file);
+    }
+
+});
+
+</script>
+
+</body>
         body {
             font-family: Arial, sans-serif;
             background-color: #eaf4ff;
@@ -52,7 +70,11 @@
 
         <h2>อัปโหลดภาพ X-ray</h2>
 
-        <input type="file">
+     <input type="file" id="imageInput" accept="image/*">
+
+<br><br>
+
+<img id="preview" width="300">
 
         <br><br>
 
@@ -61,7 +83,5 @@
         </button>
 
     </div>
-
-</body>
 
 </html>
