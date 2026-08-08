@@ -3,592 +3,165 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KneeAI - AI Medical Screening System</title>
+  <title>KneeAI - AI-based Screening for Knee Osteoarthritis & Genu Varum</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- MediaPipe Pose JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
-
   <style>
-    body { 
-      font-family: 'Prompt', sans-serif; 
-      background: #0b132b;
+    body { font-family: 'Prompt', sans-serif; background-color: #f8fafc; }
+    .bg-gradient-medical {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f2537 100%);
     }
-    
-    .bg-glow {
-      background: 
-        radial-gradient(circle at 15% 15%, rgba(37, 99, 235, 0.22) 0%, transparent 45%),
-        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.18) 0%, transparent 50%),
-        linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    }
-
     .glass-card {
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.7);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
     }
-
-    .glass-pill {
-      background: rgba(255, 255, 255, 0.65);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-    }
-
-    .btn-gradient-primary {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
-    }
-    .btn-gradient-primary:hover {
-      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-    }
-
-    .btn-gradient-emergency {
-      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-      box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.4);
-    }
-
-    .hidden-step { display: none !important; }
-
-    /* Custom Scrollbar */
-    .custom-scroll::-webkit-scrollbar { width: 4px; }
-    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: rgba(203, 213, 225, 0.8); border-radius: 10px; }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-3 sm:p-6 bg-glow">
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
 
-  <!-- Main Mobile Shell -->
-  <div class="w-full max-w-sm glass-card rounded-[42px] overflow-hidden p-6 flex flex-col justify-between h-[750px] relative border border-white/80 transition-all duration-300">
-    
-    <!-- Navbar Header -->
-    <div class="flex justify-between items-center w-full z-20 shrink-0 pb-2">
-      <div class="flex items-center gap-2.5">
-        <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-cyan-500 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-500/30">
+  <!-- Navigation Bar -->
+  <header class="w-full bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-2xl shadow-lg shadow-blue-500/30">
           +
         </div>
         <div>
-          <span class="font-extrabold text-xl text-slate-900 leading-none block tracking-tight">KneeAI</span>
-          <span class="text-[8px] text-blue-600 font-bold uppercase tracking-widest block mt-0.5">Medical AI System</span>
+          <span class="text-2xl font-black text-slate-900 tracking-tight block leading-none">KneeAI</span>
+          <span class="text-[10px] text-blue-600 font-bold uppercase tracking-widest">Medical AI Screening Platform</span>
         </div>
       </div>
-      
-      <button class="w-10 h-10 glass-pill rounded-2xl flex items-center justify-center text-slate-700 hover:bg-white/90 transition-all shadow-sm active:scale-95">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-      </button>
-    </div>
 
-    <!-- ==================== STEP 1: HOME ==================== -->
-    <div id="step-1" class="my-auto py-2 z-10 space-y-4">
-      <div class="text-center space-y-2">
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-[10px] font-bold shadow-sm">
-          <span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
-          นวัตกรรม AI คัดกรองสุขภาพเข่า
-        </span>
-        
-        <h1 class="text-2xl font-black text-slate-900 leading-tight tracking-tight">
-          AI คัดกรองและประเมิน<br>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">ความเสี่ยงโรคข้อเข่าเสื่อม</span><br>
-          และภาวะขาโก่ง
-        </h1>
-        <p class="text-[11px] text-slate-500 max-w-[260px] mx-auto leading-relaxed">
-          วิเคราะห์สรีระข้อเข่าเบื้องต้นด้วยเทคโนโลยี Computer Vision ให้ผลลัพธ์แม่นยำ ปลอดภัย และรวดเร็ว
+      <nav class="hidden md:flex items-center gap-8 font-medium text-sm text-slate-600">
+        <a href="#home" class="text-blue-600 font-semibold">หน้าแรก</a>
+        <a href="#about" class="hover:text-blue-600 transition-colors">เกี่ยวกับเรา</a>
+        <a href="#features" class="hover:text-blue-600 transition-colors">การทำงาน</a>
+        <a href="#contact" class="hover:text-blue-600 transition-colors">ติดต่อเรา</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <button onclick="openLoginModal()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-blue-500/20 transition-all">
+          เข้าสู่ระบบ / สมัครสมาชิก
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Hero Section (หน้า 1-2 ตาม ภาพ UI Blueprint) -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 flex-1 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    
+    <!-- Left Content -->
+    <div class="space-y-6">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold">
+        <span class="w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
+        นวัตกรรม AI คัดกรองสุขภาพข้อเข่าระดับประเทศ
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl font-black text-slate-900 leading-tight">
+        ดูแลเข่าของคุณ<br>
+        ด้วยเทคโนโลยี <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">Medical AI</span>
+      </h1>
+
+      <p class="text-slate-600 text-base leading-relaxed">
+        วิเคราะห์ความเสี่ยงโรคข้อเข่าเสื่อมและภาวะขาโก่งเบื้องต้นด้วยคอมพิวเตอร์วิทัศน์ (Computer Vision) รวดเร็ว ปลอดภัย และได้มาตรฐาน
+      </p>
+
+      <!-- Disclaimer Banner -->
+      <div class="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-800 flex items-start gap-3">
+        <span class="text-base">⚠️</span>
+        <p>
+          <strong>หมายเหตุสำคัญ:</strong> ระบบนี้เป็นเครื่องมือคัดกรองเบื้องต้นเพื่อการประเมินความเสี่ยงเท่านั้น ไม่สามารถใช้ทดแทนการวินิจฉัยโรคทางการแพทย์โดยแพทย์ผู้เชี่ยวชาญได้
         </p>
       </div>
 
-      <!-- Live Knee Preview Graphics -->
-      <div class="relative w-full h-28 rounded-3xl bg-slate-950 border border-slate-800/80 overflow-hidden shadow-2xl p-4 flex items-center justify-center">
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/20 via-cyan-900/10 to-transparent"></div>
-        <div class="flex items-center gap-8 z-10">
+      <div class="flex flex-col sm:flex-row gap-4 pt-2">
+        <button onclick="startScreeningProcess()" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base rounded-2xl shadow-xl shadow-blue-600/30 transition-all text-center">
+          เริ่มตรวจคัดกรองเบื้องต้น →
+        </button>
+        <a href="#how-it-works" class="px-8 py-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-base rounded-2xl transition-all text-center">
+          คู่มือการใช้งาน
+        </a>
+      </div>
+
+      <!-- Feature Badges (แบบหน้า 2 ในภาพ) -->
+      <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200">
+        <div class="text-center p-3 rounded-2xl bg-white border border-slate-100 shadow-sm">
+          <div class="font-extrabold text-blue-600 text-lg">AI Accuracy</div>
+          <div class="text-xs text-slate-500">วิเคราะห์แม่นยำสูง</div>
+        </div>
+        <div class="text-center p-3 rounded-2xl bg-white border border-slate-100 shadow-sm">
+          <div class="font-extrabold text-blue-600 text-lg">30 วินาที</div>
+          <div class="text-xs text-slate-500">ประมวลผลรวดเร็ว</div>
+        </div>
+        <div class="text-center p-3 rounded-2xl bg-white border border-slate-100 shadow-sm">
+          <div class="font-extrabold text-blue-600 text-lg">PDPA</div>
+          <div class="text-xs text-slate-500">คุ้มครองข้อมูลปลอดภัย</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Medical Banner Preview -->
+    <div class="relative flex justify-center items-center">
+      <div class="w-full h-[450px] bg-gradient-medical rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl flex flex-col justify-between border border-slate-700">
+        <div class="space-y-2 z-10">
+          <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Knee Joint Biomechanics</span>
+          <h3 class="text-2xl font-bold">ระบบตรวจวัดองศาข้อเข่าสด</h3>
+          <p class="text-xs text-slate-300">วิเคราะห์มุม $Q\text{-Angle}$ และแรงกดบนข้อเข่าผ่านกล้อง</p>
+        </div>
+
+        <div class="flex justify-around items-center z-10 bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/10">
           <div class="text-center">
-            <div class="w-11 h-11 rounded-full border-2 border-cyan-400/90 bg-cyan-950/40 flex items-center justify-center text-cyan-300 text-sm font-extrabold shadow-lg shadow-cyan-500/20" id="preview-l">--</div>
-            <span class="text-[9px] font-medium text-cyan-200/70 mt-1 block">เข่าซ้าย (L)</span>
+            <div class="text-3xl font-black text-cyan-400">174°</div>
+            <div class="text-xs text-slate-300 mt-1">Left Knee</div>
           </div>
-          <div class="h-8 w-[1px] bg-slate-800"></div>
+          <div class="h-10 w-[1px] bg-white/20"></div>
           <div class="text-center">
-            <div class="w-11 h-11 rounded-full border-2 border-emerald-400/90 bg-emerald-950/40 flex items-center justify-center text-emerald-300 text-sm font-extrabold shadow-lg shadow-emerald-500/20" id="preview-r">--</div>
-            <span class="text-[9px] font-medium text-emerald-200/70 mt-1 block">เข่าขวา (R)</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="space-y-2 pt-1">
-        <button onclick="goToStep(2)" class="w-full py-3.5 btn-gradient-primary text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
-          <span>เริ่มตรวจประเมิน (สำหรับประชาชน)</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-        </button>
-        <button onclick="alert('ระบบสำหรับบุคลากรทางการแพทย์ กำลังเตรียมพร้อมเชื่อมต่อฐานข้อมูลโรงพยาบาล')" class="w-full py-3 glass-pill border border-slate-200/80 text-slate-700 font-semibold text-xs rounded-2xl hover:bg-white transition-all">
-          เข้าสู่ระบบบุคลากร
-        </button>
-      </div>
-    </div>
-
-    <!-- ==================== STEP 2: ข้อมูลส่วนตัว & แบบสอบถามละเอียด ==================== -->
-    <div id="step-2" class="hidden-step flex-1 flex flex-col justify-between overflow-hidden py-1 z-10 space-y-2">
-      <div class="flex justify-between items-center text-[10px] font-bold text-blue-600 bg-blue-50/80 px-3 py-1.5 rounded-xl border border-blue-100 shrink-0">
-        <span>ขั้นตอนที่ 1 จาก 3</span>
-        <span>ข้อมูลส่วนตัวและแบบประเมินอาการ</span>
-      </div>
-
-      <!-- Scrollable Form Container -->
-      <div class="overflow-y-auto custom-scroll pr-1 space-y-3 text-xs flex-1">
-        
-        <!-- ข้อมูลส่วนตัว -->
-        <div class="space-y-2 bg-white/60 p-3 rounded-2xl border border-white/80 shadow-sm">
-          <div class="font-bold text-slate-800 text-[11px] flex items-center gap-1">
-            <span>👤</span> ข้อมูลทั่วไป
-          </div>
-          <div>
-            <label class="text-slate-600 block mb-0.5 text-[10px] font-medium">ชื่อ-นามสกุล</label>
-            <input type="text" id="user-name" placeholder="ระบุชื่อ-นามสกุล" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 text-slate-800 text-xs">
-          </div>
-          
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="text-slate-600 block mb-0.5 text-[10px] font-medium">อายุ (ปี)</label>
-              <input type="number" id="user-age" placeholder="25" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs">
-            </div>
-            <div>
-              <label class="text-slate-600 block mb-0.5 text-[10px] font-medium">เพศ</label>
-              <select id="user-gender" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs">
-                <option value="female">หญิง</option>
-                <option value="male">ชาย</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="text-slate-600 block mb-0.5 text-[10px] font-medium">น้ำหนัก (กก.)</label>
-              <input type="number" id="user-weight" placeholder="60" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs">
-            </div>
-            <div>
-              <label class="text-slate-600 block mb-0.5 text-[10px] font-medium">ส่วนสูง (ซม.)</label>
-              <input type="number" id="user-height" placeholder="165" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs">
-            </div>
+            <div class="text-3xl font-black text-emerald-400">176°</div>
+            <div class="text-xs text-slate-300 mt-1">Right Knee</div>
           </div>
         </div>
 
-        <!-- แบบสอบถามคัดกรองละเอียด (Clinical Symptoms Questionnaire) -->
-        <div class="space-y-2.5 bg-white/60 p-3 rounded-2xl border border-white/80 shadow-sm">
-          <div class="font-bold text-slate-800 text-[11px] flex items-center gap-1">
-            <span>📋</span> แบบประเมินอาการข้อเข่า (Clinical Survey)
-          </div>
-
-          <div class="space-y-2 text-[11px]">
-            <div class="p-2 bg-white/80 rounded-xl border border-slate-100">
-              <p class="text-slate-700 font-medium">1. มีอาการปวดเข่าขณะเดิน ขึ้น-ลงบันได หรือลุกนั่งหรือไม่?</p>
-              <div class="flex gap-4 font-normal text-slate-600 mt-1">
-                <label><input type="radio" name="q_pain" value="1" class="accent-blue-600"> มีอาการปวด</label>
-                <label><input type="radio" name="q_pain" value="0" checked class="accent-blue-600"> ไม่มีอาการ</label>
-              </div>
-            </div>
-
-            <div class="p-2 bg-white/80 rounded-xl border border-slate-100">
-              <p class="text-slate-700 font-medium">2. มีอาการข้อเข่าตึง ขัด หรือฝืดหลังตื่นนอน (เกิน 30 นาที)?</p>
-              <div class="flex gap-4 font-normal text-slate-600 mt-1">
-                <label><input type="radio" name="q_stiff" value="1" class="accent-blue-600"> มีอาการตึงขัด</label>
-                <label><input type="radio" name="q_stiff" value="0" checked class="accent-blue-600"> ไม่มีอาการ</label>
-              </div>
-            </div>
-
-            <div class="p-2 bg-white/80 rounded-xl border border-slate-100">
-              <p class="text-slate-700 font-medium">3. มีเสียงกอบแกรบ (Crepitus) ในข้อเข่าขณะเคลื่อนไหว?</p>
-              <div class="flex gap-4 font-normal text-slate-600 mt-1">
-                <label><input type="radio" name="q_sound" value="1" class="accent-blue-600"> มีเสียงดัง</label>
-                <label><input type="radio" name="q_sound" value="0" checked class="accent-blue-600"> ไม่มีเสียง</label>
-              </div>
-            </div>
-
-            <div class="p-2 bg-white/80 rounded-xl border border-slate-100">
-              <p class="text-slate-700 font-medium">4. เคยมีประวัติข้อเข่าบวม ร้อน หรือได้รับบาดเจ็บที่เข่าหรือไม่?</p>
-              <div class="flex gap-4 font-normal text-slate-600 mt-1">
-                <label><input type="radio" name="q_swell" value="1" class="accent-blue-600"> เคยมีประวัติ</label>
-                <label><input type="radio" name="q_swell" value="0" checked class="accent-blue-600"> ไม่เคย</label>
-              </div>
-            </div>
-
-            <div class="p-2 bg-white/80 rounded-xl border border-slate-100">
-              <label class="text-slate-700 font-medium block">5. ระดับความปวดรบกวนชีวิตประจำวัน (Pain Score 0-10)</label>
-              <input type="range" id="q_pain_score" min="0" max="10" value="0" oninput="document.getElementById('pain-val').innerText = this.value" class="w-full mt-1 accent-blue-600">
-              <div class="flex justify-between text-[9px] text-slate-400 font-bold">
-                <span>0 (ไม่ปวดเลย)</span>
-                <span>ระดับปวด: <span id="pain-val" class="text-blue-600 text-xs">0</span></span>
-                <span>10 (ปวดรุนแรง)</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="flex gap-2 pt-2 shrink-0">
-        <button onclick="goToStep(1)" class="w-1/3 py-3 glass-pill text-slate-700 font-semibold rounded-xl text-xs hover:bg-white">ย้อนกลับ</button>
-        <button onclick="saveAndProceedToCamera()" class="w-2/3 py-3 btn-gradient-primary text-white font-bold rounded-xl text-xs shadow-md">ถัดไป (เข้าสู่หน้ากล้อง) →</button>
-      </div>
-    </div>
-
-    <!-- ==================== STEP 3: AI CAMERA ALIGNMENT & POSE SCAN ==================== -->
-    <div id="step-3" class="hidden-step my-auto py-2 z-10 space-y-3">
-      <div class="flex justify-between items-center text-[10px] font-bold text-blue-600 bg-blue-50/80 px-3 py-1.5 rounded-xl border border-blue-100">
-        <span>ขั้นตอนที่ 2 จาก 3</span>
-        <span>AI Camera Real-time Scan</span>
-      </div>
-
-      <!-- Camera Viewer Area -->
-      <div class="relative w-full h-72 bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex items-center justify-center">
-        <video id="webcam" class="w-full h-full object-cover transform -scale-x-100" autoplay playsinline></video>
-        <canvas id="camera_canvas" class="absolute top-0 left-0 w-full h-full transform -scale-x-100"></canvas>
-
-        <!-- Dynamic Status Banner -->
-        <div id="status-banner" class="absolute top-2 left-2 right-2 bg-red-500/95 text-white text-[10px] font-bold py-2 px-3 rounded-xl backdrop-blur-md text-center shadow-lg transition-all border border-white/20">
-          🔴 กรุณายืนถอยห่างจากกล้อง ให้เห็นสะโพก เข่า และข้อเท้าครบถ้วน
-        </div>
-      </div>
-
-      <div class="flex gap-2 pt-1">
-        <button onclick="goToStep(2)" class="w-1/3 py-3 glass-pill text-slate-700 font-semibold rounded-xl text-xs hover:bg-white">ย้อนกลับ</button>
-        <button id="btn-analyze" onclick="calculateAndShowResults()" disabled class="w-2/3 py-3 bg-slate-300 text-slate-500 font-bold rounded-xl text-xs transition-all cursor-not-allowed">
-          วิเคราะห์คำนวณผลจริง →
-        </button>
-      </div>
-    </div>
-
-    <!-- ==================== STEP 4: รายงานผลจริง + % ความเสี่ยง + ลิงก์ส่งต่อแพทย์ ==================== -->
-    <div id="step-4" class="hidden-step flex-1 flex flex-col justify-between overflow-hidden py-1 z-10 space-y-2">
-      <div class="text-center space-y-0.5 shrink-0">
-        <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-3 py-0.5 rounded-full border border-emerald-200/60 inline-block">วิเคราะห์สำเร็จจาก AI</span>
-        <h2 class="text-base font-extrabold text-slate-900">รายงานสุขภาพสรีระข้อเข่า</h2>
-      </div>
-
-      <!-- Scrollable Results Detail -->
-      <div class="overflow-y-auto custom-scroll pr-1 space-y-2 text-xs flex-1">
-        
-        <!-- Summary Angles & Deformity -->
-        <div class="bg-white/90 p-3 rounded-2xl border border-slate-200/80 space-y-2 shadow-sm">
-          <div class="flex justify-between items-center pb-1.5 border-b border-slate-100">
-            <span class="text-slate-500 font-medium">ผู้ตรวจประเมิน</span>
-            <span id="res-user-name" class="font-bold text-slate-800">-</span>
-          </div>
-          <div class="flex justify-between items-center pb-1.5 border-b border-slate-100">
-            <span class="text-slate-500 font-medium">มุมข้อเข่าซ้าย (Left Knee)</span>
-            <span id="final-angle-l" class="font-extrabold text-blue-600 text-sm">--°</span>
-          </div>
-          <div class="flex justify-between items-center pb-1.5 border-b border-slate-100">
-            <span class="text-slate-500 font-medium">มุมข้อเข่าขวา (Right Knee)</span>
-            <span id="final-angle-r" class="font-extrabold text-blue-600 text-sm">--°</span>
-          </div>
-          <div class="flex justify-between items-center pb-1.5 border-b border-slate-100">
-            <span class="text-slate-500 font-medium">การวิเคราะห์ภาวะสรีระขา</span>
-            <span id="final-deformity" class="font-extrabold text-slate-800">--</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="text-slate-500 font-medium">ระดับความเสี่ยงข้อเข่าเสื่อม</span>
-            <span id="final-risk-percent" class="font-extrabold text-emerald-600">--%</span>
-          </div>
-        </div>
-
-        <!-- Clinical Advice Box -->
-        <div class="bg-gradient-to-br from-blue-50 to-indigo-50/50 p-3 rounded-2xl border border-blue-100 text-[11px] space-y-1 shadow-sm">
-          <div class="font-extrabold text-blue-900 flex items-center gap-1">
-            <span>💡</span> คำแนะนำทางการแพทย์เบื้องต้น:
-          </div>
-          <p id="final-advice" class="text-slate-600 leading-relaxed">กำลังประเมินคำแนะนำ...</p>
-        </div>
-
-        <!-- Emergency / Doctor Link (แสดงเมื่อเสี่ยงสูง) -->
-        <div id="doctor-consult-card" class="hidden-step bg-red-50 p-3 rounded-2xl border border-red-200 text-[11px] space-y-1.5 shadow-sm">
-          <div class="font-bold text-red-700 flex items-center gap-1">
-            <span>🚨</span> ตรวจพบความเสี่ยงสูง ควรได้รับการตรวจเพิ่มเติม
-          </div>
-          <p class="text-slate-600">ผลวิเคราะห์พบความผิดปกติของสรีระหรืออาการปวดสะสม แนะนำปรึกษาแพทย์เฉพาะทางเพื่อรับการวินิจฉัยอย่างละเอียด</p>
-          <a id="doctor-link-btn" href="#" onclick="consultDoctor()" class="inline-block w-full text-center py-2.5 btn-gradient-emergency text-white font-bold rounded-xl shadow-md transition-all mt-1">
-            👨‍⚕️ คลิกเพื่อส่งข้อมูลปรึกษาแพทย์
-          </a>
-        </div>
-
-      </div>
-
-      <!-- Footer Buttons -->
-      <div class="space-y-1.5 pt-1 shrink-0">
-        <button onclick="shareReport()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 transition-all">
-          <span>📋</span> คัดกลอกสรุปรายงาน (เพื่อส่งต่อ)
-        </button>
-        <button onclick="goToStep(1)" class="w-full py-2.5 glass-pill text-slate-700 font-semibold text-xs rounded-xl hover:bg-white">
-          กลับหน้าแรก
-        </button>
-      </div>
-    </div>
-
-    <!-- Feature Cards Footer -->
-    <div class="z-10 pt-2 border-t border-slate-200/60 shrink-0">
-      <div class="grid grid-cols-3 gap-2">
-        <div class="glass-pill p-1.5 rounded-2xl text-center border border-white/80 shadow-sm">
-          <div class="font-bold text-[9px] text-slate-800">แม่นยำสูง</div>
-          <div class="text-[8px] text-slate-400">ด้วย AI Pose</div>
-        </div>
-        <div class="glass-pill p-1.5 rounded-2xl text-center border border-white/80 shadow-sm">
-          <div class="font-bold text-[9px] text-slate-800">รวดเร็ว</div>
-          <div class="text-[8px] text-slate-400">ผลใน 1 นาที</div>
-        </div>
-        <div class="glass-pill p-1.5 rounded-2xl text-center border border-white/80 shadow-sm">
-          <div class="font-bold text-[9px] text-slate-800">ปลอดภัย</div>
-          <div class="text-[8px] text-slate-400">มาตรฐาน PDPA</div>
+        <div class="text-[10px] text-slate-400 z-10 text-center">
+          Powered by MediaPipe Pose Computer Vision Neural Network
         </div>
       </div>
     </div>
 
+  </main>
+
+  <!-- Login/Register Modal Container (เตรียมพร้อมเชื่อมต่อ Database) -->
+  <div id="login-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-slate-100 relative">
+      <button onclick="closeLoginModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 font-bold">✕</button>
+      
+      <div class="text-center space-y-2 mb-6">
+        <h3 class="text-2xl font-bold text-slate-900">ยินดีต้อนรับสู่ KneeAI</h3>
+        <p class="text-xs text-slate-500">เข้าสู่ระบบเพื่อบันทึกประวัติการตรวจคัดกรอง</p>
+      </div>
+
+      <form class="space-y-4" onsubmit="event.preventDefault(); alert('ระบบเข้าสู่ระบบกำลังเชื่อมฐานข้อมูล');">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">อีเมล</label>
+          <input type="email" placeholder="example@email.com" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-blue-600">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">รหัสผ่าน</label>
+          <input type="password" placeholder="••••••••" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-blue-600">
+        </div>
+        <button type="submit" class="w-full py-3.5 bg-blue-600 text-white font-bold rounded-xl text-sm shadow-md hover:bg-blue-700 transition-all">
+          เข้าสู่ระบบ
+        </button>
+      </form>
+    </div>
   </div>
 
   <script>
-    let pose = null;
-    let camera = null;
-    let isAlignedCorrectly = false;
-
-    // Real-time calculated angles stored globally
-    let detectedLeftAngle = 175;
-    let detectedRightAngle = 175;
-
-    // User Data Object
-    let userData = {
-      name: '',
-      age: 25,
-      gender: 'female',
-      weight: 60,
-      height: 165,
-      painScore: 0,
-      surveyScore: 0
-    };
-
-    function initPose() {
-      pose = new Pose({
-        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
-      });
-      pose.setOptions({
-        modelComplexity: 1,
-        smoothLandmarks: true,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5
-      });
-      pose.onResults(onPoseResults);
-    }
-
-    function calculateAngle(a, b, c) {
-      const radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
-      let angle = Math.abs((radians * 180.0) / Math.PI);
-      if (angle > 180.0) angle = 360 - angle;
-      return Math.round(angle * 10) / 10;
-    }
-
-    function onPoseResults(results) {
-      let canvasElement = document.getElementById('camera_canvas');
-      if (!canvasElement) return;
-      let canvasCtx = canvasElement.getContext('2d');
-
-      canvasElement.width = canvasElement.clientWidth;
-      canvasElement.height = canvasElement.clientHeight;
-
-      canvasCtx.save();
-      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
-      const banner = document.getElementById('status-banner');
-      const analyzeBtn = document.getElementById('btn-analyze');
-
-      if (results.poseLandmarks) {
-        const lm = results.poseLandmarks;
-        
-        // Landmarks: 23/24 (Hips), 25/26 (Knees), 27/28 (Ankles)
-        const hasKneeLandmarks = lm[23] && lm[24] && lm[25] && lm[26] && lm[27] && lm[28];
-        const isVisible = hasKneeLandmarks && 
-                          lm[23].visibility > 0.6 && lm[25].visibility > 0.6 && lm[27].visibility > 0.6;
-
-        if (isVisible) {
-          isAlignedCorrectly = true;
-          banner.className = "absolute top-2 left-2 right-2 bg-emerald-500/95 text-white text-[10px] font-bold py-2 px-3 rounded-xl backdrop-blur-md text-center shadow-lg transition-all border border-white/20";
-          banner.innerText = "🟢 ยืนถูกต้องตามสรีระแล้ว พร้อมคำนวณองศาชีวกลศาสตร์";
-
-          analyzeBtn.disabled = false;
-          analyzeBtn.className = "w-2/3 py-3 btn-gradient-primary text-white font-bold rounded-xl text-xs shadow-md cursor-pointer transition-all active:scale-95";
-
-          // Calculate Real Knee Angles dynamically from landmarks
-          detectedLeftAngle = calculateAngle(lm[23], lm[25], lm[27]);
-          detectedRightAngle = calculateAngle(lm[24], lm[26], lm[28]);
-
-          document.getElementById('preview-l').innerText = detectedLeftAngle + '°';
-          document.getElementById('preview-r').innerText detectedRightAngle + '°';
-
-        } else {
-          isAlignedCorrectly = false;
-          banner.className = "absolute top-2 left-2 right-2 bg-red-500/95 text-white text-[10px] font-bold py-2 px-3 rounded-xl backdrop-blur-md text-center shadow-lg transition-all border border-white/20";
-          banner.innerText = "🔴 กรุณายืนถอยห่างจากกล้อง ให้เห็นสะโพก เข่า และข้อเท้าครบถ้วน";
-
-          analyzeBtn.disabled = true;
-          analyzeBtn.className = "w-2/3 py-3 bg-slate-300 text-slate-500 font-bold rounded-xl text-xs transition-all cursor-not-allowed";
-        }
-
-        // Draw Pose Dots
-        const pointColor = isAlignedCorrectly ? '#10b981' : '#ef4444';
-        [23, 24, 25, 26, 27, 28].forEach(idx => {
-          if (lm[idx]) {
-            canvasCtx.beginPath();
-            canvasCtx.arc(lm[idx].x * canvasElement.width, lm[idx].y * canvasElement.height, 6, 0, 2 * Math.PI);
-            canvasCtx.fillStyle = pointColor;
-            canvasCtx.fill();
-            canvasCtx.lineWidth = 2;
-            canvasCtx.strokeStyle = '#ffffff';
-            canvasCtx.stroke();
-          }
-        });
-      }
-      canvasCtx.restore();
-    }
-
-    function saveAndProceedToCamera() {
-      userData.name = document.getElementById('user-name').value || 'บุคคลทั่วไป';
-      userData.age = parseInt(document.getElementById('user-age').value) || 25;
-      userData.gender = document.getElementById('user-gender').value;
-      userData.weight = parseFloat(document.getElementById('user-weight').value) || 60;
-      userData.height = parseFloat(document.getElementById('user-height').value) || 165;
-      userData.painScore = parseInt(document.getElementById('q_pain_score').value) || 0;
-
-      // Calculate Survey Score
-      let score = 0;
-      if (document.querySelector('input[name="q_pain"]:checked')?.value === '1') score += 15;
-      if (document.querySelector('input[name="q_stiff"]:checked')?.value === '1') score += 15;
-      if (document.querySelector('input[name="q_sound"]:checked')?.value === '1') score += 10;
-      if (document.querySelector('input[name="q_swell"]:checked')?.value === '1') score += 10;
-      score += userData.painScore * 3; // Pain score contribution
-      userData.surveyScore = score;
-
-      // Save to localStorage
-      localStorage.setItem('knee_ai_user', JSON.stringify(userData));
-
-      goToStep(3);
-    }
-
-    function calculateAndShowResults() {
-      document.getElementById('res-user-name').innerText = userData.name;
-      document.getElementById('final-angle-l').innerText = detectedLeftAngle + '°';
-      document.getElementById('final-angle-r').innerText = detectedRightAngle + '°';
-
-      // 1. Deformity Analysis
-      let deformityText = "";
-      let isDeformed = false;
-
-      const minAngle = Math.min(detectedLeftAngle, detectedRightAngle);
-      const maxAngle = Math.max(detectedLeftAngle, detectedRightAngle);
-
-      if (minAngle < 168) {
-        deformityText = "เสี่ยงภาวะขาโก่ง (Genu Varum)";
-        isDeformed = true;
-      } else if (maxAngle > 182) {
-        deformityText = "เสี่ยงภาวะขาฉิ่ง/ขาเก (Genu Valgum)";
-        isDeformed = true;
-      } else {
-        deformityText = "สรีระปกติ (Normal Alignment)";
-      }
-      document.getElementById('final-deformity').innerText = deformityText;
-
-      // 2. Risk Percentage Calculation (Biological Angle + Survey Score + Age Factor)
-      let riskPercent = 5; // Base risk
-      
-      // Angle deviation factor
-      const devL = Math.abs(175 - detectedLeftAngle);
-      const devR = Math.abs(175 - detectedRightAngle);
-      riskPercent += (devL + devR) * 3.5;
-
-      // Survey Score factor
-      riskPercent += userData.surveyScore * 0.6;
-
-      // Age factor
-      if (userData.age > 50) riskPercent += 15;
-      else if (userData.age > 40) riskPercent += 8;
-
-      riskPercent = Math.min(Math.round(riskPercent), 98); // Cap at 98%
-
-      // Render Risk Percentage with Colors
-      const riskEl = document.getElementById('final-risk-percent');
-      if (riskPercent < 30) {
-        riskEl.innerText = `${riskPercent}% (เสี่ยงต่ำ)`;
-        riskEl.className = "font-extrabold text-emerald-600";
-        document.getElementById('final-advice').innerText = "สรีระอยู่ในเกณฑ์ดี แนะนำให้ออกกำลังกายบริหารกล้ามเนื้อต้นขา (Quadriceps Exercise) เช่น ท่ายกขาตรง เพื่อรักษาสภาพข้อเข่าให้แข็งแรง";
-        document.getElementById('doctor-consult-card').classList.add('hidden-step');
-      } else if (riskPercent < 60) {
-        riskEl.innerText = `${riskPercent}% (เสี่ยงปานกลาง)`;
-        riskEl.className = "font-extrabold text-amber-600";
-        document.getElementById('final-advice').innerText = "เริ่มมีความเสี่ยงหรือแรงกดที่ข้อเข่า แนะนำหลีกเลี่ยงการนั่งพับเพียบ นั่งยองๆ และสังเกตอาการปวดอย่างใกล้ชิด";
-        document.getElementById('doctor-consult-card').classList.add('hidden-step');
-      } else {
-        riskEl.innerText = `${riskPercent}% (เสี่ยงสูง)`;
-        riskEl.className = "font-extrabold text-red-600";
-        document.getElementById('final-advice').innerText = "พบความเสี่ยงหรือองศาข้อเข่าเบี่ยงเบนจากมาตรฐาน ควรเข้ารับการตรวจวินิจฉัยเพิ่มเติมด้วย X-ray โดยแพทย์ผู้เชี่ยวชาญ";
-        document.getElementById('doctor-consult-card').classList.remove('hidden-step');
-      }
-
-      // Save Full Scan Results to LocalStorage
-      const scanRecord = {
-        userData: userData,
-        leftAngle: detectedLeftAngle,
-        rightAngle: detectedRightAngle,
-        deformity: deformityText,
-        riskPercent: riskPercent,
-        timestamp: new Date().toLocaleString('th-TH')
-      };
-      localStorage.setItem('knee_ai_last_scan', JSON.stringify(scanRecord));
-
-      goToStep(4);
-    }
-
-    function consultDoctor() {
-      // สามารถแปะ URL ลิงก์ของบุคลากรแพทย์แทนที่ # ได้เลยครับ
-      const doctorPortalUrl = "https://example.com/doctor-portal";
-      alert("กำลังนำท่านเข้าสู่ระบบปรึกษาแพทย์...");
-      // window.location.href = doctorPortalUrl;
-    }
-
-    function shareReport() {
-      const scanData = JSON.parse(localStorage.getItem('knee_ai_last_scan'));
-      if(!scanData) return;
-
-      const reportTxt = `[รายงานผล KneeAI Screen]\nชื่อ: ${scanData.userData.name}\nมุมเข่า: ซ้าย ${scanData.leftAngle}° / ขวา ${scanData.rightAngle}°\nภาวะ: ${scanData.deformity}\nความเสี่ยง: ${scanData.riskPercent}%\nวันที่ตรวจ: ${scanData.timestamp}`;
-      
-      navigator.clipboard.writeText(reportTxt).then(() => {
-        alert("คัดลอกสรุปรายงานเรียบร้อยแล้ว! สามารถนำไปวางส่งให้แพทย์ใน Line หรือช่องทางแชทได้ทันทีครับ");
-      });
-    }
-
-    function goToStep(step) {
-      [1, 2, 3, 4].forEach(s => {
-        const el = document.getElementById(`step-${s}`);
-        if (el) el.classList.add('hidden-step');
-      });
-
-      const target = document.getElementById(`step-${step}`);
-      if (target) target.classList.remove('hidden-step');
-
-      if (step === 3) {
-        if (!pose) initPose();
-        startCamera();
-      } else {
-        if (camera) { camera.stop(); camera = null; }
-      }
-    }
-
-    function startCamera() {
-      if (camera) return;
-      const videoElement = document.getElementById('webcam');
-      camera = new Camera(videoElement, {
-        onFrame: async () => {
-          if (pose) await pose.send({ image: videoElement });
-        },
-        width: 640,
-        height: 480
-      });
-      camera.start();
+    function openLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); }
+    function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
+    function startScreeningProcess() {
+      alert("กำลังเข้าสู่ Step 2: หน้าแบบประเมินอาการและสแกนกล้องสด");
     }
   </script>
 </body>
