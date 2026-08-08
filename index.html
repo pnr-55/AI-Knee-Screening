@@ -59,7 +59,7 @@
     </div>
   </header>
 
-  <!-- ==================== 1. หน้า HOME (ปรับแก้ข้อความหน้าแรก 1.1) ==================== -->
+  <!-- ==================== 1. หน้า HOME (ปรับแก้สโลแกนตามข้อแนะนำ) ==================== -->
   <main id="page-home" class="page-section page-active max-w-5xl mx-auto px-4 py-8 flex-1">
     <div class="text-center space-y-4 my-6">
       <span class="px-3.5 py-1.5 bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold rounded-full inline-block">
@@ -73,7 +73,7 @@
         </span>
       </h1>
       <p class="text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
-        วิเคราะห์ข้อมูลด้วยปัญญาประดิษฐ์และคณิตศาสตร์ เพื่อประเมินความเสี่ยงเบื้องต้นของโรคข้อเข่าเสื่อม
+        ให้การประเมินที่รวดเร็ว เป็นระบบ และช่วยคัดกรองความเสี่ยงเบื้องต้นด้วยปัญญาประดิษฐ์และโมเดลคณิตศาสตร์
       </p>
 
       <div class="pt-2 flex flex-wrap justify-center gap-3">
@@ -81,7 +81,7 @@
           เริ่มประเมิน
         </button>
         <button onclick="showPage('page-how')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm px-6 py-3.5 rounded-xl border border-slate-700 transition-all">
-          เรียนรู้เพิ่มเติม
+          เรียนรู้การทำงาน
         </button>
       </div>
     </div>
@@ -90,11 +90,11 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 my-8">
       <div class="glass-box p-3 rounded-xl flex items-center gap-3">
         <span class="text-xl">⚙️</span>
-        <div class="text-left"><p class="text-xs font-bold text-white">แม่นยำ</p><p class="text-[10px] text-slate-400">ด้วย AI และคณิตศาสตร์</p></div>
+        <div class="text-left"><p class="text-xs font-bold text-white">ประมวลผลระบบ</p><p class="text-[10px] text-slate-400">ด้วย AI และคณิตศาสตร์</p></div>
       </div>
       <div class="glass-box p-3 rounded-xl flex items-center gap-3">
         <span class="text-xl">⚡</span>
-        <div class="text-left"><p class="text-xs font-bold text-white">รวดเร็ว</p><p class="text-[10px] text-slate-400">ใช้งานง่ายในไม่วินาที</p></div>
+        <div class="text-left"><p class="text-xs font-bold text-white">รวดเร็ว</p><p class="text-[10px] text-slate-400">ใช้งานง่ายในไม่กี่วินาที</p></div>
       </div>
       <div class="glass-box p-3 rounded-xl flex items-center gap-3">
         <span class="text-xl">🔒</span>
@@ -106,70 +106,102 @@
       </div>
     </div>
 
-    <!-- 2.1 AI + MATHEMATICAL ANALYSIS -->
+    <!-- 1. คณิตศาสตร์ที่ใช้ในระบบ -->
     <div class="mt-8 pt-6 border-t border-slate-800">
-      <h2 class="text-center text-xs font-bold text-blue-400 uppercase tracking-widest mb-6">2.1 AI + MATHEMATICAL ANALYSIS</h2>
+      <h2 class="text-center text-xs font-bold text-blue-400 uppercase tracking-widest mb-6">1. คณิตศาสตร์ที่ใช้ในระบบ</h2>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="glass-box p-4 rounded-2xl text-center space-y-2">
           <div class="w-10 h-10 bg-blue-500/20 text-blue-400 rounded-xl flex items-center justify-center mx-auto text-xl">📐</div>
-          <h3 class="font-bold text-sm text-white">Leg Angle</h3>
-          <p class="text-[11px] text-slate-400">คำนวณมุมของข้อเข่าจากภาพถ่าย</p>
+          <h3 class="font-bold text-sm text-white">เรขาคณิตและการคำนวณมุม</h3>
+          <p class="text-[11px] text-slate-400">คำนวณมุมระหว่าง สะโพก-เข่า-ข้อเท้า</p>
         </div>
         <div class="glass-box p-4 rounded-2xl text-center space-y-2">
-          <div class="w-10 h-10 bg-cyan-500/20 text-cyan-400 rounded-xl flex items-center justify-center mx-auto text-xl">📊</div>
-          <h3 class="font-bold text-sm text-white">Risk Score</h3>
-          <p class="text-[11px] text-slate-400">รวมปัจจัยต่าง ๆ เป็นคะแนนความเสี่ยง</p>
+          <div class="w-10 h-10 bg-cyan-500/20 text-cyan-400 rounded-xl flex items-center justify-center mx-auto text-xl">🚶</div>
+          <h3 class="font-bold text-sm text-white">พิกัดจุดสำคัญของร่างกาย</h3>
+          <p class="text-[11px] text-slate-400">ใช้พิกัดจาก AI Pose Detection</p>
         </div>
         <div class="glass-box p-4 rounded-2xl text-center space-y-2">
-          <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center mx-auto text-xl">📈</div>
-          <h3 class="font-bold text-sm text-white">Statistics & Probability</h3>
-          <p class="text-[11px] text-slate-400">วิเคราะห์ข้อมูลด้วยสถิติและความน่าจะเป็น</p>
+          <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center mx-auto text-xl">📊</div>
+          <h3 class="font-bold text-sm text-white">สถิติและร้อยละ</h3>
+          <p class="text-[11px] text-slate-400">วิเคราะห์ข้อมูลด้วยค่าเฉลี่ย และร้อยละ</p>
         </div>
         <div class="glass-box p-4 rounded-2xl text-center space-y-2">
-          <div class="w-10 h-10 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center mx-auto text-xl">🧠</div>
-          <h3 class="font-bold text-sm text-white">AI Analysis</h3>
-          <p class="text-[11px] text-slate-400">AI ประมวลผลเพื่อประเมินความเสี่ยง</p>
+          <div class="w-10 h-10 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center mx-auto text-xl">🧮</div>
+          <h3 class="font-bold text-sm text-white">แบบจำลองคะแนนความเสี่ยง</h3>
+          <p class="text-[11px] text-slate-400">รวมปัจจัยต่างๆ เพื่อคำนวณ Risk Score</p>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- ==================== 2.2 HOW IT WORKS ==================== -->
+  <!-- ==================== 2. AI ทำงานอย่างไร? (2.2 HOW IT WORKS) ==================== -->
   <main id="page-how" class="page-section max-w-4xl mx-auto px-4 py-8 flex-1 w-full">
     <div class="space-y-6">
       <div class="text-center space-y-2">
-        <h2 class="text-2xl font-bold text-white">2.2 How It Works (อธิบายขั้นตอนการทำงาน)</h2>
-        <p class="text-xs text-slate-400">ขั้นตอนการประมวลผลระบบคัดกรองข้อเข่าอย่างเป็นระบบ 6 ขั้นตอน</p>
+        <h2 class="text-2xl font-bold text-white">2. AI ทำงานอย่างไร?</h2>
+        <p class="text-xs text-slate-400">อธิบายกระบวนการทำงานของ AI และระบบประมวลผลอย่างเข้าใจง่าย</p>
       </div>
 
+      <!-- Flowchart 6 ขั้นตอน -->
       <div class="grid grid-cols-2 md:grid-cols-6 gap-3 pt-4">
         <div class="glass-box p-3 rounded-2xl text-center space-y-2 border-t-2 border-blue-500">
-          <span class="w-6 h-6 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center justify-center mx-auto">1</span>
-          <p class="text-xs font-bold text-white">กรอกข้อมูลผู้ใช้</p>
+          <div class="text-2xl">📷</div>
+          <p class="text-xs font-bold text-white">1. ภาพจากกล้อง</p>
         </div>
         <div class="glass-box p-3 rounded-2xl text-center space-y-2 border-t-2 border-blue-500">
-          <span class="w-6 h-6 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center justify-center mx-auto">2</span>
-          <p class="text-xs font-bold text-white">แบบสอบถามอาการ</p>
-        </div>
-        <div class="glass-box p-3 rounded-2xl text-center space-y-2 border-t-2 border-blue-500">
-          <span class="w-6 h-6 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center justify-center mx-auto">3</span>
-          <p class="text-xs font-bold text-white">AI Camera สแกนภาพ</p>
+          <div class="text-2xl">🕺</div>
+          <p class="text-xs font-bold text-white">2. ตรวจหาจุดสำคัญ</p>
+          <p class="text-[9px] text-slate-400">(Hip, Knee, Ankle)</p>
         </div>
         <div class="glass-box p-3 rounded-2xl text-center space-y-2 border-t-2 border-cyan-500">
-          <span class="w-6 h-6 bg-cyan-600 text-white text-xs font-bold rounded-full flex items-center justify-center mx-auto">4</span>
-          <p class="text-xs font-bold text-white">คำนวณทางคณิตศาสตร์</p>
+          <div class="text-2xl">📐</div>
+          <p class="text-xs font-bold text-white">3. คำนวณมุมข้อเข่า</p>
         </div>
         <div class="glass-box p-3 rounded-2xl text-center space-y-2 border-t-2 border-purple-500">
-          <span class="w-6 h-6 bg-purple-600 text-white text-xs font-bold rounded-full flex items-center justify-center mx-auto">5</span>
-          <p class="text-xs font-bold text-white">AI วิเคราะห์ข้อมูล</p>
+          <div class="text-2xl">📋</div>
+          <p class="text-xs font-bold text-white">4. รวมข้อมูล</p>
+          <p class="text-[9px] text-slate-400">(อาการ, BMI, มุม)</p>
+        </div>
+        <div class="glass-box p-3 rounded-2xl text-center space-y-2 border-t-2 border-purple-500">
+          <div class="text-2xl">🧮</div>
+          <p class="text-xs font-bold text-white">5. คำนวณ Risk Score</p>
+          <p class="text-[9px] text-slate-400">(คณิตศาสตร์)</p>
         </div>
         <div class="glass-box p-3 rounded-2xl text-center space-y-2 border-t-2 border-emerald-500">
-          <span class="w-6 h-6 bg-emerald-600 text-white text-xs font-bold rounded-full flex items-center justify-center mx-auto">6</span>
-          <p class="text-xs font-bold text-white">แสดงผลการประเมิน</p>
+          <div class="text-2xl">🎯</div>
+          <p class="text-xs font-bold text-white">6. แสดงผลคัดกรอง</p>
         </div>
       </div>
 
-      <div class="text-center pt-6">
+      <!-- 3. Risk Score Calculation -->
+      <div class="glass-box p-6 rounded-3xl space-y-4">
+        <h3 class="text-sm font-bold text-blue-400 border-b border-slate-800 pb-2 flex items-center gap-2">
+          <span>🧮 การคำนวณ Risk Score (Risk Score Calculation)</span>
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+          <div class="space-y-2">
+            <p class="font-bold text-white">ปัจจัยที่ใช้ในการคำนวณ & น้ำหนัก:</p>
+            <ul class="space-y-1.5 text-slate-300">
+              <li class="flex justify-between p-2 bg-slate-900/60 rounded-lg"><span>Pain Score (0-10)</span> <strong class="text-blue-400">30%</strong></li>
+              <li class="flex justify-between p-2 bg-slate-900/60 rounded-lg"><span>Leg Angle (เฉลี่ยซ้าย-ขวา)</span> <strong class="text-blue-400">30%</strong></li>
+              <li class="flex justify-between p-2 bg-slate-900/60 rounded-lg"><span>BMI</span> <strong class="text-blue-400">20%</strong></li>
+              <li class="flex justify-between p-2 bg-slate-900/60 rounded-lg"><span>อายุ</span> <strong class="text-blue-400">10%</strong></li>
+              <li class="flex justify-between p-2 bg-slate-900/60 rounded-lg"><span>กิจกรรม/การใช้งานเข่า</span> <strong class="text-blue-400">10%</strong></li>
+            </ul>
+          </div>
+
+          <div class="p-4 bg-blue-950/40 rounded-2xl border border-blue-800/50 space-y-2">
+            <p class="font-bold text-white">สูตรการคำนวณ (ตัวอย่างโมเดลต้นแบบ):</p>
+            <div class="p-3 bg-slate-900/80 rounded-xl font-mono text-[11px] text-cyan-300 leading-relaxed border border-slate-700">
+              Risk Score = (0.3 × Pain) + (0.3 × Angle Score) + (0.2 × BMI Score) + (0.1 × Age Score) + (0.1 × Activity Score)
+            </div>
+            <p class="text-[10px] text-slate-400">* คะแนนเต็ม 100 คะแนน</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center pt-2">
         <button onclick="showPage('page-info')" class="btn-primary text-white font-bold text-xs px-6 py-3 rounded-xl">
           เริ่มเข้าสู่กระบวนการคัดกรอง →
         </button>
@@ -207,6 +239,15 @@
       <div class="flex justify-between items-center text-xs text-blue-400 font-bold pb-2 border-b border-slate-700">
         <span>ขั้นตอนที่ 1 จาก 3</span>
         <span>กรอกข้อมูลผู้ใช้ & ทำแบบสอบถาม</span>
+      </div>
+
+      <!-- 🔒 ข้อความเกี่ยวกับข้อมูลส่วนตัว -->
+      <div class="p-3 bg-blue-950/40 rounded-xl border border-blue-800/50 flex items-center gap-3 text-xs">
+        <span class="text-2xl">🔒</span>
+        <div>
+          <p class="font-bold text-white">ข้อมูลของคุณปลอดภัย</p>
+          <p class="text-[10px] text-slate-400">ข้อมูลที่กรอกในระบบนี้ใช้สำหรับการประเมินเบื้องต้นเท่านั้น และจะไม่ถูกนำไปใช้เพื่อวัตถุประสงค์อื่น</p>
+        </div>
       </div>
 
       <div class="space-y-2">
@@ -263,7 +304,7 @@
     </div>
   </main>
 
-  <!-- ==================== CAMERA AI SCAN (พร้อมสลับกล้อง + ถ่ายอัตโนมัติ 321) ==================== -->
+  <!-- ==================== CAMERA AI SCAN (สลับกล้อง + โหมดนับถอยหลัง) ==================== -->
   <main id="page-camera" class="page-section max-w-lg mx-auto px-4 py-4 flex-1 w-full">
     <div class="glass-box p-4 sm:p-5 rounded-3xl space-y-3">
       <div class="flex justify-between items-center text-xs text-blue-400 font-bold">
@@ -287,12 +328,10 @@
         <video id="webcam" class="w-full h-full object-cover" autoplay playsinline></video>
         <canvas id="camera_canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
 
-        <!-- Status Banner Top -->
         <div id="cam-status" class="absolute top-3 left-3 right-3 bg-red-600/90 text-white text-xs font-bold py-2 px-3 rounded-xl text-center backdrop-blur-md shadow-lg z-10 transition-all">
           🔴 ยืนถอยห่าง ให้เห็นสะโพก เข่า และข้อเท้าครบถ้วน
         </div>
 
-        <!-- Countdown Overlay Display -->
         <div id="countdown-overlay" class="hidden absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-20">
           <div class="text-center space-y-2">
             <span id="countdown-num" class="text-7xl font-black text-amber-400 animate-ping block">3</span>
@@ -310,7 +349,7 @@
     </div>
   </main>
 
-  <!-- ==================== 2.3 ผลการประเมิน (แบบละเอียดทางการแพทย์ + ส่งต่อบุคลากร) ==================== -->
+  <!-- ==================== 2.3 ผลการประเมิน (Mathematical Analysis + ปรับคำแนะนำ) ==================== -->
   <main id="page-report" class="page-section max-w-4xl mx-auto px-4 py-6 flex-1 w-full">
     <div class="glass-box p-6 rounded-3xl space-y-6">
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -324,7 +363,6 @@
         </div>
       </div>
 
-      <!-- สภาวะก่อนประเมิน (ปรับตาม 1.2) -->
       <div id="unassessed-box" class="hidden text-center py-12 bg-slate-900/60 rounded-2xl border border-slate-800 space-y-3">
         <div class="w-16 h-16 bg-blue-500/10 text-blue-400 rounded-full flex items-center justify-center mx-auto text-3xl">📋</div>
         <h3 class="font-bold text-white text-base">ยังไม่มีผลการประเมิน</h3>
@@ -332,7 +370,6 @@
         <button onclick="showPage('page-info')" class="btn-primary text-white font-bold text-xs px-6 py-2.5 rounded-xl">เริ่มทำแบบประเมิน</button>
       </div>
 
-      <!-- ผลการประเมินจริง Medical Grade Layout -->
       <div id="assessed-box" class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <!-- Card 1: ผู้ป่วย -->
@@ -366,39 +403,44 @@
           </div>
         </div>
 
-        <!-- รายละเอียดองศาเทียบค่ามาตรฐาน -->
-        <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 space-y-3 text-xs">
-          <h3 class="font-bold text-white flex items-center justify-between border-b border-slate-800 pb-2">
-            <span>📐 มุมองศาข้อเข่า (Biomechanical Leg Angle)</span>
-            <span class="text-[10px] text-slate-400 font-normal">ค่ามาตรฐานปกติ: 175° - 180°</span>
-          </h3>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="p-3 bg-slate-800/50 rounded-xl space-y-1 border border-slate-700/50">
-              <span class="text-slate-400 text-[11px]">เข่าซ้าย (Left Knee Angle)</span>
-              <div class="flex items-baseline justify-between">
-                <span id="rep-angle-l" class="text-xl font-black text-blue-400">171.4°</span>
-                <span class="text-[10px] text-amber-400">เอียงเล็กน้อย</span>
+        <!-- 📐 ตัวอย่างหน้า Mathematical Analysis (รายละเอียดคณิตศาสตร์) -->
+        <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 space-y-4 text-xs">
+          <h3 class="font-bold text-white border-b border-slate-800 pb-2">📐 รายละเอียดทางคณิตศาสตร์ (Mathematical Analysis Breakdown)</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <p class="text-slate-400 text-[11px] font-bold">ข้อมูลที่ใช้ในการคำนวณ:</p>
+              <div class="space-y-1 text-slate-300 bg-slate-800/40 p-3 rounded-xl border border-slate-700/50">
+                <div class="flex justify-between"><span>Pain Score:</span> <span id="math-pain" class="font-bold">6 / 10</span></div>
+                <div class="flex justify-between"><span>Leg Angle (Left):</span> <span id="math-angle-l" class="font-bold text-blue-400">171.4°</span></div>
+                <div class="flex justify-between"><span>Leg Angle (Right):</span> <span id="math-angle-r" class="font-bold text-blue-400">170.8°</span></div>
+                <div class="flex justify-between"><span>BMI:</span> <span id="math-bmi" class="font-bold">24.7</span></div>
+                <div class="flex justify-between"><span>อายุ:</span> <span id="math-age" class="font-bold">25 ปี</span></div>
               </div>
             </div>
-            <div class="p-3 bg-slate-800/50 rounded-xl space-y-1 border border-slate-700/50">
-              <span class="text-slate-400 text-[11px]">เข่าขวา (Right Knee Angle)</span>
-              <div class="flex items-baseline justify-between">
-                <span id="rep-angle-r" class="text-xl font-black text-blue-400">170.8°</span>
-                <span class="text-[10px] text-amber-400">เอียงเล็กน้อย</span>
+
+            <div class="space-y-2">
+              <p class="text-slate-400 text-[11px] font-bold">แจกแจงการคำนวณคะแนนย่อย (Weighted Breakdown):</p>
+              <div class="space-y-1.5 bg-slate-800/40 p-3 rounded-xl border border-slate-700/50 text-[11px]">
+                <div class="flex justify-between"><span>Pain Score (30%):</span> <span class="font-bold text-amber-400">40 / 100</span></div>
+                <div class="flex justify-between"><span>Angle Score (30%):</span> <span class="font-bold text-amber-400">24 / 100</span></div>
+                <div class="flex justify-between"><span>BMI Score (20%):</span> <span class="font-bold text-amber-400">16 / 100</span></div>
+                <div class="flex justify-between"><span>Age Score (10%):</span> <span class="font-bold text-amber-400">8 / 100</span></div>
+                <div class="flex justify-between"><span>Activity Score (10%):</span> <span class="font-bold text-amber-400">4 / 100</span></div>
+                <div class="flex justify-between pt-1 border-t border-slate-700 font-bold text-white"><span>รวม Risk Score:</span> <span id="math-total-score" class="text-amber-400">72 / 100</span></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- ข้อแนะนำเบื้องต้นตามระดับความเสี่ยง -->
+        <!-- 2. แก้ไขคำแนะนำ (ตามข้อเสนอแนะ) -->
         <div id="rep-advice-box" class="p-4 bg-blue-950/40 rounded-2xl border border-blue-800/50 space-y-2 text-xs">
-          <h4 class="font-bold text-blue-400">💡 ข้อแนะนำการปฏิบัติตนเบื้องต้น</h4>
+          <h4 class="font-bold text-blue-400 flex items-center gap-1">🌿 คำแนะนำดูแลสุขภาพ</h4>
           <p id="rep-advice-text" class="text-slate-300 leading-relaxed">
-            ควรหลีกเลี่ยงการนั่งพับเพียบ นั่งยองๆ หรือขึ้นลงบันไดถี่เกินไป บริหารกล้ามเนื้อต้นขาเพื่อช่วยพยุงข้อเข่า และควรเข้าพบแพทย์เพื่อตรวจประเมินเพิ่มเติม
+            ดูแลสุขภาพและควบคุมปัจจัยเสี่ยงตามคำแนะนำของบุคลากรทางการแพทย์ หลีกเลี่ยงการนั่งยองๆ หรือขึ้นลงบันไดถี่เกินไป และออกกำลังกายเสริมสร้างกล้ามเนื้อรอบข้อเข่าอย่างสม่ำเสมอ
           </p>
         </div>
 
-        <!-- ปุ่มส่งต่อบุคลากรทางการแพทย์ -->
         <div class="pt-2 flex flex-col sm:flex-row gap-3">
           <button onclick="sendToMedicalStaff()" class="w-full sm:w-2/3 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition-all">
             🏥 ส่งข้อมูลผลการประเมินให้บุคลากรทางการแพทย์ (Send Referral)
@@ -411,19 +453,19 @@
     </div>
   </main>
 
-  <!-- ==================== 2.4 DASHBOARD ==================== -->
+  <!-- ==================== 2.4 DASHBOARD (เพิ่มกราฟกระจาย Risk Score) ==================== -->
   <main id="page-dashboard" class="page-section max-w-5xl mx-auto px-4 py-8 flex-1 w-full">
     <div class="space-y-6">
       <div class="flex justify-between items-center border-b border-slate-800 pb-4">
         <div>
           <h2 class="text-2xl font-bold text-white">2.4 Dashboard (สำหรับผู้ดูแลระบบ/ผู้เชี่ยวชาญ)</h2>
-          <p class="text-xs text-slate-400">แสดงสถิติและข้อมูลภาพรวม</p>
+          <p class="text-xs text-slate-400">แสดงสถิติและข้อมูลภาพรวมประเมินความเสี่ยง</p>
         </div>
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="glass-box p-4 rounded-2xl text-center">
-          <span class="text-xs text-slate-400 font-bold">จำนวนผู้ประเมินทั้งหมด</span>
+          <span class="text-xs text-slate-400 font-bold">ผู้ประเมินทั้งหมด</span>
           <div id="dash-total-count" class="text-2xl font-black text-white mt-1">256 <span class="text-xs font-normal text-slate-500">คน</span></div>
         </div>
         <div class="glass-box p-4 rounded-2xl text-center border-b-2 border-red-500">
@@ -431,16 +473,48 @@
           <div class="text-2xl font-black text-red-400 mt-1">78 <span class="text-xs font-normal text-slate-500">คน</span></div>
         </div>
         <div class="glass-box p-4 rounded-2xl text-center border-b-2 border-amber-500">
-          <span class="text-xs text-slate-400 font-bold">ความเสี่ยงปานกลาง</span>
+          <span class="text-xs text-slate-400 font-bold">ปานกลาง</span>
           <div class="text-2xl font-black text-amber-400 mt-1">112 <span class="text-xs font-normal text-slate-500">คน</span></div>
         </div>
         <div class="glass-box p-4 rounded-2xl text-center border-b-2 border-emerald-500">
-          <span class="text-xs text-slate-400 font-bold">ความเสี่ยงต่ำ</span>
+          <span class="text-xs text-slate-400 font-bold">ต่ำ</span>
           <div class="text-2xl font-black text-emerald-400 mt-1">66 <span class="text-xs font-normal text-slate-500">คน</span></div>
         </div>
       </div>
 
-      <!-- ส่วนเคสที่ถูกส่งต่อมาจากผู้ใช้ -->
+      <!-- 4. เพิ่มการกระจายของ Risk Score (Histogram Bar Chart) -->
+      <div class="glass-box p-5 rounded-2xl space-y-4">
+        <h3 class="text-xs font-bold text-slate-300">📊 การกระจายของ Risk Score (Risk Score Distribution)</h3>
+        <div class="flex items-end justify-between h-40 pt-6 px-4 border-b border-slate-700/80 gap-2">
+          <div class="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+            <span class="text-[10px] text-slate-400 font-bold">12 คน</span>
+            <div class="w-full bg-blue-500/80 rounded-t-md" style="height: 15%;"></div>
+            <span class="text-[9px] text-slate-400 mt-1">0-20</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+            <span class="text-[10px] text-slate-400 font-bold">28 คน</span>
+            <div class="w-full bg-blue-500/80 rounded-t-md" style="height: 30%;"></div>
+            <span class="text-[9px] text-slate-400 mt-1">21-40</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+            <span class="text-[10px] text-slate-400 font-bold">64 คน</span>
+            <div class="w-full bg-amber-500/80 rounded-t-md" style="height: 60%;"></div>
+            <span class="text-[9px] text-slate-400 mt-1">41-60</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+            <span class="text-[10px] text-amber-400 font-bold">98 คน</span>
+            <div class="w-full bg-amber-500/90 rounded-t-md" style="height: 90%;"></div>
+            <span class="text-[9px] text-slate-400 mt-1">61-80</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+            <span class="text-[10px] text-red-400 font-bold">54 คน</span>
+            <div class="w-full bg-red-500/80 rounded-t-md" style="height: 50%;"></div>
+            <span class="text-[9px] text-slate-400 mt-1">81-100</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Referral List -->
       <div class="glass-box p-5 rounded-2xl space-y-3">
         <h3 class="text-xs font-bold text-emerald-400 flex items-center gap-2">
           <span>📩 รายการเคสที่ส่งต่อมาจากผู้ใช้ (Medical Referral Feed)</span>
@@ -468,42 +542,10 @@
           </table>
         </div>
       </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="glass-box p-5 rounded-2xl space-y-4">
-          <h3 class="text-xs font-bold text-slate-300">สัดส่วนระดับความเสี่ยง</h3>
-          <div class="flex items-center justify-around py-4">
-            <div class="w-28 h-28 rounded-full border-8 border-red-500 border-t-amber-500 border-r-emerald-500 flex items-center justify-center">
-              <span class="text-xs font-bold text-white">256 คน</span>
-            </div>
-            <div class="space-y-1.5 text-[11px]">
-              <div class="flex items-center gap-2"><span class="w-3 h-3 bg-red-500 rounded-sm"></span> สูง (High) 30.5%</div>
-              <div class="flex items-center gap-2"><span class="w-3 h-3 bg-amber-500 rounded-sm"></span> ปานกลาง 43.8%</div>
-              <div class="flex items-center gap-2"><span class="w-3 h-3 bg-emerald-500 rounded-sm"></span> ต่ำ (Low) 25.7%</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="glass-box p-5 rounded-2xl space-y-4">
-          <h3 class="text-xs font-bold text-slate-300">ค่าเฉลี่ยมุมขา (องศา)</h3>
-          <div class="flex items-end justify-around h-32 pt-4 border-b border-slate-700">
-            <div class="text-center space-y-1">
-              <span class="text-[10px] font-bold text-blue-400">171.2°</span>
-              <div class="w-12 bg-blue-600 rounded-t-lg mx-auto" style="height: 80px;"></div>
-              <span class="text-[10px] text-slate-400 block">ซ้าย</span>
-            </div>
-            <div class="text-center space-y-1">
-              <span class="text-[10px] font-bold text-cyan-400">170.6°</span>
-              <div class="w-12 bg-cyan-600 rounded-t-lg mx-auto" style="height: 76px;"></div>
-              <span class="text-[10px] text-slate-400 block">ขวา</span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </main>
 
-  <!-- ==================== 2.5 เกี่ยวกับโครงงาน ==================== -->
+  <!-- ==================== 2.5 เกี่ยวกับโครงงาน & 5. หมายเหตุ/ข้อจำกัด ==================== -->
   <main id="page-about" class="page-section max-w-4xl mx-auto px-4 py-8 flex-1 w-full">
     <div class="glass-box p-6 sm:p-8 rounded-3xl space-y-6">
       <div class="text-center space-y-2 border-b border-slate-800 pb-6">
@@ -515,11 +557,10 @@
         <div class="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 space-y-2 text-center">
           <h3 class="text-sm font-bold text-white">เกี่ยวกับ AI-Knee-Screening</h3>
           <p>
-            AI-Knee-Screening เป็นระบบคัดกรองความเสี่ยงโรคข้อเข่าเสื่อมเบื้องต้น โดยประยุกต์ใช้ปัญญาประดิษฐ์ร่วมกับหลักการทางคณิตศาสตร์ เพื่อช่วยวิเคราะห์ข้อมูลจากแบบสอบถามและภาพถ่าย ให้ผลการประเมินที่เร็วล้ำ แม่นยำ และเข้าใจได้ง่าย
+            AI-Knee-Screening เป็นระบบคัดกรองความเสี่ยงโรคข้อเข่าเสื่อมเบื้องต้น โดยประยุกต์ใช้ปัญญาประดิษฐ์ร่วมกับหลักการทางคณิตศาสตร์ เพื่อช่วยวิเคราะห์ข้อมูลจากแบบสอบถามและภาพถ่าย ให้ผลการประเมินที่รวดเร็ว เป็นระบบ และเข้าใจได้ง่าย
           </p>
         </div>
 
-        <!-- ประโยชน์ของระบบ (ตามภาพ 2.5) -->
         <div class="p-5 bg-blue-950/40 rounded-2xl border border-blue-800/50 space-y-3">
           <h3 class="text-sm font-bold text-blue-400">✅ ประโยชน์ของระบบ</h3>
           <ul class="space-y-2 text-slate-200">
@@ -529,6 +570,23 @@
             <li class="flex items-center gap-2">✔️ สนับสนุนการทำงานของบุคลากรทางการแพทย์</li>
           </ul>
         </div>
+
+        <!-- 5. เพิ่ม "หมายเหตุ / ข้อจำกัดของระบบ" -->
+        <div class="p-5 bg-slate-900/90 rounded-2xl border border-slate-700 space-y-3">
+          <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+            <span>🛡️ หมายเหตุ / ข้อจำกัดของระบบ</span>
+          </h3>
+          <ul class="space-y-1.5 text-slate-300 text-[11px] list-disc list-inside">
+            <td>ระบบนี้เป็นเพียงเครื่องมือคัดกรองเบื้องต้น ไม่สามารถใช้แทนการวินิจฉัยโดยแพทย์ได้</td>
+            <td>ผลลัพธ์ขึ้นอยู่กับข้อมูลที่ผู้ใช้กรอกและคุณภาพของภาพถ่ายจากกล้อง</td>
+            <td>หากมีอาการปวดเข่าเรื้อรังหรือข้อกังวล ควรปรึกษาแพทย์ผู้เชี่ยวชาญ</td>
+          </ul>
+
+          <div class="pt-3 border-t border-slate-800 space-y-1">
+            <p class="font-bold text-white">💡 คำแนะนำทั่วไปในการดูแลเข่า:</p>
+            <p class="text-slate-400">🏃‍♂️ ออกกำลังกายสม่ำเสมอ | ⚖️ ควบคุมน้ำหนักให้อยู่ในเกณฑ์ปกติ | 🧘‍♂️ หลีกเลี่ยงการใช้งานเข่าหนักเป็นเวลานาน | 🥗 รับประทานอาหารที่มีประโยชน์</p>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -536,7 +594,7 @@
   <script>
     let currentPose = null;
     let cameraStream = null;
-    let facingMode = 'user'; // 'user' = กล้องหน้า, 'environment' = กล้องหลัง
+    let facingMode = 'user';
     let angleL = 171.4;
     let angleR = 170.8;
     let userProfile = {};
@@ -592,7 +650,6 @@
       showPage('page-camera');
     }
 
-    // ฟังก์ชันสลับกล้องหน้า-หลัง
     function toggleCamera() {
       facingMode = (facingMode === 'user') ? 'environment' : 'user';
       document.getElementById('cam-facing-text').innerText = facingMode === 'user' ? 'กล้องหน้า' : 'กล้องหลัง';
@@ -611,7 +668,6 @@
 
       const videoElement = document.getElementById('webcam');
       
-      // ปรับ CSS Mirror ตามกล้องหน้า/หลัง
       if (facingMode === 'user') {
         videoElement.classList.add('-scale-x-100');
         document.getElementById('camera_canvas').classList.add('-scale-x-100');
@@ -673,7 +729,6 @@
           banner.className = "absolute top-3 left-3 right-3 bg-emerald-600/95 text-white text-xs font-bold py-2 px-3 rounded-xl text-center backdrop-blur-md shadow-lg z-10";
           banner.innerText = "🟢 ยืนสรีระถูกต้องแล้ว";
 
-          // เช็กโหมดถ่ายอัตโนมัติ 321
           const autoToggle = document.getElementById('auto-count-toggle').checked;
           if (autoToggle && !isCounting) {
             startCountdown();
@@ -755,8 +810,11 @@
       document.getElementById('rep-bmi').innerText = userProfile.bmi || '24.7';
       document.getElementById('rep-pain').innerText = userProfile.painScore || '0';
 
-      document.getElementById('rep-angle-l').innerText = angleL + '°';
-      document.getElementById('rep-angle-r').innerText = angleR + '°';
+      document.getElementById('math-pain').innerText = (userProfile.painScore || 0) + ' / 10';
+      document.getElementById('math-angle-l').innerText = angleL + '°';
+      document.getElementById('math-angle-r').innerText = angleR + '°';
+      document.getElementById('math-bmi').innerText = userProfile.bmi || '24.7';
+      document.getElementById('math-age').innerText = (userProfile.age || 25) + ' ปี';
 
       let riskScore = 10 + (Math.abs(175 - angleL) + Math.abs(175 - angleR)) * 3.5 + (userProfile.surveyScore * 0.6);
       if (userProfile.bmi > 25) riskScore += 10;
@@ -764,6 +822,7 @@
       riskScore = Math.min(Math.round(riskScore), 98);
 
       document.getElementById('rep-risk-score').innerText = riskScore + ' / 100';
+      document.getElementById('math-total-score').innerText = riskScore + ' / 100';
       document.getElementById('rep-prob-text').innerText = riskScore + '%';
       document.getElementById('circle-progress').setAttribute('stroke-dasharray', `${riskScore}, 100`);
 
@@ -773,29 +832,27 @@
       if (riskScore >= 70) {
         badge.innerText = 'สูง (High Risk)';
         badge.className = 'text-lg font-black text-red-400';
-        adviceText.innerText = '⚠️ ตรวจพบความเสี่ยงสูง ควรเข้าพบแพทย์หรือนักกายภาพบำบัดเพื่อตรวจวิเคราะห์อย่างละเอียด เลี่ยงการแบกของหนัก และงดการนั่งยองๆ หรือนั่งพับเพียบ';
+        adviceText.innerText = '⚠️ ดูแลสุขภาพและควบคุมปัจจัยเสี่ยงตามคำแนะนำของบุคลากรทางการแพทย์ ควรเข้าพบแพทย์หรือนักกายภาพบำบัดเพื่อตรวจวิเคราะห์เพิ่มเติม';
         lastRiskResult = 'สูง (High Risk)';
       } else if (riskScore >= 35) {
         badge.innerText = 'ปานกลาง (Moderate Risk)';
         badge.className = 'text-lg font-black text-amber-400';
-        adviceText.innerText = '💡 ความเสี่ยงปานกลาง ควรบริหารกล้ามเนื้อต้นขา (Quadriceps Exercise) เพื่อเพิ่มความมั่นคงของข้อเข่า ควบคุมน้ำหนักให้อยู่ในเกณฑ์ และสังเกตอาการปวดต่อเนื่อง';
+        adviceText.innerText = '💡 ดูแลสุขภาพและควบคุมปัจจัยเสี่ยงตามคำแนะนำของบุคลากรทางการแพทย์ ออกกำลังกายเสริมสร้างกล้ามเนื้อต้นขาเพื่อช่วยพยุงข้อเข่า';
         lastRiskResult = 'ปานกลาง (Moderate Risk)';
       } else {
         badge.innerText = 'ต่ำ (Low Risk)';
         badge.className = 'text-lg font-black text-emerald-400';
-        adviceText.innerText = '🟢 ข้อเข่าของคุณอยู่ในเกณฑ์ดี ควรออกกำลังกายชนิดลงน้ำหนักเบาๆ เช่น ออกกำลังกายในน้ำ เดิน หรือปั่นจักรยาน เพื่อรักษาความแข็งแรงของข้อเข่า';
+        adviceText.innerText = '🟢 สุขภาพข้อเข่าอยู่ในเกณฑ์ดี ควรออกกำลังกายสม่ำเสมอ และดูแลสุขภาพตามคำแนะนำของบุคลากรทางการแพทย์';
         lastRiskResult = 'ต่ำ (Low Risk)';
       }
 
       showPage('page-report');
     }
 
-    // ฟังก์ชันส่งข้อมูลเข้า Referral System ให้บุคลากร
     function sendToMedicalStaff() {
       const randomID = '#KS-' + Math.floor(1000 + Math.random() * 9000);
       alert(`✅ ส่งข้อมูลเรียบร้อยแล้ว!\n\nรหัส Referral ID: ${randomID}\nข้อมูลของคุณได้รับการบันทึกเข้าสู่ระบบ Dashboard ของบุคลากรทางการแพทย์เรียบร้อยแล้ว`);
 
-      // เพิ่มข้อมูลลงในตาราง Dashboard สดๆ
       const table = document.getElementById('dash-referral-table');
       const newRow = `
         <tr>
@@ -808,7 +865,6 @@
       `;
       table.innerHTML = newRow + table.innerHTML;
 
-      // อัปเดตตัวเลขรวมใน Dashboard
       const countEl = document.getElementById('dash-total-count');
       const curr = parseInt(countEl.innerText) || 256;
       countEl.innerText = (curr + 1) + ' คน';
