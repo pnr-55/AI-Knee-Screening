@@ -177,3 +177,234 @@
 
 </body>
 </html>
+  <!-- ==========================================
+       4. หน้ากรอกข้อมูลส่วนตัว (PERSONAL INFO)
+  =========================================== -->
+  <section id="screen-personal-info" class="page-step max-w-lg mx-auto my-6 px-4">
+    <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl space-y-5">
+      
+      <!-- Progress Bar Steps (1 -> 2 -> 3) -->
+      <div class="flex items-center justify-between text-xs font-semibold text-slate-400 pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-1.5 text-blue-600">
+          <span class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold">1</span>
+          <span>ข้อมูลส่วนตัว</span>
+        </div>
+        <div class="h-0.5 w-8 bg-slate-200"></div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-bold">2</span>
+          <span>ข้อมูลสุขภาพ</span>
+        </div>
+        <div class="h-0.5 w-8 bg-slate-200"></div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-bold">3</span>
+          <span>สแกนข้อเข่า</span>
+        </div>
+      </div>
+
+      <div class="space-y-1">
+        <h2 class="text-lg font-bold text-slate-800">ข้อมูลส่วนตัว</h2>
+        <p class="text-xs text-slate-400">กรอกข้อมูลพื้นฐานเพื่อคำนวณค่า BMI และประเมินความเสี่ยง</p>
+      </div>
+
+      <form onsubmit="event.preventDefault(); calculateBMIAndNext();" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">ชื่อ-นามสกุล</label>
+          <input type="text" id="info-fullname" value="นางสาว พนมศิริ สร้อยวัน" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 font-medium text-slate-800">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">วันเกิด</label>
+            <input type="date" id="info-dob" value="1999-05-25" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 font-medium text-slate-800">
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">อายุ (ปี)</label>
+            <input type="number" id="info-age" value="25" readonly class="w-full px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-xl font-bold text-slate-600">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">เพศ</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="btn-gender-female" onclick="setGender('female')" class="py-2.5 rounded-xl border border-blue-600 bg-blue-50 text-blue-600 font-bold text-center">
+              หญิง
+            </button>
+            <button type="button" id="btn-gender-male" onclick="setGender('male')" class="py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 font-medium text-center">
+              ชาย
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">น้ำหนัก (กก.)</label>
+            <input type="number" id="info-weight" value="60" oninput="updateBMI()" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 font-medium text-slate-800">
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">ส่วนสูง (ซม.)</label>
+            <input type="number" id="info-height" value="165" oninput="updateBMI()" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 font-medium text-slate-800">
+          </div>
+        </div>
+
+        <!-- BMI Auto Display Box -->
+        <div class="p-4 bg-blue-50/70 border border-blue-100 rounded-2xl flex items-center justify-between">
+          <div>
+            <span class="text-[10px] text-blue-600 font-bold uppercase block">BMI (ค่ามาตรฐาน 18.5 - 22.9)</span>
+            <span id="bmi-value-display" class="text-2xl font-black text-blue-700">22.0</span>
+          </div>
+          <span id="bmi-status-badge" class="px-3 py-1 bg-emerald-500 text-white font-bold text-[11px] rounded-full">
+            ปกติ
+          </span>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 btn-blue font-bold text-xs rounded-xl shadow-md">
+          ถัดไป ➔
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       5. หน้าแบบสอบถามอาการ (SYMPTOM QUESTIONNAIRE)
+  =========================================== -->
+  <section id="screen-symptoms" class="page-step max-w-lg mx-auto my-6 px-4">
+    <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl space-y-5">
+      
+      <!-- Progress Bar Steps (1 -> 2 -> 3) -->
+      <div class="flex items-center justify-between text-xs font-semibold text-slate-400 pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-1.5 text-emerald-600">
+          <span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold">✓</span>
+          <span>ข้อมูลส่วนตัว</span>
+        </div>
+        <div class="h-0.5 w-8 bg-blue-600"></div>
+        <div class="flex items-center gap-1.5 text-blue-600">
+          <span class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold">2</span>
+          <span>ข้อมูลสุขภาพ</span>
+        </div>
+        <div class="h-0.5 w-8 bg-slate-200"></div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-bold">3</span>
+          <span>สแกนข้อเข่า</span>
+        </div>
+      </div>
+
+      <div class="space-y-1">
+        <h2 class="text-lg font-bold text-slate-800">แบบสอบถามอาการ</h2>
+        <p class="text-xs text-slate-400">กรุณาเลือกอาการที่ตรงกับคุณมากที่สุด</p>
+      </div>
+
+      <form onsubmit="event.preventDefault(); showStep('screen-camera');" class="space-y-3 text-xs">
+        
+        <!-- Question 1 -->
+        <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center justify-between gap-2">
+          <span class="font-medium text-slate-700">1. ปวดเข่าขณะเดินหรือขึ้นลงบันได</span>
+          <div class="flex items-center gap-3">
+            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="q1" value="yes" class="accent-blue-600"> ใช่</label>
+            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="q1" value="no" checked class="accent-blue-600"> ไม่ใช่</label>
+          </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center justify-between gap-2">
+          <span class="font-medium text-slate-700">2. ปวดเข่าเวลาตื่นนอน ตอนเช้าๆ หรือนั่งนานๆ</span>
+          <div class="flex items-center gap-3">
+            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="q2" value="yes" class="accent-blue-600"> ใช่</label>
+            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="q2" value="no" checked class="accent-blue-600"> ไม่ใช่</label>
+          </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center justify-between gap-2">
+          <span class="font-medium text-slate-700">3. ข้อเข่ามีเสียงกรอบแกรบขณะเคลื่อนไหว</span>
+          <div class="flex items-center gap-3">
+            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="q3" value="yes" class="accent-blue-600"> ใช่</label>
+            <label class="flex items-center gap-1 cursor-radio"><input type="radio" name="q3" value="no" checked class="accent-blue-600"> ไม่ใช่</label>
+          </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center justify-between gap-2">
+          <span class="font-medium text-slate-700">4. เข่าบวม หรือรู้สึกตึงๆ บริเวณข้อเข่า</span>
+          <div class="flex items-center gap-3">
+            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="q4" value="yes" class="accent-blue-600"> ใช่</label>
+            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="q4" value="no" checked class="accent-blue-600"> ไม่ใช่</label>
+          </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center justify-between gap-2">
+          <span class="font-medium text-slate-700">5. เห็นหรือสังเกตว่าขาเริ่มโก่งออก</span>
+          <div class="flex items-center gap-3">
+            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="q5" value="yes" class="accent-blue-600"> ใช่</label>
+            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="q5" value="no" checked class="accent-blue-600"> ไม่ใช่</label>
+          </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center justify-between gap-2">
+          <span class="font-medium text-slate-700">6. เคยได้รับอุบัติเหตุบริเวณข้อเข่ามาก่อน</span>
+          <div class="flex items-center gap-3">
+            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="q6" value="yes" class="accent-blue-600"> ใช่</label>
+            <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="q6" value="no" checked class="accent-blue-600"> ไม่ใช่</label>
+          </div>
+        </div>
+
+        <div class="flex gap-3 pt-3">
+          <button type="button" onclick="showStep('screen-personal-info')" class="w-1/3 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all">
+            ย้อนกลับ
+          </button>
+          <button type="submit" class="w-2/3 py-3 btn-blue font-bold rounded-xl shadow-md">
+            ถัดไป ➔
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- JAVASCRIPT เพิ่มเติมสำหรับสเต็ป 2 -->
+  <script>
+    let selectedGender = 'female';
+
+    function setGender(gender) {
+      selectedGender = gender;
+      const femaleBtn = document.getElementById('btn-gender-female');
+      const maleBtn = document.getElementById('btn-gender-male');
+      if (gender === 'female') {
+        femaleBtn.className = "py-2.5 rounded-xl border border-blue-600 bg-blue-50 text-blue-600 font-bold text-center";
+        maleBtn.className = "py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 font-medium text-center";
+      } else {
+        maleBtn.className = "py-2.5 rounded-xl border border-blue-600 bg-blue-50 text-blue-600 font-bold text-center";
+        femaleBtn.className = "py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 font-medium text-center";
+      }
+    }
+
+    function updateBMI() {
+      const weight = parseFloat(document.getElementById('info-weight').value) || 0;
+      const height = parseFloat(document.getElementById('info-height').value) || 0;
+      if (weight > 0 && height > 0) {
+        const heightM = height / 100;
+        const bmi = (weight / (heightM * heightM)).toFixed(1);
+        document.getElementById('bmi-value-display').innerText = bmi;
+
+        const badge = document.getElementById('bmi-status-badge');
+        if (bmi < 18.5) {
+          badge.innerText = "น้ำหนักน้อย";
+          badge.className = "px-3 py-1 bg-amber-500 text-white font-bold text-[11px] rounded-full";
+        } else if (bmi <= 22.9) {
+          badge.innerText = "ปกติ";
+          badge.className = "px-3 py-1 bg-emerald-500 text-white font-bold text-[11px] rounded-full";
+        } else if (bmi <= 24.9) {
+          badge.innerText = "ท้วม";
+          badge.className = "px-3 py-1 bg-amber-500 text-white font-bold text-[11px] rounded-full";
+        } else {
+          badge.innerText = "อ้วน";
+          badge.className = "px-3 py-1 bg-red-500 text-white font-bold text-[11px] rounded-full";
+        }
+      }
+    }
+
+    function calculateBMIAndNext() {
+      showStep('screen-symptoms');
+    }
+  </script>
+
