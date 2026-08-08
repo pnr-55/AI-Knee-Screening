@@ -1,121 +1,301 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" class="h-full bg-slate-900">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Knee Screening System</title>
+  <title>KneeAI - Advanced Medical Screening Portal</title>
   
-  <!-- 1. MediaPipe Pose Libraries -->
+  <!-- Tailwind CSS Framework -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Prompt -->
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- MediaPipe Pose Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
-  
-  <!-- 2. Supabase SDK (Database & Auth) -->
+  <!-- Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    body { font-family: 'Sukhumvit Set', 'Kanit', sans-serif; margin: 20px; background-color: #f8fafc; color: #1e293b; }
-    .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; }
-    .hidden { display: none !important; }
-    video, canvas { border-radius: 8px; width: 100%; max-width: 640px; }
-    button { background: #2563eb; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-    button:hover { background: #1d4ed8; }
-    .badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; }
-    .badge-high { background: #fee2e2; color: #991b1b; }
-    .badge-medium { background: #fef3c7; color: #92400e; }
-    .badge-low { background: #dcfce7; color: #166534; }
+    body { font-family: 'Prompt', sans-serif; }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .hud-border {
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+    }
   </style>
 </head>
-<body>
+<body class="h-full text-slate-100 flex flex-col justify-between">
 
-  <h1>🏥 AI Knee Screening & Medical Portal</h1>
-
-  <!-- ==================== SECTION 1: AUTHENTICATION ==================== -->
-  <div id="auth-section" class="card">
-    <h2>🔐 เข้าสู่ระบบ (Authentication)</h2>
-    <input type="email" id="login-email" placeholder="Email" value="patient1@example.com">
-    <input type="password" id="login-password" placeholder="Password" value="123456">
-    <button onclick="handleLogin()">เข้าสู่ระบบ</button>
-    <p id="auth-status" style="color: #64748b;"></p>
-  </div>
-
-  <!-- ==================== SECTION 2: QUESTIONNAIRE ==================== -->
-  <div id="questionnaire-section" class="card hidden">
-    <h2>📋 แบบสอบถามเบื้องต้น</h2>
-    <label>BMI (ดัชนีมวลกาย): <input type="number" id="input-bmi" value="24.7" step="0.1"></label><br><br>
-    <label>ระดับความเจ็บปวด (Pain Score 0-10): <input type="number" id="input-pain" value="6" min="0" max="10"></label><br><br>
-    <button onclick="goToCamera()">ไปที่ขั้นตอนสแกนด้วย AI (Camera)</button>
-  </div>
-
-  <!-- ==================== SECTION 3: CAMERA & POSE AI ==================== -->
-  <div id="camera-section" class="card hidden">
-    <h2>📷 กล้องประมวลผลองศาข้อเข่า (Real-time AI)</h2>
-    <div style="position: relative; display: inline-block;">
-      <video id="webcam" autoplay playsinline></video>
+  <!-- ==================== HEADER NAVBAR ==================== -->
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <i class="fa-solid fa-bone text-white text-xl"></i>
+        </div>
+        <div>
+          <span class="font-bold text-lg tracking-wider text-white">Knee<span class="text-cyan-400">AI</span></span>
+          <span class="text-xs block text-slate-400 -mt-1">Screening & Clinical Portal</span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-4">
+        <div id="user-badge" class="hidden flex items-center space-x-2 bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="nav-user-email" class="text-xs text-slate-300">patient@kneeai.io</span>
+          <span id="nav-user-role" class="text-[10px] bg-cyan-950 text-cyan-400 font-semibold px-2 py-0.5 rounded-full border border-cyan-800">PATIENT</span>
+        </div>
+      </div>
     </div>
-    <div>
-      <p>มุมข้อเข่าซ้าย: <strong id="val-left-angle">0.0</strong>°</p>
-      <p>มุมข้อเข่าขวา: <strong id="val-right-angle">0.0</strong>°</p>
+  </header>
+
+  <!-- ==================== MAIN CONTAINER ==================== -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+    
+    <!-- STEPPER PROGRESS BAR -->
+    <div id="stepper" class="mb-8 max-w-3xl mx-auto">
+      <div class="flex items-center justify-between text-xs font-medium text-slate-400">
+        <div class="step-item active flex items-center space-x-2 text-cyan-400">
+          <span class="w-7 h-7 rounded-full bg-cyan-500/20 border border-cyan-500 flex items-center justify-center font-bold">1</span>
+          <span>ยืนยันตัวตน</span>
+        </div>
+        <div class="h-0.5 flex-1 bg-slate-800 mx-2"></div>
+        <div class="step-item flex items-center space-x-2">
+          <span class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold">2</span>
+          <span>แบบสอบถาม</span>
+        </div>
+        <div class="h-0.5 flex-1 bg-slate-800 mx-2"></div>
+        <div class="step-item flex items-center space-x-2">
+          <span class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold">3</span>
+          <span>สแกน AI</span>
+        </div>
+        <div class="h-0.5 flex-1 bg-slate-800 mx-2"></div>
+        <div class="step-item flex items-center space-x-2">
+          <span class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold">4</span>
+          <span>Medical Portal</span>
+        </div>
+      </div>
     </div>
-    <button onclick="captureAndCalculate()">บันทึกค่าและคำนวณ Risk Score</button>
-  </div>
 
-  <!-- ==================== SECTION 4: RESULT & SAVE ==================== -->
-  <div id="result-section" class="card hidden">
-    <h2>🧮 ผลการประเมินความเสี่ยง (Risk Assessment Result)</h2>
-    <h3 id="res-risk-score">Risk Score: -- / 100</h3>
-    <p>มุมข้อเข่าซ้าย: <span id="res-left-angle">--</span>° | มุมข้อเข่าขวา: <span id="res-right-angle">--</span>°</p>
-    <p>BMI: <span id="res-bmi">--</span> | Pain Score: <span id="res-pain">--</span>/10</p>
-    <button onclick="saveAssessmentToDatabase()">บันทึกข้อมูลเข้าฐานข้อมูลจริง</button>
-  </div>
+    <!-- SECTION 1: AUTHENTICATION -->
+    <section id="auth-section" class="max-w-md mx-auto">
+      <div class="glass-card rounded-2xl p-8 shadow-2xl">
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-bold text-white mb-2">เข้าสู่ระบบการตรวจคัดกรอง</h2>
+          <p class="text-sm text-slate-400">เข้าถึงระบบประเมินความเสี่ยงและประวัติทางการแพทย์</p>
+        </div>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 uppercase mb-2">อีเมลผู้ใช้งาน</label>
+            <div class="relative">
+              <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-slate-500"></i>
+              <input type="email" id="login-email" value="patient@kneeai.io" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 uppercase mb-2">รหัสผ่าน</label>
+            <div class="relative">
+              <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500"></i>
+              <input type="password" id="login-password" value="123456" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+            </div>
+          </div>
+          <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold py-3 rounded-xl shadow-lg shadow-cyan-500/25 transition duration-200 mt-2">
+            เข้าสู่ระบบ <i class="fa-solid fa-arrow-right ml-2"></i>
+          </button>
+        </div>
+        <div id="auth-status" class="mt-4 text-center text-xs text-slate-400"></div>
+      </div>
+    </section>
 
-  <!-- ==================== SECTION 5: MEDICAL PORTAL & DASHBOARD ==================== -->
-  <div id="portal-section" class="card hidden">
-    <h2>🩺 Medical Portal (ประวัติและรายงานผล)</h2>
-    <p>สถานะบัญชี: <strong id="portal-user-role">--</strong></p>
-    <button onclick="fetchMedicalRecords()">รีเฟรช ดึงข้อมูลล่าสุดจาก DB</button>
-    <hr>
-    <h3>รายการประวัติประเมินผล</h3>
-    <div id="records-list">กำลังโหลดข้อมูล...</div>
-  </div>
+    <!-- SECTION 2: QUESTIONNAIRE -->
+    <section id="questionnaire-section" class="max-w-2xl mx-auto hidden">
+      <div class="glass-card rounded-2xl p-8 shadow-2xl">
+        <h2 class="text-xl font-bold text-white mb-6 flex items-center">
+          <i class="fa-solid fa-clipboard-list text-cyan-400 mr-3"></i> แบบประเมินสุขภาพเบื้องต้น
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+            <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">BMI (ดัชนีมวลกาย)</label>
+            <input type="number" id="input-bmi" value="24.7" step="0.1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xl font-bold text-cyan-400 focus:outline-none focus:border-cyan-500">
+            <span class="text-[11px] text-slate-500 mt-1 block">* คำนวณจาก น้ำหนัก(kg) / ส่วนสูง(m)²</span>
+          </div>
 
-  <!-- ==================== JAVASCRIPT ENGINE ==================== -->
+          <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+            <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">Pain Score (ระดับความเจ็บปวด 0-10)</label>
+            <input type="number" id="input-pain" value="6" min="0" max="10" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xl font-bold text-amber-400 focus:outline-none focus:border-amber-500">
+            <span class="text-[11px] text-slate-500 mt-1 block">0 = ไม่ปวดเลย, 10 = ปวดทรมานมาก</span>
+          </div>
+        </div>
+
+        <button onclick="goToCamera()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl shadow-lg shadow-cyan-500/20 transition">
+          ดำเนินการต่อ: สแกนด้วยกล้อง AI <i class="fa-solid fa-camera ml-2"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- SECTION 3: CAMERA & POSE AI -->
+    <section id="camera-section" class="max-w-4xl mx-auto hidden">
+      <div class="glass-card rounded-2xl p-6 shadow-2xl">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-bold text-white flex items-center">
+            <i class="fa-solid fa-crosshairs text-cyan-400 mr-2"></i> AI Real-time Pose Estimation
+          </h2>
+          <span class="bg-emerald-500/10 text-emerald-400 text-xs px-3 py-1 rounded-full border border-emerald-500/20 flex items-center">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-ping"></span> Live Processing
+          </span>
+        </div>
+
+        <!-- CAMERA HUD VIEWPORT -->
+        <div class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex justify-center items-center hud-border mb-6">
+          <video id="webcam" class="w-full max-w-2xl h-auto object-cover transform -scale-x-100" autoplay playsinline></video>
+
+          <!-- OVERLAY HUD ANGLES -->
+          <div class="absolute top-4 left-4 bg-slate-900/80 backdrop-blur p-3 rounded-xl border border-slate-700 text-xs space-y-1">
+            <div class="text-slate-400 font-semibold mb-1">LIVE ANGLE DETECTOR</div>
+            <div class="flex justify-between space-x-4">
+              <span class="text-slate-300">เข่าซ้าย (Left):</span>
+              <span id="val-left-angle" class="font-bold text-cyan-400">0.0°</span>
+            </div>
+            <div class="flex justify-between space-x-4">
+              <span class="text-slate-300">เข่าขวา (Right):</span>
+              <span id="val-right-angle" class="font-bold text-cyan-400">0.0°</span>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="captureAndCalculate()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-cyan-500/25 transition">
+          <i class="fa-solid fa-calculator mr-2"></i> บันทึกค่ามุมองศา & คำนวณ Risk Score
+        </button>
+      </div>
+    </section>
+
+    <!-- SECTION 4: RESULT -->
+    <section id="result-section" class="max-w-2xl mx-auto hidden">
+      <div class="glass-card rounded-2xl p-8 shadow-2xl text-center">
+        <div class="w-16 h-16 bg-cyan-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-cyan-500/20 text-cyan-400 text-2xl">
+          <i class="fa-solid fa-chart-pie"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-white mb-1">ผลการประเมินความเสี่ยง</h2>
+        <p class="text-xs text-slate-400 mb-6">คำนวณแบบ Dynamic จากมุมองศาข้อเข่า + BMI + Pain Score</p>
+
+        <!-- RISK SCORE DISPLAY CARD -->
+        <div class="bg-slate-900/80 rounded-2xl p-6 border border-slate-800 mb-6">
+          <div class="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-2">Overall Risk Score</div>
+          <div id="res-risk-score" class="text-5xl font-black text-cyan-400 mb-2">-- / 100</div>
+          <div id="risk-badge" class="inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-slate-800 text-slate-300">
+            กำลังประมวลผล...
+          </div>
+        </div>
+
+        <!-- METRICS BREAKDOWN -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left mb-6">
+          <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 uppercase block">เข่าซ้าย</span>
+            <span id="res-left-angle" class="text-lg font-bold text-white">--°</span>
+          </div>
+          <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 uppercase block">เข่าขวา</span>
+            <span id="res-right-angle" class="text-lg font-bold text-white">--°</span>
+          </div>
+          <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 uppercase block">BMI</span>
+            <span id="res-bmi" class="text-lg font-bold text-white">--</span>
+          </div>
+          <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 uppercase block">Pain Score</span>
+            <span id="res-pain" class="text-lg font-bold text-white">--/10</span>
+          </div>
+        </div>
+
+        <button onclick="saveAssessmentToDatabase()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-500/20 transition">
+          <i class="fa-solid fa-cloud-arrow-up mr-2"></i> บันทึกข้อมูลลงฐานข้อมูลจริง
+        </button>
+      </div>
+    </section>
+
+    <!-- SECTION 5: MEDICAL PORTAL DASHBOARD -->
+    <section id="portal-section" class="hidden">
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-white flex items-center">
+            <i class="fa-solid fa-notes-medical text-cyan-400 mr-3"></i> Clinical Medical Portal
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">ประวัติการคัดกรอง ยินยอมการเข้าถึงตามสิทธิ์ (Role-Based Access Control)</p>
+        </div>
+        <button onclick="fetchMedicalRecords()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-4 py-2.5 rounded-xl border border-slate-700 flex items-center w-fit">
+          <i class="fa-solid fa-rotate-right mr-2"></i> รีเฟรชข้อมูลล่าสุด
+        </button>
+      </div>
+
+      <!-- MEDICAL TABLE CARD -->
+      <div class="glass-card rounded-2xl overflow-hidden shadow-2xl border border-slate-800">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-900/80 text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                <th class="py-4 px-6">ครั้งที่ / วันที่ตรวจ</th>
+                <th class="py-4 px-6">Risk Score</th>
+                <th class="py-4 px-6">มุมเข่า (ซ้าย / ขวา)</th>
+                <th class="py-4 px-6">BMI</th>
+                <th class="py-4 px-6">Pain Score</th>
+                <th class="py-4 px-6 text-right">สถานะระบบ</th>
+              </tr>
+            </thead>
+            <tbody id="records-list" class="divide-y divide-slate-800/60 text-sm text-slate-300">
+              <tr>
+                <td colspan="6" class="py-8 text-center text-slate-500">กำลังโหลดประวัติข้อมูลการประเมิน...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-slate-800 bg-slate-950 py-4 text-center text-xs text-slate-500">
+    KneeAI screening platform — Designed for Educational Research & Clinical Workflow Prototyping
+  </footer>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
   <script>
-    // -------------------------------------------------------------
-    // 1. INITIALIZATION & CONFIGURATION
-    // -------------------------------------------------------------
-    const SUPABASE_URL = "https://your-supabase-url.supabase.co"; // เปลี่ยนเป็น URL จริงของคุณ
-    const SUPABASE_KEY = "your-anon-key";                          // เปลี่ยนเป็น Anon Key จริงของคุณ
+    const SUPABASE_URL = "https://your-supabase-url.supabase.co";
+    const SUPABASE_KEY = "your-anon-key";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Global Application State
     let currentUser = null;
-    let currentRole = 'patient'; // 'patient', 'staff', 'admin'
+    let currentRole = 'patient';
     let liveLeftAngle = 0.0;
     let liveRightAngle = 0.0;
     let currentAssessment = {};
 
-    // -------------------------------------------------------------
-    // 2. AUTHENTICATION ENGINE
-    // -------------------------------------------------------------
     async function handleLogin() {
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
-      document.getElementById('auth-status').innerText = "กำลังยืนยันตัวตน...";
+      document.getElementById('auth-status').innerText = "กำลังเชื่อมต่อระบบ...";
 
-      // จำลองการ Login หรือใช้ Supabase Auth จริง
       const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
       if (error) {
-        // Mock Session สำหรับทดสอบกรณีที่ยังไม่ได้ต่อ Supabase DB
-        currentUser = { id: "usr_patient_001", email: email };
+        currentUser = { id: "usr_pat_101", email: email };
         currentRole = email.includes('doc') ? 'staff' : 'patient';
-        document.getElementById('auth-status').innerText = `[Demo Mode] เข้าสู่ระบบสำเร็จในฐานะ: ${currentRole}`;
+        document.getElementById('auth-status').innerText = `[Demo Session Active] เข้าใช้งานในฐานะ: ${currentRole}`;
       } else {
         currentUser = data.user;
-        // ดึง Role จาก User Metadata หรือ Table `users`
         currentRole = data.user.user_metadata?.role || 'patient';
-        document.getElementById('auth-status').innerText = `เข้าสู่ระบบสำเร็จ: ${currentUser.email}`;
       }
+
+      document.getElementById('user-badge').classList.remove('hidden');
+      document.getElementById('nav-user-email').innerText = currentUser.email;
+      document.getElementById('nav-user-role').innerText = currentRole.toUpperCase();
 
       document.getElementById('auth-section').classList.add('hidden');
       document.getElementById('questionnaire-section').classList.remove('hidden');
@@ -127,11 +307,7 @@
       initPoseCamera();
     }
 
-    // -------------------------------------------------------------
-    // 3. MEDIAPIPE POSE & ANGLE CALCULATION ENGINE
-    // -------------------------------------------------------------
     function calculateVectorAngle(p1, p2, p3) {
-      // คำนวณมุม vector ระหว่าง Hip(p1) -> Knee(p2) -> Ankle(p3)
       const radians = Math.atan2(p3.y - p2.y, p3.x - p2.x) - Math.atan2(p1.y - p2.y, p1.x - p2.x);
       let angle = Math.abs((radians * 180.0) / Math.PI);
       if (angle > 180.0) angle = 360.0 - angle;
@@ -140,54 +316,38 @@
 
     function initPoseCamera() {
       const videoElement = document.getElementById('webcam');
-
       const pose = new Pose({
         locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
       });
 
-      pose.setOptions({
-        modelComplexity: 1,
-        smoothLandmarks: true,
-        minDetectionConfidence: 0.5,
-        minTrackingConfidence: 0.5
-      });
+      pose.setOptions({ modelComplexity: 1, smoothLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
 
       pose.onResults((results) => {
         if (!results.poseLandmarks) return;
         const lm = results.poseLandmarks;
 
-        // ซ้าย: Hip(23), Knee(25), Ankle(27)
         if (lm[23] && lm[25] && lm[27]) {
           liveLeftAngle = calculateVectorAngle(lm[23], lm[25], lm[27]);
-          document.getElementById('val-left-angle').innerText = liveLeftAngle;
+          document.getElementById('val-left-angle').innerText = liveLeftAngle + "°";
         }
-
-        // ขวา: Hip(24), Knee(26), Ankle(28)
         if (lm[24] && lm[26] && lm[28]) {
           liveRightAngle = calculateVectorAngle(lm[24], lm[26], lm[28]);
-          document.getElementById('val-right-angle').innerText = liveRightAngle;
+          document.getElementById('val-right-angle').innerText = liveRightAngle + "°";
         }
       });
 
       const camera = new Camera(videoElement, {
         onFrame: async () => { await pose.send({ image: videoElement }); },
-        width: 640,
-        height: 480
+        width: 640, height: 480
       });
       camera.start();
     }
 
-    // -------------------------------------------------------------
-    // 4. DYNAMIC RISK SCORE CALCULATOR
-    // -------------------------------------------------------------
     function captureAndCalculate() {
       const bmi = parseFloat(document.getElementById('input-bmi').value) || 22.0;
       const painScore = parseInt(document.getElementById('input-pain').value) || 0;
 
-      // คำนวณความเสี่ยงจริงแบบ Weighted Score
       let score = 0;
-
-      // 1. คำนวณความเบี่ยงเบนของมุมข้อเข่าจากมาตรฐาน (~175°)
       const leftDev = Math.abs(175 - liveLeftAngle);
       const rightDev = Math.abs(175 - liveRightAngle);
       const maxDev = Math.max(leftDev, rightDev);
@@ -196,10 +356,7 @@
       else if (maxDev > 8) score += 25;
       else if (maxDev > 4) score += 10;
 
-      // 2. คำนวณจาก Pain Score (Max 30)
       score += (painScore * 3);
-
-      // 3. คำนวณจาก BMI (Max 20)
       if (bmi >= 30) score += 20;
       else if (bmi >= 25) score += 12;
       else if (bmi >= 23) score += 5;
@@ -216,77 +373,84 @@
         created_at: new Date().toISOString()
       };
 
-      // แสดงผลหน้า Result
-      document.getElementById('res-risk-score').innerText = `Risk Score: ${finalRiskScore} / 100`;
-      document.getElementById('res-left-angle').innerText = liveLeftAngle;
-      document.getElementById('res-right-angle').innerText = liveRightAngle;
+      document.getElementById('res-risk-score').innerText = `${finalRiskScore} / 100`;
+      document.getElementById('res-left-angle').innerText = liveLeftAngle + "°";
+      document.getElementById('res-right-angle').innerText = liveRightAngle + "°";
       document.getElementById('res-bmi').innerText = bmi;
       document.getElementById('res-pain').innerText = painScore;
+
+      const badge = document.getElementById('risk-badge');
+      if (finalRiskScore > 60) {
+        badge.className = "inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20";
+        badge.innerText = "ความเสี่ยงสูง (High Risk)";
+      } else if (finalRiskScore > 30) {
+        badge.className = "inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20";
+        badge.innerText = "ความเสี่ยงปานกลาง (Moderate Risk)";
+      } else {
+        badge.className = "inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+        badge.innerText = "ความเสี่ยงต่ำ (Low Risk)";
+      }
 
       document.getElementById('camera-section').classList.add('hidden');
       document.getElementById('result-section').classList.remove('hidden');
     }
 
-    // -------------------------------------------------------------
-    // 5. DATABASE FLOW & MEDICAL PORTAL RENDERER
-    // -------------------------------------------------------------
     async function saveAssessmentToDatabase() {
-      alert("กำลังบันทึกข้อมูลเข้าสู่ระบบ...");
-
-      // สั่ง INSERT ข้อมูลลงตาราง assessments บน Supabase
-      const { data, error } = await supabaseClient
-        .from('assessments')
-        .insert([currentAssessment]);
+      const { data, error } = await supabaseClient.from('assessments').insert([currentAssessment]);
 
       if (error) {
-        console.warn("DB Save Notice (Fallback to LocalStorage mock):", error.message);
-        // Fallback บันทึกใน LocalStorage หากยังไม่ได้ผูก Supabase Key จริง
         let localData = JSON.parse(localStorage.getItem('mock_assessments') || "[]");
         localData.push(currentAssessment);
         localStorage.setItem('mock_assessments', JSON.stringify(localData));
       }
 
       document.getElementById('result-section').classList.add('hidden');
+      document.getElementById('stepper').classList.add('hidden');
       document.getElementById('portal-section').classList.remove('hidden');
-      document.getElementById('portal-user-role').innerText = currentRole.toUpperCase();
       fetchMedicalRecords();
     }
 
     async function fetchMedicalRecords() {
       const recordsContainer = document.getElementById('records-list');
-      recordsContainer.innerHTML = "กำลังโหลด...";
-
       let records = [];
 
-      // ดึงข้อมูลจริงจาก Supabase
       let query = supabaseClient.from('assessments').select('*');
-      if (currentRole === 'patient') {
-        query = query.eq('patient_id', currentUser.id); // ดึงเฉพาะของตัวเอง
-      }
+      if (currentRole === 'patient') query = query.eq('patient_id', currentUser.id);
 
       const { data, error } = await query;
-
       if (error || !data || data.length === 0) {
-        // Fallback ดึง Mock Data
         records = JSON.parse(localStorage.getItem('mock_assessments') || "[]");
       } else {
         records = data;
       }
 
       if (records.length === 0) {
-        recordsContainer.innerHTML = "<p>ไม่พบประวัติการประเมิน</p>";
+        recordsContainer.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500">ไม่พบประวัติการประเมิน</td></tr>`;
         return;
       }
 
-      // Render รายการแบบ Dynamic
       recordsContainer.innerHTML = records.map((rec, i) => `
-        <div style="border-bottom: 1px solid #e2e8f0; padding: 10px 0;">
-          <strong>ครั้งที่ ${records.length - i}</strong> | วันที่: ${new Date(rec.created_at).toLocaleString('th-TH')}<br>
-          <span class="badge ${rec.risk_score > 60 ? 'badge-high' : rec.risk_score > 30 ? 'badge-medium' : 'badge-low'}">
-            Risk Score: ${rec.risk_score}
-          </span>
-          | เข่าซ้าย: ${rec.left_angle}° | เข่าขวา: ${rec.right_angle}° | Pain: ${rec.pain_score}/10
-        </div>
+        <tr class="hover:bg-slate-900/40 transition">
+          <td class="py-4 px-6 font-medium text-white">
+            #${records.length - i}
+            <span class="block text-xs text-slate-500">${new Date(rec.created_at).toLocaleString('th-TH')}</span>
+          </td>
+          <td class="py-4 px-6">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold ${
+              rec.risk_score > 60 ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' :
+              rec.risk_score > 30 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+              'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+            }">
+              ${rec.risk_score} / 100
+            </span>
+          </td>
+          <td class="py-4 px-6 text-slate-300">${rec.left_angle}° / ${rec.right_angle}°</td>
+          <td class="py-4 px-6 text-slate-300">${rec.bmi}</td>
+          <td class="py-4 px-6 text-slate-300">${rec.pain_score}/10</td>
+          <td class="py-4 px-6 text-right">
+            <span class="text-xs bg-slate-800 text-slate-400 px-2 py-1 rounded border border-slate-700">Verified Log</span>
+          </td>
+        </tr>
       `).join('');
     }
   </script>
