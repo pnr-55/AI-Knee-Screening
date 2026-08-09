@@ -1,113 +1,174 @@
 /* ==========================================================
-   AI Knee Screening System - Modern Medical UI v2
+   AI Knee Screening System - Premium Medical Tech UI
    ================================================---------- */
 
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+
 :root {
-    --primary: #0284c7;
-    --primary-dark: #0369a1;
-    --primary-light: #e0f2fe;
-    --accent: #38bdf8;
-    --text-main: #0f172a;
-    --text-muted: #475569;
-    --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    --card-bg: #ffffff;
-    --radius-xl: 20px;
-    --radius-md: 12px;
-    --shadow-lg: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
+    --primary-blue: #0284c7;
+    --primary-dark: #0f172a;
+    --accent-blue: #38bdf8;
+    --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 50%, #eff6ff 100%);
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --shadow-premium: 0 20px 40px -15px rgba(2, 132, 199, 0.15), 0 10px 20px -10px rgba(15, 23, 42, 0.05);
+    --radius-lg: 24px;
+    --radius-md: 14px;
 }
 
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Sarabun', 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
-    background: var(--bg-gradient);
+    background: linear-gradient(135deg, #dbfafe 0%, #e0f2fe 50%, #f8fafc 100%);
+    background-attachment: fixed;
     color: var(--text-main);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 24px;
 }
 
 .app-container {
     width: 100%;
-    max-width: 520px;
-    background: transparent;
+    max-width: 480px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
 }
 
-/* Header นอกการ์ด ให้ดูโดดเด่น */
+/* Header สไตล์โลโก้แอปพลิเคชันพรีเมียม */
 header {
     text-align: center;
-    padding: 10px 0;
+    padding: 12px 0 4px 0;
 }
 
 header h1 {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: #1e293b;
+    background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin-bottom: 4px;
+    letter-spacing: -0.5px;
 }
 
 header p {
-    font-size: 0.85rem;
-    color: var(--primary-dark);
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
-/* หน้าจอ (Screen Card) */
+/* หน้าจอการทำงาน (Glassmorphism Card) */
 .screen {
     display: none;
     background: var(--card-bg);
-    padding: 32px 28px;
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(10px);
+    padding: 36px 28px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-premium);
     border: 1px solid rgba(255, 255, 255, 0.8);
-    animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: scaleUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .screen.active {
     display: block;
 }
 
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes scaleUp {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 h2 {
-    font-size: 1.3rem;
-    color: var(--text-main);
+    font-size: 1.35rem;
+    color: var(--primary-dark);
     margin-bottom: 8px;
     font-weight: 700;
+    letter-spacing: -0.3px;
 }
 
-p, label {
-    font-size: 0.95rem;
+.desc-text {
+    font-size: 0.92rem;
     color: var(--text-muted);
+    margin-top: 6px;
     line-height: 1.6;
 }
 
-/* Disclaimer Box */
+/* ข้อความแจ้งเตือน (Disclaimer) */
 .disclaimer-box {
-    background: #fffbeb;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
     border-left: 4px solid #f59e0b;
-    padding: 14px 16px;
+    padding: 16px;
     border-radius: 0 var(--radius-md) var(--radius-md) 0;
     font-size: 0.85rem;
-    color: #b45309;
+    color: #92400e;
     margin: 20px 0;
+    line-height: 1.6;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.05);
+}
+
+/* กล่องเงื่อนไขเลื่อนอ่าน */
+.scroll-box {
+    margin: 16px 0;
+    padding: 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    max-height: 100px;
+    overflow-y: auto;
+    font-size: 0.85rem;
+    background-color: #f8fafc;
+    color: var(--text-muted);
     line-height: 1.5;
 }
 
-/* Form Inputs */
+.checkbox-container {
+    margin: 16px 0;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+/* ฟอร์มกรอกข้อมูลสไตล์ Modern Input */
+.form-container {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    border: 1.5px solid #e2e8f0;
+}
+
+.form-container h3 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label, .form-label-bold {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
 input[type="text"],
 input[type="password"],
 input[type="number"],
@@ -118,22 +179,22 @@ select {
     border-radius: var(--radius-md);
     font-size: 0.95rem;
     outline: none;
-    transition: all 0.2s ease;
-    background: #f8fafc;
+    transition: all 0.25s ease;
+    background: #ffffff;
     color: var(--text-main);
 }
 
 input:focus, select:focus {
-    border-color: var(--primary);
+    border-color: var(--primary-blue);
     background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
+    box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15);
 }
 
-/* Buttons */
+/* ระบบปุ่มกดพรีเมียม (Gradient Buttons) */
 .btn-group {
     display: flex;
     gap: 12px;
-    margin-top: 28px;
+    margin-top: 24px;
 }
 
 .btn {
@@ -144,19 +205,25 @@ input:focus, select:focus {
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     text-align: center;
+    letter-spacing: 0.3px;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
     color: #ffffff;
-    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    box-shadow: 0 8px 20px rgba(2, 132, 199, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+    box-shadow: 0 12px 24px rgba(2, 132, 199, 0.4);
+    opacity: 0.95;
+}
+
+.btn-primary:active {
+    transform: translateY(0);
 }
 
 .btn-secondary {
@@ -170,30 +237,235 @@ input:focus, select:focus {
     color: var(--text-main);
 }
 
-/* Table Design */
+.btn-dark {
+    background: #1e293b;
+    color: #ffffff;
+}
+
+.btn-dark:hover {
+    background: #0f172a;
+}
+
+.btn-sm {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+}
+
+/* หน้าจอ Camera */
+.camera-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 16px auto;
+    background: #000;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    aspect-ratio: 3/4;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.camera-container video, 
+.camera-container canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.camera-status-text {
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+#camera-status {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #d97706;
+}
+
+/* หน้าจอ Result (การ์ดแสดงผลลัพธ์) */
+.result-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    margin: 16px 0;
+    border: 1.5px solid #e2e8f0;
+    text-align: center;
+}
+
+.result-title {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.result-score {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    letter-spacing: -1px;
+}
+
+.badge-risk {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    background: #94a3b8;
+    margin: 10px 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.result-desc {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+.result-details {
+    background: #fff;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    border: 1.5px solid #e2e8f0;
+    margin-bottom: 16px;
+    font-size: 0.88rem;
+}
+
+.result-details ul {
+    margin: 8px 0 0 20px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* หน้าส่งต่อโรงพยาบาล */
+.alert-box {
+    background: linear-gradient(135deg, #fef2f2 100%, #fee2e2 0%);
+    border: 1.5px solid #fecaca;
+    color: #991b1b;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    margin: 16px 0;
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+
+.hospital-select {
+    margin-bottom: 16px;
+}
+
+.success-center {
+    text-align: center;
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: #10b981;
+    margin-bottom: 12px;
+}
+
+/* Medical Dashboard Styles */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.stat-container {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.stat-card {
+    flex: 1;
+    background: #f8fafc;
+    padding: 14px;
+    border-radius: var(--radius-md);
+    text-align: center;
+    border: 1.5px solid #e2e8f0;
+}
+
+.stat-card-danger {
+    background: #fff1f2;
+    border-color: #fecdd3;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.stat-danger-text {
+    color: #e11d48;
+}
+
+.stat-val {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-top: 2px;
+}
+
+.stat-danger-val {
+    color: #e11d48;
+}
+
+.table-container {
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1.5px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    margin-bottom: 16px;
+    background: #fff;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.85rem;
+    text-align: left;
 }
 
 th, td {
-    padding: 12px;
-    text-align: left;
+    padding: 12px 14px;
 }
 
 th {
     background-color: #f8fafc;
-    color: var(--primary-dark);
+    color: var(--text-muted);
     font-weight: 600;
-    border-bottom: 2px solid #e2e8f0;
+    border-bottom: 1.5px solid #e2e8f0;
 }
 
 tr:not(:last-child) td {
     border-bottom: 1px solid #f1f5f9;
 }
 
-/* Print Styles */
+.badge-high {
+    background: #ef4444;
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-low {
+    background: #10b981;
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Print Styles สำหรับพิมพ์รายงาน */
 @media print {
     body {
         background: #ffffff;
