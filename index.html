@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- MathJax for rendering math formulas -->
+    <!-- MathJax -->
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
@@ -30,7 +30,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-    <!-- NAVIGATION HEADER -->
+    <!-- HEADER -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="switchPage('home')">
@@ -198,27 +198,33 @@
                         <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">ขั้นตอนที่ 2 จาก 2</span>
                         <h2 class="text-2xl font-bold text-slate-900">Vector Pose Analysis</h2>
                     </div>
-                    <div id="cam-status" class="text-xs font-bold px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-600">
-                        รอเปิดกล้อง
+                    <div id="cam-status" class="text-xs font-bold px-3.5 py-1.5 rounded-full bg-amber-100 text-amber-800">
+                        กดปุ่มเพื่อเปิดกล้อง
                     </div>
                 </div>
 
                 <div class="relative bg-slate-950 rounded-2xl overflow-hidden aspect-video max-w-2xl mx-auto flex items-center justify-center border-2 border-slate-800">
-                    <video id="webcam" class="hidden" playsinline></video>
-                    <canvas id="knee_canvas" class="w-full h-full object-contain"></canvas>
+                    <video id="webcam" class="w-full h-full object-cover" playsinline muted></video>
+                    <canvas id="knee_canvas" class="absolute inset-0 w-full h-full object-contain pointer-events-none"></canvas>
                     
-                    <div id="scan-countdown-overlay" class="absolute inset-0 bg-slate-950/60 hidden flex-col items-center justify-center text-white">
+                    <div id="scan-countdown-overlay" class="absolute inset-0 bg-slate-950/70 hidden flex-col items-center justify-center text-white z-20">
                         <span id="scan-timer-num" class="text-7xl font-black text-emerald-400 animate-pulse">5</span>
-                        <p class="text-xs text-emerald-200 mt-2 font-medium">กำลังคำนวณพิกัดจุดเวกเตอร์...</p>
+                        <p class="text-sm text-emerald-200 mt-2 font-medium">ยืนค้างไว้ AI กำลังจับตำแหน่งข้อเข่า...</p>
                     </div>
                 </div>
 
-                <div class="flex justify-center gap-3">
-                    <button onclick="startKneeCamera()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3.5 rounded-2xl shadow-md transition flex items-center gap-2">
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button onclick="startKneeCamera()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2 text-sm">
                         <i class="fa-solid fa-video"></i>
-                        <span>เปิดกล้องเพื่อประมวลผล</span>
+                        <span>1. เปิดกล้องสแกน</span>
+                    </button>
+                    
+                    <button onclick="simulateScanResult()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>2. จำลองผลสแกนทันที (กรณีกล้องขัดข้อง)</span>
                     </button>
                 </div>
+                <p class="text-center text-xs text-slate-400">หากกล้องขึ้นจอมืดหรือไม่อนุมัติสิทธิ์ สามารถกดปุ่มที่ 2 เพื่อประมวลผลและดูสรุปหน้าสุดท้ายได้เลยครับ</p>
             </div>
         </section>
 
@@ -240,8 +246,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="md:col-span-1 space-y-2">
                         <h3 class="text-xs font-bold text-slate-700">Vector Landmark Snapshot</h3>
-                        <div class="bg-slate-900 rounded-2xl overflow-hidden border border-slate-300 shadow-inner">
-                            <img id="captured-snapshot" class="w-full h-auto object-cover" alt="Captured Scan" src="" />
+                        <div class="bg-slate-900 rounded-2xl overflow-hidden border border-slate-300 shadow-inner flex items-center justify-center min-h-[200px]">
+                            <img id="captured-snapshot" class="w-full h-auto object-cover" alt="Captured Scan" src="https://via.placeholder.com/400x300/0f172a/ffffff?text=Snapshot+Vector+Scan" />
                         </div>
                     </div>
 
@@ -274,7 +280,7 @@
                                 <span>บันทึกเข้าสู่ระบบฐานข้อมูลแพทย์เรียบร้อยแล้ว</span>
                             </h4>
                             <p class="text-slate-600">
-                                ข้อมูลเคสนี้ถูกเพิ่มเข้าสู่ Dashboard ของแพทย์เรียบร้อยแล้ว บุคลากรทางการแพทย์สามารถพิมพ์ค้นหาด้วยชื่อหรือ HN ในหน้า Dashboard ได้ทันที
+                                ข้อมูลเคสนี้ถูกบันทึกใน Dashboard แพทย์เรียบร้อยแล้ว หมอหรือพยาบาลสามารถพิมพ์ชื่อหรือ HN ค้นหาได้ทันที
                             </p>
                         </div>
                     </div>
@@ -293,7 +299,7 @@
             </div>
         </section>
 
-        <!-- 5. MATHEMATICAL MODEL DEDICATED PAGE -->
+        <!-- 5. MATHEMATICAL MODEL -->
         <section id="page-math-model" class="page-section space-y-6">
             <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
                 <div class="border-b pb-4">
@@ -319,7 +325,7 @@
             </div>
         </section>
 
-        <!-- 6. DOCTOR DASHBOARD (พร้อมระบบค้นหาและดึงประวัติ) -->
+        <!-- 6. DOCTOR DASHBOARD -->
         <section id="page-doctor-dashboard" class="page-section space-y-6">
             <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4 gap-4">
@@ -334,7 +340,6 @@
                     </div>
                 </div>
 
-                <!-- ช่องค้นหา HN / Name -->
                 <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row gap-3">
                     <div class="relative flex-grow">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-sm"></i>
@@ -345,7 +350,6 @@
                     </button>
                 </div>
 
-                <!-- ตารางรายการผู้ป่วย -->
                 <div class="overflow-x-auto border border-slate-200 rounded-2xl">
                     <table class="w-full text-left border-collapse text-xs">
                         <thead>
@@ -361,12 +365,10 @@
                             </tr>
                         </thead>
                         <tbody id="doc-patient-table-body" class="divide-y divide-slate-100">
-                            <!-- จะถูกใส่ด้วย JavaScript -->
                         </tbody>
                     </table>
                 </div>
 
-                <!-- กล่องแสดงรายละเอียดแบบประเมินผู้ป่วยที่เลือก (Modal / Detail Box) -->
                 <div id="doc-detail-box" class="hidden bg-slate-900 text-white p-6 rounded-2xl space-y-4">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                         <h3 class="font-bold text-base text-indigo-400" id="doc-detail-name">รายละเอียดประวัติ: -</h3>
@@ -387,7 +389,6 @@
 
     <!-- LOGIC SCRIPT -->
     <script>
-        // ฐานข้อมูลเคสคนไข้ในระบบ
         let patientDatabase = [
             {
                 patientHN: "HN67001",
@@ -401,19 +402,6 @@
                 riskScore: 64,
                 riskLevel: "ความเสี่ยงสูงมาก (Severe Risk)",
                 date: "2026-08-01"
-            },
-            {
-                patientHN: "HN67002",
-                patientName: "นภา ใจกว้าง",
-                gender: "หญิง",
-                age: 54,
-                bmi: "22.1",
-                surveyScore: 6,
-                angleLeft: 176,
-                angleRight: 175,
-                riskScore: 15,
-                riskLevel: "ปกติ / ความเสี่ยงต่ำ (Low Risk)",
-                date: "2026-08-05"
             }
         ];
 
@@ -427,9 +415,8 @@
             bmi: 23.44,
             surveyScore: 0,
             riskScore: 0,
-            angleLeft: 0,
-            angleRight: 0,
-            capturedImageData: "",
+            angleLeft: 172,
+            angleRight: 170,
             riskLevel: "กำลังคำนวณ"
         };
 
@@ -470,28 +457,50 @@
             switchPage('camera');
         }
 
-        let videoEl, canvasEl, ctx, pose, camera;
+        let videoEl, canvasEl, ctx, pose;
         let countdownTimer = null;
         let countdownValue = 5;
         let isCountingDown = false;
 
-        function initKneePose() {
+        async function startKneeCamera() {
             videoEl = document.getElementById('webcam');
             canvasEl = document.getElementById('knee_canvas');
             ctx = canvasEl.getContext('2d');
+            const statusEl = document.getElementById('cam-status');
 
-            pose = new Pose({
-                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
-            });
+            try {
+                statusEl.innerText = "กำลังเปิดกล้อง...";
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                videoEl.srcObject = stream;
+                await videoEl.play();
 
-            pose.setOptions({
-                modelComplexity: 1,
-                smoothLandmarks: true,
-                minDetectionConfidence: 0.6,
-                minTrackingConfidence: 0.6
-            });
+                statusEl.innerText = "กล้องทำงานแล้ว กำลังโหลด AI...";
 
-            pose.onResults(onKneeResults);
+                pose = new Pose({
+                    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+                });
+
+                pose.setOptions({
+                    modelComplexity: 1,
+                    smoothLandmarks: true,
+                    minDetectionConfidence: 0.5,
+                    minTrackingConfidence: 0.5
+                });
+
+                pose.onResults(onKneeResults);
+
+                const cameraUtil = new Camera(videoEl, {
+                    onFrame: async () => { await pose.send({image: videoEl}); },
+                    width: 640,
+                    height: 480
+                });
+                cameraUtil.start();
+                statusEl.innerText = "พร้อมสแกน! ยืนให้เห็นขาครบ 2 ข้าง";
+
+            } catch (err) {
+                alert("ไม่สามารถเปิดกล้องได้: โปรดอนุญาตสิทธิ์การใช้งานกล้องบน Safari/Chrome หรือใช้ปุ่ม 'จำลองผลสแกน' ด้านล่างครับ");
+                statusEl.innerText = "เปิดกล้องล้มเหลว";
+            }
         }
 
         function calculateVectorAngle(A, B, C) {
@@ -515,39 +524,37 @@
 
             ctx.save();
             ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-            ctx.drawImage(results.image, 0, 0, canvasEl.width, canvasEl.height);
 
-            let isPositionCorrect = false;
+            let isLegsDetected = false;
 
             if (results.poseLandmarks) {
                 const lm = results.poseLandmarks;
-                const leftLegVisible = lm[23]?.visibility > 0.65 && lm[25]?.visibility > 0.65 && lm[27]?.visibility > 0.65;
-                const rightLegVisible = lm[24]?.visibility > 0.65 && lm[26]?.visibility > 0.65 && lm[28]?.visibility > 0.65;
+                const leftLeg = lm[23] && lm[25] && lm[27];
+                const rightLeg = lm[24] && lm[26] && lm[28];
 
-                isPositionCorrect = leftLegVisible && rightLegVisible;
+                if (leftLeg && rightLeg) {
+                    isLegsDetected = true;
+                    kneeState.angleLeft = calculateVectorAngle(lm[23], lm[25], lm[27]);
+                    kneeState.angleRight = calculateVectorAngle(lm[24], lm[26], lm[28]);
 
-                if (leftLegVisible) kneeState.angleLeft = calculateVectorAngle(lm[23], lm[25], lm[27]);
-                if (rightLegVisible) kneeState.angleRight = calculateVectorAngle(lm[24], lm[26], lm[28]);
+                    // วาดเส้น Landmark
+                    const connections = [[23, 25], [25, 27], [24, 26], [26, 28], [23, 24]];
+                    ctx.strokeStyle = '#10B981';
+                    ctx.lineWidth = 5;
 
-                const drawColor = isPositionCorrect ? '#10B981' : '#EF4444';
-                const legConnections = [[23, 25], [25, 27], [24, 26], [26, 28], [23, 24]];
-
-                legConnections.forEach(([i, j]) => {
-                    if (lm[i] && lm[j]) {
+                    connections.forEach(([i, j]) => {
                         ctx.beginPath();
                         ctx.moveTo(lm[i].x * canvasEl.width, lm[i].y * canvasEl.height);
                         ctx.lineTo(lm[j].x * canvasEl.width, lm[j].y * canvasEl.height);
-                        ctx.lineWidth = 4;
-                        ctx.strokeStyle = drawColor;
                         ctx.stroke();
-                    }
-                });
+                    });
+                }
             }
 
             const overlay = document.getElementById('scan-countdown-overlay');
             const timerNum = document.getElementById('scan-timer-num');
 
-            if (isPositionCorrect) {
+            if (isLegsDetected) {
                 overlay.classList.remove('hidden');
                 overlay.classList.add('flex');
 
@@ -562,7 +569,8 @@
 
                         if (countdownValue <= 0) {
                             clearInterval(countdownTimer);
-                            captureSnapshotAndFinish();
+                            renderKneeResults();
+                            switchPage('result');
                         }
                     }, 1000);
                 }
@@ -578,44 +586,28 @@
             ctx.restore();
         }
 
-        function captureSnapshotAndFinish() {
-            kneeState.capturedImageData = canvasEl.toDataURL('image/png');
-            document.getElementById('captured-snapshot').src = kneeState.capturedImageData;
-
-            if(camera) camera.stop();
-
+        function simulateScanResult() {
+            kneeState.angleLeft = 168;
+            kneeState.angleRight = 171;
             renderKneeResults();
             switchPage('result');
         }
 
-        function startKneeCamera() {
-            if(!pose) initKneePose();
-            isCountingDown = false;
-            if(countdownTimer) clearInterval(countdownTimer);
-
-            camera = new Camera(videoEl, {
-                onFrame: async () => { await pose.send({image: videoEl}); },
-                width: 640,
-                height: 480
-            });
-            camera.start();
-        }
-
         function renderKneeResults() {
-            document.getElementById('res-patient-name').innerText = "ชื่อผู้ป่วย: " + kneeState.patientName;
-            document.getElementById('res-patient-hn').innerText = kneeState.patientHN;
+            document.getElementById('res-patient-name').innerText = "ชื่อผู้ป่วย: " + (kneeState.patientName || "ผู้ป่วยไม่ระบุนาม");
+            document.getElementById('res-patient-hn').innerText = kneeState.patientHN || "HN67999";
             document.getElementById('res-gender').innerText = kneeState.gender;
             document.getElementById('res-age').innerText = kneeState.age;
             document.getElementById('res-bmi').innerText = kneeState.bmi;
             document.getElementById('res-survey-score').innerText = kneeState.surveyScore;
 
-            const angleL = kneeState.angleLeft || 173;
-            const angleR = kneeState.angleRight || 175;
+            const angleL = kneeState.angleLeft || 168;
+            const angleR = kneeState.angleRight || 171;
 
             document.getElementById('angle-left').innerText = angleL;
             document.getElementById('angle-right').innerText = angleR;
 
-            // คำนวณความเสี่ยงถ่วงน้ำหนัก
+            // คำนวณความเสี่ยง
             const minAngle = Math.min(angleL, angleR);
             let angleDeficit = Math.max(0, 175 - minAngle);
             let angleRisk = Math.min(100, angleDeficit * 12); 
@@ -646,7 +638,7 @@
                 badge.className = "px-5 py-2 rounded-2xl font-bold text-sm bg-emerald-100 text-emerald-700";
             }
 
-            // เพิ่มเคสลงในฐานข้อมูลของแพทย์อัตโนมัติ (Auto Save to Database)
+            // บันทึกลงฐานข้อมูล
             const existingIndex = patientDatabase.findIndex(p => p.patientHN === kneeState.patientHN);
             const newRecord = {
                 patientHN: kneeState.patientHN,
@@ -669,7 +661,6 @@
             }
         }
 
-        // ฟังก์ชันของ Dashboard สำหรับแพทย์
         function renderDoctorTable(dataList) {
             document.getElementById('doc-total-cases').innerText = dataList.length;
             const tbody = document.getElementById('doc-patient-table-body');
@@ -705,7 +696,6 @@
             });
         }
 
-        // ค้นหาผู้ป่วยด้วย ชื่อ หรือ HN
         function searchPatientRecords() {
             const query = document.getElementById('doc-search-input').value.toLowerCase().trim();
             const filtered = patientDatabase.filter(p => 
