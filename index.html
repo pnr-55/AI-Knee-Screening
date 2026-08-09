@@ -116,10 +116,32 @@
         </div>
     </section>
 
+    <!-- 8. Result Screen (หน้าแสดงผลการประเมินความเสี่ยง) -->
     <section id="result-screen" class="screen">
-        <h2>ผลการคัดกรองเบื้องต้น</h2>
-        <p>กำลังพัฒนาใน Phase ต่อไป...</p>
-        <button class="btn btn-secondary btn-back-home">กลับหน้าแรก</button>
+        <h2>ผลการประเมินความเสี่ยงสุขภาพข้อเข่า</h2>
+        <p style="margin-top: 4px; font-size: 0.9rem; color: #666;">สรุปผลการวิเคราะห์จากอาการ แบบสอบถาม และ AI Camera</p>
+        
+        <div class="result-card" style="background: #f8fafc; padding: 16px; border-radius: 8px; margin: 12px 0; border: 1px solid #e2e8f0; text-align: center;">
+            <div style="font-size: 0.85rem; color: #666; margin-bottom: 4px;">คะแนนความเสี่ยงรวม (Total Risk Score)</div>
+            <div id="res-total-score" style="font-size: 2.5rem; font-weight: bold; color: #2c3e50;">0 / 100</div>
+            <div id="res-risk-level" style="display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.9rem; font-weight: bold; color: #fff; background: #95a5a6; margin: 8px 0;">กำลังประมวลผล...</div>
+            <p id="res-risk-desc" style="font-size: 0.85rem; color: #555; margin-top: 4px;">-</p>
+        </div>
+
+        <div style="background: #fff; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 12px; font-size: 0.85rem;">
+            <strong>รายละเอียดคะแนนแยกตามส่วน:</strong>
+            <ul style="margin: 6px 0 0 20px; color: #444;">
+                <li>คะแนนอาการ (Symptom Score): <span id="detail-symptom">0</span> / 30</li>
+                <li>คะแนนดัชนีมวลกาย (BMI Score): <span id="detail-bmi">0</span> / 20 (<span id="detail-bmi-val">-</span>)</li>
+                <li>คะแนนโครงสร้างขา (Pose Score): <span id="detail-pose">0</span> / 30</li>
+                <li>คะแนนตามช่วงวัย (Age Score): <span id="detail-age">0</span> / 20</li>
+            </ul>
+        </div>
+
+        <div class="btn-group">
+            <button id="btn-result-back" class="btn btn-secondary">ย้อนกลับ</button>
+            <button id="btn-goto-referral" class="btn btn-primary" style="display: none;">ส่งต่อข้อมูลโรงพยาบาล</button>
+        </div>
     </section>
 
     <section id="medical-login-screen" class="screen">
