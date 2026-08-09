@@ -53,22 +53,30 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnQNext) {
         btnQNext.addEventListener('click', () => {
             switchScreen('camera-screen');
-            // เริ่มต้นการทำงานกล้อง (ถ้ามีฟังก์ชัน initCamera จาก camera.js)
-            if (typeof initCamera === 'function') {
-                initCamera();
+            // เริ่มต้นการทำงานกล้องและ AI Pose Detection
+            if (typeof initAICamera === 'function') {
+                initAICamera();
             }
         });
     }
 
-    // 6. Camera -> Questionnaire / Result (จำลองปุ่มสแกน)
+    // 6. Camera -> Questionnaire / Result
     const btnCamBack = document.getElementById('btn-camera-back');
     if (btnCamBack) {
-        btnCamBack.addEventListener('click', () => switchScreen('questionnaire-screen'));
+        btnCamBack.addEventListener('click', () => {
+            if (typeof stopAICamera === 'function') {
+                stopAICamera();
+            }
+            switchScreen('questionnaire-screen');
+        });
     }
 
     const btnCapture = document.getElementById('btn-capture-scan');
     if (btnCapture) {
         btnCapture.addEventListener('click', () => {
+            if (typeof stopAICamera === 'function') {
+                stopAICamera();
+            }
             switchScreen('result-screen');
             if (typeof calculateFinalScore === 'function') {
                 calculateFinalScore();
@@ -78,7 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ปุ่มกลับหน้าแรกทั่วไป
     document.querySelectorAll('.btn-back-home').forEach(btn => {
-        btn.addEventListener('click', () => switchScreen('home-screen'));
+        btn.addEventListener('click', () => {
+            if (typeof stopAICamera === 'function') {
+                stopAICamera();
+            }
+            switchScreen('home-screen');
+        });
     });
 
     // Medical Login -> Dashboard
