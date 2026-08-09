@@ -151,42 +151,133 @@
         </div>
     </section>
 
-    <!-- หน้าจอจำลองชั่วคราวสำหรับหน้าอื่นๆ (เพื่อให้ลิงก์ไม่พังเวลากดข้าม) -->
+    <!-- 6. หน้า Camera AI Scan -->
     <section id="camera-screen" class="screen">
-        <h2>AI Camera Scan</h2>
-        <div class="camera-container" style="background:#000; height:300px; border-radius:14px; position:relative; overflow:hidden;">
-            <video id="webcam" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
-            <canvas id="output-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%;"></canvas>
+        <div class="step-indicator">
+            <span class="step completed">1 ข้อมูล</span>
+            <span class="step active">2 สแกน AI</span>
+            <span class="step">3 ผลลัพธ์</span>
         </div>
-        <p id="camera-status" style="text-align:center; margin:10px 0; font-weight:600; color:#d97706;">กำลังเตรียมกล้อง...</p>
+        <h2>AI Camera Scan</h2>
+        <p class="desc-text">กรุณายืนถอยหลังให้เห็นเต็มตัวอยู่ในกรอบเพื่อความแม่นยำ</p>
+        
+        <div class="camera-container" style="background:#000; height:320px; border-radius:14px; position:relative; overflow:hidden; display:flex; justify-content:center; align-items:center;">
+            <video id="webcam" autoplay playsinline style="width:100%; height:100%; object-fit:cover; position:absolute;"></video>
+            <canvas id="output-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%;"></canvas>
+            <div class="scan-guide-overlay" style="border: 2px dashed rgba(255,255,255,0.6); width: 140px; height: 240px; border-radius: 70px; position: absolute; pointer-events: none;"></div>
+        </div>
+        
+        <div class="camera-status-box" style="margin: 12px 0; background: #f8fafc; padding: 10px; border-radius: 8px; text-align: center;">
+            <p id="camera-status" style="font-weight:600; color:#d97706; font-size:0.9rem;">กำลังเปิดกล้องและเชื่อมต่อ AI...</p>
+        </div>
+
         <div class="btn-group">
             <button class="btn btn-secondary" onclick="switchScreen('questionnaire-screen')">ย้อนกลับ</button>
-            <button class="btn btn-primary" onclick="switchScreen('result-screen')">ประเมินผล (Scan)</button>
+            <button class="btn btn-primary" onclick="startAIAnalysisProcess()">เริ่มสแกน / วิเคราะห์</button>
         </div>
     </section>
 
+    <!-- 7. หน้า AI กำลังวิเคราะห์ข้อมูล (AI Analyzing) -->
+    <section id="analyzing-screen" class="screen">
+        <div style="text-align: center; padding: 40px 20px;">
+            <div class="spinner" style="width: 60px; height: 60px; border: 6px solid #f3f3f3; border-top: 6px solid #0284c7; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+            <h2>AI กำลังวิเคราะห์ข้อมูล</h2>
+            <p class="desc-text" id="analyzing-status-text">กรุณารอสักครู่ ระบบกำลังประมวลผลด้วย AI...</p>
+            
+            <div style="background: #f1f5f9; border-radius: 20px; height: 12px; width: 80%; margin: 20px auto; overflow: hidden;">
+                <div id="progress-bar" style="background: #0284c7; height: 100%; width: 0%; transition: width 0.4s ease;"></div>
+            </div>
+            
+            <div class="analysis-steps-list" style="text-align: left; max-width: 280px; margin: 20px auto; font-size: 0.85rem; color: #475569;">
+                <p id="step-1">⏳ ตรวจจับจุดข้อต่อสำคัญ...</p>
+                <p id="step-2" style="color: #94a3b8;">⏳ วิเคราะห์มุมกระดูกและขาโก่ง...</p>
+                <p id="step-3" style="color: #94a3b8;">⏳ วิเคราะห์มุมยุบตัวของข้อเข่า...</p>
+                <p id="step-4" style="color: #94a3b8;">⏳ ประเมินความเสี่ยง...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. หน้าผลการวิเคราะห์ (Analysis Result) -->
     <section id="result-screen" class="screen">
         <h2>ผลการวิเคราะห์</h2>
-        <div class="result-card" style="text-align:center; background:#f8fafc; padding:20px; border-radius:14px;">
-            <div class="result-score" style="font-size:2.5rem; font-weight:700;">72%</div>
-            <div class="badge-risk" style="background:#ef4444; color:#fff; display:inline-block; padding:4px 12px; border-radius:20px;">ความเสี่ยงสูง</div>
-            <p style="margin-top:10px; font-size:0.85rem; color:var(--text-muted);">แนะนำให้พบแพทย์เพื่อวินิจฉัยเชิงลึก</p>
+        <p class="desc-text">วิเคราะห์เมื่อวันที่ <span id="res-date">20 พ.ค. 2567 เวลา 10:30 น.</span></p>
+        
+        <div class="result-card-container" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+            <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span style="font-size: 0.8rem; color: #dc2626; font-weight: 600;">ผลการประเมินความเสี่ยง</span>
+                    <h3 style="color: #b91c1c; margin: 2px 0 0 0;">ความเสี่ยงสูง</h3>
+                </div>
+                <div style="font-size: 2rem; font-weight: 700; color: #dc2626;" id="res-score-val">72%</div>
+            </div>
+
+            <div style="background: #f8fafc; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 0.9rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Knee Angle (L)</span> <strong id="val-angle-l">174°</strong></div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Knee Angle (R)</span> <strong id="val-angle-r">176°</strong></div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Mechanical Axis</span> <strong>12 mm (ขาโก่ง)</strong></div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Q Angle</span> <strong>18°</strong></div>
+                <div style="display: flex; justify-content: space-between;"><span>AI Confidence</span> <strong style="color: #16a34a;">95%</strong></div>
+            </div>
         </div>
-        <div class="btn-group" style="margin-top:20px;">
-            <button class="btn btn-primary" onclick="switchScreen('home-screen')">กลับสู่หน้าแรก</button>
+
+        <div class="btn-group" style="margin-top: 16px;">
+            <button class="btn btn-secondary" onclick="switchScreen('history-screen')">ประวัติการตรวจ</button>
+            <button class="btn btn-primary" onclick="switchScreen('referral-screen')">ส่งต่อโรงพยาบาล ➔</button>
         </div>
     </section>
 
+    <!-- 9. หน้าส่งต่อโรงพยาบาล (Hospital Referral) -->
+    <section id="referral-screen" class="screen">
+        <div style="background: #fffbeb; border: 1px solid #fde68a; padding: 12px; border-radius: 10px; margin-bottom: 12px;">
+            <span style="color: #d97706; font-weight: 600; font-size: 0.9rem;">⚠️ ผลการประเมินความเสี่ยง : สูง</span>
+            <p style="font-size: 0.8rem; color: #92400e; margin: 4px 0 0 0;">แนะนำให้พบแพทย์โดยเร็วเพื่อรับการวินิจฉัยที่ถูกต้อง</p>
+        </div>
+
+        <h2>โรงพยาบาลปลายทาง</h2>
+        <div class="form-container">
+            <div class="form-group">
+                <label>เลือกโรงพยาบาล</label>
+                <select id="hospital-select" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff;">
+                    <option value="โรงพยาบาลสิงห์บุรี">โรงพยาบาลสิงห์บุรี (135 ม. ถ.นายชู처ต ต.เชิงกลัด อ.บางระจัน จ.สิงห์บุรี)</option>
+                    <option value="โรงพยาบาลศูนย์กลางจังหวัด">โรงพยาบาลศูนย์กลางจังหวัด</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; font-size: 0.82rem; color: #475569;">
+                <input type="checkbox" id="consent-share" checked style="margin-top: 3px;">
+                <label for="consent-share">ข้าพเจ้ายินยอมให้ส่งระบบข้อมูลผลการประเมินไปยังโรงพยาบาลปลายทาง เพื่อใช้ประกอบการพิจารณาของบุคลากรทางการแพทย์</label>
+            </div>
+        </div>
+
+        <div class="btn-group" style="margin-top: 20px;">
+            <button class="btn btn-secondary" onclick="switchScreen('result-screen')">ยกเลิก</button>
+            <button class="btn btn-primary" onclick="alert('ส่งข้อมูลไปยังโรงพยาบาลปลายทางสำเร็จเรียบร้อย!'); switchScreen('history-screen');">ส่งข้อมูล</button>
+        </div>
+    </section>
+
+    <!-- 10. หน้าประวัติการตรวจ (Inspection History) -->
     <section id="history-screen" class="screen">
         <h2>ประวัติการตรวจของคุณ</h2>
-        <div class="table-container" style="margin-top:15px;">
-            <table>
-                <tr><th>วันที่</th><th>ความเสี่ยง</th><th>คะแนน</th></tr>
-                <tr><td>20 พ.ค. 2567</td><td><span class="badge-high">สูง</span></td><td>92%</td></tr>
-                <tr><td>15 พ.ค. 2566</td><td><span class="badge-high">ปานกลาง</span></td><td>56%</td></tr>
-            </table>
+        <p class="desc-text">รายการบันทึกผลการคัดกรองความเสี่ยงข้อเข่าที่ผ่านมา</p>
+        
+        <div class="history-list" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span style="font-size: 0.8rem; color: #64748b;">20 พ.ค. 2567 | 10:30 น.</span>
+                    <div style="font-weight: 600; margin-top: 2px;">ความเสี่ยง: <span class="badge-high" style="color: #dc2626;">สูง (92%)</span></div>
+                </div>
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="switchScreen('result-screen')">ดูรายงาน</button>
+            </div>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span style="font-size: 0.8rem; color: #64748b;">15 พ.ค. 2566 | 14:20 น.</span>
+                    <div style="font-weight: 600; margin-top: 2px;">ความเสี่ยง: <span style="color: #d97706;">ปานกลาง (56%)</span></div>
+                </div>
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="switchScreen('result-screen')">ดูรายงาน</button>
+            </div>
         </div>
-        <button class="btn btn-primary" style="width:100%; margin-top:15px;" onclick="switchScreen('home-screen')">กลับหน้าแรก</button>
+
+        <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="switchScreen('home-screen')">กลับสู่หน้าแรก</button>
     </section>
 </div>
 
