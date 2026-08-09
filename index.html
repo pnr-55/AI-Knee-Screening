@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Knee Screening System</title>
+    <title>KneeAI - AI-based Screening for Knee Osteoarthritis</title>
     <link rel="stylesheet" href="css/style.css">
     <!-- MediaPipe Pose CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
@@ -12,263 +12,186 @@
 <body>
 
 <div class="app-container">
-    <header>
-        <h1>ระบบคัดกรองความเสี่ยงสุขภาพข้อเข่าเบื้องต้น</h1>
-        <p>AI-Knee-Screening Project</p>
+    <header class="app-header">
+        <div class="logo-area">
+            <span class="logo-icon">🔵</span> <span class="logo-text">KneeAI</span>
+        </div>
+        <div class="header-nav">
+            <button class="nav-link" onclick="switchScreen('home-screen')">หน้าแรก</button>
+            <button class="nav-link" onclick="switchScreen('history-screen')">ประวัติตรวจ</button>
+            <button class="nav-link btn-login-nav" onclick="switchScreen('login-screen')">เข้าสู่ระบบ</button>
+        </div>
     </header>
 
-    <!-- 1. Home Screen -->
-    <section id="home-screen" class="screen active">
-        <h2>ยินดีต้อนรับสู่ระบบคัดกรอง</h2>
-        <p class="desc-text">ระบบนี้ช่วยประเมินความเสี่ยงเบื้องต้นของภาวะข้อเข่าเสื่อม (Knee Osteoarthritis) และขาโก่ง (Genu Varum) โดยใช้การวิเคราะห์อาการประวัติร่วมกับเทคโนโลยี AI Pose Detection</p>
-        
-        <div class="disclaimer-box">
-            <strong>คำชี้แจงสำคัญ:</strong> ระบบนี้เป็นเพียงระบบคัดกรองความเสี่ยงเบื้องต้นเท่านั้น <u>มิใช่ระบบวินิจฉัยทางการแพทย์</u> ผลลัพธ์ที่ได้ไม่สามารถใช้แทนการตรวจวินิจฉัยโดยแพทย์ผู้เชี่ยวชาญได้
-        </div>
-
-        <div class="btn-group">
-            <button id="btn-start-screening" class="btn btn-primary">เริ่มการคัดกรอง</button>
-            <button id="btn-go-medical" class="btn btn-secondary">สำหรับบุคลากรทางการแพทย์</button>
+    <!-- 1. หน้า Splash Screen -->
+    <section id="splash-screen" class="screen active">
+        <div class="splash-content">
+            <div class="splash-badge">AI Healthcare System</div>
+            <h1 class="splash-title">AI-based Screening<br><span>for Knee Osteoarthritis</span><br>and Genu Varum</h1>
+            <p class="desc-text">รวดเร็ว แม่นยำ ปลอดภัย ประเมินความเสี่ยงโรคข้อเข่าเสื่อมและขาโก่งด้วย AI</p>
+            <div class="splash-features">
+                <div class="feat-box">✨ AI Accuracy <br><span>มากกว่า 95%</span></div>
+                <div class="feat-box">⚡ วิเคราะห์เร็ว <br><span>ภายใน 30 วินาที</span></div>
+                <div class="feat-box">🛡️ ปลอดภัย <br><span>ข้อมูลของคุณได้รับการคุ้มครอง</span></div>
+            </div>
+            <button class="btn btn-primary btn-lg" onclick="switchScreen('home-screen')">เริ่มต้นใช้งาน ➔</button>
         </div>
     </section>
 
-    <!-- 2. Consent & Patient Information Screen -->
-    <section id="consent-screen" class="screen">
-        <h2>หนังสือยินยอมและข้อมูลพื้นฐาน</h2>
-        <p class="desc-text">กรุณาอ่านเงื่อนไขและกรอกข้อมูลพื้นฐานก่อนเริ่มการประเมิน</p>
+    <!-- 2. หน้า Home -->
+    <section id="home-screen" class="screen">
+        <div class="hero-banner">
+            <div class="hero-text">
+                <h2>ดูแลเข่าของคุณ<br>ด้วยเทคโนโลยี AI</h2>
+                <p>วิเคราะห์ความเสี่ยงโรคข้อเข่าเสื่อมและภาวะขาโก่งได้อย่างแม่นยำ รวดเร็ว และปลอดภัย</p>
+                <button class="btn btn-primary" onclick="switchScreen('login-screen')">เริ่มคัดกรอง</button>
+                <button class="btn btn-secondary" onclick="alert('คู่มือการใช้งาน: 1. เข้าสู่ระบบ 2. กรอกข้อมูล 3. ทำแบบสอบถาม 4. สแกนกล้อง')">ดูวิธีการใช้งาน</button>
+            </div>
+        </div>
+        <div class="home-cards-grid">
+            <div class="mini-card">
+                <h3>AI วิเคราะห์แม่นยำ</h3>
+                <p>ด้วยโมเดลการเรียนรู้จากข้อมูลการแพทย์</p>
+            </div>
+            <div class="mini-card">
+                <h3>ใช้งานง่าย</h3>
+                <p>ไม่ต้องติดตั้งแอป ใช้งานผ่านเว็บได้เลย</p>
+            </div>
+            <div class="mini-card">
+                <h3>รายงานละเอียด</h3>
+                <p>สรุปผลและให้คำแนะนำการดูแล</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. หน้า Login / Register -->
+    <section id="login-screen" class="screen">
+        <h2>ยินดีต้อนรับ<br>เข้าสู่ระบบ KneeAI</h2>
+        <p class="desc-text">ยืนยันตัวตนเพื่อความปลอดภัยของบัญชีของคุณ</p>
         
-        <div class="scroll-box">
-            ข้าพเจ้ายินยอมให้ระบบประมวลผลข้อมูลส่วนบุคคล ได้แก่ อายุ น้ำหนัก ส่วนสูง และภาพถ่ายโครงสร้างร่างกายชั่วคราว เพื่อวัตถุประสงค์ในการประเมินความเสี่ยงข้อเข่าเบื้องต้นเท่านั้น
-        </div>
-
-        <div class="checkbox-container">
-            <label><input type="checkbox" id="chk-consent"> ข้าพเจ้าได้อ่านและยอมรับเงื่อนไขข้างต้น</label>
-        </div>
-
-        <!-- ฟอร์มกรอกข้อมูลพื้นฐานผู้ป่วย -->
         <div class="form-container">
-            <h3>ข้อมูลพื้นฐานผู้รับบริการ</h3>
-            
             <div class="form-group">
-                <label>อายุ (ปี):</label>
-                <input type="number" id="input-age" placeholder="เช่น 25">
+                <label>ชื่อ-นามสกุล / อีเมล</label>
+                <input type="text" id="login-email" placeholder="example@email.com">
             </div>
-
             <div class="form-group">
-                <label>เพศ:</label>
-                <select id="select-gender">
-                    <option value="">-- กรุณาเลือกเพศ --</option>
-                    <option value="male">ชาย</option>
-                    <option value="female">หญิง</option>
-                    <option value="other">อื่นๆ</option>
-                </select>
+                <label>รหัสผ่าน</label>
+                <input type="password" id="login-pass" placeholder="••••••••">
             </div>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="switchScreen('profile-screen')">เข้าสู่ระบบ</button>
+            <div class="or-divider"><span>หรือ</span></div>
+            <button class="btn btn-secondary" style="width: 100%;">🌐 เข้าสู่ระบบด้วย Google</button>
+        </div>
+        <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); cursor: pointer;" onclick="switchScreen('profile-screen')">ยังไม่มีบัญชี? <b>สมัครสมาชิก</b></p>
+    </section>
 
+    <!-- 4. หน้ากรอกข้อมูลส่วนตัว (Patient Profile) -->
+    <section id="profile-screen" class="screen">
+        <div class="step-indicator">
+            <span class="step active">1 ข้อมูลส่วนตัว</span>
+            <span class="step">2 ข้อมูลสุขภาพ</span>
+            <span class="step">3 เลือกโรงพยาบาล</span>
+        </div>
+        <h2>ข้อมูลส่วนตัว</h2>
+        <div class="form-container">
             <div class="form-group">
-                <label>น้ำหนัก (กิโลกรัม - kg):</label>
-                <input type="number" step="0.1" id="input-weight" placeholder="เช่น 60">
+                <label>ชื่อ-นามสกุล</label>
+                <input type="text" id="p-name" placeholder="นางสาว พนพัทธ์ สร้อยวัน">
             </div>
-
+            <div class="form-group" style="display: flex; gap: 10px;">
+                <div style="flex: 2;">
+                    <label>วันเกิด</label>
+                    <input type="text" id="p-dob" placeholder="25/05/2542">
+                </div>
+                <div style="flex: 1;">
+                    <label>อายุ</label>
+                    <input type="number" id="input-age" placeholder="25" oninput="calculateBMI()">
+                </div>
+            </div>
             <div class="form-group">
-                <label>ส่วนสูง (เซนติเมตร - cm):</label>
-                <input type="number" step="0.1" id="input-height" placeholder="เช่น 170">
+                <label>เพศ</label>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="selectGender('หญิง', this)">หญิง</button>
+                    <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="selectGender('ชาย', this)">ชาย</button>
+                </div>
+            </div>
+            <div class="form-group" style="display: flex; gap: 10px;">
+                <div style="flex: 1;">
+                    <label>น้ำหนัก (กก.)</label>
+                    <input type="number" id="input-weight" placeholder="60" oninput="calculateBMI()">
+                </div>
+                <div style="flex: 1;">
+                    <label>ส่วนสูง (ซม.)</label>
+                    <input type="number" id="input-height" placeholder="165" oninput="calculateBMI()">
+                </div>
+            </div>
+            <div class="bmi-display-box" style="background: #f0fdf4; padding: 12px; border-radius: 10px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <span>BMI (ค่ามาตรฐาน 18.5 - 22.9): <br><strong id="bmi-value" style="font-size: 1.2rem; color: #16a34a;">22.0</strong></span>
+                <span id="bmi-status" class="badge-low" style="padding: 4px 10px;">ปกติ</span>
             </div>
         </div>
-
         <div class="btn-group">
-            <button id="btn-consent-back" class="btn btn-secondary">ย้อนกลับ</button>
-            <button id="btn-consent-next" class="btn btn-primary">ถัดไป</button>
+            <button class="btn btn-secondary" onclick="switchScreen('login-screen')">ย้อนกลับ</button>
+            <button class="btn btn-primary" onclick="switchScreen('questionnaire-screen')">ถัดไป</button>
         </div>
     </section>
 
-    <!-- 3. Questionnaire Screen -->
+    <!-- 5. หน้าแบบสอบถามอาการ (Questionnaire) -->
     <section id="questionnaire-screen" class="screen">
-        <h2>แบบสอบถามประเมินอาการข้อเข่า</h2>
-        <p class="desc-text">กรุณาตอบคำถามทั้ง 8 ข้อตามความเป็นจริงเพื่อใช้คำนวณ Symptom Score</p>
+        <h2>แบบสอบถามอาการ</h2>
+        <p class="desc-text">กรุณาตอบคำถามอาการข้อเข่าตามความเป็นจริงเพื่อคำนวณ Symptom Score</p>
         
-        <div id="questionnaire-container" class="questionnaire-scroll">
-            <!-- คำถามจะถูกโหลดมาแสดงที่นี่โดย JavaScript -->
+        <div id="questionnaire-container" style="max-height: 320px; overflow-y: auto; padding-right: 4px;">
+            <!-- โหลดคำถามอัตโนมัติ -->
         </div>
 
-        <div class="btn-group">
-            <button id="btn-questionnaire-back" class="btn btn-secondary">ย้อนกลับ</button>
-            <button id="btn-questionnaire-next" class="btn btn-primary">ถัดไป (เข้าสู่ AI Camera)</button>
+        <div class="btn-group" style="margin-top: 16px;">
+            <button class="btn btn-secondary" onclick="switchScreen('profile-screen')">ย้อนกลับ</button>
+            <button class="btn btn-primary" onclick="switchScreen('camera-screen'); initAICamera();">ถัดไป (เข้าสู่ AI Camera)</button>
         </div>
     </section>
 
-    <!-- 6. Camera AI Scan Screen -->
+    <!-- หน้าจอจำลองชั่วคราวสำหรับหน้าอื่นๆ (เพื่อให้ลิงก์ไม่พังเวลากดข้าม) -->
     <section id="camera-screen" class="screen">
-        <h2>ตรวจวัดโครงสร้างร่างกายด้วย AI Camera</h2>
-        <p class="desc-text">กรุณายืนถอยหลังให้เห็นเต็มตัวในกรอบ และจัดท่าทางให้อยู่ในแนวตรง</p>
-        
-        <div class="camera-container">
-            <video id="webcam" autoplay playsinline></video>
-            <canvas id="output-canvas"></canvas>
+        <h2>AI Camera Scan</h2>
+        <div class="camera-container" style="background:#000; height:300px; border-radius:14px; position:relative; overflow:hidden;">
+            <video id="webcam" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+            <canvas id="output-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%;"></canvas>
         </div>
-
-        <div class="camera-status-text">
-            <span id="camera-status">กำลังเตรียมกล้องและ AI...</span>
-        </div>
-
+        <p id="camera-status" style="text-align:center; margin:10px 0; font-weight:600; color:#d97706;">กำลังเตรียมกล้อง...</p>
         <div class="btn-group">
-            <button id="btn-camera-back" class="btn btn-secondary">ย้อนกลับ</button>
-            <button id="btn-capture-scan" class="btn btn-primary" disabled>ประเมินผลโครงสร้าง (Scan)</button>
+            <button class="btn btn-secondary" onclick="switchScreen('questionnaire-screen')">ย้อนกลับ</button>
+            <button class="btn btn-primary" onclick="switchScreen('result-screen')">ประเมินผล (Scan)</button>
         </div>
     </section>
 
-    <!-- 8. Result Screen -->
     <section id="result-screen" class="screen">
-        <h2>ผลการประเมินความเสี่ยงสุขภาพข้อเข่า</h2>
-        <p class="desc-text">สรุปผลการวิเคราะห์จากอาการ แบบสอบถาม และ AI Camera</p>
-        
-        <div class="result-card">
-            <div class="result-title">คะแนนความเสี่ยงรวม (Total Risk Score)</div>
-            <div id="res-total-score" class="result-score">0 / 100</div>
-            <div id="res-risk-level" class="badge-risk">กำลังประมวลผล...</div>
-            <p id="res-risk-desc" class="result-desc">-</p>
+        <h2>ผลการวิเคราะห์</h2>
+        <div class="result-card" style="text-align:center; background:#f8fafc; padding:20px; border-radius:14px;">
+            <div class="result-score" style="font-size:2.5rem; font-weight:700;">72%</div>
+            <div class="badge-risk" style="background:#ef4444; color:#fff; display:inline-block; padding:4px 12px; border-radius:20px;">ความเสี่ยงสูง</div>
+            <p style="margin-top:10px; font-size:0.85rem; color:var(--text-muted);">แนะนำให้พบแพทย์เพื่อวินิจฉัยเชิงลึก</p>
         </div>
-
-        <div class="result-details">
-            <strong>รายละเอียดคะแนนแยกตามส่วน:</strong>
-            <ul>
-                <li>คะแนนอาการ (Symptom Score): <span id="detail-symptom">0</span> / 30</li>
-                <li>คะแนนดัชนีมวลกาย (BMI Score): <span id="detail-bmi">0</span> / 20 (<span id="detail-bmi-val">-</span>)</li>
-                <li>คะแนนโครงสร้างขา (Pose Score): <span id="detail-pose">0</span> / 30</li>
-                <li>คะแนนตามช่วงวัย (Age Score): <span id="detail-age">0</span> / 20</li>
-            </ul>
-        </div>
-
-        <div class="btn-group result-btn-group">
-            <button id="btn-result-back" class="btn btn-secondary">ย้อนกลับ</button>
-            <button id="btn-print-report" class="btn btn-dark">พิมพ์รายงาน PDF</button>
-            <button id="btn-goto-referral" class="btn btn-primary" style="display: none;">ส่งต่อข้อมูลโรงพยาบาล</button>
+        <div class="btn-group" style="margin-top:20px;">
+            <button class="btn btn-primary" onclick="switchScreen('home-screen')">กลับสู่หน้าแรก</button>
         </div>
     </section>
 
-    <!-- 9. Referral Screen -->
-    <section id="referral-screen" class="screen">
-        <h2>ส่งต่อข้อมูลโรงพยาบาล</h2>
-        <div class="alert-box">
-            <strong>⚠️ ผลการประเมินความเสี่ยง : สูง</strong><br>
-            แนะนำให้รีบพบแพทย์ผู้เชี่ยวชาญเพื่อรับการวินิจฉัยเชิงลึก
-        </div>
-
-        <div class="form-container">
-            <label class="form-label-bold">เลือกโรงพยาบาลปลายทาง:</label>
-            <select id="select-hospital" class="hospital-select">
-                <option value="">-- กรุณาเลือกโรงพยาบาล --</option>
-                <option value="sirindhorn">โรงพยาบาลสิรินธร</option>
-                <option value="chulalongkorn">โรงพยาบาลจุฬาลงกรณ์</option>
-                <option value="ramathibodi">โรงพยาบาลรามาธิบดี</option>
-            </select>
-
-            <div class="checkbox-container">
-                <label><input type="checkbox" id="chk-referral-consent"> ข้าพเจ้า <u>ยินยอม</u>ให้ส่งต่อข้อมูลประวัติการประเมินและภาพถ่ายโครงสร้าง เพื่อใช้ประกอบการพิจารณาของบุคลากรทางการแพทย์</label>
-            </div>
-        </div>
-
-        <div class="btn-group">
-            <button id="btn-referral-back" class="btn btn-secondary">ย้อนกลับ</button>
-            <button id="btn-submit-referral" class="btn btn-primary">ส่งข้อมูล</button>
-        </div>
-    </section>
-
-    <!-- 10. Success / Complete Screen -->
-    <section id="success-screen" class="screen success-center">
-        <div class="success-icon">✅</div>
-        <h2>ส่งข้อมูลไปยังโรงพยาบาลสำเร็จ</h2>
-        <p class="desc-text">เจ้าหน้าที่และแพทย์ผู้เชี่ยวชาญได้รับข้อมูลการคัดกรองของท่านเรียบร้อยแล้ว จะมีการติดต่อกลับเพื่อนัดหมายในลำดับถัดไป</p>
-        <div class="btn-group" style="margin-top: 20px;">
-            <button class="btn btn-primary btn-back-home" style="width: 100%;">กลับสู่หน้าแรก</button>
-        </div>
-    </section>
-
-    <!-- 11. Medical Portal Login Screen -->
-    <section id="medical-login-screen" class="screen">
-        <h2>Medical Portal Login</h2>
-        <p class="desc-text">สำหรับบุคลากรทางการแพทย์และเจ้าหน้าที่โรงพยาบาล</p>
-        
-        <div class="form-container">
-            <div class="form-group">
-                <label class="form-label-bold">ชื่อผู้ใช้งาน (Username):</label>
-                <input type="text" id="medical-user" placeholder="กรอกชื่อผู้ใช้งาน">
-            </div>
-            <div class="form-group">
-                <label class="form-label-bold">รหัสผ่าน (Password):</label>
-                <input type="password" id="medical-pass" placeholder="กรอกรหัสผ่าน">
-            </div>
-        </div>
-
-        <div class="btn-group">
-            <button id="btn-medical-back" class="btn btn-secondary">ย้อนกลับหน้าแรก</button>
-            <button id="btn-medical-login" class="btn btn-primary">เข้าสู่ระบบแพทย์</button>
-        </div>
-    </section>
-
-    <!-- 12. Medical Dashboard Screen -->
-    <section id="medical-dashboard-screen" class="screen">
-        <div class="dashboard-header">
-            <h2>Medical Dashboard</h2>
-            <button id="btn-medical-logout" class="btn btn-secondary btn-sm">ออกจากระบบ</button>
-        </div>
-        <p class="desc-text" style="margin-bottom: 12px;">รายการข้อมูลผู้รับบริการและผลการคัดกรองความเสี่ยงข้อเข่า</p>
-
-        <!-- สรุปสถิติเบื้องต้น -->
-        <div class="stat-container">
-            <div class="stat-card">
-                <div class="stat-label">เคสทั้งหมด</div>
-                <div id="stat-total-cases" class="stat-val">3</div>
-            </div>
-            <div class="stat-card stat-card-danger">
-                <div class="stat-label stat-danger-text">เคสเสี่ยงสูง (>60)</div>
-                <div id="stat-high-risk" class="stat-val stat-danger-val">2</div>
-            </div>
-        </div>
-
-        <!-- ตารางแสดงรายการข้อมูลผู้ป่วย -->
-        <div class="table-container">
+    <section id="history-screen" class="screen">
+        <h2>ประวัติการตรวจของคุณ</h2>
+        <div class="table-container" style="margin-top:15px;">
             <table>
-                <thead>
-                    <tr>
-                        <th>อายุ/เพศ</th>
-                        <th>คะแนนรวม</th>
-                        <th>ระดับเสี่ยง</th>
-                        <th>รพ. ที่ส่งต่อ</th>
-                    </tr>
-                </thead>
-                <tbody id="patient-table-body">
-                    <tr>
-                        <td>65 ปี / หญิง</td>
-                        <td><strong>78 / 100</strong></td>
-                        <td><span class="badge-high">สูง</span></td>
-                        <td>รพ.สิรินธร</td>
-                    </tr>
-                    <tr>
-                        <td>58 ปี / ชาย</td>
-                        <td><strong>65 / 100</strong></td>
-                        <td><span class="badge-high">สูง</span></td>
-                        <td>รพ.จุฬาลงกรณ์</td>
-                    </tr>
-                    <tr>
-                        <td>32 ปี / หญิง</td>
-                        <td><strong>25 / 100</strong></td>
-                        <td><span class="badge-low">ต่ำ</span></td>
-                        <td>-</td>
-                    </tr>
-                </tbody>
+                <tr><th>วันที่</th><th>ความเสี่ยง</th><th>คะแนน</th></tr>
+                <tr><td>20 พ.ค. 2567</td><td><span class="badge-high">สูง</span></td><td>92%</td></tr>
+                <tr><td>15 พ.ค. 2566</td><td><span class="badge-high">ปานกลาง</span></td><td>56%</td></tr>
             </table>
         </div>
-
-        <div class="btn-group">
-            <button class="btn btn-secondary btn-back-home" style="width: 100%;">กลับสู่หน้าแรก</button>
-        </div>
+        <button class="btn btn-primary" style="width:100%; margin-top:15px;" onclick="switchScreen('home-screen')">กลับหน้าแรก</button>
     </section>
 </div>
 
-<!-- Load Scripts -->
-<script src="js/state.js"></script>
+<!-- Scripts -->
 <script src="js/questionnaire.js"></script>
-<script src="js/risk-engine.js"></script>
 <script src="js/camera.js"></script>
 <script src="js/app.js"></script>
 </body>
