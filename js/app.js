@@ -31,6 +31,41 @@ function calculateBMI(weight, height) {
 // Age Risk Score
 // Maximum = 20 points
 // ==========================================
+// ==========================================
+// BMI Risk Score
+// Maximum = 20 points
+// ==========================================
+
+function calculateBMIScore(bmi, age) {
+
+    // สำหรับผู้ที่อายุต่ำกว่า 20 ปี
+    // ต้องใช้ BMI-for-age ในการประเมิน
+    if (age < 20) {
+        return 0;
+    }
+
+    if (!bmi || bmi <= 0) {
+        return 0;
+    }
+
+    if (bmi < 18.5) {
+        return 0;
+    }
+
+    if (bmi < 25) {
+        return 5;
+    }
+
+    if (bmi < 30) {
+        return 12;
+    }
+
+    if (bmi < 35) {
+        return 16;
+    }
+
+    return 20;
+}
 
 function calculateAgeScore(age) {
 
