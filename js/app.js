@@ -167,6 +167,43 @@ function initApp() {
         });
     }
 
+    // หน้า Result -> กดปุ่มไปหน้าส่งต่อโรงพยาบาล
+    const btnGotoReferral = document.getElementById('btn-goto-referral');
+    if (btnGotoReferral) {
+        btnGotoReferral.addEventListener('click', () => {
+            navigateTo('referral-screen');
+        });
+    }
+
+    // หน้า Referral -> ย้อนกลับไปหน้า Result
+    const btnReferralBack = document.getElementById('btn-referral-back');
+    if (btnReferralBack) {
+        btnReferralBack.addEventListener('click', () => {
+            navigateTo('result-screen');
+        });
+    }
+
+    // หน้า Referral -> กดปุ่มส่งข้อมูล
+    const btnSubmitReferral = document.getElementById('btn-submit-referral');
+    if (btnSubmitReferral) {
+        btnSubmitReferral.addEventListener('click', () => {
+            const hospitalSelect = document.getElementById('select-hospital').value;
+            const chkConsent = document.getElementById('chk-referral-consent');
+
+            if (!hospitalSelect) {
+                alert('กรุณาเลือกโรงพยาบาลปลายทาง');
+                return;
+            }
+            if (!chkConsent || !chkConsent.checked) {
+                alert('กรุณาติ๊กยอมรับเงื่อนไขการส่งต่อข้อมูลทางการแพทย์');
+                return;
+            }
+
+            // ไปยังหน้าส่งข้อมูลสำเร็จ
+            navigateTo('success-screen');
+        });
+    }
+
     const backHomeButtons = document.querySelectorAll('.btn-back-home');
     backHomeButtons.forEach(btn => {
         btn.addEventListener('click', () => {
