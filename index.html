@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Knee Screening System</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- MediaPipe Pose CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -93,11 +96,24 @@
         </div>
     </section>
 
-    <!-- Placeholder สำหรับหน้าอื่นๆ จะสร้างใน Phase ถัดไป -->
+    <!-- 6. Camera AI Scan Screen -->
     <section id="camera-screen" class="screen">
         <h2>ตรวจวัดโครงสร้างร่างกายด้วย AI Camera</h2>
-        <p>กำลังพัฒนาใน Phase ต่อไป...</p>
-        <button class="btn btn-secondary btn-back-home">กลับหน้าแรก</button>
+        <p style="margin-top: 4px; font-size: 0.9rem; color: #666;">กรุณายืนถอยหลังให้เห็นเต็มตัวในกรอบ และจัดท่าทางให้อยู่ในแนวตรง</p>
+        
+        <div class="camera-container" style="position: relative; width: 100%; max-width: 400px; margin: 12px auto; background: #000; border-radius: 8px; overflow: hidden; aspect-ratio: 3/4;">
+            <video id="webcam" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover; display: block;"></video>
+            <canvas id="output-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 12px;">
+            <span id="camera-status" style="font-size: 0.9rem; font-weight: 600; color: #e67e22;">กำลังเตรียมกล้องและ AI...</span>
+        </div>
+
+        <div class="btn-group">
+            <button id="btn-camera-back" class="btn btn-secondary">ย้อนกลับ</button>
+            <button id="btn-capture-scan" class="btn btn-primary" disabled>ประเมินผลโครงสร้าง (Scan)</button>
+        </div>
     </section>
 
     <section id="result-screen" class="screen">
@@ -116,6 +132,8 @@
 <!-- Load Scripts -->
 <script src="js/state.js"></script>
 <script src="js/questionnaire.js"></script>
+<script src="js/risk-engine.js"></script>
+<script src="js/camera.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
