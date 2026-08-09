@@ -1,56 +1,96 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, sans-serif;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body{
-    background:linear-gradient(135deg,#EAF4FF,#FFFFFF);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+body {
+    background-color: #f4f7f6;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
-.container{
-    width:420px;
-    background:white;
-    padding:40px;
-    border-radius:25px;
-    text-align:center;
-    box-shadow:0 15px 35px rgba(0,0,0,.15);
+.app-container {
+    width: 100%;
+    max-width: 800px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    margin: 16px;
 }
 
-img{
-    margin-bottom:20px;
+/* Class สำหรับจัดการการสลับหน้า */
+.screen {
+    display: none;
 }
 
-h1{
-    color:#1E5EFF;
-    margin-bottom:15px;
+.screen.active {
+    display: block;
 }
 
-h2{
-    margin-bottom:20px;
+header {
+    text-align: center;
+    margin-bottom: 24px;
+    border-bottom: 2px solid #eef2f5;
+    padding-bottom: 12px;
 }
 
-p{
-    color:#666;
-    margin-bottom:30px;
-    line-height:1.7;
+header h1 {
+    color: #2c3e50;
+    font-size: 1.8rem;
 }
 
-button{
-    background:#1E5EFF;
-    color:white;
-    border:none;
-    padding:15px 40px;
-    border-radius:50px;
-    font-size:18px;
-    cursor:pointer;
+header p {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-top: 4px;
 }
 
-button:hover{
-    background:#0046d5;
+.btn-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-primary {
+    background-color: #0066cc;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #0052a3;
+}
+
+.btn-secondary {
+    background-color: #e0e6ed;
+    color: #4a5568;
+}
+
+.btn-secondary:hover {
+    background-color: #cbd5e0;
+}
+
+.disclaimer-box {
+    background-color: #fff5f5;
+    border-left: 4px solid #e53e3e;
+    padding: 12px;
+    margin: 16px 0;
+    color: #9b2c2c;
+    font-size: 0.85rem;
+    border-radius: 4px;
 }
