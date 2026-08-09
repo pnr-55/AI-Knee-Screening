@@ -20,7 +20,7 @@
     <!-- 1. Home Screen -->
     <section id="home-screen" class="screen active">
         <h2>ยินดีต้อนรับสู่ระบบคัดกรอง</h2>
-        <p style="margin-top: 12px;">ระบบนี้ช่วยประเมินความเสี่ยงเบื้องต้นของภาวะข้อเข่าเสื่อม (Knee Osteoarthritis) และขาโก่ง (Genu Varum) โดยใช้การวิเคราะห์อาการประวัติร่วมกับเทคโนโลยี AI Pose Detection</p>
+        <p class="desc-text">ระบบนี้ช่วยประเมินความเสี่ยงเบื้องต้นของภาวะข้อเข่าเสื่อม (Knee Osteoarthritis) และขาโก่ง (Genu Varum) โดยใช้การวิเคราะห์อาการประวัติร่วมกับเทคโนโลยี AI Pose Detection</p>
         
         <div class="disclaimer-box">
             <strong>คำชี้แจงสำคัญ:</strong> ระบบนี้เป็นเพียงระบบคัดกรองความเสี่ยงเบื้องต้นเท่านั้น <u>มิใช่ระบบวินิจฉัยทางการแพทย์</u> ผลลัพธ์ที่ได้ไม่สามารถใช้แทนการตรวจวินิจฉัยโดยแพทย์ผู้เชี่ยวชาญได้
@@ -35,28 +35,28 @@
     <!-- 2. Consent & Patient Information Screen -->
     <section id="consent-screen" class="screen">
         <h2>หนังสือยินยอมและข้อมูลพื้นฐาน</h2>
-        <p style="margin-top: 8px; font-size: 0.9rem;">กรุณาอ่านเงื่อนไขและกรอกข้อมูลพื้นฐานก่อนเริ่มการประเมิน</p>
+        <p class="desc-text">กรุณาอ่านเงื่อนไขและกรอกข้อมูลพื้นฐานก่อนเริ่มการประเมิน</p>
         
-        <div style="margin: 12px 0; padding: 10px; border: 1px solid #ddd; border-radius: 6px; max-height: 90px; overflow-y: auto; font-size: 0.85rem; background-color: #fafafa;">
+        <div class="scroll-box">
             ข้าพเจ้ายินยอมให้ระบบประมวลผลข้อมูลส่วนบุคคล ได้แก่ อายุ น้ำหนัก ส่วนสูง และภาพถ่ายโครงสร้างร่างกายชั่วคราว เพื่อวัตถุประสงค์ในการประเมินความเสี่ยงข้อเข่าเบื้องต้นเท่านั้น
         </div>
 
-        <div style="margin-bottom: 12px;">
+        <div class="checkbox-container">
             <label><input type="checkbox" id="chk-consent"> ข้าพเจ้าได้อ่านและยอมรับเงื่อนไขข้างต้น</label>
         </div>
 
         <!-- ฟอร์มกรอกข้อมูลพื้นฐานผู้ป่วย -->
-        <div class="form-container" style="background: #f8fafc; padding: 14px; border-radius: 6px; margin-bottom: 12px;">
-            <h3 style="font-size: 1rem; margin-bottom: 8px; color: #2c3e50;">ข้อมูลพื้นฐานผู้รับบริการ</h3>
+        <div class="form-container">
+            <h3>ข้อมูลพื้นฐานผู้รับบริการ</h3>
             
-            <div class="form-group" style="margin-bottom: 8px;">
-                <label style="display: block; font-size: 0.85rem; margin-bottom: 4px;">อายุ (ปี):</label>
-                <input type="number" id="input-age" placeholder="เช่น 25" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            <div class="form-group">
+                <label>อายุ (ปี):</label>
+                <input type="number" id="input-age" placeholder="เช่น 25">
             </div>
 
-            <div class="form-group" style="margin-bottom: 8px;">
-                <label style="display: block; font-size: 0.85rem; margin-bottom: 4px;">เพศ:</label>
-                <select id="select-gender" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background: #fff;">
+            <div class="form-group">
+                <label>เพศ:</label>
+                <select id="select-gender">
                     <option value="">-- กรุณาเลือกเพศ --</option>
                     <option value="male">ชาย</option>
                     <option value="female">หญิง</option>
@@ -64,14 +64,14 @@
                 </select>
             </div>
 
-            <div class="form-group" style="margin-bottom: 8px;">
-                <label style="display: block; font-size: 0.85rem; margin-bottom: 4px;">น้ำหนัก (กิโลกรัม - kg):</label>
-                <input type="number" step="0.1" id="input-weight" placeholder="เช่น 60" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            <div class="form-group">
+                <label>น้ำหนัก (กิโลกรัม - kg):</label>
+                <input type="number" step="0.1" id="input-weight" placeholder="เช่น 60">
             </div>
 
-            <div class="form-group" style="margin-bottom: 4px;">
-                <label style="display: block; font-size: 0.85rem; margin-bottom: 4px;">ส่วนสูง (เซนติเมตร - cm):</label>
-                <input type="number" step="0.1" id="input-height" placeholder="เช่น 170" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            <div class="form-group">
+                <label>ส่วนสูง (เซนติเมตร - cm):</label>
+                <input type="number" step="0.1" id="input-height" placeholder="เช่น 170">
             </div>
         </div>
 
@@ -84,9 +84,9 @@
     <!-- 3. Questionnaire Screen -->
     <section id="questionnaire-screen" class="screen">
         <h2>แบบสอบถามประเมินอาการข้อเข่า</h2>
-        <p style="margin-top: 4px; font-size: 0.9rem; color: #666;">กรุณาตอบคำถามทั้ง 8 ข้อตามความเป็นจริงเพื่อใช้คำนวณ Symptom Score</p>
+        <p class="desc-text">กรุณาตอบคำถามทั้ง 8 ข้อตามความเป็นจริงเพื่อใช้คำนวณ Symptom Score</p>
         
-        <div id="questionnaire-container" style="max-height: 350px; overflow-y: auto; margin: 16px 0; padding-right: 4px;">
+        <div id="questionnaire-container" class="questionnaire-scroll">
             <!-- คำถามจะถูกโหลดมาแสดงที่นี่โดย JavaScript -->
         </div>
 
@@ -99,15 +99,15 @@
     <!-- 6. Camera AI Scan Screen -->
     <section id="camera-screen" class="screen">
         <h2>ตรวจวัดโครงสร้างร่างกายด้วย AI Camera</h2>
-        <p style="margin-top: 4px; font-size: 0.9rem; color: #666;">กรุณายืนถอยหลังให้เห็นเต็มตัวในกรอบ และจัดท่าทางให้อยู่ในแนวตรง</p>
+        <p class="desc-text">กรุณายืนถอยหลังให้เห็นเต็มตัวในกรอบ และจัดท่าทางให้อยู่ในแนวตรง</p>
         
-        <div class="camera-container" style="position: relative; width: 100%; max-width: 400px; margin: 12px auto; background: #000; border-radius: 8px; overflow: hidden; aspect-ratio: 3/4;">
-            <video id="webcam" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover; display: block;"></video>
-            <canvas id="output-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+        <div class="camera-container">
+            <video id="webcam" autoplay playsinline></video>
+            <canvas id="output-canvas"></canvas>
         </div>
 
-        <div style="text-align: center; margin-bottom: 12px;">
-            <span id="camera-status" style="font-size: 0.9rem; font-weight: 600; color: #e67e22;">กำลังเตรียมกล้องและ AI...</span>
+        <div class="camera-status-text">
+            <span id="camera-status">กำลังเตรียมกล้องและ AI...</span>
         </div>
 
         <div class="btn-group">
@@ -116,21 +116,21 @@
         </div>
     </section>
 
-    <!-- 8. Result Screen (หน้าแสดงผลการประเมินความเสี่ยง) -->
+    <!-- 8. Result Screen -->
     <section id="result-screen" class="screen">
         <h2>ผลการประเมินความเสี่ยงสุขภาพข้อเข่า</h2>
-        <p style="margin-top: 4px; font-size: 0.9rem; color: #666;">สรุปผลการวิเคราะห์จากอาการ แบบสอบถาม และ AI Camera</p>
+        <p class="desc-text">สรุปผลการวิเคราะห์จากอาการ แบบสอบถาม และ AI Camera</p>
         
-        <div class="result-card" style="background: #f8fafc; padding: 16px; border-radius: 8px; margin: 12px 0; border: 1px solid #e2e8f0; text-align: center;">
-            <div style="font-size: 0.85rem; color: #666; margin-bottom: 4px;">คะแนนความเสี่ยงรวม (Total Risk Score)</div>
-            <div id="res-total-score" style="font-size: 2.5rem; font-weight: bold; color: #2c3e50;">0 / 100</div>
-            <div id="res-risk-level" style="display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.9rem; font-weight: bold; color: #fff; background: #95a5a6; margin: 8px 0;">กำลังประมวลผล...</div>
-            <p id="res-risk-desc" style="font-size: 0.85rem; color: #555; margin-top: 4px;">-</p>
+        <div class="result-card">
+            <div class="result-title">คะแนนความเสี่ยงรวม (Total Risk Score)</div>
+            <div id="res-total-score" class="result-score">0 / 100</div>
+            <div id="res-risk-level" class="badge-risk">กำลังประมวลผล...</div>
+            <p id="res-risk-desc" class="result-desc">-</p>
         </div>
 
-        <div style="background: #fff; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 12px; font-size: 0.85rem;">
+        <div class="result-details">
             <strong>รายละเอียดคะแนนแยกตามส่วน:</strong>
-            <ul style="margin: 6px 0 0 20px; color: #444;">
+            <ul>
                 <li>คะแนนอาการ (Symptom Score): <span id="detail-symptom">0</span> / 30</li>
                 <li>คะแนนดัชนีมวลกาย (BMI Score): <span id="detail-bmi">0</span> / 20 (<span id="detail-bmi-val">-</span>)</li>
                 <li>คะแนนโครงสร้างขา (Pose Score): <span id="detail-pose">0</span> / 30</li>
@@ -138,31 +138,31 @@
             </ul>
         </div>
 
-        <div class="btn-group" style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <button id="btn-result-back" class="btn btn-secondary" style="flex: 1;">ย้อนกลับ</button>
-            <button id="btn-print-report" class="btn btn-secondary" style="flex: 1; background: #34495e; color: #fff;">พิมพ์รายงาน PDF</button>
-            <button id="btn-goto-referral" class="btn btn-primary" style="flex: 1; display: none;">ส่งต่อข้อมูลโรงพยาบาล</button>
+        <div class="btn-group result-btn-group">
+            <button id="btn-result-back" class="btn btn-secondary">ย้อนกลับ</button>
+            <button id="btn-print-report" class="btn btn-dark">พิมพ์รายงาน PDF</button>
+            <button id="btn-goto-referral" class="btn btn-primary" style="display: none;">ส่งต่อข้อมูลโรงพยาบาล</button>
         </div>
     </section>
 
-    <!-- 9. Referral Screen (หน้าส่งต่อโรงพยาบาลกรณีเสี่ยงสูง) -->
+    <!-- 9. Referral Screen -->
     <section id="referral-screen" class="screen">
         <h2>ส่งต่อข้อมูลโรงพยาบาล</h2>
-        <div style="background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 12px; border-radius: 6px; margin: 12px 0; font-size: 0.85rem;">
+        <div class="alert-box">
             <strong>⚠️ ผลการประเมินความเสี่ยง : สูง</strong><br>
             แนะนำให้รีบพบแพทย์ผู้เชี่ยวชาญเพื่อรับการวินิจฉัยเชิงลึก
         </div>
 
-        <div class="form-container" style="background: #f8fafc; padding: 14px; border-radius: 6px; margin-bottom: 12px;">
-            <label style="display: block; font-size: 0.85rem; margin-bottom: 6px; font-weight: 600;">เลือกโรงพยาบาลปลายทาง:</label>
-            <select id="select-hospital" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background: #fff; margin-bottom: 12px;">
+        <div class="form-container">
+            <label class="form-label-bold">เลือกโรงพยาบาลปลายทาง:</label>
+            <select id="select-hospital" class="hospital-select">
                 <option value="">-- กรุณาเลือกโรงพยาบาล --</option>
                 <option value="sirindhorn">โรงพยาบาลสิรินธร</option>
                 <option value="chulalongkorn">โรงพยาบาลจุฬาลงกรณ์</option>
                 <option value="ramathibodi">โรงพยาบาลรามาธิบดี</option>
             </select>
 
-            <div style="font-size: 0.85rem; margin-top: 8px;">
+            <div class="checkbox-container">
                 <label><input type="checkbox" id="chk-referral-consent"> ข้าพเจ้า <u>ยินยอม</u>ให้ส่งต่อข้อมูลประวัติการประเมินและภาพถ่ายโครงสร้าง เพื่อใช้ประกอบการพิจารณาของบุคลากรทางการแพทย์</label>
             </div>
         </div>
@@ -174,28 +174,28 @@
     </section>
 
     <!-- 10. Success / Complete Screen -->
-    <section id="success-screen" class="screen" style="text-align: center;">
-        <div style="font-size: 3rem; color: #2ecc71; margin-bottom: 12px;">✅</div>
+    <section id="success-screen" class="screen success-center">
+        <div class="success-icon">✅</div>
         <h2>ส่งข้อมูลไปยังโรงพยาบาลสำเร็จ</h2>
-        <p style="margin-top: 8px; font-size: 0.9rem; color: #666;">เจ้าหน้าที่และแพทย์ผู้เชี่ยวชาญได้รับข้อมูลการคัดกรองของท่านเรียบร้อยแล้ว จะมีการติดต่อกลับเพื่อนัดหมายในลำดับถัดไป</p>
+        <p class="desc-text">เจ้าหน้าที่และแพทย์ผู้เชี่ยวชาญได้รับข้อมูลการคัดกรองของท่านเรียบร้อยแล้ว จะมีการติดต่อกลับเพื่อนัดหมายในลำดับถัดไป</p>
         <div class="btn-group" style="margin-top: 20px;">
-            <button class="btn btn-primary btn-back-home">กลับสู่หน้าแรก</button>
+            <button class="btn btn-primary btn-back-home" style="width: 100%;">กลับสู่หน้าแรก</button>
         </div>
     </section>
 
     <!-- 11. Medical Portal Login Screen -->
     <section id="medical-login-screen" class="screen">
         <h2>Medical Portal Login</h2>
-        <p style="margin-top: 4px; font-size: 0.9rem; color: #666;">สำหรับบุคลากรทางการแพทย์และเจ้าหน้าที่โรงพยาบาล</p>
+        <p class="desc-text">สำหรับบุคลากรทางการแพทย์และเจ้าหน้าที่โรงพยาบาล</p>
         
-        <div class="form-container" style="background: #f8fafc; padding: 16px; border-radius: 6px; margin: 16px 0; border: 1px solid #e2e8f0;">
-            <div class="form-group" style="margin-bottom: 12px;">
-                <label style="display: block; font-size: 0.85rem; margin-bottom: 4px; font-weight: 600;">ชื่อผู้ใช้งาน (Username):</label>
-                <input type="text" id="medical-user" placeholder="กรอกชื่อผู้ใช้งาน" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+        <div class="form-container">
+            <div class="form-group">
+                <label class="form-label-bold">ชื่อผู้ใช้งาน (Username):</label>
+                <input type="text" id="medical-user" placeholder="กรอกชื่อผู้ใช้งาน">
             </div>
-            <div class="form-group" style="margin-bottom: 4px;">
-                <label style="display: block; font-size: 0.85rem; margin-bottom: 4px; font-weight: 600;">รหัสผ่าน (Password):</label>
-                <input type="password" id="medical-pass" placeholder="กรอกรหัสผ่าน" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            <div class="form-group">
+                <label class="form-label-bold">รหัสผ่าน (Password):</label>
+                <input type="password" id="medical-pass" placeholder="กรอกรหัสผ่าน">
             </div>
         </div>
 
@@ -207,54 +207,53 @@
 
     <!-- 12. Medical Dashboard Screen -->
     <section id="medical-dashboard-screen" class="screen">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div class="dashboard-header">
             <h2>Medical Dashboard</h2>
-            <button id="btn-medical-logout" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8rem;">ออกจากระบบ</button>
+            <button id="btn-medical-logout" class="btn btn-secondary btn-sm">ออกจากระบบ</button>
         </div>
-        <p style="font-size: 0.85rem; color: #666; margin-bottom: 12px;">รายการข้อมูลผู้รับบริการและผลการคัดกรองความเสี่ยงข้อเข่า</p>
+        <p class="desc-text" style="margin-bottom: 12px;">รายการข้อมูลผู้รับบริการและผลการคัดกรองความเสี่ยงข้อเข่า</p>
 
         <!-- สรุปสถิติเบื้องต้น -->
-        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-            <div style="flex: 1; background: #f1f5f9; padding: 8px; border-radius: 6px; text-align: center; border: 1px solid #e2e8f0;">
-                <div style="font-size: 0.75rem; color: #666;">เคสทั้งหมด</div>
-                <div id="stat-total-cases" style="font-size: 1.2rem; font-weight: bold; color: #2c3e50;">3</div>
+        <div class="stat-container">
+            <div class="stat-card">
+                <div class="stat-label">เคสทั้งหมด</div>
+                <div id="stat-total-cases" class="stat-val">3</div>
             </div>
-            <div style="flex: 1; background: #fee2e2; padding: 8px; border-radius: 6px; text-align: center; border: 1px solid #fecaca;">
-                <div style="font-size: 0.75rem; color: #b91c1c;">เคสเสี่ยงสูง (>60)</div>
-                <div id="stat-high-risk" style="font-size: 1.2rem; font-weight: bold; color: #dc2626;">2</div>
+            <div class="stat-card stat-card-danger">
+                <div class="stat-label stat-danger-text">เคสเสี่ยงสูง (>60)</div>
+                <div id="stat-high-risk" class="stat-val stat-danger-val">2</div>
             </div>
         </div>
 
-        <!-- ตารางแสดงรายการข้อมูลผู้ป่วย (จำลองข้อมูลตัวอย่าง) -->
-        <div style="max-height: 280px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 12px;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
+        <!-- ตารางแสดงรายการข้อมูลผู้ป่วย -->
+        <div class="table-container">
+            <table>
                 <thead>
-                    <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; color: #475569;">
-                        <th style="padding: 8px;">อายุ/เพศ</th>
-                        <th style="padding: 8px;">คะแนนรวม</th>
-                        <th style="padding: 8px;">ระดับเสี่ยง</th>
-                        <th style="padding: 8px;">รพ. ที่ส่งต่อ</th>
+                    <tr>
+                        <th>อายุ/เพศ</th>
+                        <th>คะแนนรวม</th>
+                        <th>ระดับเสี่ยง</th>
+                        <th>รพ. ที่ส่งต่อ</th>
                     </tr>
                 </thead>
                 <tbody id="patient-table-body">
-                    <!-- ข้อมูลจำลองสำหรับทดสอบระบบแดชบอร์ดแพทย์ -->
-                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                        <td style="padding: 8px;">65 ปี / หญิง</td>
-                        <td style="padding: 8px; font-weight: bold;">78 / 100</td>
-                        <td style="padding: 8px;"><span style="background: #dc2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">สูง</span></td>
-                        <td style="padding: 8px;">รพ.สิรินธร</td>
-                    </tr>
-                    <tr style="border-bottom: 1px solid #f1f5f9;">
-                        <td style="padding: 8px;">58 ปี / ชาย</td>
-                        <td style="padding: 8px; font-weight: bold;">65 / 100</td>
-                        <td style="padding: 8px;"><span style="background: #dc2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">สูง</span></td>
-                        <td style="padding: 8px;">รพ.จุฬาลงกรณ์</td>
+                    <tr>
+                        <td>65 ปี / หญิง</td>
+                        <td><strong>78 / 100</strong></td>
+                        <td><span class="badge-high">สูง</span></td>
+                        <td>รพ.สิรินธร</td>
                     </tr>
                     <tr>
-                        <td style="padding: 8px;">32 ปี / หญิง</td>
-                        <td style="padding: 8px; font-weight: bold;">25 / 100</td>
-                        <td style="padding: 8px;"><span style="background: #10b981; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">ต่ำ</span></td>
-                        <td style="padding: 8px;">-</td>
+                        <td>58 ปี / ชาย</td>
+                        <td><strong>65 / 100</strong></td>
+                        <td><span class="badge-high">สูง</span></td>
+                        <td>รพ.จุฬาลงกรณ์</td>
+                    </tr>
+                    <tr>
+                        <td>32 ปี / หญิง</td>
+                        <td><strong>25 / 100</strong></td>
+                        <td><span class="badge-low">ต่ำ</span></td>
+                        <td>-</td>
                     </tr>
                 </tbody>
             </table>
