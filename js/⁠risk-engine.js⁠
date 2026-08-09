@@ -1,116 +1,132 @@
 /**
- * Risk Score Engine (Max 100 Points)
- * Breakdown: Symptom(30) + BMI(20) + Pose(30) + Age(20) = 100
+ * Risk Calculation Engine
+ * Computes Total Risk Score based on Symptom Score, BMI, AI Pose Alignment, Sit-to-Stand Mobility, and Age.
  */
-function calculateBMI(weight, height) {
-    if (!weight || !height || height <= 0) return 0;
-    const heightInMeters = height / 100;
-    const bmi = weight / (heightInMeters * heightInMeters);
-    return Math.round(bmi * 100) / 100;
-}
 
-function calculateBMIScore(bmi, age) {
-    if (age < 20) {
-        return {
-            score: 0,
-            category: "Needs BMI-for-age Evaluation (Pediatric criteria required)",
-            isPediatric: true
-        };
+function calculateSymptomScore() {
+    const answers = getState().questionnaire.answers;
+    let totalScore = 0;
+
+    // สมมติมีคำถาม 8 ข้อ แต่ละข้อคะแนน 0-3 (รวมสูงสุด 24-30 คะแนน)
+    for (let i = 1; i <= 8; i++) {
+        const val = parseInt(answers[i] || 0, 10);
+        totalScore += val;
     }
 
+    // แปลงสเกลคะแนนอาการให้เต็มที่ 30 คะแนน
+    const normalizedSymptomScore = Math.min(30, Math.round((totalScore / 24) * 30));
+
+    return {
+        score: normalizedSymptomScore,
+        answers: answers
+    };
+}
+
+function calculateBMIScore(weight, heightCm) {
+    const heightM = heightCm / 100;
+    const bmi = weight / (heightM * heightM);
     let score = 0;
-    let category = "";
+    let category = 'ปกติ';
 
     if (bmi < 18.5) {
-        score = 5;
-        category = "Underweight";
-    } else if (bmi >= 18.5 && bmi < 23.0) {
+        score = 2;
+        category = 'น้ำหนักน้อยกว่าเกณฑ์';
+    } else if (bmi >= 18.5 && bmi <= 22.9) {
         score = 0;
-        category = "Normal Weight";
-    } else if (bmi >= 23.0 && bmi < 25.0) {
-        score = 10;
-        category = "Overweight";
-    } else if (bmi >= 25.0 && bmi < 30.0) {
-        score = 15;
-        category = "Obesity Class I";
+        category = 'ปกติ (สมส่วน)';
+    } else if (bmi >= 23.0 && bmi <= 24.9) {
+        score = 6;
+        category = 'ท้วม / เริ่มอ้วน';
+    } else if (bmi >= 25.0 && bmi <= 29.9) {
+        score = 14;
+        category = 'อ้วนระดับ 1';
     } else {
         score = 20;
-        category = "Obesity Class II+";
+        category = 'อ้วนระดับ 2 ขึ้นไป';
     }
 
     return {
-        score: score,
-        category: category,
-        isPediatric: false
+        bmiValue: parseFloat(bmi.toFixed(1)),
+        bmiCategory: category,
+        bmiScore: score
     };
 }
 
 function calculateAgeScore(age) {
-    if (!age || age <= 0) return 0;
+    if (age < 40) return 0;
+    if (age >= 40 && age <= 50) return 5;
+    if (age >= 51 && age <= 60) return 12;
+    return 20; // มากกว่า 60 ปีขึ้นไป
+}
 
-    if (age < 40) {
-        return 2;
-    } else if (age >= 40 && age < 50) {
-        return 6;
-    } else if (age >= 50 && age < 60) {
-        return 12;
-    } else if (age >= 60 && age < 70) {
-        return 16;
+/**
+ * คำนวณคะแนนโครงสร้างและการเคลื่อนไหวจาก AI Camera (Pose Score เต็ม 30 คะแนน)
+ * - พิจารณาจาก Alignment (ความโก่งของขา) และ Dynamic Sit-to-Stand (ความสามารถในการลุกนั่ง)
+ */
+function calculatePoseScore(poseData) {
+    let score = 0;
+    
+    // 1. คะแนนจากความตรงของโครงสร้าง (Alignment) สูงสุด 20 คะแนน
+    if (poseData && typeof poseData.alignmentScore !== 'undefined') {
+        // alignmentScore จาก camera.js มีค่าสูงสุดประมาณ 30 เราเอามาสัดส่วนเทียบ 20 คะแนน
+        score += Math.min(20, Math.round((poseData.alignmentScore / 30) * 20));
     } else {
-        return 20;
-    }
-}
-
-function calculatePoseScore(leftAngle, rightAngle) {
-    if (leftAngle === null || rightAngle === null || isNaN(leftAngle) || isNaN(rightAngle)) {
-        return 0;
+        score += 15; // ค่ากลางกรณีไม่มีข้อมูล
     }
 
-    const leftDeviation = Math.abs(180 - leftAngle);
-    const rightDeviation = Math.abs(180 - rightAngle);
-    const avgDeviation = (leftDeviation + rightDeviation) / 2;
+    // 2. คะแนนจากการทดสอบลุกนั่ง (Sit-to-Stand Mobility Test) สูงสุด 10 คะแนน
+    // คนปกติควรลุกนั่งได้คล่องตัว หากทำได้น้อยหรือติดขัด จะสะท้อนความเสี่ยงข้อเข่าเสื่อม
+    const sits = poseData && typeof poseData.sitToStandCount !== 'undefined' ? poseData.sitToStandCount : 5;
+    if (sits >= 5) {
+        score += 10; // เคลื่อนไหวได้ดี เสี่ยงต่ำ
+    } else if (sits >= 3) {
+        score += 6;  // ปานกลาง
+    } else {
+        score += 2;  // ลุกนั่งลำบาก เสี่ยงสูง
+    }
 
-    let poseScore = (avgDeviation / 25) * 30;
-    if (poseScore > 30) poseScore = 30;
-    if (poseScore < 0) poseScore = 0;
-
-    return Math.round(poseScore * 100) / 100;
-}
-
-function calculateTotalRiskScore(patientData, symptomScore, poseData) {
-    const ageScore = calculateAgeScore(patientData.age);
-    const bmi = calculateBMI(patientData.weight, patientData.height);
-    const bmiResult = calculateBMIScore(bmi, patientData.age);
-    const bmiScore = bmiResult.score;
-
-    const poseScore = calculatePoseScore(
-        poseData ? poseData.leftKneeAngle : null, 
-        poseData ? poseData.rightKneeAngle : null
-    );
-
-    const validSymptomScore = typeof symptomScore === 'number' ? symptomScore : 0;
-    const totalScore = Math.round((validSymptomScore + bmiScore + poseScore + ageScore) * 100) / 100;
-    const riskLevel = getRiskLevel(totalScore);
-
-    return {
-        symptomScore: validSymptomScore,
-        bmiScore: bmiScore,
-        bmiValue: bmi,
-        bmiCategory: bmiResult.category,
-        isPediatricBMI: bmiResult.isPediatric,
-        ageScore: ageScore,
-        poseScore: poseScore,
-        totalScore: totalScore,
-        riskLevel: riskLevel
-    };
+    return Math.min(30, score);
 }
 
 function getRiskLevel(totalScore) {
-    if (totalScore <= 30) {
-        return { level: "Low Risk", description: "มีความเสี่ยงต่ำต่อภาวะข้อเข่าเสื่อมและขาโก่ง", color: "#2ecc71" };
-    } else if (totalScore > 30 && totalScore <= 60) {
-        return { level: "Moderate Risk", description: "มีความเสี่ยงระดับปานกลาง ควรสังเกตอาการและปรับพฤติกรรม", color: "#f39c12" };
+    if (totalScore <= 35) {
+        return {
+            level: 'ความเสี่ยงต่ำ (Low Risk)',
+            color: '#27ae60',
+            description: 'โครงสร้างและอาการข้อเข่าอยู่ในเกณฑ์ปกติ แนะนำดูแลสุขภาพและออกกำลังกายอย่างสม่ำเสมอ'
+        };
+    } else if (totalScore <= 65) {
+        return {
+            level: 'ความเสี่ยงปานกลาง (Moderate Risk)',
+            color: '#f39c12',
+            description: 'เริ่มมีสัญญาณความเสี่ยงของข้อเข่า ควรระมัดระวังการใช้งานข้อเข่า หลีกเลี่ยงการนั่งยองๆ และควบคุมน้ำหนัก'
+        };
     } else {
-        return { level: "High Risk", description: "มีความเสี่ยงสูง ควรปรึกษาแพทย์ผู้เชี่ยวชาญเพื่อตรวจวินิจฉัยเชิงลึก", color: "#e74c3c" };
+        return {
+            level: 'ความเสี่ยงสูง (High Risk)',
+            color: '#c0392b',
+            description: 'ตรวจพบความเสี่ยงสูง ทั้งจากอาการ โครงสร้าง หรือข้อจำกัดในการเคลื่อนไหว แนะนำให้พบแพทย์ผู้เชี่ยวชาญเพื่อรับการวินิจฉัยเชิงลึก'
+        };
     }
+}
+
+function calculateTotalRiskScore(patientInfo, symptomScore, poseData) {
+    const bmiResult = calculateBMIScore(patientInfo.weight, patientInfo.height);
+    const ageScore = calculateAgeScore(patientInfo.age);
+    const poseScore = calculatePoseScore(poseData);
+
+    const totalScore = symptomScore + bmiResult.bmiScore + poseScore + ageScore;
+    const clampedScore = Math.min(100, Math.max(0, totalScore));
+    const riskLevel = getRiskLevel(clampedScore);
+
+    return {
+        totalScore: clampedScore,
+        symptomScore: symptomScore,
+        bmiScore: bmiResult.bmiScore,
+        bmiValue: bmiResult.bmiValue,
+        bmiCategory: bmiResult.bmiCategory,
+        poseScore: poseScore,
+        ageScore: ageScore,
+        riskLevel: riskLevel
+    };
 }
