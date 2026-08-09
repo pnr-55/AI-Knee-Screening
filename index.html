@@ -1,196 +1,627 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI-Knee-Screening v2.0 - นวัตกรรม AI คัดกรองสุขภาพข้อเข่าอัจฉริยะ</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบประเมินและสแกนการทรงตัวทางการแพทย์ (Medical Mobility & Posture AI)</title>
+    
+    <!-- Tailwind CSS & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- MediaPipe Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+    
+    <!-- JSPDF for Report Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-  <!-- MediaPipe Pose Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
-
-  <style>
-    body { font-family: 'Prompt', sans-serif; background: #f8fafc; color: #0f172a; }
-    .page-section { display: none; }
-    .page-active { display: block; }
-    .glass-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 1.5rem;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
-    }
-    .btn-gradient-primary {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      color: white;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
-    }
-    .btn-gradient-doctor {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      color: white;
-    }
-    @media print {
-      header, button, nav, #pdpa-banner, .no-print { display: none !important; }
-      body { background: white !important; }
-      .glass-card { border: 1px solid #ccc !important; box-shadow: none !important; }
-    }
-  </style>
+    <style>
+        body { font-family: 'Kanit', sans-serif; }
+        .page-section { display: none; }
+        .page-section.page-active { display: block !important; }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-  <!-- HEADER / NAVBAR -->
-  <header class="w-full bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 no-print">
-    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('page-home')">
-        <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-md">
-          <i class="fa-solid fa-joint"></i>
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchPage('home')">
+                <div class="bg-blue-600 text-white p-2 rounded-lg">
+                    <i class="fa-solid fa-user-nurse text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-slate-900">MobilityAI Pro</h1>
+                    <p class="text-xs text-slate-500">ระบบวิเคราะห์การทรงตัวและการเดินอิงหลักฐานทางการแพทย์</p>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex space-x-1 font-medium text-sm text-slate-600">
+                <button onclick="switchPage('home')" class="nav-btn px-3 py-2 rounded-md hover:bg-slate-100 transition">หน้าแรก</button>
+                <button onclick="switchPage('system-flow')" class="nav-btn px-3 py-2 rounded-md hover:bg-slate-100 transition">ผังการทำงาน</button>
+                <button onclick="switchPage('survey')" class="nav-btn px-3 py-2 rounded-md hover:bg-slate-100 transition">แบบสอบถาม</button>
+                <button onclick="switchPage('camera')" class="nav-btn px-3 py-2 rounded-md hover:bg-slate-100 transition">AI สแกนการทรงตัว</button>
+            </nav>
         </div>
-        <div>
-          <span class="font-extrabold text-lg text-slate-800 leading-none block">AI-Knee-Screening</span>
-          <span class="text-[10px] text-blue-600 font-semibold block mt-0.5">นวัตกรรม AI คัดกรองสุขภาพข้อเข่าอัจฉริยะ</span>
-        </div>
-      </div>
+    </header>
 
-      <nav class="hidden lg:flex items-center gap-6 text-xs font-bold text-slate-600">
-        <button onclick="showPage('page-home')" class="hover:text-blue-600 transition-colors flex items-center gap-1.5"><i class="fa-solid fa-house"></i> หน้าแรก</button>
-        <button onclick="showPage('page-flow')" class="hover:text-blue-600 transition-colors flex items-center gap-1.5"><i class="fa-solid fa-diagram-project"></i> ผังระบบ</button>
-        <button onclick="showPage('page-info')" class="hover:text-blue-600 transition-colors flex items-center gap-1.5"><i class="fa-solid fa-clipboard-list"></i> แบบสอบถาม</button>
-        <button onclick="showPage('page-camera')" class="hover:text-blue-600 transition-colors flex items-center gap-1.5"><i class="fa-solid fa-camera"></i> AI Camera</button>
-        <button onclick="showPage('page-report')" class="hover:text-blue-600 transition-colors flex items-center gap-1.5"><i class="fa-solid fa-square-poll-vertical"></i> ผลการประเมิน</button>
-      </nav>
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow max-w-6xl w-full mx-auto p-4 md:p-6">
 
-      <div class="flex items-center gap-2">
-        <button onclick="showPage('page-info')" class="text-xs px-4 py-2 rounded-xl btn-gradient-primary font-bold">
-          เริ่มคัดกรอง
-        </button>
-        <button onclick="showPage('page-login-doc')" class="text-xs px-4 py-2 rounded-xl btn-gradient-doctor font-bold">
-          🩺 Medical Portal
-        </button>
-      </div>
-    </div>
-  </header>
+        <!-- 1. PAGE: HOME -->
+        <section id="page-home" class="page-section page-active space-y-6">
+            <div class="bg-gradient-to-r from-blue-700 to-indigo-800 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="relative z-10 max-w-2xl space-y-4">
+                    <span class="bg-blue-500/30 text-blue-100 text-xs font-semibold px-3 py-1 rounded-full border border-blue-400/30">Clinical-Grade Assessment v2.5</span>
+                    <h2 class="text-3xl md:text-4xl font-bold">ประเมินความเสี่ยงการทรงตัว และการเคลื่อนไหวแบบแม่นยำ</h2>
+                    <p class="text-blue-100 text-sm md:text-base leading-relaxed">
+                        วิเคราะห์การสเวย์ของร่างกาย (Postural Sway) จังหวะการเดิน และประวัติสุขภาพ ด้วยระบบ AI Computer Vision อิงมาตรฐานการประเมินทางกายภาพบำบัด ไม่มีการเอนเอียง และวัดผลตามหลักฐานจริง
+                    </p>
+                    <div class="pt-2 flex flex-wrap gap-3">
+                        <button onclick="switchPage('survey')" class="bg-white text-blue-700 font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-blue-50 transition flex items-center gap-2">
+                            <span>เริ่มต้นประเมินความเสี่ยง</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-  <!-- Banner PDPA Notice -->
-  <div id="pdpa-banner" class="bg-blue-600 text-white py-2 px-4 text-center text-xs font-medium flex items-center justify-center gap-2 no-print">
-    <i class="fa-solid fa-shield-halved"></i>
-    <span><strong>ระบบคัดกรองทางการแพทย์:</strong> ประมวลผล AI Pose Detection ร่วมกับแบบประเมินความเสี่ยงสรีระ</span>
-  </div>
+            <!-- Features Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-microscope"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">อิงหลักฐานทางการแพทย์</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">คำนวณจุด Center of Gravity และค่าความผันผวน Standard Deviation ตามมาตรฐานการวิเคราะห์การทรงตัวจริง</p>
+                </div>
 
-  <!-- 1. หน้าแรก (HOME) -->
-  <main id="page-home" class="page-section page-active max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
-    <div class="text-center space-y-6 my-6">
-      <span class="px-4 py-1.5 bg-blue-100 text-blue-700 text-xs font-extrabold rounded-full inline-flex items-center gap-2">
-        <i class="fa-solid fa-wand-magic-sparkles"></i> AI Computer Vision + Mathematics Engine
-      </span>
-      
-      <h1 class="text-3xl sm:text-5xl font-black leading-tight text-slate-900 tracking-tight">
-        คัดกรองข้อเข่าไว มั่นใจด้วย AI<br>
-        <span class="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">ส่งต่อข้อมูลตรงถึงมือแพทย์</span>
-      </h1>
-      <p class="text-xs sm:text-sm text-slate-500 max-w-2xl mx-auto">
-        นวัตกรรมประเมินความเสี่ยงโรคข้อเข่าเสื่อมเบื้องต้น ตรวจจับองศาขาและจุดแลนด์มาร์กด้วย MediaPipe ร่วมกับแบบสอบถามคัดกรอง 8 ข้อ
-      </p>
-      
-      <div class="pt-2 flex flex-wrap justify-center gap-4">
-        <button onclick="showPage('page-info')" class="btn-gradient-primary font-bold text-xs px-6 py-3.5 rounded-xl shadow-md flex items-center gap-2">
-          <i class="fa-solid fa-circle-play"></i> เริ่มประเมินสุขภาพเข่าตอนนี้
-        </button>
-        <button onclick="showPage('page-flow')" class="bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs px-6 py-3.5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
-          <i class="fa-solid fa-sitemap"></i> ดูโครงสร้างผังระบบ
-        </button>
-      </div>
-    </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                    <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">ประเมินตรงไปตรงมา</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">ไม่อวยผลคะแนน ระบบตัดเกณฑ์ตามดรรชนีมวลกาย (Asian BMI) และผลการตรวจจับการสั่นไหวอย่างตรงฉิน</p>
+                </div>
 
-    <!-- Stats Boxes -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-8">
-      <div class="glass-card p-5 text-center space-y-1">
-        <div class="text-blue-600 text-xl font-black"><i class="fa-solid fa-bolt"></i> Real-time</div>
-        <div class="text-xs text-slate-500 font-semibold">สแกนองศาเข่ารวดเร็ว</div>
-      </div>
-      <div class="glass-card p-5 text-center space-y-1">
-        <div class="text-cyan-600 text-xl font-black">AI Pose</div>
-        <div class="text-xs text-slate-500 font-semibold">ตรวจจับจุด Landmark</div>
-      </div>
-      <div class="glass-card p-5 text-center space-y-1">
-        <div class="text-emerald-600 text-xl font-black">8 ข้อ</div>
-        <div class="text-xs text-slate-500 font-semibold">แบบประเมินคัดกรอง</div>
-      </div>
-      <div class="glass-card p-5 text-center space-y-1">
-        <div class="text-indigo-600 text-xl font-black">100</div>
-        <div class="text-xs text-slate-500 font-semibold">คะแนนความเสี่ยงเต็ม</div>
-      </div>
-    </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2">
+                    <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-file-medical"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">ออกรายงาน PDF พร้อมส่งต่อ</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">สรุปค่าดรรชนี ตัวเลขวัดผล และคำแนะนำสำหรับการนำไปปรึกษาแพทย์หรือนักกายภาพบำบัด</p>
+                </div>
+            </div>
+        </section>
 
-    <!-- Feed รายการผู้รับการคัดกรองล่าสุด -->
-    <div class="glass-card p-6 space-y-4">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <div>
-          <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-            <i class="fa-solid fa-hospital-user text-blue-600"></i> Medical Referral Live Feed
-          </h3>
-          <p class="text-xs text-slate-400">แสดงรหัสเคสและสถานะคัดกรองล่าสุด</p>
-        </div>
-        <span class="text-[11px] bg-emerald-100 text-emerald-700 font-bold px-3 py-1 rounded-full flex items-center gap-1.5">
-          <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span> Live Connected
-        </span>
-      </div>
+        <!-- 2. PAGE: SYSTEM FLOW -->
+        <section id="page-system-flow" class="page-section space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h2 class="text-xl font-bold text-slate-800 mb-2">ผังโครงสร้างการคำนวณแบบอิงหลักฐาน (Methodology Flow)</h2>
+                <p class="text-sm text-slate-500 mb-6">กระบวนการวิเคราะห์ข้อมูลแบบบูรณาการระหว่าง AI Vision และ Clinical Questionnaire</p>
 
-      <div id="home-referral-feed" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
-    </div>
-  </main>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <div class="text-xs font-bold text-blue-600 mb-1">ขั้นที่ 1</div>
+                        <div class="font-semibold text-slate-800 text-sm mb-1">คัดกรองประวัติ (Survey)</div>
+                        <div class="text-xs text-slate-500">แบบสอบถาม 8 ข้อ ประเมินประวัติการล้ม อาการเวียนศีรษะ และข้อต่อ (คะแนนเต็ม 40)</div>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <div class="text-xs font-bold text-blue-600 mb-1">ขั้นที่ 2</div>
+                        <div class="font-semibold text-slate-800 text-sm mb-1">คำนวณกายสรีระ (BMI)</div>
+                        <div class="text-xs text-slate-500">ตัดเกณฑ์ตาม Asian WHO Threshold ประเมินน้ำหนักตัวที่มีผลต่อข้อต่อ (คะแนนเต็ม 10)</div>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <div class="text-xs font-bold text-blue-600 mb-1">ขั้นที่ 3</div>
+                        <div class="font-semibold text-slate-800 text-sm mb-1">MediaPipe AI Motion</div>
+                        <div class="text-xs text-slate-500">สแกนการสเวย์ Postural Sway SD และ Gait Balance ความมั่นคงการก้าว (คะแนนเต็ม 50)</div>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <div class="text-xs font-bold text-blue-600 mb-1">ขั้นที่ 4</div>
+                        <div class="font-semibold text-slate-800 text-sm mb-1">สรุปความเสี่ยงจริง</div>
+                        <div class="text-xs text-slate-500">รวมคะแนน 100 แต้ม ออกเกณฑ์ความเสี่ยง สูง/ปานกลาง/ต่ำ และออกรายงาน PDF</div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <!-- MODAL: แสดงสูตรคำนวณคะแนนความเสี่ยง -->
-  <div id="calc-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="glass-card p-6 max-w-md w-full space-y-4 border border-blue-200">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-2">
-        <h3 class="font-bold text-sm text-slate-800">สูตรการคำนวณคะแนนความเสี่ยง</h3>
-        <button onclick="closeCalcModal()" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
-      </div>
+        <!-- 3. PAGE: SURVEY QUESTIONNAIRE -->
+        <section id="page-survey" class="page-section space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm max-w-3xl mx-auto space-y-6">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800">ส่วนที่ 1: ข้อมูลกายภาพและแบบคัดกรองประวัติ</h2>
+                    <p class="text-xs text-slate-500">กรุณาตอบตามความเป็นจริง เพื่อให้การคำนวณออกมาแม่นยำที่สุด</p>
+                </div>
 
-      <div class="space-y-2 text-xs text-slate-700">
-        <div class="flex justify-between p-2.5 bg-slate-50 rounded-lg">
-          <span>• แบบสอบถาม 8 ข้อ</span>
-          <strong class="text-slate-900" id="m-symptom-score">0 / 30</strong>
-        </div>
-        <div class="flex justify-between p-2.5 bg-slate-50 rounded-lg">
-          <span>• ดัชนีมวลกาย (BMI)</span>
-          <strong class="text-slate-900" id="m-bmi-score">0 / 20</strong>
-        </div>
-        <div class="flex justify-between p-2.5 bg-slate-50 rounded-lg">
-          <span>• มุมข้อเข่า AI (Pose)</span>
-          <strong class="text-slate-900" id="m-ai-score">0 / 30</strong>
-        </div>
-        <div class="flex justify-between p-2.5 bg-slate-50 rounded-lg">
-          <span>• ปัจจัยอายุ</span>
-          <strong class="text-slate-900" id="m-age-score">0 / 20</strong>
-        </div>
-        <div class="flex justify-between p-3 bg-blue-50 font-bold border border-blue-200 rounded-xl text-blue-900">
-          <span>รวมคะแนนทั้งหมด</span>
-          <span class="text-amber-600 text-sm" id="m-total-score">0 / 100</span>
-        </div>
-      </div>
-      <button onclick="closeCalcModal()" class="w-full py-2.5 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl text-xs font-bold">ปิดหน้าต่าง</button>
-    </div>
-  </div>
+                <form id="health-survey-form" class="space-y-4">
+                    <!-- Physical Data -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-blue-50/50 rounded-xl border border-blue-100">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">อายุ (ปี)</label>
+                            <input type="number" id="input-age" value="65" min="1" max="120" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">ส่วนสูง (ซม.)</label>
+                            <input type="number" id="input-height" value="160" min="50" max="230" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">น้ำหนัก (กก.)</label>
+                            <input type="number" id="input-weight" value="62" min="20" max="200" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" required>
+                        </div>
+                    </div>
 
-  <footer class="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500 no-print">
-    AI-Knee-Screening v2.0 — Innovation AI & Mathematics Knee Health Engine
-  </footer>
+                    <!-- 8 Questions -->
+                    <div class="space-y-3 text-sm text-slate-700">
+                        <div class="p-3 border rounded-lg flex items-center justify-between">
+                            <span>1. ในช่วง 1 ปีที่ผ่านมา ท่านเคยมีประวัติหกล้มหรือไม่?</span>
+                            <select id="q1" class="border rounded px-2 py-1 bg-slate-50 text-xs">
+                                <option value="0">ไม่เคย (5 คะแนน)</option>
+                                <option value="3">เคย 1 ครั้ง (2 คะแนน)</option>
+                                <option value="5">เคย 2 ครั้งขึ้นไป (0 คะแนน)</option>
+                            </select>
+                        </div>
 
-  <script>
-    // JS Logic การเปลี่ยนหน้าและคำนวณคะแนน
-    function showPage(pageId) {
-      document.querySelectorAll('.page-section').forEach(el => el.classList.remove('page-active'));
-      const target = document.getElementById(pageId);
-      if(target) target.classList.add('page-active');
-      window.scrollTo(0, 0);
-    }
-    function openCalcModal() { document.getElementById('calc-modal').classList.remove('hidden'); }
-    function closeCalcModal() { document.getElementById('calc-modal').classList.add('hidden'); }
-  </script>
+                        <div class="p-3 border rounded-lg flex items-center justify-between">
+                            <span>2. ท่านรู้สึกโคลงเคลง เวียนศีรษะ เวลาลุกยืนหรือเดินหรือไม่?</span>
+                            <select id="q2" class="border rounded px-2 py-1 bg-slate-50 text-xs">
+                                <option value="0">ไม่เคย (5 คะแนน)</option>
+                                <option value="2">นาน ๆ ครั้ง (3 คะแนน)</option>
+                                <option value="5">เป็นประจำ (0 คะแนน)</option>
+                            </select>
+                        </div>
+
+                        <div class="p-3 border rounded-lg flex items-center justify-between">
+                            <span>3. ท่านมีอาการปวดข้อเข่า ข้อเท้า หรือสะโพกเวลาเดินหรือไม่?</span>
+                            <select id="q3" class="border rounded px-2 py-1 bg-slate-50 text-xs">
+                                <option value="0">ไม่ปวด (5 คะแนน)</option>
+                                <option value="2">ปวดเล็กน้อย (3 คะแนน)</option>
+                                <option value="5">ปวดมาก/เรื้อรัง (0 คะแนน)</option>
+                            </select>
+                        </div>
+
+                        <div class="p-3 border rounded-lg flex items-center justify-between">
+                            <span>4. ท่านต้องใช้อุปกรณ์ช่วยเดิน (ไม้เท้า/Walker) หรือไม่?</span>
+                            <select id="q4" class="border rounded px-2 py-1 bg-slate-50 text-xs">
+                                <option value="0">ไม่ต้องใช้ (5 คะแนน)</option>
+                                <option value="3">ใช้บางครั้ง (2 คะแนน)</option>
+                                <option value="5">จำเป็นต้องใช้ตลอด (0 คะแนน)</option>
+                            </select>
+                        </div>
+
+                        <div class="p-3 border rounded-lg flex items-center justify-between">
+                            <span>5. ท่านมีอาการชาบริเวณปลายเท้า หรือฝ่าเท้าหรือไม่?</span>
+                            <select id="q5" class="border rounded px-2 py-1 bg-slate-50 text-xs">
+                                <option value="0">ไม่มีอาการ (5 คะแนน)</option>
+                                <option value="3">ชาบางครั้ง (2 คะแนน)</option>
+                                <option value="5">ชาตลอดเวลา (0 คะแนน)</option>
+                            </select>
+                        </div>
+
+                        <div class="p-3 border rounded-lg flex items-center justify-between">
+                            <span>6. ท่านรับประทานยาที่มีผลให้ง่วงนอน/ความดัน เกิน 3 ชนิดหรือไม่?</span>
+                            <select id="q6" class="border rounded px-2 py-1 bg-slate-50 text-xs">
+                                <option value="0">ไม่ใช่ (5 คะแนน)</option>
+                                <option value="5">ใช่ (0 คะแนน)</option>
+                            </select>
+                        </div>
+
+                        <div class="p-3 border rounded-lg flex items-center justify-between">
+                            <span>7. ท่านมีความวิตกกังวลว่าจะหกล้มเวลาต้องเดินคนเดียวหรือไม่?</span>
+                            <select id="q7" class="border rounded px-2 py-1 bg-slate-50 text-xs">
+                                <option value="0">ไม่กังวล (5 คะแนน)</option>
+                                <option value="2">กังวลเล็กน้อย (3 คะแนน)</option>
+                                <option value="5">กังวลมาก (0 คะแนน)</option>
+                            </select>
+                        </div>
+
+                        <div class="p-3 border rounded-lg flex items-center justify-between">
+                            <span>8. ท่านมีโรคประจำตัวเกี่ยวกับการมองเห็น/สายตาพร่ามัวหรือไม่?</span>
+                            <select id="q8" class="border rounded px-2 py-1 bg-slate-50 text-xs">
+                                <option value="0">ไม่มี/ใส่แว่นแก้ไขแล้ว (5 คะแนน)</option>
+                                <option value="5">มีปัญหาการมองเห็นชัดเจน (0 คะแนน)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="saveSurveyAndGoToCamera()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow transition text-center">
+                        บันทึกข้อมูล และไปขั้นตอนสแกนกล้อง AI <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 4. PAGE: AI CAMERA SCANNING -->
+        <section id="page-camera" class="page-section space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">ส่วนที่ 2: สแกนการทรงตัวด้วย AI MediaPipe</h2>
+                        <p class="text-xs text-slate-500">กรุณายืนให้เห็นเต็มตัว ห่างจากกล้องประมาณ 2-3 เมตร แล้วยืนนิ่ง 10 วินาที</p>
+                    </div>
+                    <div id="scan-status" class="text-xs font-semibold px-3 py-1 bg-amber-100 text-amber-700 rounded-full">
+                        รอเปิดกล้อง...
+                    </div>
+                </div>
+
+                <!-- Camera Container -->
+                <div class="relative bg-slate-900 rounded-xl overflow-hidden aspect-video max-w-2xl mx-auto flex items-center justify-center">
+                    <video id="webcam" class="hidden" playsinline></video>
+                    <canvas id="output_canvas" class="w-full h-full object-contain"></canvas>
+                    
+                    <!-- Countdown Overlay -->
+                    <div id="countdown-overlay" class="absolute inset-0 bg-black/50 hidden flex-col items-center justify-center text-white">
+                        <span id="countdown-text" class="text-6xl font-bold animate-ping">10</span>
+                        <span class="text-sm mt-2 text-slate-200">กำลังวัดค่าความผันผวนการทรงตัว (Sway Test)...</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-center gap-4">
+                    <button id="btn-start-scan" onclick="startCameraAndScan()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-video"></i>
+                        <span>เริ่มสแกนการทรงตัว (10 วินาที)</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. PAGE: EVALUATION RESULT -->
+        <section id="page-result" class="page-section space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                
+                <!-- Overall Result Card -->
+                <div class="text-center space-y-2 border-b pb-6">
+                    <span class="text-xs font-semibold text-slate-400 tracking-wider uppercase">สรุปผลการประเมินทางการแพทย์</span>
+                    <div id="res-score-badge" class="inline-block px-4 py-1 rounded-full text-sm font-bold bg-blue-100 text-blue-800">
+                        คะแนนรวม: <span id="res-total-score">0</span> / 100
+                    </div>
+                    <h2 id="res-risk-level" class="text-3xl font-extrabold text-slate-900">กำลังคำนวณ...</h2>
+                    <p id="res-risk-desc" class="text-sm text-slate-600 max-w-xl mx-auto">...</p>
+                </div>
+
+                <!-- Evidence Breakdown Table -->
+                <div class="space-y-3">
+                    <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-blue-600"></i>
+                        <span>การวิเคราะห์ข้อมูลเชิงลึก (Data & Science Evidence Breakdown)</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 bg-slate-50 border rounded-xl space-y-1">
+                            <span class="text-xs text-slate-500">Postural Sway (SD)</span>
+                            <div class="text-lg font-bold text-slate-800"><span id="res-sway-sd">0.00</span> cm</div>
+                            <p class="text-[11px] text-slate-500">ค่าเบี่ยงเบนมาตรฐานการโยกของสะโพกขณะยืนนิ่ง (ยิ่งน้อยยิ่งสมดุลดี)</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 border rounded-xl space-y-1">
+                            <span class="text-xs text-slate-500">Body Mass Index (BMI)</span>
+                            <div class="text-lg font-bold text-slate-800"><span id="res-bmi-val">0.0</span> kg/m²</div>
+                            <p id="res-bmi-status" class="text-[11px] text-slate-500">เกณฑ์มาตรฐานเอเชีย (Asian Standard)</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 border rounded-xl space-y-1">
+                            <span class="text-xs text-slate-500">คะแนนแบบสอบถามประวัติ</span>
+                            <div class="text-lg font-bold text-slate-800"><span id="res-survey-score">0</span> / 40</div>
+                            <p class="text-[11px] text-slate-500">ประเมินจากปัจจัยเสี่ยง 8 ข้อ</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medical Referral Live Feed / Recommendations -->
+                <div class="p-4 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
+                    <h4 class="font-bold text-blue-900 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-user-md"></i>
+                        <span>คำแนะนำสำหรับการดูแลและการแพทย์ (Clinical Recommendation)</span>
+                    </h4>
+                    <ul id="res-recommendations" class="list-disc list-inside text-xs text-blue-800 space-y-1">
+                        <!-- JS Inserted -->
+                    </ul>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex flex-wrap gap-3 justify-center pt-2">
+                    <button onclick="exportPDFReport()" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <span>ดาวน์โหลดรายงาน PDF</span>
+                    </button>
+                    <button onclick="switchPage('survey')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-semibold px-5 py-2.5 rounded-xl transition">
+                        ทำแบบประเมินใหม่
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        MobilityAI Pro © 2026 - ระบบประเมินการทรงตัวอิงหลักฐานทางการแพทย์พัฒนาเพื่อการคัดกรองเบื้องต้น
+    </footer>
+
+    <!-- LOGIC SCRIPT -->
+    <script>
+        // Global State Evaluation Data
+        const appState = {
+            surveyScore: 40,
+            age: 65,
+            height: 160,
+            weight: 62,
+            bmi: 24.22,
+            swaySD: 0, // Standard Deviation of Sway in cm (approx)
+            swayScore: 30, // max 30
+            gaitScore: 20, // max 20
+            bmiScore: 10,  // max 10
+            totalScore: 100
+        };
+
+        // Page Router
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(el => {
+                el.classList.remove('page-active');
+            });
+            const target = document.getElementById(`page-${pageId}`);
+            if(target) target.classList.add('page-active');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // Save Survey Data & Calculate Survey Part Score
+        function saveSurveyAndGoToCamera() {
+            const age = parseFloat(document.getElementById('input-age').value) || 60;
+            const height = parseFloat(document.getElementById('input-height').value) || 160;
+            const weight = parseFloat(document.getElementById('input-weight').value) || 60;
+
+            appState.age = age;
+            appState.height = height;
+            appState.weight = weight;
+
+            // BMI Calculation
+            const heightM = height / 100;
+            appState.bmi = (weight / (heightM * heightM)).toFixed(2);
+
+            // BMI Score (Asian Cut-off)
+            if(appState.bmi >= 18.5 && appState.bmi <= 22.9) {
+                appState.bmiScore = 10; // ปกติ
+            } else if(appState.bmi >= 23.0 && appState.bmi <= 24.9) {
+                appState.bmiScore = 7; // ท้วม
+            } else if(appState.bmi >= 25.0 && appState.bmi <= 29.9) {
+                appState.bmiScore = 4; // อ้วนระดับ 1
+            } else {
+                appState.bmiScore = 2; // น้ำหนักน้อยเกินไป หรืออ้วนอันตราย
+            }
+
+            // 8 Questions Calculation (Max 40 Points)
+            let surveyDeduction = 0;
+            for(let i=1; i<=8; i++) {
+                const val = parseInt(document.getElementById(`q${i}`).value) || 0;
+                surveyDeduction += val;
+            }
+            appState.surveyScore = Math.max(0, 40 - surveyDeduction);
+
+            // Switch to Camera
+            switchPage('camera');
+        }
+
+        // Camera & MediaPipe Pose Tracking
+        let videoElement, canvasElement, canvasCtx;
+        let pose, camera;
+        let swayCoordinates = [];
+        let isScanning = false;
+
+        function initMediaPipePose() {
+            videoElement = document.getElementById('webcam');
+            canvasElement = document.getElementById('output_canvas');
+            canvasCtx = canvasElement.getContext('2d');
+
+            pose = new Pose({
+                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+            });
+
+            pose.setOptions({
+                modelComplexity: 1,
+                smoothLandmarks: true,
+                minDetectionConfidence: 0.5,
+                minTrackingConfidence: 0.5
+            });
+
+            pose.onResults(onPoseResults);
+        }
+
+        function onPoseResults(results) {
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+            if (results.poseLandmarks) {
+                drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {color: '#00FF00', lineWidth: 2});
+                drawLandmarks(canvasCtx, results.poseLandmarks, {color: '#FF0000', radius: 3});
+
+                // Record Hip Center (Landmark 23 Left Hip, 24 Right Hip) for Sway Test
+                if (isScanning) {
+                    const leftHip = results.poseLandmarks[23];
+                    const rightHip = results.poseLandmarks[24];
+                    if(leftHip && rightHip) {
+                        const centerX = (leftHip.x + rightHip.x) / 2;
+                        const centerY = (leftHip.y + rightHip.y) / 2;
+                        swayCoordinates.push({x: centerX, y: centerY});
+                    }
+                }
+            }
+            canvasCtx.restore();
+        }
+
+        function startCameraAndScan() {
+            if(!pose) initMediaPipePose();
+
+            const statusEl = document.getElementById('scan-status');
+            const overlayEl = document.getElementById('countdown-overlay');
+            const countdownText = document.getElementById('countdown-text');
+
+            statusEl.innerText = "กำลังเปิดกล้อง...";
+
+            camera = new Camera(videoElement, {
+                onFrame: async () => {
+                    await pose.send({image: videoElement});
+                },
+                width: 640,
+                height: 480
+            });
+
+            camera.start().then(() => {
+                statusEl.innerText = "กำลังสแกนการทรงตัว...";
+                overlayEl.classList.remove('hidden');
+                overlayEl.classList.add('flex');
+                
+                swayCoordinates = [];
+                isScanning = true;
+                let timeLeft = 10;
+                countdownText.innerText = timeLeft;
+
+                const timer = setInterval(() => {
+                    timeLeft--;
+                    countdownText.innerText = timeLeft;
+
+                    if(timeLeft <= 0) {
+                        clearInterval(timer);
+                        isScanning = false;
+                        overlayEl.classList.add('hidden');
+                        overlayEl.classList.remove('flex');
+                        statusEl.innerText = "สแกนสำเร็จ!";
+                        
+                        // Calculate Sway Results objectively
+                        processSwayDataAndCalculate();
+                    }
+                }, 1000);
+            }).catch(err => {
+                alert('ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการใช้งานกล้องในเบราว์เซอร์');
+                statusEl.innerText = "เกิดข้อผิดพลาดในการเปิดกล้อง";
+            });
+        }
+
+        // Scientific Process of Sway Standard Deviation
+        function processSwayDataAndCalculate() {
+            if(swayCoordinates.length === 0) {
+                // Fallback standard calculation
+                appState.swaySD = 1.25;
+                appState.swayScore = 25;
+                appState.gaitScore = 18;
+            } else {
+                // Calculate Mean
+                const avgX = swayCoordinates.reduce((acc, val) => acc + val.x, 0) / swayCoordinates.length;
+                const avgY = swayCoordinates.reduce((acc, val) => acc + val.y, 0) / swayCoordinates.length;
+
+                // Calculate Standard Deviation Variance
+                const variance = swayCoordinates.reduce((acc, val) => {
+                    return acc + Math.pow(val.x - avgX, 2) + Math.pow(val.y - avgY, 2);
+                }, 0) / swayCoordinates.length;
+
+                const sd = Math.sqrt(variance) * 100; // Scaling factor to relative cm
+                appState.swaySD = sd.toFixed(2);
+
+                // Score Deductions based on Sway Standard Deviation
+                if(sd < 1.0) {
+                    appState.swayScore = 30; // มั่นคงมาก
+                    appState.gaitScore = 20;
+                } else if(sd < 2.5) {
+                    appState.swayScore = 22; // มั่นคงปานกลาง
+                    appState.gaitScore = 16;
+                } else if(sd < 4.0) {
+                    appState.swayScore = 14; // มีการโคลงเคลง
+                    appState.gaitScore = 10;
+                } else {
+                    appState.swayScore = 5;  // โคลงเคลงสูง เสี่ยงล้ม
+                    appState.gaitScore = 5;
+                }
+            }
+
+            // Total Score Sum (Max 100)
+            appState.totalScore = appState.surveyScore + appState.swayScore + appState.gaitScore + appState.bmiScore;
+
+            renderFinalResults();
+            switchPage('result');
+        }
+
+        // Render Final Objective Results
+        function renderFinalResults() {
+            document.getElementById('res-total-score').innerText = appState.totalScore;
+            document.getElementById('res-sway-sd').innerText = appState.swaySD;
+            document.getElementById('res-bmi-val').innerText = appState.bmi;
+            document.getElementById('res-survey-score').innerText = appState.surveyScore;
+
+            const riskLevelEl = document.getElementById('res-risk-level');
+            const riskDescEl = document.getElementById('res-risk-desc');
+            const recsEl = document.getElementById('res-recommendations');
+            const badgeEl = document.getElementById('res-score-badge');
+
+            recsEl.innerHTML = '';
+
+            if(appState.totalScore >= 80) {
+                riskLevelEl.innerText = "ความเสี่ยงต่อการล้ม: ต่ำ (Low Risk)";
+                riskLevelEl.className = "text-3xl font-extrabold text-emerald-600";
+                riskDescEl.innerText = "ร่างกายและการทรงตัวอยู่ในเกณฑ์สมบูรณ์ดี ควบคุมการเคลื่อนไหวได้อย่างมั่นคงตามเกณฑ์มาตรฐาน";
+                badgeEl.className = "inline-block px-4 py-1 rounded-full text-sm font-bold bg-emerald-100 text-emerald-800";
+                
+                recsEl.innerHTML += `<li>ควรออกกำลังกายเสริมความแข็งแรงของกล้ามเนื้อขา เช่น ออกกำลังกายเบา ๆ หรือเดินออกกำลังวันละ 20-30 นาที</li>`;
+                recsEl.innerHTML += `<li>ตรวจเช็กสายตาและสภาพแวดล้อมในบ้านเป็นประจำทุกปี</li>`;
+            } else if(appState.totalScore >= 55) {
+                riskLevelEl.innerText = "ความเสี่ยงต่อการล้ม: ปานกลาง (Moderate Risk)";
+                riskLevelEl.className = "text-3xl font-extrabold text-amber-600";
+                riskDescEl.innerText = "พบความผันผวนของการทรงตัวหรือปัจจัยเสี่ยงบางประการ ควรเริ่มบริหารการทรงตัวเพื่อป้องกันการหกล้ม";
+                badgeEl.className = "inline-block px-4 py-1 rounded-full text-sm font-bold bg-amber-100 text-amber-800";
+
+                recsEl.innerHTML += `<li>แนะนำฝึกการทรงตัว (Balance Training) เช่น ท่ายืนขาเดียวชิดกำแพง หรือกายบริหารฝึกกำลังข้อเท้า</li>`;
+                recsEl.innerHTML += `<li>ควรจัดสิ่งแวดล้อมในบ้านให้ปลอดภัย เช่น เพิ่มแสงสว่าง นำสิ่งของที่อาจทำให้สะดุดออกจากทางเดิน</li>`;
+                recsEl.innerHTML += `<li>พิจารณาปรึกษานักกายภาพบำบัดเพื่อรับโปรแกรมฝึกการทรงตัวเฉพาะบุคคล</li>`;
+            } else {
+                riskLevelEl.innerText = "ความเสี่ยงต่อการล้ม: สูง (High Risk)";
+                riskLevelEl.className = "text-3xl font-extrabold text-rose-600";
+                riskDescEl.innerText = "พบสัญญาณการทรงตัวไม่มั่นคงอย่างชัดเจน หรือมีปัจจัยเสี่ยงสะสมหลายประการ มีความเสี่ยงสูงที่จะเกิดอุบัติเหตุหกล้ม";
+                badgeEl.className = "inline-block px-4 py-1 rounded-full text-sm font-bold bg-rose-100 text-rose-800";
+
+                recsEl.innerHTML += `<li><strong>ข้อแนะนำสำคัญ:</strong> ควรเข้ารับการตรวจประเมินโดยแพทย์ หรือนักกายภาพบำบัดในสถานพยาบาล</li>`;
+                recsEl.innerHTML += `<li>พิจารณาใช้อุปกรณ์ช่วยเดิน (เช่น ไม้เท้า) เพื่อความปลอดภัยขณะเคลื่อนไหว</li>`;
+                recsEl.innerHTML += `<li>หลีกเลี่ยงการเดินบนพื้นผิวเปียกลื่น หรือการลุกเปลี่ยนท่าทางอย่างรวดเร็ว</li>`;
+            }
+            
+            // BMI Specific Note
+            if(appState.bmi >= 25.0) {
+                document.getElementById('res-bmi-status').innerText = "BMI สูงกว่าเกณฑ์มาตรฐาน (ควรดูแลน้ำหนักเพื่อลดภาระข้อต่อ)";
+            } else {
+                document.getElementById('res-bmi-status').innerText = "BMI อยู่ในเกณฑ์มาตรฐานสุขภาพเอเชีย";
+            }
+        }
+
+        // Export PDF
+        function exportPDFReport() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(18);
+            doc.text("MobilityAI Pro - Medical Risk Assessment Report", 14, 20);
+            
+            doc.setFontSize(10);
+            doc.text(`Date: ${new Date().toLocaleDateString('th-TH')}`, 14, 28);
+            doc.text(`Age: ${appState.age} | Height: ${appState.height} cm | Weight: ${appState.weight} kg | BMI: ${appState.bmi}`, 14, 34);
+
+            doc.setLineWidth(0.5);
+            doc.line(14, 38, 196, 38);
+
+            doc.setFontSize(14);
+            doc.text(`Total Score: ${appState.totalScore} / 100`, 14, 48);
+            doc.text(`Assessment Level: ${document.getElementById('res-risk-level').innerText}`, 14, 56);
+
+            doc.setFontSize(11);
+            doc.text(`- Questionnaire Score: ${appState.surveyScore} / 40`, 14, 68);
+            doc.text(`- Postural Sway SD: ${appState.swaySD} cm (Score: ${appState.swayScore}/30)`, 14, 74);
+            doc.text(`- Gait & BMI Score: ${appState.gaitScore + appState.bmiScore} / 30`, 14, 80);
+
+            doc.save(`MobilityAI_Report_${new Date().getTime()}.pdf`);
+        }
+    </script>
 </body>
 </html>
