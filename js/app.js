@@ -204,6 +204,40 @@ function initApp() {
         });
     }
 
+    // หน้า Medical Login -> ย้อนกลับไปหน้าแรก
+    const btnMedicalBack = document.getElementById('btn-medical-back');
+    if (btnMedicalBack) {
+        btnMedicalBack.addEventListener('click', () => {
+            navigateTo('home-screen');
+        });
+    }
+
+    // หน้า Medical Login -> กดปุ่มเข้าสู่ระบบ (จำลอง: admin / 1234)
+    const btnMedicalLogin = document.getElementById('btn-medical-login');
+    if (btnMedicalLogin) {
+        btnMedicalLogin.addEventListener('click', () => {
+            const user = document.getElementById('medical-user').value.trim();
+            const pass = document.getElementById('medical-pass').value.trim();
+
+            if (user === 'admin' && pass === '1234') {
+                alert('เข้าสู่ระบบสำเร็จ');
+                navigateTo('medical-dashboard-screen');
+            } else {
+                alert('ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง (แนะนำใช้ admin / 1234)');
+            }
+        });
+    }
+
+    // หน้า Medical Dashboard -> ออกจากระบบ
+    const btnMedicalLogout = document.getElementById('btn-medical-logout');
+    if (btnMedicalLogout) {
+        btnMedicalLogout.addEventListener('click', () => {
+            document.getElementById('medical-user').value = '';
+            document.getElementById('medical-pass').value = '';
+            navigateTo('home-screen');
+        });
+    }
+
     const backHomeButtons = document.querySelectorAll('.btn-back-home');
     backHomeButtons.forEach(btn => {
         btn.addEventListener('click', () => {
