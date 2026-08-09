@@ -182,10 +182,86 @@
         </div>
     </section>
 
+    <!-- 11. Medical Portal Login Screen -->
     <section id="medical-login-screen" class="screen">
         <h2>Medical Portal Login</h2>
-        <p>กำลังพัฒนาใน Phase ต่อไป...</p>
-        <button class="btn btn-secondary btn-back-home">กลับหน้าแรก</button>
+        <p style="margin-top: 4px; font-size: 0.9rem; color: #666;">สำหรับบุคลากรทางการแพทย์และเจ้าหน้าที่โรงพยาบาล</p>
+        
+        <div class="form-container" style="background: #f8fafc; padding: 16px; border-radius: 6px; margin: 16px 0; border: 1px solid #e2e8f0;">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label style="display: block; font-size: 0.85rem; margin-bottom: 4px; font-weight: 600;">ชื่อผู้ใช้งาน (Username):</label>
+                <input type="text" id="medical-user" placeholder="กรอกชื่อผู้ใช้งาน" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div class="form-group" style="margin-bottom: 4px;">
+                <label style="display: block; font-size: 0.85rem; margin-bottom: 4px; font-weight: 600;">รหัสผ่าน (Password):</label>
+                <input type="password" id="medical-pass" placeholder="กรอกรหัสผ่าน" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button id="btn-medical-back" class="btn btn-secondary">ย้อนกลับหน้าแรก</button>
+            <button id="btn-medical-login" class="btn btn-primary">เข้าสู่ระบบแพทย์</button>
+        </div>
+    </section>
+
+    <!-- 12. Medical Dashboard Screen -->
+    <section id="medical-dashboard-screen" class="screen">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h2>Medical Dashboard</h2>
+            <button id="btn-medical-logout" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8rem;">ออกจากระบบ</button>
+        </div>
+        <p style="font-size: 0.85rem; color: #666; margin-bottom: 12px;">รายการข้อมูลผู้รับบริการและผลการคัดกรองความเสี่ยงข้อเข่า</p>
+
+        <!-- สรุปสถิติเบื้องต้น -->
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+            <div style="flex: 1; background: #f1f5f9; padding: 8px; border-radius: 6px; text-align: center; border: 1px solid #e2e8f0;">
+                <div style="font-size: 0.75rem; color: #666;">เคสทั้งหมด</div>
+                <div id="stat-total-cases" style="font-size: 1.2rem; font-weight: bold; color: #2c3e50;">3</div>
+            </div>
+            <div style="flex: 1; background: #fee2e2; padding: 8px; border-radius: 6px; text-align: center; border: 1px solid #fecaca;">
+                <div style="font-size: 0.75rem; color: #b91c1c;">เคสเสี่ยงสูง (>60)</div>
+                <div id="stat-high-risk" style="font-size: 1.2rem; font-weight: bold; color: #dc2626;">2</div>
+            </div>
+        </div>
+
+        <!-- ตารางแสดงรายการข้อมูลผู้ป่วย (จำลองข้อมูลตัวอย่าง) -->
+        <div style="max-height: 280px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 12px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
+                <thead>
+                    <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; color: #475569;">
+                        <th style="padding: 8px;">อายุ/เพศ</th>
+                        <th style="padding: 8px;">คะแนนรวม</th>
+                        <th style="padding: 8px;">ระดับเสี่ยง</th>
+                        <th style="padding: 8px;">รพ. ที่ส่งต่อ</th>
+                    </tr>
+                </thead>
+                <tbody id="patient-table-body">
+                    <!-- ข้อมูลจำลองสำหรับทดสอบระบบแดชบอร์ดแพทย์ -->
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 8px;">65 ปี / หญิง</td>
+                        <td style="padding: 8px; font-weight: bold;">78 / 100</td>
+                        <td style="padding: 8px;"><span style="background: #dc2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">สูง</span></td>
+                        <td style="padding: 8px;">รพ.สิรินธร</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 8px;">58 ปี / ชาย</td>
+                        <td style="padding: 8px; font-weight: bold;">65 / 100</td>
+                        <td style="padding: 8px;"><span style="background: #dc2626; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">สูง</span></td>
+                        <td style="padding: 8px;">รพ.จุฬาลงกรณ์</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px;">32 ปี / หญิง</td>
+                        <td style="padding: 8px; font-weight: bold;">25 / 100</td>
+                        <td style="padding: 8px;"><span style="background: #10b981; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">ต่ำ</span></td>
+                        <td style="padding: 8px;">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-secondary btn-back-home" style="width: 100%;">กลับสู่หน้าแรก</button>
+        </div>
     </section>
 </div>
 
