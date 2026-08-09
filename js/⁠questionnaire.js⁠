@@ -1,68 +1,59 @@
-/**
- * Questionnaire System & Symptom Score Calculation (Max 30 points)
- */
-const questionnaireQuestions = [
-    { id: 1, text: "1. ท่านมีอาการปวดข้อเข่าบ่อยแค่ไหนในช่วง 1 เดือนที่ผ่านมา?", weight: 4 },
-    { id: 2, text: "2. มีอาการปวดมากขึ้นเมื่อต้องเดินขึ้น-ลงบันได หรือลุกขึ้นยืนจากท่านั่งหรือไม่?", weight: 4 },
-    { id: 3, text: "3. ได้ยินเสียงกรอบแกรบ หรือรู้สึกสะดุด/ติดขัดบริเวณข้อเข่าขณะเคลื่อนไหวหรือไม่?", weight: 4 },
-    { id: 4, text: "4. มีอาการข้อเข่าบวม แดง หรือรู้สึกร้อนบริเวณข้อเข่าเป็นครั้งคราวหรือไม่?", weight: 4 },
-    { id: 5, text: "5. รู้สึกข้อเข่าไม่มั่นคง ทรงตัวได้ไม่ดี หรือรู้สึกเหมือนเข่าจะทรุดเวลาเดินหรือไม่?", weight: 4 },
-    { id: 6, text: "6. มีข้อจำกัดในการยืดเหยียดขาให้สุด หรือไม่สามารถงอเข่าได้สุดเหมือนปกติหรือไม่?", weight: 3 },
-    { id: 7, text: "7. อาการปวดข้อเข่ารบกวนกิจวัตรประจำวัน เช่น การเดินระยะไกล หรือการทำงานหรือไม่?", weight: 4 },
-    { id: 8, text: "8. ท่านเคยมีประวัติได้รับบาดเจ็บรุนแรงที่ข้อเข่ามาก่อนหน้านี้หรือไม่?", weight: 3 }
+// --- Questionnaire Module ---
+const questionsData = [
+    { id: 1, text: "มีอาการปวดเข่าเวลาเดินขึ้นหรือลงบันไดหรือไม่?" },
+    { id: 2, text: "มีอาการปวดเข่าเวลานั่งยองๆ หรือนั่งพับเพียบหรือไม่?" },
+    { id: 3, text: "มีเสียงดังกรอบแกรบในข้อเข่าขณะขยับเคลื่อนไหวหรือไม่?" },
+    { id: 4, text: "มีอาการเข่าบวม หรือรู้สึกตึงบริเวณข้อเข่าหรือไม่?" },
+    { id: 5, text: "รู้สึกว่าขาโก่งผิดรูป หรือเข่าผิดรูปไปจากเดิมหรือไม่?" },
+    { id: 6, text: "เดินได้ระยะทางสั้นลงเนื่องจากมีอาการปวดเข่าหรือไม่?" },
+    { id: 7, text: "มีอาการปวดแปล๊บที่ข้อเข่าขณะเดินบนพื้นราบหรือไม่?" },
+    { id: 8, text: "ต้องใช้มือพยุงตัวหรือเกาะราวเวลาลุกขึ้นยืนจากเก้าอี้หรือไม่?" }
 ];
 
-function renderQuestionnaire() {
+function loadQuestionnaire() {
     const container = document.getElementById('questionnaire-container');
     if (!container) return;
 
-    let html = '';
-    questionnaireQuestions.forEach((q) => {
-        html += `
-            <div class="question-card" style="background: #f8fafc; padding: 12px; border-radius: 6px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
-                <p style="font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: #2c3e50;">${q.text}</p>
-                <div style="display: flex; gap: 16px; font-size: 0.85rem;">
-                    <label><input type="radio" name="q_${q.id}" value="0"> ไม่มี / ไม่ใช่</label>
-                    <label><input type="radio" name="q_${q.id}" value="1"> มีเล็กน้อย / เป็นบางครั้ง</label>
-                    <label><input type="radio" name="q_${q.id}" value="2"> มีมาก / เป็นประจำ</label>
-                </div>
+    container.innerHTML = '';
+
+    questionsData.forEach((q, index) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'question-item';
+        itemDiv.style.marginBottom = '16px';
+        itemDiv.style.padding = '12px';
+        itemDiv.style.background = '#f8fafc';
+        itemDiv.style.borderRadius = '10px';
+        itemDiv.style.border = '1px solid #e2e8f0';
+
+        itemDiv.innerHTML = `
+            <p style="font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: #1e293b;">
+                ${index + 1}. ${q.text}
+            </p>
+            <div style="display: flex; gap: 20px; font-size: 0.85rem;">
+                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <input type="radio" name="q_${q.id}" value="yes" style="accent-color: #0284c7;"> มี (1 คะแนน)
+                </label>
+                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <input type="radio" name="q_${q.id}" value="no" checked style="accent-color: #0284c7;"> ไม่มี (0 คะแนน)
+                </label>
             </div>
         `;
+        container.appendChild(itemDiv);
     });
-    container.innerHTML = html;
 }
 
 function calculateSymptomScore() {
-    let rawScoreSum = 0;
-    let maxRawPossible = 0;
-    const answers = [];
-
-    questionnaireQuestions.forEach(q => {
-        const radios = document.querySelectorAll(`input[name="q_${q.id}"]:checked`);
-        let val = 0;
-        if (radios.length > 0) {
-            val = parseInt(radios[0].value, 10);
+    let score = 0;
+    questionsData.forEach(q => {
+        const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+        if (selected && selected.value === 'yes') {
+            score += 1; // สะสมคะแนนข้อละ 1 คะแนน
         }
-        answers.push({ id: q.id, answerValue: val });
-
-        rawScoreSum += (val * q.weight);
-        maxRawPossible += (2 * q.weight);
     });
-
-    const symptomScore = maxRawPossible > 0 ? (rawScoreSum / maxRawPossible) * 30 : 0;
-    
-    return {
-        score: Math.round(symptomScore * 100) / 100,
-        answers: answers
-    };
+    // แปลงคะแนนเป็นสเกลเต็ม 30 คะแนน
+    return Math.round((score / questionsData.length) * 30);
 }
 
-function validateQuestionnaireCompletion() {
-    for (let q of questionnaireQuestions) {
-        const radios = document.querySelectorAll(`input[name="q_${q.id}"]:checked`);
-        if (radios.length === 0) {
-            return false;
-        }
-    }
-    return true;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    loadQuestionnaire();
+});
