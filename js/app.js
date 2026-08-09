@@ -31,6 +31,32 @@ function calculateBMI(weight, height) {
 // Age Risk Score
 // Maximum = 20 points
 // ==========================================
+
+function calculateAgeScore(age) {
+
+    if (!age || age < 0) {
+        return 0;
+    }
+
+    if (age < 40) {
+        return 0;
+    }
+
+    if (age < 50) {
+        return 5;
+    }
+
+    if (age < 60) {
+        return 10;
+    }
+
+    if (age < 70) {
+        return 15;
+    }
+
+    return 20;
+}
+
 // ==========================================
 // BMI Risk Score
 // Maximum = 20 points
@@ -97,26 +123,69 @@ function calculateAgeScore(age) {
 
 function calculateRiskScore(data) {
 
-    const symptomScore = data.symptomScore || 0;
+    // -----------------------------
+    // 1. Symptom Score
+    // Maximum = 30
+    // -----------------------------
+    const symptomScore = Math.min(
+        Math.max(data.symptomScore || 0, 0),
+        30
+    );
 
-    const bmi = calculateBMI(data.weight, data.height);
+    // -----------------------------
+    // 2. BMI
+    // Maximum BMI Score = 20
+    // -----------------------------
+    const bmi = calculateBMI(
+        data.weight,
+        data.height
+    );
 
+    const bmiScore = calculateBMIScore(
+        bmi,
+        data.age
+    );
+
+    // -----------------------------
+    // 3. Age Score
+    // Maximum = 20
+    // -----------------------------
+    const ageScore = calculateAgeScore(
+        data.age
+    );
+
+    // -----------------------------
+    // 4. Knee Angle
+    // ยังรอเชื่อมกับ AI Camera
+    // -----------------------------
     const leftAngle = data.leftKneeAngle;
     const rightAngle = data.rightKneeAngle;
+
+    // -----------------------------
+    // 5. รวมคะแนน
+    // ตอนนี้ยังไม่รวม Knee Angle
+    // -----------------------------
+    const totalScore =
+        symptomScore +
+        bmiScore +
+        ageScore;
 
     console.log("Assessment Data:", data);
     console.log("BMI:", bmi);
     console.log("Symptom Score:", symptomScore);
+    console.log("BMI Score:", bmiScore);
+    console.log("Age Score:", ageScore);
     console.log("Left Knee Angle:", leftAngle);
     console.log("Right Knee Angle:", rightAngle);
-
-    // ตอนนี้ยังไม่คำนวณคะแนนสุดท้าย
-    // เราจะสร้างสูตรที่ตรวจสอบได้ในขั้นถัดไป
+    console.log("Current Risk Score:", totalScore);
 
     return {
         bmi: Number(bmi.toFixed(2)),
         symptomScore: symptomScore,
+        bmiScore: bmiScore,
+        ageScore: ageScore,
         leftKneeAngle: leftAngle,
-        rightKneeAngle: rightAngle
+        rightKneeAngle: rightAngle,
+        totalScore: totalScore
     };
 }
