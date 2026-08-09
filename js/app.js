@@ -27,7 +27,35 @@ function calculateBMI(weight, height) {
     const heightInMeter = height / 100;
     return weight / (heightInMeter * heightInMeter);
 }
+// ==========================================
+// Age Risk Score
+// Maximum = 20 points
+// ==========================================
 
+function calculateAgeScore(age) {
+
+    if (!age || age < 0) {
+        return 0;
+    }
+
+    if (age < 40) {
+        return 0;
+    }
+
+    if (age < 50) {
+        return 5;
+    }
+
+    if (age < 60) {
+        return 10;
+    }
+
+    if (age < 70) {
+        return 15;
+    }
+
+    return 20;
+}
 // ==========================================
 // Risk Score Calculation
 // ==========================================
