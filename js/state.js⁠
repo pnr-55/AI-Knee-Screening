@@ -1,0 +1,99 @@
+/**
+ * Single Source of Truth for AI-Knee-Screening App
+ */
+const initialAppState = {
+    patient: {
+        age: null,
+        gender: null,
+        weight: null, // kg
+        height: null, // cm
+        isConsented: false
+    },
+    questionnaire: {
+        answers: [],
+        isCompleted: false
+    },
+    pose: {
+        leftKneeAngle: null,
+        rightKneeAngle: null,
+        isLandmarksVisible: false,
+        snapshotDataUrl: null
+    },
+    risk: {
+        symptomScore: 0,
+        bmiScore: 0,
+        poseScore: 0,
+        ageScore: 0,
+        totalScore: 0,
+        riskLevel: '',
+        bmiCategory: ''
+    },
+    currentStep: 'home-screen'
+};
+
+// Deep copy เพื่อป้องกันการแก้ไข state โดยตรง
+let appState = JSON.parse(JSON.stringify(initialAppState));
+
+/**
+ * ดึงข้อมูล State ทั้งหมด (Read-only copy)
+ */
+function getState() {
+    return JSON.parse(JSON.stringify(appState));
+}
+
+/**
+ * อัปเดตข้อมูลผู้ป่วย
+ */
+function updatePatientInfo(data) {
+    appState.patient = {
+        ...appState.patient,
+        ...data
+    };
+    return getState();
+}
+
+/**
+ * อัปเดตคำตอบแบบสอบถาม
+ */
+function updateQuestionnaireAnswers(answers, isCompleted = true) {
+    appState.questionnaire.answers = answers;
+    appState.questionnaire.isCompleted = isCompleted;
+    return getState();
+}
+
+/**
+ * อัปเดตข้อมูล Pose และ Angle
+ */
+function updatePoseData(poseData) {
+    appState.pose = {
+        ...appState.pose,
+        ...poseData
+    };
+    return getState();
+}
+
+/**
+ * อัปเดตผลลัพธ์คะแนนความเสี่ยง
+ */
+function updateRiskResults(riskData) {
+    appState.risk = {
+        ...appState.risk,
+        ...riskData
+    };
+    return getState();
+}
+
+/**
+ * บันทึกหน้าปัจจุบันที่สลับไป
+ */
+function setCurrentStep(stepId) {
+    appState.currentStep = stepId;
+}
+
+/**
+ * รีเซ็ต State ทั้งหมดกลับเป็นค่าเริ่มต้น
+ */
+function resetAppState() {
+    appState = JSON.parse(JSON.stringify(initialAppState));
+    return getState();
+}
