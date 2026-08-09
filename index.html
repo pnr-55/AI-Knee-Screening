@@ -3,327 +3,498 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI-Knee-Screening - Professional Medical Edition</title>
+  <title>AI Knee Screening - Luxury Medical Suite</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
-    body { font-family: 'Prompt', sans-serif; background: #070b19; color: #f8fafc; }
+    body { font-family: 'Prompt', sans-serif; background: #030712; color: #f3f4f6; }
     .page-section { display: none; }
     .page-active { display: block; }
-    .glass-box {
-      background: rgba(17, 24, 39, 0.85);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(59, 130, 246, 0.2);
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+    .luxury-card {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
     }
-    .btn-primary {
+    .btn-luxury {
       background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
-      transition: all 0.3s ease;
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .btn-primary:hover {
+    .btn-luxury:hover {
       transform: translateY(-2px);
-      box-shadow: 0 15px 30px -5px rgba(59, 130, 246, 0.7);
+      box-shadow: 0 15px 30px -5px rgba(59, 130, 246, 0.6);
     }
-    .btn-doctor {
-      background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
-      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.5);
+    .radio-custom:checked + div {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: #3b82f6;
     }
     @media print {
       header, button, nav, .no-print { display: none !important; }
       body { background: white !important; color: black !important; }
-      .glass-box { background: none !important; border: 1px solid #ccc !important; color: black !important; box-shadow: none !important; }
+      .luxury-card { background: none !important; border: 1px solid #ddd !important; box-shadow: none !important; color: black !important; }
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-white">
 
   <!-- HEADER / NAVBAR -->
-  <header class="w-full bg-slate-950/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 no-print">
-    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+  <header class="w-full bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-50 no-print">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
       <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('page-home')">
-        <div class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-500/30">+</div>
+        <div class="w-11 h-11 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/20">✦</div>
         <div>
-          <span class="font-bold text-base text-white leading-none block">AI-Knee-Screening</span>
-          <span class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider block">Clinical AI & Posture Tech</span>
+          <span class="font-bold text-base text-white tracking-wide block">KNEE AI SUITE</span>
+          <span class="text-[10px] text-cyan-400 font-medium tracking-widest uppercase block">Medical Intelligence</span>
         </div>
       </div>
-      <div class="flex items-center gap-2.5">
-        <button onclick="showPage('page-methodology')" class="text-xs px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-300 font-bold transition-all border border-cyan-500/30">📚 หลักการคำนวณ</button>
-        <button onclick="showPage('page-info')" class="text-xs px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-all shadow-md shadow-blue-600/20">เริ่มคัดกรอง</button>
-        <button onclick="showPage('page-login-doc')" class="text-xs px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-indigo-300 font-bold transition-all border border-indigo-500/30">🩺 Medical Portal</button>
+      <div class="flex items-center gap-3">
+        <button onclick="showPage('page-methodology')" class="text-xs px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 font-medium transition-all border border-slate-800">หลักการคำนวณ</button>
+        <button onclick="showPage('page-questionnaire')" class="text-xs px-5 py-2.5 rounded-xl btn-luxury text-white font-medium transition-all">เริ่มประเมินสุขภาพเข่า</button>
+        <button onclick="showPage('page-login-doc')" class="text-xs px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-indigo-300 font-medium transition-all border border-indigo-500/30">Medical Portal</button>
       </div>
     </div>
   </header>
 
-  <!-- Notice Banner -->
-  <div class="bg-blue-950/40 border-b border-blue-900/50 py-1.5 px-4 text-center text-[11px] text-blue-300 no-print">
-    <span>🔒 <strong>PDPA & Medical Security Compliant:</strong> ข้อมูลสุขภาพของท่านถูกเข้ารหัสความปลอดภัยระดับสูง</span>
-  </div>
-
   <!-- 1. หน้าแรก (HOME) -->
-  <main id="page-home" class="page-section page-active max-w-5xl mx-auto px-4 py-12 flex-1 w-full flex flex-col items-center justify-center text-center space-y-8">
-    <div class="space-y-4">
-      <span class="px-4 py-1.5 bg-blue-500/10 border border-blue-500/30 text-cyan-400 text-xs font-semibold rounded-full inline-flex items-center gap-1.5 shadow-sm">
-        ✨ ระบบตรวจวัดอัจฉริยะ: ลุกนั่ง 5 ครั้ง &rarr; ถ่ายภาพนิ่งอัตโนมัติ
+  <main id="page-home" class="page-section page-active max-w-5xl mx-auto px-6 py-20 flex-1 w-full flex flex-col items-center justify-center text-center space-y-10">
+    <div class="space-y-6 max-w-3xl">
+      <span class="px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 text-cyan-400 text-xs font-medium rounded-full inline-block tracking-wider">
+        PRECISION KNEE SCREENING SYSTEM
       </span>
-      <h1 class="text-3xl sm:text-5xl font-extrabold leading-tight text-white tracking-tight">
-        นวัตกรรมคัดกรองสุขภาพข้อเข่าอัจฉริยะ<br>
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-teal-300">ด้วยคอมพิวเตอร์วิทัศน์และคณิตศาสตร์การแพทย์</span>
+      <h1 class="text-4xl sm:text-6xl font-bold leading-tight text-white tracking-tight">
+        นวัตกรรมตรวจประเมินข้อเข่าอัจฉริยะ<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-teal-200">เพื่อสุขภาพและความคล่องตัวของคุณ</span>
       </h1>
-      <p class="text-slate-400 text-sm max-w-2xl mx-auto">
-        ประเมินความเสี่ยงโรคข้อเข่าเสื่อมได้แม่นยำ รวดเร็ว และปลอดภัย โดยไม่ต้องติดตั้งแอปพลิเคชันเพิ่มเติม รองรับการส่งต่อข้อมูลให้แพทย์ผู้เชี่ยวชาญทันที
+      <p class="text-slate-400 text-base max-w-2xl mx-auto leading-relaxed font-light">
+        ระบบวิเคราะห์อาการและตรวจวัดสมรรถภาพข้อเข่าด้วยแบบสอบถามมาตรฐานทางการแพทย์และคอมพิวเตอร์วิทัศน์ ออกแบบมาเพื่อให้ใช้งานง่าย แม่นยำ และปลอดภัย
       </p>
     </div>
-    <div class="flex flex-wrap justify-center gap-3 pt-2">
-      <button onclick="showPage('page-info')" class="btn-primary text-white font-bold text-sm px-8 py-3.5 rounded-2xl transition-all">
-        🚀 เริ่มต้นประเมินสุขภาพเข่าทันที
+    <div class="flex flex-wrap justify-center gap-4">
+      <button onclick="showPage('page-questionnaire')" class="btn-luxury text-white font-medium text-sm px-9 py-4 rounded-2xl transition-all">
+        เริ่มต้นทำแบบประเมิน (8 ข้อ)
       </button>
-      <button onclick="showPage('page-methodology')" class="px-6 py-3.5 bg-slate-900 hover:bg-slate-800 text-cyan-300 font-bold text-sm rounded-2xl border border-cyan-500/30 transition-all">
-        📖 ดูหลักการคำนวณทางคลินิก
+      <button onclick="showPage('page-methodology')" class="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-slate-300 font-medium text-sm rounded-2xl border border-slate-800 transition-all">
+        ศึกษาหลักการและอัลกอริทึม
       </button>
     </div>
   </main>
 
   <!-- 📚 หน้าหลักการคำนวณ (METHODOLOGY) -->
-  <main id="page-methodology" class="page-section max-w-4xl mx-auto px-4 py-8 flex-1 w-full">
-    <div class="glass-box p-6 sm:p-8 rounded-3xl space-y-6">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+  <main id="page-methodology" class="page-section max-w-4xl mx-auto px-6 py-12 flex-1 w-full">
+    <div class="luxury-card p-8 sm:p-10 rounded-3xl space-y-8">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-6">
         <div>
-          <h2 class="text-lg font-bold text-white flex items-center gap-2">📚 หลักการคำนวณและวิธีวิทยาทางคลินิก (Methodology)</h2>
-          <p class="text-xs text-slate-400">รายละเอียดอัลกอริทึมและโมเดลคณิตศาสตร์ที่ใช้ในการประเมินความเสี่ยงข้อเข่าเสื่อม</p>
+          <h2 class="text-xl font-bold text-white tracking-tight">หลักการคำนวณและเกณฑ์การประเมิน</h2>
+          <p class="text-xs text-slate-400 mt-1">รายละเอียดโครงสร้างคะแนนและความแม่นยำทางการแพทย์</p>
         </div>
-        <button onclick="showPage('page-home')" class="text-xs px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold">ย้อนกลับ</button>
+        <button onclick="showPage('page-home')" class="text-xs px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium">ย้อนกลับ</button>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs">
-        <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 space-y-3">
-          <div class="w-8 h-8 bg-blue-600/20 text-blue-400 rounded-xl flex items-center justify-center font-bold">1</div>
-          <h3 class="font-bold text-cyan-300 text-sm">Dynamic Sit-to-Stand Analysis (น้ำหนัก 40%)</h3>
-          <p class="text-slate-300 leading-relaxed">
-            วัดสมรรถภาพและความเร็วในการลุกขึ้นจากเก้าอี้ต่อเนื่อง 5 ครั้ง อ้างอิงตามเกณฑ์มาตรฐานทางกายภาพบำบัด ระบบจะจับเวลาและตรวจจับความสมดุล (Stability) หากใช้เวลานานหรือท่าทางเอียง จะแสดงผลเป็นคะแนนความเสี่ยงที่สูงขึ้น
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+        <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800/80 space-y-3">
+          <div class="text-blue-400 font-bold text-sm">01 / แบบสอบถามอาการเชิงลึก (40%)</div>
+          <p class="text-slate-300 leading-relaxed font-light">
+            ประเมินอาการปวด อาการขัด และผลกระทบต่อกิจวัตรประจำวันจำนวน 8 ข้อ อ้างอิงจากเกณฑ์มาตรฐานอาการข้อเข่าเสื่อม เพื่อวัดระดับความรุนแรงเบื้องต้น
           </p>
         </div>
-
-        <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 space-y-3">
-          <div class="w-8 h-8 bg-cyan-600/20 text-cyan-400 rounded-xl flex items-center justify-center font-bold">2</div>
-          <h3 class="font-bold text-cyan-300 text-sm">Static Posture & Q-Angle Check (น้ำหนัก 30%)</h3>
-          <p class="text-slate-300 leading-relaxed">
-            ใช้คอมพิวเตอร์วิทัศน์วิเคราะห์ภาพถ่ายยืนตรง ตรวจสอบแนวแกนของกระดูกขา (Alignment) และมุมองศาข้อเข่า เพื่อประเมินความผิดรูปเบื้องต้น เช่น ภาวะขาโก่ง (Varus/Valgus deformity)
+        <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800/80 space-y-3">
+          <div class="text-cyan-400 font-bold text-sm">02 / การทดสอบลุกนั่งไดนามิก (40%)</div>
+          <p class="text-slate-300 leading-relaxed font-light">
+            ประเมินสมรรถภาพกล้ามเนื้อขาและความเร็วในการลุกนั่งต่อเนื่อง พร้อมระบบตรวจสอบความสมดุลของร่างกายระหว่างเคลื่อนไหว
           </p>
         </div>
-
-        <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 space-y-3">
-          <div class="w-8 h-8 bg-indigo-600/20 text-indigo-400 rounded-xl flex items-center justify-center font-bold">3</div>
-          <h3 class="font-bold text-cyan-300 text-sm">Clinical Symptom Scoring (น้ำหนัก 30%)</h3>
-          <p class="text-slate-300 leading-relaxed">
-            นำข้อมูลระดับอาการปวดในรอบ 7 วัน (Pain Score 0-10) และปัจจัยเสี่ยงส่วนบุคคล เช่น อายุ น้ำหนัก และดัชนีมวลกาย (BMI) มาร่วมคำนวณในโมเดลประเมินความเสี่ยงรวม
+        <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800/80 space-y-3">
+          <div class="text-indigo-400 font-bold text-sm">03 / ภาพถ่ายสรีระยืนตรง (20%)</div>
+          <p class="text-slate-300 leading-relaxed font-light">
+            ตรวจสอบแนวแกนกระดูกขาและมุมองศาข้อเข่า (Static Alignment) เพื่อวิเคราะห์ความผิดรูปหรือความไม่สมดุลของโครงสร้าง
           </p>
         </div>
-
-        <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 space-y-3">
-          <div class="w-8 h-8 bg-emerald-600/20 text-emerald-400 rounded-xl flex items-center justify-center font-bold">4</div>
-          <h3 class="font-bold text-cyan-300 text-sm">Combined Risk Scoring Model</h3>
-          <p class="text-slate-300 leading-relaxed">
-            คะแนนทั้งหมดจะถูกประมวลผลผ่านสูตรน้ำหนักรวม (Weighted Scoring Algorithm) เพื่อจำแนกออกเป็น 3 ระดับความเสี่ยง ได้แก่ ปกติ (Low), ปานกลาง (Moderate), และสูง (High) พร้อมออกรายงานให้แพทย์วินิจฉัยต่อ
+        <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800/80 space-y-3">
+          <div class="text-emerald-400 font-bold text-sm">04 / โมเดลประเมินความเสี่ยงรวม</div>
+          <p class="text-slate-300 leading-relaxed font-light">
+            นำคะแนนจากทุกส่วนมาประมวลผลด้วยสูตรน้ำหนักมาตรฐาน จำแนกผลลัพธ์เป็นระดับความเสี่ยง พร้อมรายงานผลให้แพทย์ผู้เชี่ยวชาญตรวจสอบต่อ
           </p>
         </div>
       </div>
 
-      <div class="pt-2 text-center">
-        <button onclick="showPage('page-info')" class="btn-primary text-white text-xs font-bold px-8 py-3 rounded-xl">เริ่มทดสอบจริงตอนนี้ &rarr;</button>
+      <div class="text-center pt-4">
+        <button onclick="showPage('page-questionnaire')" class="btn-luxury text-white text-xs font-medium px-8 py-3.5 rounded-xl">เริ่มทำแบบประเมินตอนนี้</button>
       </div>
     </div>
   </main>
 
-  <!-- 2. แบบสอบถามข้อมูลพื้นฐาน (INFO) -->
-  <main id="page-info" class="page-section max-w-xl mx-auto px-4 py-8 flex-1 w-full">
-    <div class="glass-box p-6 sm:p-8 rounded-3xl space-y-6">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+  <!-- 📋 หน้าแบบสอบถาม 8 ข้อแยกออกมาต่างหาก (QUESTIONNAIRE) -->
+  <main id="page-questionnaire" class="page-section max-w-3xl mx-auto px-6 py-12 flex-1 w-full">
+    <div class="luxury-card p-8 sm:p-10 rounded-3xl space-y-8">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-6">
         <div>
-          <h3 class="text-base font-bold text-white">👤 ข้อมูลพื้นฐานและอาการเบื้องต้น</h3>
-          <p class="text-[11px] text-slate-400">กรุณากรอกข้อมูลตามความเป็นจริงเพื่อความแม่นยำในการคำนวณ</p>
+          <span class="text-[10px] uppercase tracking-widest text-blue-400 font-bold block mb-1">Step 1 of 3</span>
+          <h2 class="text-xl font-bold text-white tracking-tight">แบบประเมินอาการและสุขภาพข้อเข่า (8 ข้อ)</h2>
         </div>
-        <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2.5 py-1 rounded-full font-bold">ขั้นตอนที่ 1 / 3</span>
+        <button onclick="showPage('page-home')" class="text-xs px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-medium">ยกเลิก</button>
+      </div>
+
+      <div class="space-y-6 text-xs" id="q-container">
+        <!-- ข้อ 1 -->
+        <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <p class="font-medium text-slate-200 text-sm">1. ท่านมีอาการปวดข้อเข่าเมื่อต้องเดินขึ้นหรือลงบันไดหรือไม่?</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q1" value="0" class="radio-custom sr-only" checked>
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">ไม่มีอาการเลย (0)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q1" value="2" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">ปวดเล็กน้อย เป็นบางครั้ง (2)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q1" value="4" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">ปวดมาก ชัดเจนทุกครั้ง (4)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ข้อ 2 -->
+        <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <p class="font-medium text-slate-200 text-sm">2. มีอาการข้อเข่าติด ขัด หรือฝืด เมื่อเริ่มต้นขยับตัวหลังตื่นนอนหรือนั่งนานๆ?</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q2" value="0" class="radio-custom sr-only" checked>
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">ไม่มีอาการ (0)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q2" value="2" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">เป็นน้อยกว่า 15 นาที (2)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q2" value="4" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">เป็นนานกว่า 15 นาที (4)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ข้อ 3 -->
+        <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <p class="font-medium text-slate-200 text-sm">3. ความสามารถในการนั่งยองๆ หรือพับเข่าสุดเป็นอย่างไร?</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q3" value="0" class="radio-custom sr-only" checked>
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">นั่งได้ปกติ ไม่มีปัญหา (0)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q3" value="2" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">นั่งได้แต่รู้สึกตึง/เจ็บ (2)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q3" value="4" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">นั่งยองไม่ได้เลย (4)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ข้อ 4 -->
+        <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <p class="font-medium text-slate-200 text-sm">4. มีเสียงดังกรอบแกรบ (Crepitus) หรือเสียงคล้ายกระดูกเสียดสีกันในข้อเข่าหรือไม่?</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q4" value="0" class="radio-custom sr-only" checked>
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">ไม่มีเสียง (0)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q4" value="2" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">มีเสียงบางครั้ง ไม่มีอาการปวด (2)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q4" value="4" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">มีเสียงดังชัดเจนร่วมกับอาการเจ็บ (4)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ข้อ 5 -->
+        <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <p class="font-medium text-slate-200 text-sm">5. ท่านรู้สึกว่าข้อเข่ามีความมั่นคงน้อยลง หรือรู้สึกเหมือนเข่าจะทรุดเวลาเดินหรือไม่?</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q5" value="0" class="radio-custom sr-only" checked>
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">มั่นคงปกติ (0)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q5" value="2" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">รู้สึกไม่มั่นคงบางครั้ง (2)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q5" value="4" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">รู้สึกเข่าทรุดบ่อยครั้ง (4)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ข้อ 6 -->
+        <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <p class="font-medium text-slate-200 text-sm">6. มีอาการบวม แดง หรือรู้สึกร้อนบริเวณข้อเข่าในรอบสัปดาห์ที่ผ่านมาหรือไม่?</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q6" value="0" class="radio-custom sr-only" checked>
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">ไม่มีอาการบวม (0)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q6" value="2" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">บวมเล็กน้อยหลังใช้งานหนัก (2)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q6" value="4" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">บวมชัดเจนและรู้สึกอุ่นร้อน (4)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ข้อ 7 -->
+        <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <p class="font-medium text-slate-200 text-sm">7. อาการปวดข้อเข่ารบกวนการนอนหลับหรือการพักผ่อนของท่านมากน้อยเพียงใด?</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q7" value="0" class="radio-custom sr-only" checked>
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">นอนหลับปกติ ไม่รบกวน (0)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q7" value="2" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">รบกวนบางคืนที่ปวดมาก (2)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q7" value="4" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">รบกวนทุกคืน ตื่นกลางดึก (4)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ข้อ 8 -->
+        <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <p class="font-medium text-slate-200 text-sm">8. อาการที่เข่าส่งผลกระทบต่อการทำกิจวัตรประจำวันหรือการเดินระยะไกลหรือไม่?</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q8" value="0" class="radio-custom sr-only" checked>
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">ทำได้ปกติ ไม่มีผลกระทบ (0)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q8" value="2" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">ต้องจำกัดระยะทางเดินบ้าง (2)</span>
+            </label>
+            <label class="cursor-pointer relative flex items-center p-3 rounded-xl border border-slate-800 hover:border-slate-700 transition">
+              <input type="radio" name="q8" value="4" class="radio-custom sr-only">
+              <div class="absolute inset-0 rounded-xl border border-transparent"></div>
+              <span class="text-slate-300">ลำบากมากในการใช้ชีวิตประจำวัน (4)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 flex gap-4">
+        <button onclick="showPage('page-home')" class="px-6 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs rounded-xl">ย้อนกลับ</button>
+        <button onclick="showPage('page-info')" class="flex-1 py-3.5 btn-luxury text-white text-xs font-medium rounded-xl">ถัดไป: กรอกข้อมูลส่วนตัว &rarr;</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- 2. ข้อมูลพื้นฐานส่วนตัว (INFO) -->
+  <main id="page-info" class="page-section max-w-xl mx-auto px-6 py-12 flex-1 w-full">
+    <div class="luxury-card p-8 sm:p-10 rounded-3xl space-y-6">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-6">
+        <div>
+          <span class="text-[10px] uppercase tracking-widest text-blue-400 font-bold block mb-1">Step 2 of 3</span>
+          <h3 class="text-lg font-bold text-white tracking-tight">ข้อมูลพื้นฐานผู้รับการคัดกรอง</h3>
+        </div>
+        <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full font-medium border border-blue-500/20">ปลอดภัยและเป็นความลับ</span>
       </div>
 
       <div class="space-y-4 text-xs">
         <div>
-          <label class="text-slate-300 font-medium block mb-1.5">รหัสเคส / ชื่อผู้รับการคัดกรอง</label>
-          <input type="text" id="user-name" value="ผู้รับการคัดกรอง A (#KS-2026-00024)" class="w-full px-3.5 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-white focus:border-blue-500 outline-none">
+          <label class="text-slate-300 font-medium block mb-2">รหัสเคส / ชื่อผู้รับการคัดกรอง</label>
+          <input type="text" id="user-name" value="ผู้รับการคัดกรอง A (#KS-2026-00024)" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-800 rounded-xl text-white focus:border-blue-500 outline-none">
         </div>
         <div class="grid grid-cols-3 gap-3">
           <div>
-            <label class="text-slate-300 font-medium block mb-1.5">อายุ (ปี)</label>
-            <input type="number" id="user-age" value="45" class="w-full px-3.5 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-white focus:border-blue-500 outline-none">
+            <label class="text-slate-300 font-medium block mb-2">อายุ (ปี)</label>
+            <input type="number" id="user-age" value="45" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-800 rounded-xl text-white focus:border-blue-500 outline-none">
           </div>
           <div>
-            <label class="text-slate-300 font-medium block mb-1.5">ส่วนสูง (ซม.)</label>
-            <input type="number" id="user-height" value="168" class="w-full px-3.5 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-white focus:border-blue-500 outline-none">
+            <label class="text-slate-300 font-medium block mb-2">ส่วนสูง (ซม.)</label>
+            <input type="number" id="user-height" value="168" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-800 rounded-xl text-white focus:border-blue-500 outline-none">
           </div>
           <div>
-            <label class="text-slate-300 font-medium block mb-1.5">น้ำหนัก (กก.)</label>
-            <input type="number" id="user-weight" value="70" class="w-full px-3.5 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-white focus:border-blue-500 outline-none">
+            <label class="text-slate-300 font-medium block mb-2">น้ำหนัก (กก.)</label>
+            <input type="number" id="user-weight" value="70" class="w-full px-4 py-3 bg-slate-900/90 border border-slate-800 rounded-xl text-white focus:border-blue-500 outline-none">
           </div>
-        </div>
-        <div>
-          <label class="text-slate-300 font-medium block mb-1.5">ระดับอาการปวดเข่าในรอบ 7 วัน (คะแนน 0-10)</label>
-          <select id="user-pain" class="w-full px-3.5 py-2.5 bg-slate-900/90 border border-slate-700 rounded-xl text-white font-bold focus:border-blue-500 outline-none">
-            <option value="1">คะแนน 1-2 (ปวดเล็กน้อย นานๆ ครั้ง)</option>
-            <option value="5" selected>คะแนน 3-5 (ปวดปานกลาง เวลาเดินหรือลุกขึ้น)</option>
-            <option value="8">คะแนน 6-10 (ปวดมาก รบกวนการใช้ชีวิตประจำวัน)</option>
-          </select>
         </div>
       </div>
 
-      <div class="pt-2 flex gap-3">
-        <button onclick="showPage('page-home')" class="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl">ย้อนกลับ</button>
-        <button onclick="showPage('page-camera')" class="flex-1 py-3 btn-primary text-white text-xs font-bold rounded-xl">ถัดไป: เริ่มกระบวนการ AI Camera &rarr;</button>
+      <div class="pt-2 flex gap-4">
+        <button onclick="showPage('page-questionnaire')" class="px-6 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs rounded-xl">ย้อนกลับ</button>
+        <button onclick="showPage('page-camera')" class="flex-1 py-3.5 btn-luxury text-white text-xs font-medium rounded-xl">ถัดไป: ตรวจวัดด้วยกล้อง AI &rarr;</button>
       </div>
     </div>
   </main>
 
-  <!-- 3. AI CAMERA -->
-  <main id="page-camera" class="page-section max-w-lg mx-auto px-4 py-6 flex-1 w-full">
-    <div class="glass-box p-5 sm:p-6 rounded-3xl space-y-4 text-center">
+  <!-- 3. AI CAMERA SUITE -->
+  <main id="page-camera" class="page-section max-w-lg mx-auto px-6 py-10 flex-1 w-full">
+    <div class="luxury-card p-6 sm:p-8 rounded-3xl space-y-5 text-center">
       <div class="flex justify-between items-center">
-        <h3 id="camera-mode-title" class="text-sm font-bold text-cyan-300">📷 ขั้นตอนที่ 2: ลุกนั่งด้านข้าง 5 ครั้ง</h3>
-        <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full font-bold flex items-center gap-1">
+        <h3 id="camera-mode-title" class="text-sm font-bold text-cyan-300">📷 ขั้นตอนที่ 3: ทดสอบลุกนั่ง 5 ครั้ง</h3>
+        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full font-medium border border-emerald-500/20 flex items-center gap-1.5">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> AI Active
         </span>
       </div>
 
-      <div class="relative w-full h-72 sm:h-80 bg-black rounded-2xl overflow-hidden border border-slate-700 flex items-center justify-center shadow-inner">
+      <div class="relative w-full h-72 sm:h-80 bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center shadow-inner">
         <video id="webcam" class="w-full h-full object-cover" autoplay playsinline muted></video>
         <canvas id="analysis_canvas" class="hidden"></canvas>
         <canvas id="skeleton_canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
 
-        <div id="env-warning" class="absolute top-3 bg-blue-950/90 border border-blue-500/40 text-blue-300 text-[10px] px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
-          🔄 กรุณาหันด้านข้างให้กล้อง เพื่อทดสอบลุกนั่ง 5 ครั้ง
+        <div id="env-warning" class="absolute top-3 bg-slate-950/90 backdrop-blur-md border border-slate-700 text-slate-300 text-[11px] px-4 py-1.5 rounded-full shadow-lg">
+          🔄 กรุณาหันด้านข้างให้กล้อง เพื่อเริ่มบันทึกการลุกนั่ง
         </div>
 
-        <div id="overlay-box" class="absolute inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center hidden">
-          <span id="overlay-label" class="text-xs text-blue-300 font-semibold mb-1">กำลังบันทึกการลุกนั่ง...</span>
-          <div id="overlay-number" class="text-6xl font-black text-cyan-400 tracking-wider">1 / 5</div>
-        </div>
-
-        <div id="camera-status-text" class="absolute bottom-3 bg-slate-900/90 px-3 py-1 rounded-full text-[10px] text-cyan-400 border border-slate-700 shadow-md">
-          กล้องพร้อมใช้งาน
+        <div id="overlay-box" class="absolute inset-0 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center hidden">
+          <span id="overlay-label" class="text-xs text-blue-300 font-medium mb-1">กำลังบันทึกการลุกนั่ง...</span>
+          <div id="overlay-number" class="text-6xl font-bold text-cyan-400 tracking-wider">1 / 5</div>
         </div>
       </div>
 
-      <div id="instruction-note" class="text-[11px] text-slate-300 bg-slate-900/70 p-3 rounded-xl border border-slate-800 text-left">
-        💡 <strong>คำแนะนำ:</strong> เมื่อกดปุ่มเริ่ม ระบบจะนับถอยหลังการลุกนั่งด้านข้างอัตโนมัติจนครบ 5 ครั้ง จากนั้นจะเปลี่ยนเป็นโหมดถ่ายภาพนิ่งยืนตรง
+      <div class="text-[11px] text-slate-400 bg-slate-900/60 p-3.5 rounded-xl border border-slate-800/80 text-left font-light">
+        💡 <strong>คำแนะนำ:</strong> กดปุ่มด้านล่างเพื่อเริ่มกระบวนการบันทึกวิดีโอและถ่ายภาพนิ่งยืนตรงอัตโนมัติ
       </div>
 
-      <button id="btn-action-start" onclick="startWorkflowSequence()" class="w-full py-3.5 btn-primary text-white text-xs font-bold rounded-xl transition-all">
-        🚀 เริ่มต้นกระบวนการ AI (ลุกนั่ง 5 ครั้ง)
+      <button id="btn-action-start" onclick="startWorkflowSequence()" class="w-full py-4 btn-luxury text-white text-xs font-medium rounded-xl transition-all">
+        เริ่มต้นบันทึกวิดีโอและภาพนิ่ง
       </button>
     </div>
   </main>
 
   <!-- หน้ากำลังประมวลผล -->
-  <main id="page-analyzing" class="page-section max-w-md mx-auto px-4 py-16 flex-1 w-full text-center">
-    <div class="glass-box p-8 rounded-3xl space-y-5">
-      <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto shadow-lg shadow-blue-500/50"></div>
-      <h3 class="text-base font-bold text-white">กำลังประมวลผลวิดีโอและภาพนิ่ง...</h3>
-      <p class="text-xs text-slate-400">ระบบกำลังวิเคราะห์มุมข้อเข่าจากการยืนตรง และความสมบูรณ์จากการลุกนั่งด้วยอัลกอริทึมขั้นสูง</p>
+  <main id="page-analyzing" class="page-section max-w-md mx-auto px-6 py-20 flex-1 w-full text-center">
+    <div class="luxury-card p-10 rounded-3xl space-y-6">
+      <div class="w-14 h-14 border-3 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto shadow-lg shadow-blue-500/30"></div>
+      <h3 class="text-base font-bold text-white">กำลังประมวลผลข้อมูลทั้งหมด...</h3>
+      <p class="text-xs text-slate-400 font-light">ระบบกำลังคำนวณคะแนนแบบสอบถาม 8 ข้อ ร่วมกับวิดีโอและภาพถ่ายสรีระ</p>
     </div>
   </main>
 
   <!-- 4. ผลการประเมิน (REPORT) -->
-  <main id="page-report" class="page-section max-w-4xl mx-auto px-4 py-6 flex-1 w-full">
-    <div class="glass-box p-6 sm:p-8 rounded-3xl space-y-6">
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-800 pb-4 gap-2">
+  <main id="page-report" class="page-section max-w-4xl mx-auto px-6 py-10 flex-1 w-full">
+    <div class="luxury-card p-8 sm:p-10 rounded-3xl space-y-8">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-800 pb-6 gap-3">
         <div>
-          <h2 class="text-xl font-black text-white">ผลการประเมินสุขภาพข้อเข่าเชิงลึก</h2>
-          <p class="text-xs text-blue-400">รหัสเคส: <span id="report-case-id">KS-2026-00024</span> | วันที่: <span id="report-date">09/08/2026</span></p>
+          <h2 class="text-xl font-bold text-white tracking-tight">รายงานผลการประเมินสุขภาพข้อเข่า</h2>
+          <p class="text-xs text-slate-400 mt-1">รหัสเคส: <span id="report-case-id">KS-2026-00024</span> | วันที่: <span id="report-date">09/08/2026</span></p>
         </div>
-        <span id="risk-badge" class="px-3.5 py-1.5 bg-amber-500/20 text-amber-400 text-xs font-extrabold rounded-full border border-amber-500/30">MODERATE RISK (ปานกลาง)</span>
+        <span id="risk-badge" class="px-4 py-1.5 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-full border border-amber-500/20">MODERATE RISK (ปานกลาง)</span>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex flex-col items-center justify-center space-y-2.5">
-          <span class="text-xs font-bold text-slate-300">📸 ภาพถ่ายสรีระยืนตรง (Static Posture Check)</span>
-          <div class="w-full h-48 bg-black rounded-xl overflow-hidden border border-slate-700 relative flex items-center justify-center shadow-inner">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <span class="text-xs font-medium text-slate-300 block">ภาพถ่ายสรีระยืนตรง (Static Posture)</span>
+          <div class="w-full h-52 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 relative flex items-center justify-center">
             <img id="result-snapshot" class="w-full h-full object-cover" alt="AI Snapshot">
-            <div class="absolute bottom-2 bg-slate-950/80 px-2.5 py-1 rounded-md text-[10px] text-cyan-400 border border-slate-700 font-bold">AI Mesh Verified ✓</div>
+            <div class="absolute bottom-3 bg-slate-950/80 px-3 py-1 rounded-lg text-[10px] text-cyan-400 border border-slate-700/80 font-medium">Verified ✓</div>
           </div>
         </div>
 
-        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex flex-col items-center justify-center space-y-2.5">
-          <span class="text-xs font-bold text-cyan-300">🎥 วิดีโอบันทึกการลุกนั่ง 5 ครั้ง (Dynamic Test)</span>
-          <div class="w-full h-48 bg-black rounded-xl overflow-hidden border border-slate-700 relative flex items-center justify-center shadow-inner">
+        <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <span class="text-xs font-medium text-slate-300 block">วิดีโอบันทึกการลุกนั่ง (Dynamic Test)</span>
+          <div class="w-full h-52 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 relative flex items-center justify-center">
             <video id="result-video" class="w-full h-full object-cover" controls autoplay loop muted></video>
-            <div class="absolute bottom-2 bg-slate-950/80 px-2.5 py-1 rounded-md text-[10px] text-emerald-400 border border-slate-700 font-bold">Sit-to-Stand 5/5 Recorded ✓</div>
+            <div class="absolute bottom-3 bg-slate-950/80 px-3 py-1 rounded-lg text-[10px] text-emerald-400 border border-slate-700/80 font-medium">Recorded 5/5 ✓</div>
           </div>
         </div>
       </div>
 
-      <div class="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 flex flex-col justify-center text-center space-y-3">
-        <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">คะแนนความเสี่ยงรวม (Dynamic + Static Combined Model)</span>
-        <div id="res-score-val" class="text-5xl font-black text-amber-400">53 / 100</div>
-        <p id="res-score-text" class="text-xs font-bold text-amber-300">ระดับความเสี่ยง: ปานกลาง (Moderate Risk) - ควรหลีกเลี่ยงการนั่งยองๆ และบริหารกล้ามเนื้อรอบเข่า</p>
-        <div class="flex justify-center gap-3 pt-1">
-          <span class="text-[11px] bg-blue-600/20 text-blue-300 px-3 py-1.5 rounded-xl border border-blue-500/30 font-semibold">AI Confidence: 96%</span>
-          <span id="res-asymmetry" class="text-[11px] bg-indigo-600/20 text-indigo-300 px-3 py-1.5 rounded-xl border border-indigo-500/30 font-semibold">Asymmetry Angle: 7°</span>
+      <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800/80 flex flex-col justify-center text-center space-y-3">
+        <span class="text-xs text-slate-400 font-medium uppercase tracking-wider">คะแนนความเสี่ยงรวม (แบบสอบถาม + กล้อง AI)</span>
+        <div id="res-score-val" class="text-5xl font-bold text-amber-400 tracking-tight">56 / 100</div>
+        <p id="res-score-text" class="text-xs font-medium text-amber-300">ระดับความเสี่ยงปานกลาง - แนะนำบริหารกล้ามเนื้อต้นขาและปรึกษาแพทย์เฉพาะทาง</p>
+        <div class="flex justify-center gap-3 pt-2">
+          <span class="text-[11px] bg-blue-500/10 text-blue-300 px-3 py-1.5 rounded-xl border border-blue-500/20 font-medium">AI Confidence: 97%</span>
         </div>
       </div>
 
       <div class="flex flex-col sm:flex-row gap-3 pt-2">
-        <button onclick="showPage('page-login-doc')" class="flex-1 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md transition-all">ส่งต่อข้อมูลให้แพทย์ (Medical Portal)</button>
-        <button onclick="window.print()" class="px-6 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl transition-all">🖨️ ดาวน์โหลดรายงาน PDF</button>
+        <button onclick="showPage('page-login-doc')" class="flex-1 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs rounded-xl shadow-lg transition-all">ส่งต่อข้อมูลเข้า Medical Portal</button>
+        <button onclick="window.print()" class="px-6 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs rounded-xl transition-all">ดาวน์โหลดรายงาน PDF</button>
       </div>
     </div>
   </main>
 
-  <!-- 🩺 MEDICAL PORTAL LOGIN -->
-  <main id="page-login-doc" class="page-section max-w-md mx-auto px-4 py-12 flex-1 w-full">
-    <div class="glass-box p-6 sm:p-8 rounded-3xl space-y-5 border border-indigo-500/30">
-      <div class="text-center space-y-1.5">
-        <div class="w-12 h-12 bg-indigo-600/20 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto font-bold text-xl shadow-inner">🩺</div>
-        <h2 class="text-lg font-bold text-white">เข้าสู่ระบบ Medical Portal</h2>
-        <p class="text-[11px] text-slate-400">สำหรับแพทย์และบุคลากรทางการแพทย์เท่านั้น</p>
+  <!-- MEDICAL PORTAL LOGIN -->
+  <main id="page-login-doc" class="page-section max-w-md mx-auto px-6 py-16 flex-1 w-full">
+    <div class="luxury-card p-8 sm:p-10 rounded-3xl space-y-6 border border-indigo-500/20">
+      <div class="text-center space-y-2">
+        <div class="w-12 h-12 bg-indigo-600/10 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto font-bold text-lg border border-indigo-500/20">🩺</div>
+        <h2 class="text-lg font-bold text-white tracking-tight">Medical Portal Login</h2>
+        <p class="text-xs text-slate-400 font-light">สำหรับแพทย์และบุคลากรทางการแพทย์</p>
       </div>
-      <div class="space-y-3.5 text-xs">
+      <div class="space-y-4 text-xs">
         <div>
-          <label class="text-slate-300 font-medium block mb-1.5">ชื่อผู้ใช้แพทย์</label>
-          <input type="text" value="dr.somchai_ortho" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-indigo-500">
+          <label class="text-slate-300 font-medium block mb-2">Username</label>
+          <input type="text" value="dr.somchai_ortho" class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-white outline-none focus:border-indigo-500">
         </div>
         <div>
-          <label class="text-slate-300 font-medium block mb-1.5">รหัสผ่าน</label>
-          <input type="password" value="123456" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white outline-none focus:border-indigo-500">
+          <label class="text-slate-300 font-medium block mb-2">Password</label>
+          <input type="password" value="123456" class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-white outline-none focus:border-indigo-500">
         </div>
-        <button onclick="loginDoctor()" class="w-full py-3 btn-doctor text-white font-bold rounded-xl transition-all">เข้าสู่ระบบแพทย์</button>
-        <button onclick="showPage('page-home')" class="w-full py-2 bg-transparent text-slate-400 hover:text-white font-medium text-[11px]">ย้อนกลับหน้าหลัก</button>
+        <button onclick="loginDoctor()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition-all shadow-lg">เข้าสู่ระบบ</button>
+        <button onclick="showPage('page-home')" class="w-full py-2 bg-transparent text-slate-400 hover:text-white font-medium">กลับหน้าหลัก</button>
       </div>
     </div>
   </main>
 
   <!-- แดชบอร์ดแพทย์ -->
-  <main id="page-doc-detail" class="page-section max-w-5xl mx-auto px-4 py-8 flex-1 w-full">
-    <div class="glass-box p-6 sm:p-8 rounded-3xl space-y-6 border border-indigo-500/30">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-        <button onclick="showPage('page-home')" class="text-xs text-indigo-300 hover:text-white font-semibold flex items-center gap-1">&larr; ออกจากระบบแพทย์</button>
-        <span class="px-3 py-1 bg-amber-500/20 text-amber-400 rounded-full font-bold text-xs border border-amber-500/30">Case ID: KS-2026-00024</span>
+  <main id="page-doc-detail" class="page-section max-w-5xl mx-auto px-6 py-10 flex-1 w-full">
+    <div class="luxury-card p-8 sm:p-10 rounded-3xl space-y-6 border border-indigo-500/20">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-6">
+        <button onclick="showPage('page-home')" class="text-xs text-indigo-300 hover:text-white font-medium">&larr; ออกจากระบบ</button>
+        <span class="px-3.5 py-1.5 bg-amber-500/10 text-amber-400 rounded-full font-bold text-xs border border-amber-500/20">Case ID: KS-2026-00024</span>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs">
-        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-3">
-          <h4 class="font-bold text-indigo-300">🎥 วิดีโอลุกนั่ง & ข้อมูลผู้ป่วย</h4>
-          <p class="text-white font-bold">ผู้รับการคัดกรอง A (อายุ 45 ปี)</p>
-          <div class="w-full h-32 bg-black rounded-xl overflow-hidden border border-slate-700">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+        <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <h4 class="font-bold text-indigo-300">วิดีโอและข้อมูลผู้ป่วย</h4>
+          <p class="text-white font-medium">ผู้รับการคัดกรอง A (อายุ 45 ปี)</p>
+          <div class="w-full h-36 bg-slate-950 rounded-xl overflow-hidden border border-slate-800">
             <video id="doc-review-video" class="w-full h-full object-cover" controls autoplay loop muted></video>
           </div>
         </div>
-        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-3">
-          <h4 class="font-bold text-indigo-300">📝 ความเห็นแพทย์ (Doctor Review)</h4>
-          <textarea class="w-full p-3 bg-slate-950 border border-slate-700 rounded-xl text-white h-28 text-[11px] outline-none focus:border-indigo-500">ตรวจจากวิดีโอลุกนั่ง 5 ครั้ง และภาพนิ่งยืนตรง พบภาวะข้อเข่าฝืดเล็กน้อย แนะนำกายภาพบำบัดกล้ามเนื้อต้นขาและควบคุมน้ำหนัก</textarea>
+        <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <h4 class="font-bold text-indigo-300">ความเห็นแพทย์</h4>
+          <textarea class="w-full p-3.5 bg-slate-950 border border-slate-800 rounded-xl text-white h-32 text-xs outline-none focus:border-indigo-500 font-light">ตรวจผลคะแนนแบบสอบถาม 8 ข้อร่วมกับวิดีโอลุกนั่ง พบความเสื่อมในระดับปานกลาง แนะนำทำกายภาพบำบัดและหลีกเลี่ยงการขึ้นลงบันไดบ่อยครั้ง</textarea>
         </div>
-        <div class="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-3">
-          <h4 class="font-bold text-indigo-300">📅 นัดหมายติดตามผล</h4>
-          <input type="date" value="2026-09-09" class="w-full px-3 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-xs mb-3 outline-none">
-          <button onclick="alert('บันทึกความเห็นและนัดหมายสำเร็จ!')" class="w-full py-2.5 btn-doctor text-white font-bold rounded-xl">บันทึกข้อมูลแพทย์</button>
+        <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800/80 space-y-3">
+          <h4 class="font-bold text-indigo-300">นัดหมายติดตามผล</h4>
+          <input type="date" value="2026-09-09" class="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs mb-3 outline-none">
+          <button onclick="alert('บันทึกความเห็นและนัดหมายสำเร็จ')" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl">บันทึกข้อมูล</button>
         </div>
       </div>
     </div>
@@ -389,7 +560,6 @@
 
     function startWorkflowSequence() {
       const overlayBox = document.getElementById('overlay-box');
-      const overlayLabel = document.getElementById('overlay-label');
       const overlayNumber = document.getElementById('overlay-number');
       const modeTitle = document.getElementById('camera-mode-title');
       const envWarning = document.getElementById('env-warning');
@@ -398,9 +568,9 @@
       btnStart.style.display = 'none';
       overlayBox.classList.remove('hidden');
 
-      modeTitle.innerText = "🎥 กำลังบันทึกการลุกนั่ง 5 ครั้ง (ด้านข้าง)";
-      envWarning.className = "absolute top-3 bg-cyan-950/90 border border-cyan-500/40 text-cyan-300 text-[10px] px-3 py-1 rounded-full shadow-md";
-      envWarning.innerHTML = "🏃‍♂️ กำลังนับจำนวนการลุกนั่ง (ด้านข้าง)...";
+      modeTitle.innerText = "🎥 กำลังบันทึกการลุกนั่ง 5 ครั้ง";
+      envWarning.className = "absolute top-3 bg-cyan-950/90 border border-cyan-500/40 text-cyan-300 text-[11px] px-4 py-1.5 rounded-full shadow-lg";
+      envWarning.innerHTML = "🏃‍♂️ กำลังบันทึกการลุกนั่งต่อเนื่อง...";
 
       recordedChunks = [];
       try {
@@ -437,18 +607,16 @@
 
     function startStaticCountdownForSnapshot() {
       const overlayBox = document.getElementById('overlay-box');
-      const overlayLabel = document.getElementById('overlay-label');
       const overlayNumber = document.getElementById('overlay-number');
       const modeTitle = document.getElementById('camera-mode-title');
       const envWarning = document.getElementById('env-warning');
 
       overlayBox.classList.remove('hidden');
-      modeTitle.innerText = "📸 ขั้นตอนที่ 3: ยืนตรงถ่ายภาพนิ่ง (หน้าตรง)";
-      envWarning.className = "absolute top-3 bg-emerald-950/90 border border-emerald-500/40 text-emerald-300 text-[10px] px-3 py-1 rounded-full shadow-md";
+      modeTitle.innerText = "📸 ยืนตรงถ่ายภาพนิ่ง";
+      envWarning.className = "absolute top-3 bg-emerald-950/90 border border-emerald-500/40 text-emerald-300 text-[11px] px-4 py-1.5 rounded-full shadow-lg";
       envWarning.innerHTML = "✅ แสงผ่านเกณฑ์ | กรุณายืนตรงนิ่งๆ";
 
-      overlayLabel.innerText = "กำลังถ่ายภาพนิ่งใน...";
-      let count = 5;
+      let count = 3;
       overlayNumber.innerText = count;
 
       let timer = setInterval(() => {
@@ -480,7 +648,7 @@
     }
 
     function loginDoctor() {
-      alert('เข้าสู่ระบบ Medical Portal สำเร็จ!');
+      alert('เข้าสู่ระบบสำเร็จ');
       showPage('page-doc-detail');
     }
   </script>
