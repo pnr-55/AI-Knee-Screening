@@ -1,57 +1,57 @@
-// --- Questionnaire Module ---
 const questionsData = [
-    { id: 1, text: "มีอาการปวดเข่าเวลาเดินขึ้นหรือลงบันไดหรือไม่?" },
-    { id: 2, text: "มีอาการปวดเข่าเวลานั่งยองๆ หรือนั่งพับเพียบหรือไม่?" },
-    { id: 3, text: "มีเสียงดังกรอบแกรบในข้อเข่าขณะขยับเคลื่อนไหวหรือไม่?" },
-    { id: 4, text: "มีอาการเข่าบวม หรือรู้สึกตึงบริเวณข้อเข่าหรือไม่?" },
-    { id: 5, text: "รู้สึกว่าขาโก่งผิดรูป หรือเข่าผิดรูปไปจากเดิมหรือไม่?" },
-    { id: 6, text: "เดินได้ระยะทางสั้นลงเนื่องจากมีอาการปวดเข่าหรือไม่?" },
-    { id: 7, text: "มีอาการปวดแปล๊บที่ข้อเข่าขณะเดินบนพื้นราบหรือไม่?" },
-    { id: 8, text: "ต้องใช้มือพยุงตัวหรือเกาะราวเวลาลุกขึ้นยืนจากเก้าอี้หรือไม่?" }
+    { id: 1, text: "ปวดเข่าเวลาเดินขึ้นหรือลงบันได" },
+    { id: 2, text: "ปวดเข่าเวลานั่งยองๆ หรือนั่งพับเพียบ" },
+    { id: 3, text: "มีเสียงดังกรอบแกรบในข้อเข่าขณะขยับ" },
+    { id: 4, text: "มีอาการเข่าบวม หรือรู้สึกตึงรอบข้อเข่า" },
+    { id: 5, text: "รู้สึกว่าขาโก่งผิดรูปไปจากเดิม" },
+    { id: 6, text: "เดินได้ระยะทางสั้นลงเพราะปวดเข่า" },
+    { id: 7, text: "ปวดแปล๊บที่ข้อเข่าขณะเดินบนพื้นราบ" },
+    { id: 8, text: "ต้องใช้มือพยุงเวลาลุกขึ้นยืนจากเก้าอี้" }
 ];
 
 function loadQuestionnaire() {
     const container = document.getElementById('questionnaire-container');
     if (!container) return;
-
     container.innerHTML = '';
 
     questionsData.forEach((q, index) => {
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'question-item';
-        itemDiv.style.marginBottom = '16px';
-        itemDiv.style.padding = '12px';
-        itemDiv.style.background = '#f8fafc';
-        itemDiv.style.borderRadius = '10px';
-        itemDiv.style.border = '1px solid #e2e8f0';
-
-        itemDiv.innerHTML = `
-            <p style="font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: #1e293b;">
-                ${index + 1}. ${q.text}
-            </p>
-            <div style="display: flex; gap: 20px; font-size: 0.85rem;">
-                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                    <input type="radio" name="q_${q.id}" value="yes" style="accent-color: #0284c7;"> มี (1 คะแนน)
-                </label>
-                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                    <input type="radio" name="q_${q.id}" value="no" checked style="accent-color: #0284c7;"> ไม่มี (0 คะแนน)
-                </label>
+        const item = document.createElement('div');
+        item.style.cssText = "background:#f8fafc; padding:12px; border-radius:10px; margin-bottom:10px; border:1px solid #e2e8f0;";
+        item.innerHTML = `
+            <p style="font-size:0.88rem; font-weight:600; margin-bottom:6px; color:#1e293b;">${index + 1}. ${q.text}</p>
+            <div style="display:flex; gap:20px; font-size:0.82rem;">
+                <label style="cursor:pointer;"><input type="radio" name="q_${q.id}" value="yes"> มี</label>
+                <label style="cursor:pointer;"><input type="radio" name="q_${q.id}" value="no" checked> ไม่มี</label>
             </div>
         `;
-        container.appendChild(itemDiv);
+        container.appendChild(item);
     });
 }
 
-function calculateSymptomScore() {
-    let score = 0;
-    questionsData.forEach(q => {
-        const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
-        if (selected && selected.value === 'yes') {
-            score += 1; // สะสมคะแนนข้อละ 1 คะแนน
+function calculateBMI() {
+    const w = parseFloat(document.getElementById('input-weight').value) || 0;
+    const h = parseFloat(document.getElementById('input-height').value) || 0;
+    if (w > 0 && h > 0) {
+        const bmi = w / Math.pow(h / 100, 2);
+        document.getElementById('bmi-value').innerText = bmi.toFixed(1);
+        const statusEl = document.getElementById('bmi-status');
+        if (bmi >= 25) {
+            statusEl.innerText = 'น้ำหนักเกิน';
+            statusEl.className = 'badge-high';
+        } else {
+            statusEl.innerText = 'ปกติ';
+            statusEl.className = 'badge-low';
         }
-    });
-    // แปลงคะแนนเป็นสเกลเต็ม 30 คะแนน
-    return Math.round((score / questionsData.length) * 30);
+    }
+}
+
+let selectedGenderVal = 'หญิง';
+function selectGender(gender, btn) {
+    selectedGenderVal = gender;
+    const parent = btn.parentElement;
+    parent.querySelectorAll('button').forEach(b => b.style.background = '#f1f5f9');
+    btn.style.background = '#0284c7';
+    btn.style.color = '#fff';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
