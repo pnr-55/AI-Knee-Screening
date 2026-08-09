@@ -118,15 +118,87 @@ function initApp() {
             });
 
             navigateTo('camera-screen');
+            if (typeof initAICamera === 'function') {
+                initAICamera();
+            }
+        });
+    }
+
+    // หน้า Camera -> ย้อนกลับไปหน้าแบบสอบถาม
+    const btnCameraBack = document.getElementById('btn-camera-back');
+    if (btnCameraBack) {
+        btnCameraBack.addEventListener('click', () => {
+            if (typeof stopAICamera === 'function') {
+                stopAICamera();
+            }
+            navigateTo('questionnaire-screen');
+        });
+    }
+
+    // หน้า Camera -> กดปุ่มประเมินผลโครงสร้าง (Capture & Calculate)
+    const btnCapture = document.getElementById('btn-capture-scan');
+    if (btnCapture) {
+        btnCapture.addEventListener('click', () => {
+            if (typeof stopAICamera === 'function') {
+                stopAICamera();
+            }
+
+            const state = getState();
+            const finalResult = calculateTotalRiskScore(
+                state.patientInfo,
+                state.risk.symptomScore,
+                typeof latestPoseData !== 'undefined' ? latestPoseData : { leftKneeAngle: 180, rightKneeAngle: 180 }
+            );
+
+            updateRiskResults(finalResult);
+            renderResultScreen(finalResult);
+            navigateTo('result-screen');
+        });
+    }
+
+    // หน้า Result -> ย้อนกลับไปหน้า Camera
+    const btnResultBack = document.getElementById('btn-result-back');
+    if (btnResultBack) {
+        btnResultBack.addEventListener('click', () => {
+            navigateTo('camera-screen');
+            if (typeof initAICamera === 'function') {
+                initAICamera();
+            }
         });
     }
 
     const backHomeButtons = document.querySelectorAll('.btn-back-home');
     backHomeButtons.forEach(btn => {
         btn.addEventListener('click', () => {
+            if (typeof stopAICamera === 'function') {
+                stopAICamera();
+            }
             navigateTo('home-screen');
         });
     });
+}
+
+function renderResultScreen(result) {
+    document.getElementById('res-total-score').innerText = `${result.totalScore} / 100`;
+    
+    const badge = document.getElementById('res-risk-level');
+    badge.innerText = result.riskLevel.level;
+    badge.style.backgroundColor = result.riskLevel.color;
+    
+    document.getElementById('res-risk-desc').innerText = result.riskLevel.description;
+
+    document.getElementById('detail-symptom').innerText = result.symptomScore;
+    document.getElementById('detail-bmi').innerText = result.bmiScore;
+    document.getElementById('detail-bmi-val').innerText = `${result.bmiValue} (${result.bmiCategory})`;
+    document.getElementById('detail-pose').innerText = result.poseScore;
+    document.getElementById('detail-age').innerText = result.ageScore;
+
+    const btnReferral = document.getElementById('btn-goto-referral');
+    if (result.totalScore > 60) {
+        btnReferral.style.display = 'block';
+    } else {
+        btnReferral.style.display = 'none';
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
