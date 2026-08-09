@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KneeAI - AI Screening for Knee Osteoarthritis & Genu Varum</title>
+    <title>KneeAI - AI & Mathematical Screening for Knee OA</title>
     
     <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- MathJax for rendering math formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <!-- MediaPipe Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
@@ -35,16 +39,16 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-xl text-slate-900 leading-none">KneeAI</h1>
-                    <p class="text-[10px] text-blue-600 font-semibold tracking-wide">KNEE OA & GENU VARUM SCREENING</p>
+                    <p class="text-[10px] text-blue-600 font-semibold tracking-wide">MATH & AI KNEE OA SCREENING</p>
                 </div>
             </div>
             
             <nav class="hidden md:flex items-center space-x-2 text-sm font-medium text-slate-600">
                 <button onclick="switchPage('home')" class="px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">หน้าแรก</button>
-                <button onclick="switchPage('survey')" class="px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">คัดกรองเบื้องต้น</button>
+                <button onclick="switchPage('survey')" class="px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">ประวัติ & แบบประเมิน</button>
                 <button onclick="switchPage('camera')" class="px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">AI สแกนเข่า</button>
-                <button onclick="switchPage('history')" class="px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">ประวัติการตรวจ</button>
-                <button onclick="switchPage('doctor-dashboard')" class="bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-lg border border-indigo-200 hover:bg-indigo-100 transition font-semibold">
+                <button onclick="switchPage('math-model')" class="px-3 py-1.5 rounded-lg text-blue-600 hover:bg-blue-50 transition font-semibold"><i class="fa-solid fa-calculator mr-1"></i> โมเดลคณิตศาสตร์</button>
+                <button onclick="switchPage('doctor-dashboard')" class="bg-indigo-600 text-white px-3.5 py-1.5 rounded-lg hover:bg-indigo-700 transition font-semibold shadow-sm">
                     <i class="fa-solid fa-user-md mr-1"></i> Dashboard แพทย์
                 </button>
             </nav>
@@ -59,22 +63,21 @@
             <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-800 rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between">
                 <div class="max-w-xl space-y-5 z-10">
                     <span class="bg-white/20 text-white text-xs font-bold px-3.5 py-1.5 rounded-full border border-white/30 backdrop-blur-sm">
-                        AI-Based Medical Knee Screening
+                        Biomechanical & Vector Analysis
                     </span>
-                    <h2 class="text-3xl md:text-5xl font-extrabold leading-tight">ดูแลเข่าของคุณ ด้วยเทคโนโลยี AI</h2>
+                    <h2 class="text-3xl md:text-5xl font-extrabold leading-tight">ระบบคัดกรองข้อเข่าเสื่อม ด้วย AI และแบบจำลองคณิตศาสตร์</h2>
                     <p class="text-blue-100 text-sm md:text-base leading-relaxed">
-                        วิเคราะห์ความเสี่ยงโรคข้อเข่าเสื่อม (Knee Osteoarthritis) และภาวะขาโก่ง (Genu Varum) แม่นยำ อิงหลักการแพทย์
+                        วิเคราะห์โครงสร้างข้อเข่าด้วยเวกเตอร์เรขาคณิต ร่วมกับแบบประเมินอาการ KOOS/WOMAC และระบบบันทึกข้อมูลสำหรับบุคลากรทางการแพทย์
                     </p>
                     <div class="pt-2 flex flex-wrap gap-3">
                         <button onclick="switchPage('survey')" class="bg-white text-blue-700 font-bold px-7 py-3.5 rounded-2xl shadow-lg hover:bg-blue-50 transition flex items-center gap-2">
-                            <span>เริ่มต้นตรวจคัดกรอง</span>
+                            <span>เริ่มทำแบบประเมิน & คัดกรอง</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
-                    </div>
-                </div>
-                <div class="mt-8 md:mt-0 z-10 flex justify-center">
-                    <div class="w-64 h-64 bg-white/10 rounded-full border border-white/20 flex items-center justify-center backdrop-blur-md shadow-inner">
-                        <i class="fa-solid fa-joint text-8xl text-blue-200 animate-pulse"></i>
+                        <button onclick="switchPage('doctor-dashboard')" class="bg-indigo-900/50 hover:bg-indigo-900 text-white font-semibold px-6 py-3.5 rounded-2xl border border-white/20 backdrop-blur-sm transition flex items-center gap-2">
+                            <i class="fa-solid fa-user-md"></i>
+                            <span>เข้าสู่ Dashboard แพทย์</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -85,45 +88,104 @@
             <div class="max-w-3xl mx-auto bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
                 <div>
                     <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">ขั้นตอนที่ 1 จาก 2</span>
-                    <h2 class="text-2xl font-bold text-slate-900">ข้อมูลส่วนตัว และแบบสอบถามอาการข้อเข่า</h2>
+                    <h2 class="text-2xl font-bold text-slate-900">1. บันทึกประวัติผู้ป่วย (Patient Profile)</h2>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อ - นามสกุล <span class="text-rose-500">*</span></label>
+                        <input type="text" id="patient-name" placeholder="เช่น สมชาย ใจดี" class="w-full px-3.5 py-2.5 border rounded-xl text-sm bg-slate-50">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">เลขประจำตัวผู้ป่วย (HN)</label>
+                        <input type="text" id="patient-hn" placeholder="เช่น HN67001" class="w-full px-3.5 py-2.5 border rounded-xl text-sm bg-slate-50">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">อายุ (ปี)</label>
-                        <input type="number" id="user-age" value="55" class="w-full px-3 py-2 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="number" id="user-age" value="58" class="w-full px-3.5 py-2 border rounded-xl text-sm bg-slate-50">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">เพศ</label>
+                        <select id="patient-gender" class="w-full px-3.5 py-2 border rounded-xl text-sm bg-slate-50">
+                            <option value="หญิง">หญิง</option>
+                            <option value="ชาย">ชาย</option>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">ส่วนสูง (ซม.)</label>
-                        <input type="number" id="user-height" value="160" class="w-full px-3 py-2 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="number" id="user-height" value="158" class="w-full px-3.5 py-2 border rounded-xl text-sm bg-slate-50">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">น้ำหนัก (กก.)</label>
-                        <input type="number" id="user-weight" value="65" class="w-full px-3 py-2 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="number" id="user-weight" value="65" class="w-full px-3.5 py-2 border rounded-xl text-sm bg-slate-50">
                     </div>
                 </div>
 
-                <div class="space-y-3">
-                    <h3 class="text-sm font-bold text-slate-800">แบบสอบถามอาการข้อเข่า</h3>
-                    <div class="p-3.5 border rounded-xl flex items-center justify-between text-sm">
-                        <span>1. มีอาการปวดเข่าขณะเดินหรือขึ้นลงบันไดหรือไม่?</span>
-                        <select id="sq1" class="border rounded-lg px-2.5 py-1 bg-slate-50 text-xs">
-                            <option value="0">ไม่มี</option>
-                            <option value="3">มีเล็กน้อย</option>
-                            <option value="5">ปวดมากเป็นประจำ</option>
-                        </select>
+                <hr class="border-slate-100 my-4">
+
+                <!-- แบบประเมินอาการ 8 ข้อ -->
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800">2. แบบประเมินอาการและความเสี่ยงข้อเข่าเสื่อม (KOOS/WOMAC Adapted)</h3>
                     </div>
-                    <div class="p-3.5 border rounded-xl flex items-center justify-between text-sm">
-                        <span>2. สังเกตเห็นว่าขาเริ่มโก่งออก หรือเข่าชิดกันผิดปกติหรือไม่?</span>
-                        <select id="sq2" class="border rounded-lg px-2.5 py-1 bg-slate-50 text-xs">
-                            <option value="0">ปกติ</option>
-                            <option value="5">สังเกตเห็นว่าขาโก่งขึ้น</option>
-                        </select>
+
+                    <div class="space-y-3 text-xs">
+                        <div class="p-4 bg-slate-50 rounded-2xl border space-y-2">
+                            <p class="font-semibold text-slate-800">1. รู้สึกปวดหรือขัดบริเวณข้อเข่าขณะเดินบนพื้นราบหรือขึ้น-ลงบันไดหรือไม่?</p>
+                            <select class="q-score w-full p-2.5 border rounded-xl bg-white">
+                                <option value="0">0 - ไม่มีอาการเลย</option><option value="1">1 - เล็กน้อย</option><option value="2">2 - ปานกลาง</option><option value="3">3 - มาก</option><option value="4">4 - รุนแรงมาก</option>
+                            </select>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border space-y-2">
+                            <p class="font-semibold text-slate-800">2. มีอาการข้อเข่าตึงฝืด หรือยึดแข็งหลังตื่นนอนตอนเช้าหรือไม่?</p>
+                            <select class="q-score w-full p-2.5 border rounded-xl bg-white">
+                                <option value="0">0 - ไม่มีอาการ</option><option value="1">1 - น้อยกว่า 10 นาที</option><option value="2">2 - 10-30 นาที</option><option value="3">3 - มากกว่า 30 นาที</option><option value="4">4 - ตึงเกือบทั้งวัน</option>
+                            </select>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border space-y-2">
+                            <p class="font-semibold text-slate-800">3. มีเสียงดังกรอบแกรบ (Crepitus) ในข้อเข่าขณะเคลื่อนไหวหรือไม่?</p>
+                            <select class="q-score w-full p-2.5 border rounded-xl bg-white">
+                                <option value="0">0 - ไม่มีเสียง</option><option value="1">1 - นานๆ ครั้ง ไม่ปวด</option><option value="2">2 - บ่อยครั้ง ไม่ปวด</option><option value="3">3 - ชัดเจน+เริ่มปวด</option><option value="4">4 - สะดุดขัดรุนแรง</option>
+                            </select>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border space-y-2">
+                            <p class="font-semibold text-slate-800">4. สังเกตเห็นรูปร่างของขาเปลี่ยนไป เช่น เข่าโก่งออก (O-leg) หรือชนกัน (X-leg)?</p>
+                            <select class="q-score w-full p-2.5 border rounded-xl bg-white">
+                                <option value="0">0 - ขาตรงปกติ</option><option value="1">1 - โก่งเล็กน้อย</option><option value="2">2 - เห็นชัดเจน</option><option value="3">3 - โก่งมาก ยืนส้นชิดไม่ได้</option><option value="4">4 - ผิดรูปอย่างรุนแรง</option>
+                            </select>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border space-y-2">
+                            <p class="font-semibold text-slate-800">5. มีปัญหาในการลุกขึ้นยืนจากเก้าอี้ หรือลุกจากการนั่งพื้น/ยองๆ หรือไม่?</p>
+                            <select class="q-score w-full p-2.5 border rounded-xl bg-white">
+                                <option value="0">0 - ปกติ</option><option value="1">1 - ใช้แรงมากเล็กน้อย</option><option value="2">2 - ต้องใช้มือดันช่วย</option><option value="3">3 - ต้องมีคนพยุง</option><option value="4">4 - ลุกไม่ได้เลย</option>
+                            </select>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border space-y-2">
+                            <p class="font-semibold text-slate-800">6. มีอาการบวม ร้อน หรือกดเจ็บบริเวณรอบๆ ข้อเข่าหรือไม่?</p>
+                            <select class="q-score w-full p-2.5 border rounded-xl bg-white">
+                                <option value="0">0 - ไม่มี</option><option value="1">1 - นานๆ ครั้งหลังใช้หนัก</option><option value="2">2 - บวมเล็กน้อยประจำ</option><option value="3">3 - บวมตึงร้อนตลอดวัน</option><option value="4">4 - บวมโตงอเข่าไม่ได้</option>
+                            </select>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border space-y-2">
+                            <p class="font-semibold text-slate-800">7. รู้สึกข้อเข่าหลวม ไม่มั่นคง หรือเหมือนจะทรงตัวไม่อยู่ขณะก้าวเดิน?</p>
+                            <select class="q-score w-full p-2.5 border rounded-xl bg-white">
+                                <option value="0">0 - มั่นคงดี</option><option value="1">1 - โอนเอียงนานๆ ครั้ง</option><option value="2">2 - ไม่มั่นคงบนพื้นขรุขระ</option><option value="3">3 - เข่าทรุดบ่อย</option><option value="4">4 - ต้องใช้อุปกรณ์ช่วยเดิน</option>
+                            </select>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border space-y-2">
+                            <p class="font-semibold text-slate-800">8. อาการกระทบต่อการทำกิจวัตรประจำวัน (อาบน้ำ แต่งตัว ซื้อของ) เพียงใด?</p>
+                            <select class="q-score w-full p-2.5 border rounded-xl bg-white">
+                                <option value="0">0 - ไม่กระทบ</option><option value="1">1 - เล็กน้อย</option><option value="2">2 - ปานกลาง (ช้าลง)</option><option value="3">3 - กระทบมาก</option><option value="4">4 - ช่วยเหลือตัวเองไม่ได้</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <button onclick="saveSurveyAndOpenCam()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-2xl shadow-md transition text-center">
-                    ถัดไป: สแกนโครงสร้างข้อเข่าด้วย AI <i class="fa-solid fa-camera ml-1"></i>
+                <button onclick="saveSurveyAndOpenCam()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg transition text-center text-base">
+                    บันทึกข้อมูล & ไปยังขั้นตอนถ่ายภาพสแกน <i class="fa-solid fa-camera ml-2"></i>
                 </button>
             </div>
         </section>
@@ -131,44 +193,30 @@
         <!-- 3. AI CAMERA SCAN PAGE -->
         <section id="page-camera" class="page-section space-y-6">
             <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                <div class="flex justify-between items-center">
                     <div>
                         <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">ขั้นตอนที่ 2 จาก 2</span>
-                        <h2 class="text-2xl font-bold text-slate-900">Camera AI Knee Scan</h2>
-                        <p class="text-xs text-slate-500">ถอยห่างจากกล้อง ให้กล้องเห็น **สะโพก หัวเข่า และเท้า** ครบถ้วน</p>
+                        <h2 class="text-2xl font-bold text-slate-900">Vector Pose Analysis</h2>
                     </div>
                     <div id="cam-status" class="text-xs font-bold px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-600">
                         รอเปิดกล้อง
                     </div>
                 </div>
 
-                <!-- Alert Banners -->
-                <div id="pose-instruction-box" class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold flex items-center gap-2">
-                    <i class="fa-solid fa-triangle-exclamation text-amber-500 text-base"></i>
-                    <span id="pose-instruction-text">กรุณายืนถอยหลังให้เห็นช่วงขา (สะโพก, เข่า, ข้อเท้า) ให้อยู่ในกรอบ</span>
-                </div>
-
-                <div id="light-warning-box" class="hidden p-3 rounded-xl bg-orange-50 border border-orange-200 text-orange-800 text-xs font-semibold flex items-center gap-2">
-                    <i class="fa-solid fa-sun text-orange-500 text-base"></i>
-                    <span>คำเตือน: สภาพแสงในห้องน้อยเกินไป อาจส่งผลต่อความแม่นยำในการวิเคราะห์</span>
-                </div>
-
-                <!-- Camera Screen -->
                 <div class="relative bg-slate-950 rounded-2xl overflow-hidden aspect-video max-w-2xl mx-auto flex items-center justify-center border-2 border-slate-800">
                     <video id="webcam" class="hidden" playsinline></video>
                     <canvas id="knee_canvas" class="w-full h-full object-contain"></canvas>
                     
-                    <!-- Countdown Overlay -->
                     <div id="scan-countdown-overlay" class="absolute inset-0 bg-slate-950/60 hidden flex-col items-center justify-center text-white">
                         <span id="scan-timer-num" class="text-7xl font-black text-emerald-400 animate-pulse">5</span>
-                        <p class="text-xs text-emerald-200 mt-2 font-medium">ยืนนิ่ง ๆ กำลังถ่ายภาพสแกน...</p>
+                        <p class="text-xs text-emerald-200 mt-2 font-medium">กำลังคำนวณพิกัดจุดเวกเตอร์...</p>
                     </div>
                 </div>
 
                 <div class="flex justify-center gap-3">
-                    <button onclick="startKneeCamera()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-2xl shadow-md transition flex items-center gap-2">
+                    <button onclick="startKneeCamera()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3.5 rounded-2xl shadow-md transition flex items-center gap-2">
                         <i class="fa-solid fa-video"></i>
-                        <span>เริ่มเปิดกล้องสแกน</span>
+                        <span>เปิดกล้องเพื่อประมวลผล</span>
                     </button>
                 </div>
             </div>
@@ -180,119 +228,158 @@
                 
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4 gap-4">
                     <div>
-                        <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">ผลการวิเคราะห์โครงสร้างเข่า</span>
-                        <h2 class="text-2xl font-bold text-slate-900">ผลประเมินภาวะข้อเข่าเสื่อมและขาโก่ง</h2>
-                        <p class="text-xs text-slate-500">ประมวลผลวิเคราะห์เมื่อ: <span id="res-date">-</span></p>
+                        <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">รายงานวิเคราะห์ทางการแพทย์และคณิตศาสตร์</span>
+                        <h2 class="text-2xl font-bold text-slate-900" id="res-patient-name">ชื่อผู้ป่วย: -</h2>
+                        <p class="text-xs text-slate-500">HN: <span id="res-patient-hn">-</span> | เพศ: <span id="res-gender">-</span> | อายุ: <span id="res-age">-</span> ปี | BMI: <span id="res-bmi">-</span> kg/m²</p>
                     </div>
                     <div id="res-risk-badge" class="px-5 py-2 rounded-2xl font-bold text-sm bg-rose-100 text-rose-700">
                         ความเสี่ยง: กำลังคำนวณ
                     </div>
                 </div>
 
-                <!-- Snapshot Image & Angle Breakdown Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Captured Image Preview -->
                     <div class="md:col-span-1 space-y-2">
-                        <h3 class="text-xs font-bold text-slate-700">ภาพสแกนที่บันทึกไว้ (Pose Analysis)</h3>
+                        <h3 class="text-xs font-bold text-slate-700">Vector Landmark Snapshot</h3>
                         <div class="bg-slate-900 rounded-2xl overflow-hidden border border-slate-300 shadow-inner">
                             <img id="captured-snapshot" class="w-full h-auto object-cover" alt="Captured Scan" src="" />
                         </div>
                     </div>
 
-                    <!-- Numerical Metrics -->
-                    <div class="md:col-span-2 grid grid-cols-2 gap-4">
-                        <div class="p-4 bg-slate-50 border rounded-2xl space-y-1">
-                            <span class="text-xs text-slate-500 font-semibold">Knee Angle (ซ้าย)</span>
-                            <div class="text-3xl font-extrabold text-slate-800"><span id="angle-left">--</span>°</div>
-                            <span class="text-[10px] text-slate-400">ปกติ: 175°-178°</span>
+                    <div class="md:col-span-2 space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 bg-slate-50 border rounded-2xl space-y-1">
+                                <span class="text-xs text-slate-500 font-semibold">Left Knee Angle ($\theta_L$)</span>
+                                <div class="text-3xl font-extrabold text-slate-800"><span id="angle-left">--</span>°</div>
+                            </div>
+
+                            <div class="p-4 bg-slate-50 border rounded-2xl space-y-1">
+                                <span class="text-xs text-slate-500 font-semibold">Right Knee Angle ($\theta_R$)</span>
+                                <div class="text-3xl font-extrabold text-slate-800"><span id="angle-right">--</span>°</div>
+                            </div>
+
+                            <div class="p-4 bg-slate-50 border rounded-2xl space-y-1">
+                                <span class="text-xs text-slate-500 font-semibold">Survey Score (KOOS/WOMAC)</span>
+                                <div class="text-2xl font-extrabold text-slate-800"><span id="res-survey-score">0</span> <span class="text-xs">/ 32</span></div>
+                            </div>
+
+                            <div class="p-4 bg-slate-50 border rounded-2xl space-y-1">
+                                <span class="text-xs text-slate-500 font-semibold">Weighted Risk Score ($R$)</span>
+                                <div class="text-2xl font-extrabold text-indigo-600"><span id="res-score">0</span> <span class="text-xs text-slate-400">/ 100</span></div>
+                            </div>
                         </div>
 
-                        <div class="p-4 bg-slate-50 border rounded-2xl space-y-1">
-                            <span class="text-xs text-slate-500 font-semibold">Knee Angle (ขวา)</span>
-                            <div class="text-3xl font-extrabold text-slate-800"><span id="angle-right">--</span>°</div>
-                            <span class="text-[10px] text-slate-400">ปกติ: 175°-178°</span>
-                        </div>
-
-                        <div class="p-4 bg-slate-50 border rounded-2xl space-y-1">
-                            <span class="text-xs text-slate-500 font-semibold">Mechanical Axis</span>
-                            <div class="text-2xl font-extrabold text-slate-800"><span id="res-axis">12</span> <span class="text-xs">mm</span></div>
-                            <span class="text-[10px] text-slate-400">เบี่ยงเบนจากแนวแกนกลาง</span>
-                        </div>
-
-                        <div class="p-4 bg-slate-50 border rounded-2xl space-y-1">
-                            <span class="text-xs text-slate-500 font-semibold">AI Confidence Score</span>
-                            <div class="text-2xl font-extrabold text-emerald-600"><span id="res-confidence">96</span>%</div>
-                            <span class="text-[10px] text-emerald-600">คุณภาพรูปถ่ายสมบูรณ์</span>
+                        <div class="p-4 bg-indigo-50/60 border border-indigo-100 rounded-2xl space-y-2 text-xs text-indigo-950">
+                            <h4 class="font-bold flex items-center gap-1.5 text-indigo-900">
+                                <i class="fa-solid fa-check-circle text-emerald-600"></i>
+                                <span>บันทึกเข้าสู่ระบบฐานข้อมูลแพทย์เรียบร้อยแล้ว</span>
+                            </h4>
+                            <p class="text-slate-600">
+                                ข้อมูลเคสนี้ถูกเพิ่มเข้าสู่ Dashboard ของแพทย์เรียบร้อยแล้ว บุคลากรทางการแพทย์สามารถพิมพ์ค้นหาด้วยชื่อหรือ HN ในหน้า Dashboard ได้ทันที
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Medical Evaluation Criteria Info Box -->
-                <div class="p-5 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
-                    <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-notes-medical text-blue-600"></i>
-                        <span>หลักเกณฑ์ทางการแพทย์ที่ใช้วิเคราะห์ (Clinical Reference Standards)</span>
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-600">
-                        <div class="p-3 bg-white rounded-xl border">
-                            <div class="font-bold text-slate-800 mb-1">1. มุมองศาข้อเข่า (HKA Angle)</div>
-                            <p>คำนวณจากแนวเวกเตอร์ Hip-Knee-Ankle องศาต่ำกว่า 175° บ่งชี้ภาวะขาโก่ง (Genu Varum) ซึ่งส่งผลให้รับน้ำหนักที่ข้อเข่าด้านในเพิ่มขึ้น</p>
-                        </div>
-                        <div class="p-3 bg-white rounded-xl border">
-                            <div class="font-bold text-slate-800 mb-1">2. ดรรชนีมวลกาย (BMI Index)</div>
-                            <p>BMI > 25 kg/m² เพิ่มแรงกระแทกต่อผิวกระดูกอ่อนข้อเข่า 3-5 เท่า ในทุกช่วงการก้าวเดิน</p>
-                        </div>
-                        <div class="p-3 bg-white rounded-xl border">
-                            <div class="font-bold text-slate-800 mb-1">3. Clinical Symptom Score</div>
-                            <p>นำคะแนนแบบสอบถามอาการปวด ตึง ขัด มาร่วมประมวลผลตามมาตรฐานการประเมินข้อเสื่อมเบื้องต้น</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Hospital Referral Section -->
-                <div class="p-5 bg-blue-50 border border-blue-200 rounded-2xl space-y-3">
-                    <h3 class="font-bold text-blue-900 text-sm flex items-center gap-2">
-                        <i class="fa-solid fa-hospital"></i>
-                        <span>ส่งต่อข้อมูลให้แพทย์ / โรงพยาบาลปลายทาง</span>
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <select id="select-hospital" class="p-2.5 bg-white border border-blue-200 rounded-xl text-xs outline-none">
-                            <option>โรงพยาบาลลพบุรี - แผนกออร์โธปิดิกส์ (กระดูกและข้อ)</option>
-                            <option>โรงพยาบาลศูนย์พระนารายณ์มหาราช</option>
-                        </select>
-                        <button onclick="sendToHospital()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition">
-                            ส่งข้อมูลประเมินให้แพทย์
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Actions -->
                 <div class="flex flex-wrap gap-3 justify-center pt-2">
-                    <button onclick="exportKneePDF()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-5 py-3 rounded-xl transition flex items-center gap-2">
-                        <i class="fa-solid fa-download"></i>
-                        <span>ดาวน์โหลดรายงาน PDF</span>
+                    <button onclick="exportKneePDF()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-6 py-3.5 rounded-xl transition flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-file-pdf text-red-400"></i>
+                        <span>ดาวน์โหลดใบรายงานผล (PDF)</span>
+                    </button>
+                    <button onclick="switchPage('doctor-dashboard')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-6 py-3.5 rounded-xl transition flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-user-md"></i>
+                        <span>เปิดใน Dashboard แพทย์</span>
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- 5. DOCTOR DASHBOARD -->
-        <section id="page-doctor-dashboard" class="page-section space-y-6">
-            <div class="bg-slate-900 text-white p-6 rounded-3xl shadow-xl space-y-6">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <div>
-                        <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Hospital Portal</span>
-                        <h2 class="text-2xl font-bold">KneeAI - Dashboard สำหรับแพทย์</h2>
+        <!-- 5. MATHEMATICAL MODEL DEDICATED PAGE -->
+        <section id="page-math-model" class="page-section space-y-6">
+            <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                <div class="border-b pb-4">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Mathematics & Algorithm Design</span>
+                    <h2 class="text-2xl font-bold text-slate-900">แบบจำลองทางคณิตศาสตร์ของ KneeAI</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-5 bg-slate-50 border rounded-2xl space-y-3">
+                        <h3 class="font-bold text-sm text-slate-800">1. การหาพิกัดและคำนวณมุมเวกเตอร์ (Vector Angle)</h3>
+                        <div class="bg-white p-3 rounded-xl border text-xs font-mono text-center">
+                            $\theta = \arccos\left( \frac{\vec{u} \cdot \vec{v}}{\|\vec{u}\| \|\vec{v}\|} \right)$
+                        </div>
+                    </div>
+
+                    <div class="p-5 bg-slate-50 border rounded-2xl space-y-3">
+                        <h3 class="font-bold text-sm text-slate-800">2. แบบจำลองความเสี่ยงถ่วงน้ำหนัก (Weighted Risk Index)</h3>
+                        <div class="bg-white p-3 rounded-xl border text-xs font-mono text-center">
+                            $R = 0.40(S_{\text{Angle}}) + 0.40(S_{\text{Survey}}) + 0.20(S_{\text{BMI}})$
+                        </div>
                     </div>
                 </div>
-                <p class="text-xs text-slate-400">ระบบเชื่อมโยงผลประเมินโครงสร้างข้อเข่าสำหรับบุคลากรทางการแพทย์</p>
             </div>
         </section>
 
-        <!-- 6. HISTORY PAGE -->
-        <section id="page-history" class="page-section space-y-6">
-            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                <h2 class="text-2xl font-bold text-slate-900">ประวัติการตรวจคัดกรองของคุณ</h2>
+        <!-- 6. DOCTOR DASHBOARD (พร้อมระบบค้นหาและดึงประวัติ) -->
+        <section id="page-doctor-dashboard" class="page-section space-y-6">
+            <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4 gap-4">
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Medical Portal & Patient Search</span>
+                        <h2 class="text-2xl font-bold text-slate-900">KneeAI - Dashboard สำหรับบุคลากรทางการแพทย์</h2>
+                        <p class="text-xs text-slate-500">ค้นหารายงานและผลการคัดกรองข้อเข่าเสื่อมของผู้ป่วยย้อนหลัง</p>
+                    </div>
+                    <div class="bg-indigo-50 px-4 py-2 rounded-2xl border border-indigo-100 flex items-center gap-2 text-indigo-700 text-xs font-bold">
+                        <i class="fa-solid fa-database"></i>
+                        <span>เคสทั้งหมดในระบบ: <span id="doc-total-cases">0</span> ราย</span>
+                    </div>
+                </div>
+
+                <!-- ช่องค้นหา HN / Name -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col md:flex-row gap-3">
+                    <div class="relative flex-grow">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-sm"></i>
+                        <input type="text" id="doc-search-input" onkeyup="searchPatientRecords()" placeholder="พิมพ์ ค้นหาด้วยชื่อ หรือ เลข HN ของคนไข้..." class="w-full pl-11 pr-4 py-2.5 border rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <button onclick="searchPatientRecords()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition">
+                        ค้นหาประวัติ
+                    </button>
+                </div>
+
+                <!-- ตารางรายการผู้ป่วย -->
+                <div class="overflow-x-auto border border-slate-200 rounded-2xl">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-700 border-b">
+                                <th class="p-3.5 font-bold">HN</th>
+                                <th class="p-3.5 font-bold">ชื่อ - นามสกุล</th>
+                                <th class="p-3.5 font-bold">เพศ / อายุ</th>
+                                <th class="p-3.5 font-bold">BMI</th>
+                                <th class="p-3.5 font-bold">มุมเข่า (L/R)</th>
+                                <th class="p-3.5 font-bold">คะแนนประเมิน</th>
+                                <th class="p-3.5 font-bold">ความเสี่ยงรวม ($R$)</th>
+                                <th class="p-3.5 font-bold text-center">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="doc-patient-table-body" class="divide-y divide-slate-100">
+                            <!-- จะถูกใส่ด้วย JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- กล่องแสดงรายละเอียดแบบประเมินผู้ป่วยที่เลือก (Modal / Detail Box) -->
+                <div id="doc-detail-box" class="hidden bg-slate-900 text-white p-6 rounded-2xl space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <h3 class="font-bold text-base text-indigo-400" id="doc-detail-name">รายละเอียดประวัติ: -</h3>
+                        <button onclick="closeDocDetail()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                        <div><span class="text-slate-400">HN:</span> <p id="doc-detail-hn" class="font-bold text-slate-200">-</p></div>
+                        <div><span class="text-slate-400">อายุ/เพศ:</span> <p id="doc-detail-age-gender" class="font-bold text-slate-200">-</p></div>
+                        <div><span class="text-slate-400">มุมเข่า ซ้าย/ขวา:</span> <p id="doc-detail-angles" class="font-bold text-slate-200">-</p></div>
+                        <div><span class="text-slate-400">ระดับความเสี่ยง:</span> <p id="doc-detail-risk" class="font-bold text-amber-400">-</p></div>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -300,12 +387,46 @@
 
     <!-- LOGIC SCRIPT -->
     <script>
+        // ฐานข้อมูลเคสคนไข้ในระบบ
+        let patientDatabase = [
+            {
+                patientHN: "HN67001",
+                patientName: "สมบูรณ์ มีสุข",
+                gender: "ชาย",
+                age: 62,
+                bmi: "26.4",
+                surveyScore: 18,
+                angleLeft: 168,
+                angleRight: 172,
+                riskScore: 64,
+                riskLevel: "ความเสี่ยงสูงมาก (Severe Risk)",
+                date: "2026-08-01"
+            },
+            {
+                patientHN: "HN67002",
+                patientName: "นภา ใจกว้าง",
+                gender: "หญิง",
+                age: 54,
+                bmi: "22.1",
+                surveyScore: 6,
+                angleLeft: 176,
+                angleRight: 175,
+                riskScore: 15,
+                riskLevel: "ปกติ / ความเสี่ยงต่ำ (Low Risk)",
+                date: "2026-08-05"
+            }
+        ];
+
         const kneeState = {
-            age: 55,
+            patientName: "",
+            patientHN: "",
+            gender: "หญิง",
+            age: 50,
             height: 160,
-            weight: 65,
-            bmi: 25.39,
+            weight: 60,
+            bmi: 23.44,
             surveyScore: 0,
+            riskScore: 0,
             angleLeft: 0,
             angleRight: 0,
             capturedImageData: "",
@@ -317,25 +438,38 @@
             const target = document.getElementById(`page-${pageId}`);
             if(target) target.classList.add('page-active');
             window.scrollTo({top: 0, behavior: 'smooth'});
+            
+            if(pageId === 'doctor-dashboard') {
+                renderDoctorTable(patientDatabase);
+            }
+            if(window.MathJax) MathJax.typesetPromise();
         }
 
         function saveSurveyAndOpenCam() {
+            const nameInput = document.getElementById('patient-name').value.trim();
+            kneeState.patientName = nameInput || "ผู้ป่วยไม่ระบุนาม";
+
+            const hnInput = document.getElementById('patient-hn').value.trim();
+            kneeState.patientHN = hnInput || ("HN-" + Math.floor(100000 + Math.random() * 900000));
+
+            kneeState.gender = document.getElementById('patient-gender').value;
             kneeState.age = parseInt(document.getElementById('user-age').value) || 50;
             kneeState.height = parseFloat(document.getElementById('user-height').value) || 160;
             kneeState.weight = parseFloat(document.getElementById('user-weight').value) || 60;
             
             const hM = kneeState.height / 100;
-            kneeState.bmi = (kneeState.weight / (hM * hM)).toFixed(2);
+            kneeState.bmi = (kneeState.weight / (hM * hM)).toFixed(1);
 
-            let s = 0;
-            s += parseInt(document.getElementById('sq1').value) || 0;
-            s += parseInt(document.getElementById('sq2').value) || 0;
-            kneeState.surveyScore = s;
+            let totalSurvey = 0;
+            document.querySelectorAll('.q-score').forEach(select => {
+                totalSurvey += parseInt(select.value) || 0;
+            });
+            kneeState.surveyScore = totalSurvey;
 
+            document.getElementById('cam-status').innerText = `ผู้ป่วย: ${kneeState.patientName}`;
             switchPage('camera');
         }
 
-        // Camera Pose Analysis & Alignment Engine
         let videoEl, canvasEl, ctx, pose, camera;
         let countdownTimer = null;
         let countdownValue = 5;
@@ -360,31 +494,19 @@
             pose.onResults(onKneeResults);
         }
 
-        function calculateAngle(A, B, C) {
-            const AB = Math.sqrt(Math.pow(B.x - A.x, 2) + Math.pow(B.y - A.y, 2));
-            const BC = Math.sqrt(Math.pow(B.x - C.x, 2) + Math.pow(B.y - C.y, 2));
-            const AC = Math.sqrt(Math.pow(C.x - A.x, 2) + Math.pow(C.y - A.y, 2));
-            
-            const rad = Math.acos((Math.pow(AB, 2) + Math.pow(BC, 2) - Math.pow(AC, 2)) / (2 * AB * BC));
-            return Math.round(rad * (180 / Math.PI));
-        }
+        function calculateVectorAngle(A, B, C) {
+            const ux = A.x - B.x;
+            const uy = A.y - B.y;
+            const vx = C.x - B.x;
+            const vy = C.y - B.y;
 
-        // Check image brightness
-        function checkBrightness(imageCtx, width, height) {
-            try {
-                const imgData = imageCtx.getImageData(0, 0, width, height);
-                let colorSum = 0;
-                for(let i = 0; i < imgData.data.length; i += 16) {
-                    colorSum += (imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3;
-                }
-                const brightness = colorSum / (imgData.data.length / 16);
-                const lightBox = document.getElementById('light-warning-box');
-                if(brightness < 50) {
-                    lightBox.classList.remove('hidden');
-                } else {
-                    lightBox.classList.add('hidden');
-                }
-            } catch(e) {}
+            const dotProduct = (ux * vx) + (uy * vy);
+            const magU = Math.sqrt(ux * ux + uy * uy);
+            const magV = Math.sqrt(vx * vx + vy * vy);
+
+            if (magU * magV === 0) return 180;
+            const cosTheta = Math.max(-1, Math.min(1, dotProduct / (magU * magV)));
+            return Math.round(Math.acos(cosTheta) * (180 / Math.PI));
         }
 
         function onKneeResults(results) {
@@ -395,71 +517,37 @@
             ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
             ctx.drawImage(results.image, 0, 0, canvasEl.width, canvasEl.height);
 
-            checkBrightness(ctx, canvasEl.width, canvasEl.height);
-
             let isPositionCorrect = false;
 
             if (results.poseLandmarks) {
                 const lm = results.poseLandmarks;
-
-                // Required Keypoints: Hip(23,24), Knee(25,26), Ankle(27,28)
                 const leftLegVisible = lm[23]?.visibility > 0.65 && lm[25]?.visibility > 0.65 && lm[27]?.visibility > 0.65;
                 const rightLegVisible = lm[24]?.visibility > 0.65 && lm[26]?.visibility > 0.65 && lm[28]?.visibility > 0.65;
 
                 isPositionCorrect = leftLegVisible && rightLegVisible;
 
-                if (leftLegVisible) kneeState.angleLeft = calculateAngle(lm[23], lm[25], lm[27]);
-                if (rightLegVisible) kneeState.angleRight = calculateAngle(lm[24], lm[26], lm[28]);
+                if (leftLegVisible) kneeState.angleLeft = calculateVectorAngle(lm[23], lm[25], lm[27]);
+                if (rightLegVisible) kneeState.angleRight = calculateVectorAngle(lm[24], lm[26], lm[28]);
 
-                // Style based on alignment: Green if correct, Red if wrong
-                const drawColor = isPositionCorrect ? '#10B981' : '#EF4444'; // Emerald green vs Red
-                const jointColor = isPositionCorrect ? '#059669' : '#DC2626';
-
-                // Draw Leg Alignment Lines
-                const legConnections = [
-                    [23, 25], [25, 27], // Left Leg
-                    [24, 26], [26, 28], // Right Leg
-                    [23, 24]  // Pelvic line
-                ];
+                const drawColor = isPositionCorrect ? '#10B981' : '#EF4444';
+                const legConnections = [[23, 25], [25, 27], [24, 26], [26, 28], [23, 24]];
 
                 legConnections.forEach(([i, j]) => {
                     if (lm[i] && lm[j]) {
                         ctx.beginPath();
                         ctx.moveTo(lm[i].x * canvasEl.width, lm[i].y * canvasEl.height);
                         ctx.lineTo(lm[j].x * canvasEl.width, lm[j].y * canvasEl.height);
-                        ctx.lineWidth = 5;
+                        ctx.lineWidth = 4;
                         ctx.strokeStyle = drawColor;
-                        ctx.stroke();
-                    }
-                });
-
-                // Draw Joint Points
-                [23, 24, 25, 26, 27, 28].forEach(idx => {
-                    if (lm[idx]) {
-                        ctx.beginPath();
-                        ctx.arc(lm[idx].x * canvasEl.width, lm[idx].y * canvasEl.height, 8, 0, 2 * Math.PI);
-                        ctx.fillStyle = jointColor;
-                        ctx.fill();
-                        ctx.lineWidth = 2;
-                        ctx.strokeStyle = '#FFFFFF';
                         ctx.stroke();
                     }
                 });
             }
 
-            // UI Feedback & Auto Countdown Control
-            const instBox = document.getElementById('pose-instruction-box');
-            const instText = document.getElementById('pose-instruction-text');
-            const camStatus = document.getElementById('cam-status');
             const overlay = document.getElementById('scan-countdown-overlay');
             const timerNum = document.getElementById('scan-timer-num');
 
             if (isPositionCorrect) {
-                instBox.className = "p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2";
-                instText.innerText = "ท่าทางถูกต้อง! ยืนนิ่ง ๆ กำลังเริ่มนับถอยหลังเพื่อถ่ายภาพ";
-                camStatus.className = "text-xs font-bold px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-700";
-                camStatus.innerText = "ตรวจพบตำแหน่งขาถูกต้อง";
-
                 overlay.classList.remove('hidden');
                 overlay.classList.add('flex');
 
@@ -479,14 +567,8 @@
                     }, 1000);
                 }
             } else {
-                instBox.className = "p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2";
-                instText.innerText = "กรุณายืนถอยหลัง ให้เห็นสะโพก เข่า และเท้า อยู่ในกรอบภาพ";
-                camStatus.className = "text-xs font-bold px-3.5 py-1.5 rounded-full bg-rose-100 text-rose-700";
-                camStatus.innerText = "ตำแหน่งยังไม่ครบถ้วน";
-
                 overlay.classList.add('hidden');
                 overlay.classList.remove('flex');
-
                 if (isCountingDown) {
                     clearInterval(countdownTimer);
                     isCountingDown = false;
@@ -497,11 +579,9 @@
         }
 
         function captureSnapshotAndFinish() {
-            // Save Image Snapshot from Canvas
             kneeState.capturedImageData = canvasEl.toDataURL('image/png');
             document.getElementById('captured-snapshot').src = kneeState.capturedImageData;
 
-            // Stop Camera
             if(camera) camera.stop();
 
             renderKneeResults();
@@ -510,47 +590,146 @@
 
         function startKneeCamera() {
             if(!pose) initKneePose();
-
             isCountingDown = false;
             if(countdownTimer) clearInterval(countdownTimer);
-
-            const statusEl = document.getElementById('cam-status');
-            statusEl.innerText = "กำลังเชื่อมต่อกล้อง...";
 
             camera = new Camera(videoEl, {
                 onFrame: async () => { await pose.send({image: videoEl}); },
                 width: 640,
                 height: 480
             });
-
             camera.start();
         }
 
         function renderKneeResults() {
-            document.getElementById('angle-left').innerText = kneeState.angleLeft || 174;
-            document.getElementById('angle-right').innerText = kneeState.angleRight || 176;
-            document.getElementById('res-date').innerText = new Date().toLocaleDateString('th-TH');
+            document.getElementById('res-patient-name').innerText = "ชื่อผู้ป่วย: " + kneeState.patientName;
+            document.getElementById('res-patient-hn').innerText = kneeState.patientHN;
+            document.getElementById('res-gender').innerText = kneeState.gender;
+            document.getElementById('res-age').innerText = kneeState.age;
+            document.getElementById('res-bmi').innerText = kneeState.bmi;
+            document.getElementById('res-survey-score').innerText = kneeState.surveyScore;
+
+            const angleL = kneeState.angleLeft || 173;
+            const angleR = kneeState.angleRight || 175;
+
+            document.getElementById('angle-left').innerText = angleL;
+            document.getElementById('angle-right').innerText = angleR;
+
+            // คำนวณความเสี่ยงถ่วงน้ำหนัก
+            const minAngle = Math.min(angleL, angleR);
+            let angleDeficit = Math.max(0, 175 - minAngle);
+            let angleRisk = Math.min(100, angleDeficit * 12); 
+            let surveyRisk = (kneeState.surveyScore / 32) * 100;
+            let bmiRisk = Math.min(100, Math.max(0, (parseFloat(kneeState.bmi) - 23) * 8));
+
+            let totalScore = Math.round((angleRisk * 0.40) + (surveyRisk * 0.40) + (bmiRisk * 0.20));
+            kneeState.riskScore = totalScore;
+            document.getElementById('res-score').innerText = totalScore;
 
             const badge = document.getElementById('res-risk-badge');
 
-            if(kneeState.angleLeft < 173 || kneeState.angleRight < 173 || kneeState.surveyScore >= 10) {
+            if(totalScore >= 60) {
+                kneeState.riskLevel = "ความเสี่ยงสูงมาก (Severe Risk)";
+                badge.innerText = "ความเสี่ยงสูงมาก";
+                badge.className = "px-5 py-2 rounded-2xl font-bold text-sm bg-rose-600 text-white";
+            } else if(totalScore >= 40) {
                 kneeState.riskLevel = "ความเสี่ยงสูง (High Risk)";
-                badge.innerText = "ความเสี่ยงสูง (พบภาวะขาโก่ง/เสื่อม)";
+                badge.innerText = "ความเสี่ยงสูง";
                 badge.className = "px-5 py-2 rounded-2xl font-bold text-sm bg-rose-100 text-rose-700";
-            } else if(kneeState.angleLeft < 175 || kneeState.surveyScore >= 5) {
+            } else if(totalScore >= 20) {
                 kneeState.riskLevel = "ความเสี่ยงปานกลาง (Moderate Risk)";
                 badge.innerText = "ความเสี่ยงปานกลาง";
                 badge.className = "px-5 py-2 rounded-2xl font-bold text-sm bg-amber-100 text-amber-700";
             } else {
-                kneeState.riskLevel = "ความเสี่ยงต่ำ (Low Risk)";
+                kneeState.riskLevel = "ปกติ / ความเสี่ยงต่ำ (Low Risk)";
                 badge.innerText = "ปกติ (Low Risk)";
                 badge.className = "px-5 py-2 rounded-2xl font-bold text-sm bg-emerald-100 text-emerald-700";
             }
+
+            // เพิ่มเคสลงในฐานข้อมูลของแพทย์อัตโนมัติ (Auto Save to Database)
+            const existingIndex = patientDatabase.findIndex(p => p.patientHN === kneeState.patientHN);
+            const newRecord = {
+                patientHN: kneeState.patientHN,
+                patientName: kneeState.patientName,
+                gender: kneeState.gender,
+                age: kneeState.age,
+                bmi: kneeState.bmi,
+                surveyScore: kneeState.surveyScore,
+                angleLeft: angleL,
+                angleRight: angleR,
+                riskScore: totalScore,
+                riskLevel: kneeState.riskLevel,
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            if(existingIndex >= 0) {
+                patientDatabase[existingIndex] = newRecord;
+            } else {
+                patientDatabase.unshift(newRecord);
+            }
         }
 
-        function sendToHospital() {
-            const hosp = document.getElementById('select-hospital').value;
-            alert(`ส่งข้อมูลผลสแกนและประวัติการตรวจไปยัง "${hosp}" เรียบร้อยแล้ว!`);
+        // ฟังก์ชันของ Dashboard สำหรับแพทย์
+        function renderDoctorTable(dataList) {
+            document.getElementById('doc-total-cases').innerText = dataList.length;
+            const tbody = document.getElementById('doc-patient-table-body');
+            tbody.innerHTML = "";
+
+            if(dataList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">ไม่พบประวัติผู้ป่วยที่ค้นหา</td></tr>`;
+                return;
+            }
+
+            dataList.forEach(p => {
+                let badgeClass = "bg-emerald-100 text-emerald-800";
+                if(p.riskScore >= 60) badgeClass = "bg-rose-100 text-rose-800 font-bold";
+                else if(p.riskScore >= 40) badgeClass = "bg-amber-100 text-amber-800";
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="p-3.5 font-bold text-indigo-600">${p.patientHN}</td>
+                    <td class="p-3.5 font-semibold text-slate-800">${p.patientName}</td>
+                    <td class="p-3.5 text-slate-600">${p.gender} / ${p.age} ปี</td>
+                    <td class="p-3.5 text-slate-600">${p.bmi}</td>
+                    <td class="p-3.5 text-slate-600">${p.angleLeft}° / ${p.angleRight}°</td>
+                    <td class="p-3.5 text-slate-600">${p.surveyScore} / 32</td>
+                    <td class="p-3.5"><span class="px-2.5 py-1 rounded-lg ${badgeClass}">${p.riskScore} (${p.riskLevel.split(' ')[0]})</span></td>
+                    <td class="p-3.5 text-center">
+                        <button onclick="viewPatientDetail('${p.patientHN}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold px-3 py-1.5 rounded-lg border border-indigo-200 transition">
+                            ดูรายละเอียด
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ค้นหาผู้ป่วยด้วย ชื่อ หรือ HN
+        function searchPatientRecords() {
+            const query = document.getElementById('doc-search-input').value.toLowerCase().trim();
+            const filtered = patientDatabase.filter(p => 
+                p.patientName.toLowerCase().includes(query) || 
+                p.patientHN.toLowerCase().includes(query)
+            );
+            renderDoctorTable(filtered);
+        }
+
+        function viewPatientDetail(hn) {
+            const patient = patientDatabase.find(p => p.patientHN === hn);
+            if(!patient) return;
+
+            document.getElementById('doc-detail-name').innerText = `รายละเอียดประวัติ: คุณ${patient.patientName}`;
+            document.getElementById('doc-detail-hn').innerText = patient.patientHN;
+            document.getElementById('doc-detail-age-gender').innerText = `${patient.gender} / ${patient.age} ปี (BMI ${patient.bmi})`;
+            document.getElementById('doc-detail-angles').innerText = `ซ้าย ${patient.angleLeft}° | ขวา ${patient.angleRight}°`;
+            document.getElementById('doc-detail-risk').innerText = `${patient.riskLevel} (คะแนนรวม: ${patient.riskScore}/100)`;
+
+            document.getElementById('doc-detail-box').classList.remove('hidden');
+        }
+
+        function closeDocDetail() {
+            document.getElementById('doc-detail-box').classList.add('hidden');
         }
 
         function exportKneePDF() {
@@ -558,13 +737,17 @@
             const doc = new jsPDF();
 
             doc.setFontSize(16);
-            doc.text("KneeAI - Medical Screening Report", 14, 20);
+            doc.text("KneeAI - Patient Medical & Biomechanical Report", 14, 20);
             doc.setFontSize(10);
-            doc.text(`Age: ${kneeState.age} | BMI: ${kneeState.bmi}`, 14, 28);
-            doc.text(`Knee Angle Left: ${kneeState.angleLeft} deg | Right: ${kneeState.angleRight} deg`, 14, 34);
-            doc.text(`Risk Assessment: ${kneeState.riskLevel}`, 14, 40);
+            doc.text(`Patient Name: ${kneeState.patientName}`, 14, 28);
+            doc.text(`HN: ${kneeState.patientHN} | Gender: ${kneeState.gender} | Age: ${kneeState.age}`, 14, 34);
+            doc.text(`BMI: ${kneeState.bmi} kg/m2`, 14, 40);
+            doc.text(`Survey Score: ${kneeState.surveyScore} / 32`, 14, 46);
+            doc.text(`Knee Angle (Left): ${kneeState.angleLeft} deg | (Right): ${kneeState.angleRight} deg`, 14, 52);
+            doc.text(`Calculated Risk Score: ${kneeState.riskScore} / 100`, 14, 58);
+            doc.text(`Clinical Status: ${kneeState.riskLevel}`, 14, 64);
 
-            doc.save("KneeAI_Report.pdf");
+            doc.save(`KneeAI_${kneeState.patientHN}.pdf`);
         }
     </script>
 </body>
