@@ -144,6 +144,44 @@
         </div>
     </section>
 
+    <!-- 9. Referral Screen (หน้าส่งต่อโรงพยาบาลกรณีเสี่ยงสูง) -->
+    <section id="referral-screen" class="screen">
+        <h2>ส่งต่อข้อมูลโรงพยาบาล</h2>
+        <div style="background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 12px; border-radius: 6px; margin: 12px 0; font-size: 0.85rem;">
+            <strong>⚠️ ผลการประเมินความเสี่ยง : สูง</strong><br>
+            แนะนำให้รีบพบแพทย์ผู้เชี่ยวชาญเพื่อรับการวินิจฉัยเชิงลึก
+        </div>
+
+        <div class="form-container" style="background: #f8fafc; padding: 14px; border-radius: 6px; margin-bottom: 12px;">
+            <label style="display: block; font-size: 0.85rem; margin-bottom: 6px; font-weight: 600;">เลือกโรงพยาบาลปลายทาง:</label>
+            <select id="select-hospital" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background: #fff; margin-bottom: 12px;">
+                <option value="">-- กรุณาเลือกโรงพยาบาล --</option>
+                <option value="sirindhorn">โรงพยาบาลสิรินธร</option>
+                <option value="chulalongkorn">โรงพยาบาลจุฬาลงกรณ์</option>
+                <option value="ramathibodi">โรงพยาบาลรามาธิบดี</option>
+            </select>
+
+            <div style="font-size: 0.85rem; margin-top: 8px;">
+                <label><input type="checkbox" id="chk-referral-consent"> ข้าพเจ้า <u>ยินยอม</u>ให้ส่งต่อข้อมูลประวัติการประเมินและภาพถ่ายโครงสร้าง เพื่อใช้ประกอบการพิจารณาของบุคลากรทางการแพทย์</label>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button id="btn-referral-back" class="btn btn-secondary">ย้อนกลับ</button>
+            <button id="btn-submit-referral" class="btn btn-primary">ส่งข้อมูล</button>
+        </div>
+    </section>
+
+    <!-- 10. Success / Complete Screen -->
+    <section id="success-screen" class="screen" style="text-align: center;">
+        <div style="font-size: 3rem; color: #2ecc71; margin-bottom: 12px;">✅</div>
+        <h2>ส่งข้อมูลไปยังโรงพยาบาลสำเร็จ</h2>
+        <p style="margin-top: 8px; font-size: 0.9rem; color: #666;">เจ้าหน้าที่และแพทย์ผู้เชี่ยวชาญได้รับข้อมูลการคัดกรองของท่านเรียบร้อยแล้ว จะมีการติดต่อกลับเพื่อนัดหมายในลำดับถัดไป</p>
+        <div class="btn-group" style="margin-top: 20px;">
+            <button class="btn btn-primary btn-back-home">กลับสู่หน้าแรก</button>
+        </div>
+    </section>
+
     <section id="medical-login-screen" class="screen">
         <h2>Medical Portal Login</h2>
         <p>กำลังพัฒนาใน Phase ต่อไป...</p>
