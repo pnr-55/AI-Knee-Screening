@@ -167,6 +167,14 @@ function initApp() {
         });
     }
 
+    // หน้า Result -> กดปุ่มพิมพ์รายงานผล (Medical Report Print)
+    const btnPrintReport = document.getElementById('btn-print-report');
+    if (btnPrintReport) {
+        btnPrintReport.addEventListener('click', () => {
+            window.print(); // สั่งพิมพ์หน้าจอเป็น PDF ทันที
+        });
+    }
+
     // หน้า Result -> กดปุ่มไปหน้าส่งต่อโรงพยาบาล
     const btnGotoReferral = document.getElementById('btn-goto-referral');
     if (btnGotoReferral) {
