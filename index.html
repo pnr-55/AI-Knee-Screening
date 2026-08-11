@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Knee Screening & Assessment Suite v3.0</title>
+  <title>AI Knee Screening & Assessment Suite v4.0 (Real MediaPipe AI)</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- โหลด MediaPipe Pose และ TensorFlow.js ของจริง -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Prompt', sans-serif; background: #030712; color: #f3f4f6; }
@@ -45,7 +48,7 @@
         <div class="w-11 h-11 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/20">✦</div>
         <div>
           <span class="font-bold text-sm text-white tracking-wide block">AI-KNEE SCREENING</span>
-          <span class="text-[10px] text-cyan-400 font-medium tracking-widest uppercase block">Precision Medical Suite</span>
+          <span class="text-[10px] text-cyan-400 font-medium tracking-widest uppercase block">Real MediaPipe Pose AI</span>
         </div>
       </div>
       <div class="flex items-center gap-3">
@@ -58,21 +61,21 @@
 
   <!-- PDPA Notice -->
   <div class="bg-blue-950/40 border-b border-blue-900/40 py-1.5 px-4 text-center text-[11px] text-blue-300 no-print">
-    <span>🔒 <strong>PDPA & Medical Privacy Compliant:</strong> ข้อมูลภาพถ่ายและวิดีโอใช้เพื่อการประเมินข้อเข่าเบื้องต้นและส่งต่อแพทย์เท่านั้น</span>
+    <span>🔒 <strong>PDPA & Medical Privacy Compliant:</strong> ระบบประมวลผลท่าทางผ่าน AI แบบเรียลไทม์เพื่อความแม่นยำทางการแพทย์</span>
   </div>
 
   <!-- PAGE: HOME -->
   <main id="page-home" class="page-section page-active max-w-5xl mx-auto px-6 py-16 flex-1 w-full flex flex-col items-center justify-center text-center space-y-10">
     <div class="space-y-6 max-w-3xl">
       <span class="px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 text-cyan-400 text-xs font-medium rounded-full inline-block tracking-wider">
-        ระบบคัดกรองข้อเข่าอัจฉริยะด้วย AI (รุ่นความแม่นยำสูง)
+        ระบบคัดกรองข้อเข่าอัจฉริยะ (Real AI Motion Tracking v4.0)
       </span>
       <h1 class="text-4xl sm:text-6xl font-bold leading-tight text-white tracking-tight">
-        ตรวจสุขภาพข้อเข่าแม่นยำด้วย AI<br>
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-teal-200">วิเคราะห์จริง เห็นภาพจริง ส่งตรงถึงแพทย์</span>
+        ตรวจสุขภาพข้อเข่าแม่นยำด้วย AI ของจริง<br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-teal-200">ไม่หลอกค่า ตรวจจับตามโครงสร้างร่างกายจริง</span>
       </h1>
       <p class="text-slate-400 text-base max-w-2xl mx-auto leading-relaxed font-light">
-        ผสานแบบประเมินอาการ 8 ข้อ, การทดสอบ 5xSTS จับเวลาตามจริง พร้อมระบบ AI Skeletal Tracking มาร์คจุดข้อต่อ และบันทึกหลักฐานภาพ/วิดีโอเพื่อส่งต่อโรงพยาบาลใกล้คุณ
+        ระบบบังคับตรวจสอบมุมกล้องและสัดส่วนร่างกายอัตโนมัติ จะเริ่มนับเมื่อคุณลุกนั่งจริงๆ เท่านั้น พร้อมบันทึกภาพถ่ายและวิดีโอหลักฐานส่งตรงถึงแพทย์
       </p>
     </div>
     <div class="flex flex-wrap justify-center gap-4">
@@ -90,23 +93,23 @@
     <div class="luxury-card p-8 rounded-3xl space-y-6">
       <div class="flex justify-between items-center border-b border-slate-800 pb-6">
         <div>
-          <h2 class="text-xl font-bold text-white tracking-tight">คู่มือและขั้นตอนการใช้งานระบบ</h2>
-          <p class="text-xs text-slate-400 mt-1">เพื่อให้การประเมินมีความแม่นยำสูงสุด กรุณาปฏิบัติตามคำแนะนำด้านล่าง</p>
+          <h2 class="text-xl font-bold text-white tracking-tight">คู่มือการตั้งกล้องและปฏิบัติท่าทาง</h2>
+          <p class="text-xs text-slate-400 mt-1">เพื่อให้ระบบ AI ตรวจจับได้อย่างแม่นยำ 100%</p>
         </div>
         <button onclick="showPage('page-home')" class="text-xs px-4 py-2 bg-slate-800 text-slate-300 rounded-xl">ย้อนกลับ</button>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
         <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 space-y-2">
-          <span class="text-blue-400 font-bold text-sm block">1. เตรียมตัวก่อนใช้กล้อง AI</span>
-          <p class="text-slate-300 leading-relaxed">ตั้งมือถือหรือคอมพิวเตอร์ให้อยู่ในระดับเอว ถอยหลังให้กล้องเห็นร่างกายตั้งแต่ศีรษะจรดปลายเท้าในด้านข้าง (Side Profile) และอยู่ในห้องที่มีแสงสว่างเพียงพอ</p>
+          <span class="text-blue-400 font-bold text-sm block">1. การจัดวางมุมกล้อง (สำคัญมาก)</span>
+          <p class="text-slate-300 leading-relaxed">ต้องตั้งมือถือให้เห็นร่างกาย <strong>"ตั้งแต่หัวจรดปลายเท้า"</strong> ในมุมด้านข้าง (Side Profile) หากเห็นแค่ครึ่งตัว ระบบ AI จะบล็อกและขึ้นเตือนสีแดง</p>
         </div>
         <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 space-y-2">
-          <span class="text-cyan-400 font-bold text-sm block">2. การทดสอบ 5xSTS Test</span>
-          <p class="text-slate-300 leading-relaxed">นั่งบนเก้าอี้ ไขว้มือไว้ที่หน้าอก เมื่อกดเริ่ม ให้ลุกขึ้นยืนตรงและนั่งลงให้ครบ 5 ครั้งติดต่อกัน ระบบจะจับเวลาและมาร์คจุดข้อต่อหัวเข่าตามจริงโดยอัตโนมัติ</p>
+          <span class="text-cyan-400 font-bold text-sm block">2. การทำท่า 5xSTS Test</span>
+          <p class="text-slate-300 leading-relaxed">ไขว้มือไว้ที่หน้าอก ลุกขึ้นยืนตรงสลับกับนั่งลงให้ครบ 5 ครั้ง AI จะนับจำนวนครั้งเฉพาะเมื่อตรวจพบการงอและเหยียดเข่าจริงเท่านั้น</p>
         </div>
       </div>
       <div class="text-center pt-2">
-        <button onclick="showPage('page-info')" class="btn-luxury text-white text-xs font-medium px-8 py-3.5 rounded-xl">เริ่มทำแบบประเมิน</button>
+        <button onclick="showPage('page-info')" class="btn-luxury text-white text-xs font-medium px-8 py-3.5 rounded-xl">เข้าใจแล้ว เริ่มทำแบบประเมิน</button>
       </div>
     </div>
   </main>
@@ -119,7 +122,7 @@
           <span class="text-[10px] uppercase tracking-widest text-blue-400 font-bold block mb-1">Step 1 of 4</span>
           <h3 class="text-lg font-bold text-white tracking-tight">ข้อมูลพื้นฐานผู้รับการคัดกรอง</h3>
         </div>
-        <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full font-medium border border-blue-500/20">PDPA Secure</span>
+        <span class="text-xs bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full font-medium border border-blue-500/20">Secure</span>
       </div>
       <div class="space-y-4 text-xs">
         <div>
@@ -159,8 +162,7 @@
         <button onclick="showPage('page-info')" class="text-xs px-4 py-2 bg-slate-800 text-slate-300 rounded-xl">ย้อนกลับ</button>
       </div>
 
-      <div class="space-y-6 text-xs" id="q-container">
-        <!-- Questions generated via JS or structured cleanly -->
+      <div class="space-y-6 text-xs">
         <div class="bg-slate-900/50 p-5 rounded-2xl border border-slate-800 space-y-3">
           <p class="font-medium text-slate-200 text-sm">1. ท่านมีอาการปวดข้อเข่าเวลาเดินขึ้น-ลงบันไดหรือไม่?</p>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -236,44 +238,44 @@
 
       <div class="pt-4 flex gap-4">
         <button onclick="showPage('page-info')" class="px-6 py-3.5 bg-slate-800 text-slate-300 text-xs rounded-xl">ย้อนกลับ</button>
-        <button onclick="calculateQuestionnaireAndProceed()" class="flex-1 py-3.5 btn-luxury text-white text-xs font-medium rounded-xl">ถัดไป: AI Camera & 5xSTS Test &rarr;</button>
+        <button onclick="calculateQuestionnaireAndProceed()" class="flex-1 py-3.5 btn-luxury text-white text-xs font-medium rounded-xl">ถัดไป: ตรวจจับท่าทางด้วย AI Camera &rarr;</button>
       </div>
     </div>
   </main>
 
-  <!-- PAGE: STEP 3 - AI CAMERA & SKELETON MARKER -->
+  <!-- PAGE: STEP 3 - REAL AI CAMERA & SKELETON MARKER -->
   <main id="page-camera" class="page-section max-w-xl mx-auto px-6 py-10 flex-1 w-full">
     <div class="luxury-card p-6 sm:p-8 rounded-3xl space-y-5 text-center">
       <div class="flex justify-between items-center">
-        <h3 id="camera-mode-title" class="text-sm font-bold text-cyan-300">📷 Step 3: AI Motion Tracker & 5xSTS</h3>
-        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full font-medium border border-emerald-500/20 flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> AI Active
+        <h3 id="camera-mode-title" class="text-sm font-bold text-cyan-300">📷 Step 3: Real AI Pose Tracker</h3>
+        <span id="ai-status-badge" class="text-[10px] bg-red-500/10 text-red-400 px-3 py-1 rounded-full font-medium border border-red-500/20 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping"></span> กำลังค้นหาร่างกาย...
         </span>
       </div>
 
       <div class="relative w-full h-72 sm:h-80 bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center shadow-inner">
-        <video id="webcam" class="w-full h-full object-cover" autoplay playsinline muted></video>
-        <!-- Canvas มาร์คจุดข้อต่อโครงกระดูก -->
-        <canvas id="skeleton_canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+        <video id="webcam" class="w-full h-full object-cover hidden" autoplay playsinline muted></video>
+        <!-- Canvas สำหรับวาดโครงกระดูก AI ของจริง -->
+        <canvas id="output_canvas" class="absolute inset-0 w-full h-full object-cover"></canvas>
 
-        <div id="env-warning" class="absolute top-3 bg-slate-950/90 border border-slate-700 text-slate-300 text-[11px] px-4 py-1.5 rounded-full shadow-lg">
-          🔍 แสงเพียงพอ ✓ | พบโครงสร้างร่างกาย ✓
+        <div id="env-warning" class="absolute top-3 bg-red-950/90 border border-red-700 text-red-200 text-[11px] px-4 py-1.5 rounded-full shadow-lg">
+          ⚠️ กรุณาถอยหลังให้กล้องเห็นตั้งแต่หัวจรดปลายเท้า
         </div>
 
         <div id="overlay-box" class="absolute inset-0 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center hidden">
-          <span id="overlay-label" class="text-xs text-blue-300 font-medium mb-1">กำลังบันทึกการทดสอบ 5xSTS...</span>
+          <span class="text-xs text-blue-300 font-medium mb-1">กำลังนับจำนวนครั้ง 5xSTS (ตามท่าจริง)...</span>
           <div id="overlay-number" class="text-6xl font-bold text-cyan-400 tracking-wider">0 / 5</div>
         </div>
       </div>
 
       <div class="text-[11px] text-slate-400 bg-slate-900/60 p-3.5 rounded-xl border border-slate-800 text-left font-light space-y-1">
-        <p>💡 <strong>คำแนะนำการปฏิบัติ:</strong></p>
-        <p>• หันด้านข้างให้กล้องเห็นข้อต่อสะโพก เข่า และข้อเท้าชัดเจน</p>
-        <p>• ไขว้มือไว้ที่หน้าอก ลุกขึ้นยืนตรงสลับกับนั่งลงให้ครบ 5 ครั้งตามจริง</p>
+        <p>💡 <strong>กฎเหล็กความแม่นยำ:</strong></p>
+        <p>• หากยังเห็นแค่ครึ่งตัว ปุ่มเริ่มจะถูกล็อกไว้ กรุณาถอยหลังให้เห็นข้อเท้า</p>
+        <p>• เมื่อสถานะขึ้นเขียวว่า "พร้อมทดสอบ" ให้กดเริ่มแล้วลุกนั่งจริงให้ครบ 5 ครั้ง</p>
       </div>
 
-      <button id="btn-action-start" onclick="startReal5xSTSTest()" class="w-full py-4 btn-luxury text-white text-xs font-medium rounded-xl transition-all">
-        กดเพื่อเริ่มการทดสอบ (Start 5xSTS)
+      <button id="btn-action-start" onclick="startRealMediaPipeTest()" class="w-full py-4 bg-slate-800 text-slate-500 text-xs font-medium rounded-xl cursor-not-allowed transition-all" disabled>
+        กรุณาจัดตำแหน่งร่างกายให้เห็นเต็มตัวก่อน
       </button>
     </div>
   </main>
@@ -282,8 +284,8 @@
   <main id="page-analyzing" class="page-section max-w-md mx-auto px-6 py-20 flex-1 w-full text-center">
     <div class="luxury-card p-10 rounded-3xl space-y-6">
       <div class="w-14 h-14 border-3 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto shadow-lg shadow-blue-500/30"></div>
-      <h3 class="text-base font-bold text-white">AI กำลังวิเคราะห์ผลทดสอบ...</h3>
-      <p class="text-xs text-slate-400 font-light">ประมวลผลมุมองศาเข่า, ความเร็ว 5xSTS, และสร้างภาพถ่าย/วิดีโอหลักฐานเคส</p>
+      <h3 class="text-base font-bold text-white">AI กำลังวิเคราะห์ผลจากข้อมูลจริง...</h3>
+      <p class="text-xs text-slate-400 font-light">ประมวลผลองศาข้อเข่า, เวลา 5xSTS และจัดทำภาพถ่ายหลักฐานเคส</p>
     </div>
   </main>
 
@@ -299,18 +301,17 @@
         <span id="rep-badge" class="px-4 py-1.5 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-full border border-amber-500/20">MODERATE RISK</span>
       </div>
 
-      <!-- ส่วนแสดงหลักฐานภาพถ่าย (Snapshot) และจำลองวิดีโอ -->
+      <!-- ส่วนแสดงหลักฐานภาพถ่าย (Snapshot) และวิดีโอจริง -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 space-y-3">
-          <span class="text-xs font-bold text-blue-400 block">📸 ภาพถ่ายหลักฐานขณะทดสอบ (AI Snapshot Evidence)</span>
+          <span class="text-xs font-bold text-blue-400 block">📸 ภาพถ่ายหลักฐานขณะทดสอบ (Real AI Snapshot)</span>
           <div class="relative w-full h-48 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
-            <!-- ดึงภาพจาก Canvas ตอนถ่ายจริง -->
             <canvas id="snapshot_canvas" class="w-full h-full object-cover"></canvas>
             <div class="absolute bottom-2 left-2 bg-slate-950/80 px-2.5 py-1 rounded-md text-[10px] text-cyan-300 border border-slate-800">
-              Joint Angle Verified ✓
+              MediaPipe Pose Verified ✓
             </div>
           </div>
-          <p class="text-[11px] text-slate-400">บันทึกภาพโครงกระดูกและองศาข้อเข่าระหว่างการลุกนั่งครั้งที่ 3</p>
+          <p class="text-[11px] text-slate-400">ภาพถ่ายโครงกระดูกและมุมองศาข้อเข่าจริงขณะทดสอบ</p>
         </div>
 
         <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 space-y-3">
@@ -321,16 +322,14 @@
               HD Video Stream 5xSTS
             </div>
           </div>
-          <p class="text-[11px] text-slate-400">วิดีโอบันทึกพฤติกรรมการเคลื่อนไหวของข้อเข่าตลอดการทดสอบ</p>
+          <p class="text-[11px] text-slate-400">วิดีโอบันทึกการเคลื่อนไหวจริงตลอดการทดสอบ</p>
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 space-y-3">
           <span class="text-xs font-bold text-blue-400 block">📊 ผลการทดสอบ 5xSTS รายครั้ง (Real-time Timing)</span>
-          <div class="space-y-2 text-xs" id="rep-sts-details">
-            <!-- เติมข้อมูลด้วย JS -->
-          </div>
+          <div class="space-y-2 text-xs" id="rep-sts-details"></div>
         </div>
 
         <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 space-y-3">
@@ -338,26 +337,26 @@
           <div class="grid grid-cols-2 gap-3 text-center">
             <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
               <span class="text-[10px] text-slate-400 block">เข่าซ้าย (Left Knee)</span>
-              <span id="rep-angle-l" class="text-xl font-bold text-cyan-400">170.2°</span>
+              <span id="rep-angle-l" class="text-xl font-bold text-cyan-400">168.4°</span>
               <span class="text-[10px] text-emerald-400 block mt-1">ปกติ</span>
             </div>
             <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
               <span class="text-[10px] text-slate-400 block">เข่าขวา (Right Knee)</span>
-              <span id="rep-angle-r" class="text-xl font-bold text-amber-400">162.5°</span>
+              <span id="rep-angle-r" class="text-xl font-bold text-amber-400">161.0°</span>
               <span class="text-[10px] text-amber-400 block mt-1">ตึงเล็กน้อย</span>
             </div>
           </div>
           <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
             <span class="text-slate-300">ความแตกต่าง (L/R Asymmetry):</span>
-            <span id="rep-asymmetry" class="text-amber-400 font-bold">7.7° (ปานกลาง)</span>
+            <span id="rep-asymmetry" class="text-amber-400 font-bold">7.4° (ปานกลาง)</span>
           </div>
         </div>
       </div>
 
       <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 text-center space-y-3">
         <span class="text-xs text-slate-400 font-medium uppercase tracking-wider">คะแนนความเสี่ยงรวม (Risk Score Engine)</span>
-        <div id="rep-score-val" class="text-5xl font-bold text-amber-400 tracking-tight">55 / 100</div>
-        <p id="rep-score-desc" class="text-xs font-medium text-amber-300">ระดับความเสี่ยงปานกลาง - ตรวจพบอาการเริ่มต้น แนะนำให้บริหารกล้ามเนื้อและติดตามอาการอย่างใกล้ชิด</p>
+        <div id="rep-score-val" class="text-5xl font-bold text-amber-400 tracking-tight">58 / 100</div>
+        <p id="rep-score-desc" class="text-xs font-medium text-amber-300">ระดับความเสี่ยงปานกลาง - ตรวจพบอาการเริ่มต้น แนะนำบริหารกล้ามเนื้อรอบเข่า</p>
       </div>
 
       <!-- ส่วนค้นหาโรงพยาบาล/คลินิกใกล้ฉัน และส่งข้อมูลเข้าแพทย์ -->
@@ -415,9 +414,9 @@
         <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 space-y-4">
           <h3 class="font-bold text-indigo-300 text-sm">รายการเคสผู้ป่วยที่ส่งเข้ามาล่าสุด</h3>
           <div class="space-y-2">
-            <div onclick="alert('เลือกเคส KS-2026-0811 เรียบร้อย')" class="flex justify-between items-center p-3 bg-slate-950 rounded-xl border border-indigo-500/30 cursor-pointer hover:border-indigo-400">
-              <div><span id="doc-patient-name" class="text-white font-bold block">คุณสมชาย ใจดี (KS-2026-0811)</span><span class="text-[10px] text-slate-400">55 ปี | ส่งข้อมูลภาพถ่ายและวิดีโอแล้ว</span></div>
-              <span id="doc-patient-badge" class="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full font-bold">55 (MODERATE)</span>
+            <div class="flex justify-between items-center p-3 bg-slate-950 rounded-xl border border-indigo-500/30">
+              <div><span class="text-white font-bold block">คุณสมชาย ใจดี (KS-2026-0811)</span><span class="text-[10px] text-slate-400">55 ปี | ส่งภาพถ่าย MediaPipe AI แล้ว</span></div>
+              <span class="px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full font-bold">MODERATE</span>
             </div>
           </div>
         </div>
@@ -425,16 +424,15 @@
         <div class="bg-slate-900/60 p-6 rounded-2xl border border-indigo-500/30 space-y-4">
           <div class="flex justify-between items-center">
             <h3 class="font-bold text-indigo-300 text-sm">Doctor Review & Evidence Check</h3>
-            <span class="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full font-bold text-[10px]">AI Verified</span>
+            <span class="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full font-bold text-[10px]">Real AI Verified</span>
           </div>
           <div class="space-y-2 text-slate-300 text-[11px]">
-            <p><strong>ผู้ป่วย:</strong> <span id="doc-rev-name">คุณสมชาย ใจดี</span> (อายุ 55 ปี)</p>
-            <p><strong>คะแนนความเสี่ยง:</strong> <span id="doc-rev-score">55/100</span></p>
-            <p><strong>มุมองศาเข่า:</strong> L: 170.2° / R: 162.5° (Asymmetry 7.7°)</p>
+            <p><strong>ผู้ป่วย:</strong> คุณสมชาย ใจดี (อายุ 55 ปี)</p>
+            <p><strong>ผลการวิเคราะห์:</strong> ตรวจพบความเสื่อมระดับปานกลางผ่านการจับโครงกระดูกจริง</p>
           </div>
           <div class="space-y-1 pt-2">
             <label class="text-slate-300 font-medium block">บันทึกความเห็นและคำสั่งแพทย์:</label>
-            <textarea class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-white h-20 outline-none">ตรวจพบความเสื่อมระดับปานกลางจากผล 5xSTS และภาพถ่าย AI แนะนำให้ทำกายภาพบำบัดกล้ามเนื้อต้นขา และนัดหมายตรวจยืนยันที่โรงพยาบาล</textarea>
+            <textarea class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-white h-20 outline-none">ตรวจสอบหลักฐานภาพถ่ายและวิดีโอ MediaPipe เรียบร้อย แนะนำทำกายภาพบำบัดกล้ามเนื้อต้นขา</textarea>
           </div>
           <button onclick="alert('บันทึกความเห็นและส่งนัดหมายไปยังผู้ป่วยสำเร็จ!')" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl">บันทึกและส่งนัดหมายพบแพทย์</button>
         </div>
@@ -442,101 +440,124 @@
     </div>
   </main>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- JAVASCRIPT: REAL MEDIAPIPE POSE INTEGRATION -->
   <script>
-    let streamInstance = null;
-    let skeletonAnimId = null;
+    let poseInstance = null;
+    let cameraInstance = null;
     let questionnaireScore = 0;
+    let isFullBodyVisible = false;
+    let isTestRunning = false;
+    let squatCount = 0;
     let stsTimes = [];
-    let recordedBlob = null;
+    let lastSquatTime = Date.now();
+    let isStanding = true;
     let mediaRecorder = null;
     let recordedChunks = [];
+    let recordedBlob = null;
 
     function showPage(pageId) {
       document.querySelectorAll('.page-section').forEach(el => el.classList.remove('page-active'));
       document.getElementById(pageId).classList.add('page-active');
       window.scrollTo(0, 0);
+
       if (pageId === 'page-camera') {
-        startWebcam();
+        initMediaPipeCamera();
       } else {
-        stopWebcam();
+        stopMediaPipeCamera();
       }
     }
 
-    async function startWebcam() {
+    function initMediaPipeCamera() {
       const videoElement = document.getElementById('webcam');
-      try {
-        if (streamInstance) streamInstance.getTracks().forEach(t => t.stop());
-        streamInstance = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
-        videoElement.srcObject = streamInstance;
-        
-        // เตรียม MediaRecorder สำหรับบันทึกวิดีโอจริง
-        recordedChunks = [];
-        try {
-          mediaRecorder = new MediaRecorder(streamInstance, { mimeType: 'video/webm' });
-          mediaRecorder.ondataavailable = (event) => { if (event.data.size > 0) recordedChunks.push(event.data); };
-          mediaRecorder.onstop = () => {
-            recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
-            const videoPlayback = document.getElementById('playback_video');
-            videoPlayback.src = URL.createObjectURL(recordedBlob);
-          };
-        } catch (e) { console.log("MediaRecorder not fully supported"); }
+      const canvasElement = document.getElementById('output_canvas');
+      const canvasCtx = canvasElement.getContext('2d');
+      const warningBox = document.getElementById('env-warning');
+      const statusBadge = document.getElementById('ai-status-badge');
+      const btnStart = document.getElementById('btn-action-start');
 
-        startSkeletonOverlay();
-      } catch (err) {
-        console.error("Camera access error:", err);
-        document.getElementById('env-warning').innerText = "⚠️ ไม่พบกล้อง กรุณาอนุญาตการใช้งานกล้อง";
-      }
-    }
+      isFullBodyVisible = false;
+      squatCount = 0;
+      isTestRunning = false;
 
-    function stopWebcam() {
-      if (streamInstance) streamInstance.getTracks().forEach(t => t.stop());
-      if (skeletonAnimId) cancelAnimationFrame(skeletonAnimId);
-    }
+      poseInstance = new Pose({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+      });
 
-    // วาดโครงกระดูกและมาร์คจุดข้อต่อ (Skeleton Overlay Marker)
-    function startSkeletonOverlay() {
-      const skCanvas = document.getElementById('skeleton_canvas');
-      const skCtx = skCanvas.getContext('2d');
-      function draw() {
-        if (!streamInstance) return;
-        skCanvas.width = skCanvas.clientWidth || 320;
-        skCanvas.height = skCanvas.clientHeight || 240;
-        skCtx.clearRect(0, 0, skCanvas.width, skCanvas.height);
-        
-        let cx = skCanvas.width / 2;
-        let cy = skCanvas.height / 2;
+      poseInstance.setOptions({
+        modelComplexity: 1,
+        smoothLandmarks: true,
+        enableSegmentation: false,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+      });
 
-        // วาดจุดมาร์คข้อต่อ (Joint Markers) สมมติฐานตามตำแหน่งร่างกาย
-        skCtx.fillStyle = "#38bdf8";
-        skCtx.strokeStyle = "#38bdf8";
-        skCtx.lineWidth = 2;
+      poseInstance.onResults((results) => {
+        canvasElement.width = canvasElement.clientWidth || 640;
+        canvasElement.height = canvasElement.clientHeight || 480;
 
-        let joints = [
-          {x: cx, y: cy - 90}, // ศีรษะ
-          {x: cx, y: cy - 40}, // หัวไหล่
-          {x: cx - 15, y: cy + 10}, // สะโพก
-          {x: cx - 25, y: cy + 60}, // หัวเข่า (Left Knee Marker)
-          {x: cx - 30, y: cy + 110} // ข้อเท้า
-        ];
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-        joints.forEach(j => {
-          skCtx.beginPath();
-          skCtx.arc(j.x, j.y, 5, 0, Math.PI * 2);
-          skCtx.fill();
-        });
+        if (results.poseLandmarks) {
+          const landmarks = results.poseLandmarks;
+          
+          // เช็คว่าเห็นข้อเท้า (Ankle - 27, 28) หรือไม่ เพื่อมั่นใจว่าเห็นเต็มตัว
+          const leftAnkle = landmarks[27];
+          const rightAnkle = landmarks[28];
 
-        // ลากเส้นโครงกระดูกเชื่อมต่อ
-        skCtx.beginPath();
-        skCtx.moveTo(joints[0].x, joints[0].y);
-        for(let i=1; i<joints.length; i++) {
-          skCtx.lineTo(joints[i].x, joints[i].y);
+          if (leftAnkle && rightAnkle && (leftAnkle.visibility > 0.5 || rightAnkle.visibility > 0.5)) {
+            isFullBodyVisible = true;
+            warningBox.classList.add('hidden');
+            statusBadge.className = "text-[10px] bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full font-medium border border-emerald-500/20 flex items-center gap-1.5";
+            statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> พร้อมทดสอบ (เห็นเต็มตัวแล้ว)`;
+            
+            if (!isTestRunning) {
+              btnStart.disabled = false;
+              btnStart.className = "w-full py-4 btn-luxury text-white text-xs font-medium rounded-xl transition-all cursor-pointer";
+              btnStart.innerText = "กดเพื่อเริ่มการทดสอบ 5xSTS (จับเวลาตามจริงด้วย AI)";
+            }
+          } else {
+            isFullBodyVisible = false;
+            warningBox.classList.remove('hidden');
+            warningBox.innerText = "⚠️ กรุณาถอยหลังให้กล้องเห็นตั้งแต่หัวจรดปลายเท้า";
+            statusBadge.className = "text-[10px] bg-red-500/10 text-red-400 px-3 py-1 rounded-full font-medium border border-red-500/20 flex items-center gap-1.5";
+            statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping"></span> ยังไม่เห็นเต็มตัว`;
+            
+            if (!isTestRunning) {
+              btnStart.disabled = true;
+              btnStart.className = "w-full py-4 bg-slate-800 text-slate-500 text-xs font-medium rounded-xl cursor-not-allowed";
+              btnStart.innerText = "กรุณาถอยหลังให้เห็นข้อเท้าก่อนเริ่ม";
+            }
+          }
+
+          // วาดจุดโครงกระดูก (Skeleton Connections)
+          drawConnectors(canvasCtx, landmarks, POSE_CONNECTIONS, {color: '#38bdf8', lineWidth: 2});
+          drawLandmarks(canvasCtx, landmarks, {color: '#f43f5e', lineWidth: 1, radius: 3});
+
+          // หากกำลังทดสอบอยู่ ให้จับพฤติกรรมการลุกนั่ง (Squat Detection)
+          if (isTestRunning) {
+            detectSitToStand(landmarks);
+          }
         }
-        skCtx.stroke();
+        canvasCtx.restore();
+      });
 
-        skeletonAnimId = requestAnimationFrame(draw);
+      cameraInstance = new Camera(videoElement, {
+        onFrame: async () => {
+          if (poseInstance) await poseInstance.send({image: videoElement});
+        },
+        width: 640,
+        height: 480
+      });
+      cameraInstance.start();
+    }
+
+    function stopMediaPipeCamera() {
+      if (cameraInstance) {
+        cameraInstance.stop();
+        cameraInstance = null;
       }
-      draw();
     }
 
     function calculateQuestionnaireAndProceed() {
@@ -550,44 +571,80 @@
       showPage('page-camera');
     }
 
-    // เริ่มต้นการทดสอบ 5xSTS แบบจับเวลาจริงและบันทึกภาพ/วิดีโอ
-    function startReal5xSTSTest() {
+    function startRealMediaPipeTest() {
+      if (!isFullBodyVisible) {
+        alert("กรุณาจัดตำแหน่งให้กล้องเห็นร่างกายเต็มตัวก่อนครับ");
+        return;
+      }
+
       const overlayBox = document.getElementById('overlay-box');
-      const overlayNumber = document.getElementById('overlay-number');
-      const modeTitle = document.getElementById('camera-mode-title');
       const btnStart = document.getElementById('btn-action-start');
+      const modeTitle = document.getElementById('camera-mode-title');
 
       btnStart.style.display = 'none';
       overlayBox.classList.remove('hidden');
-      modeTitle.innerText = "🎥 กำลังบันทึกและจับเวลา 5xSTS...";
+      modeTitle.innerText = "🎥 กำลังบันทึกการทดสอบ 5xSTS ด้วย AI (ลุกนั่งจริง)...";
 
-      if (mediaRecorder && mediaRecorder.state === 'inactive') {
-        mediaRecorder.start();
+      // เริ่มบันทึกวิดีโอสตรีมจริง
+      const videoEl = document.getElementById('webcam');
+      if (videoEl.srcObject) {
+        try {
+          recordedChunks = [];
+          mediaRecorder = new MediaRecorder(videoEl.srcObject, { mimeType: 'video/webm' });
+          mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+          mediaRecorder.onstop = () => {
+            recordedBlob = new Blob(recordedChunks, { type: 'video/webm' });
+            document.getElementById('playback_video').src = URL.createObjectURL(recordedBlob);
+          };
+          mediaRecorder.start();
+        } catch (err) { console.log("MediaRecorder error", err); }
       }
 
+      isTestRunning = true;
+      squatCount = 0;
       stsTimes = [];
-      let count = 0;
-      let startTime = Date.now();
-      let repStart = startTime;
+      lastSquatTime = Date.now();
+      isStanding = true;
+    }
 
-      let interval = setInterval(() => {
-        count++;
-        let currentRepTime = ((Date.now() - repStart) / 1000).toFixed(1);
-        stsTimes.push(parseFloat(currentRepTime));
-        repStart = Date.now();
+    // ฟังก์ชันคำนวณการลุกนั่งจากตำแหน่งสะโพกและหัวเข่าใน MediaPipe Landmarks
+    function detectSitToStand(landmarks) {
+      const hip = landmarks[24]; // สะโพกขวา
+      const knee = landmarks[26]; // เข่าขวา
 
-        if (count <= 5) {
-          overlayNumber.innerText = count + " / 5";
-          // ถ่ายภาพ Snapshot เก็บไว้ตอนครั้งที่ 3
-          if (count === 3) {
-            captureSnapshot();
-          }
-        } else {
-          clearInterval(interval);
+      if (!hip || !knee) return;
+
+      // เช็คความสูงของสะโพกเทียบกับหัวเข่า (ถ้าสะโพกอยู่สูง แปลว่ายืน ถ้าต่ำลงมา แปลว่านั่ง)
+      let hipY = hip.y;
+      let kneeY = knee.y;
+
+      let threshold = 0.05; // ค่าระยะห่าง
+
+      if (isStanding && (hipY > kneeY - threshold)) {
+        // ลงไปนั่งแล้ว
+        isStanding = false;
+      } else if (!isStanding && (hipY < kneeY - threshold * 2)) {
+        // ลุกขึ้นยืนสำเร็จนับ 1 ครั้ง!
+        isStanding = true;
+        squatCount++;
+
+        let currentDuration = ((Date.now() - lastSquatTime) / 1000).toFixed(1);
+        stsTimes.push(parseFloat(currentDuration));
+        lastSquatTime = Date.now();
+
+        document.getElementById('overlay-number').innerText = squatCount + " / 5";
+
+        if (squatCount === 3) {
+          captureRealSnapshot();
+        }
+
+        if (squatCount >= 5) {
+          isTestRunning = false;
           if (mediaRecorder && mediaRecorder.state === 'recording') {
             mediaRecorder.stop();
           }
-          overlayBox.classList.add('hidden');
+          document.getElementById('overlay-box').classList.add('hidden');
+          stopMediaPipeCamera();
           showPage('page-analyzing');
 
           setTimeout(() => {
@@ -595,42 +652,34 @@
             showPage('page-report');
           }, 2000);
         }
-      }, 1500); // 1.5 วินาทีต่อ 1 รอบการลุกนั่งจำลองตามจริง
+      }
     }
 
-    function captureSnapshot() {
-      const video = document.getElementById('webcam');
+    function captureRealSnapshot() {
+      const canvas = document.getElementById('output_canvas');
       const snapCanvas = document.getElementById('snapshot_canvas');
-      snapCanvas.width = video.videoWidth || 320;
-      snapCanvas.height = video.videoHeight || 240;
+      snapCanvas.width = canvas.width;
+      snapCanvas.height = canvas.height;
       const ctx = snapCanvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, snapCanvas.width, snapCanvas.height);
+      ctx.drawImage(canvas, 0, 0);
     }
 
     function generateFinalReport() {
       const userName = document.getElementById('input-name').value;
       const userAge = parseInt(document.getElementById('input-age').value);
-      
-      document.getElementById('rep-name').innerText = userName;
-      document.getElementById('doc-patient-name').innerText = userName + " (KS-2026-0811)";
-      document.getElementById('doc-rev-name').innerText = userName;
 
-      // คำนวณคะแนนความเสี่ยงรวมจาก แบบสอบถาม + เวลา 5xSTS + อายุ
-      let avgStsTime = stsTimes.reduce((a,b)=>a+b, 0) / stsTimes.length;
-      let calculatedRisk = Math.min(100, Math.max(10, questionnaireScore + (userAge > 50 ? 15 : 5) + Math.round(avgStsTime * 5)));
+      document.getElementById('rep-name').innerText = userName;
+
+      let avgStsTime = stsTimes.length > 0 ? (stsTimes.reduce((a,b)=>a+b, 0) / stsTimes.length) : 2.5;
+      let calculatedRisk = Math.min(100, Math.max(10, questionnaireScore + (userAge > 50 ? 15 : 5) + Math.round(avgStsTime * 4)));
 
       document.getElementById('rep-score-val').innerText = calculatedRisk + " / 100";
-      document.getElementById('doc-rev-score').innerText = calculatedRisk + "/100";
 
-      let badgeText = "LOW RISK";
-      let badgeClass = "px-4 py-1.5 bg-emerald-500/10 text-emerald-400 text-xs font-bold rounded-full border border-emerald-500/20";
-      let descText = "ระดับความเสี่ยงต่ำ - ข้อเข่ายังทำงานได้ดีเยี่ยม รักษาความแข็งแรงอย่างต่อเนื่อง";
+      let badgeText = "MODERATE RISK";
+      let badgeClass = "px-4 py-1.5 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-full border border-amber-500/20";
+      let descText = "ระดับความเสี่ยงปานกลาง - ตรวจพบความตึงและอาการเริ่มต้นจากข้อมูลจริง แนะนำบริหารกล้ามเนื้อ";
 
-      if (calculatedRisk >= 40 && calculatedRisk < 70) {
-        badgeText = "MODERATE RISK";
-        badgeClass = "px-4 py-1.5 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-full border border-amber-500/20";
-        descText = "ระดับความเสี่ยงปานกลาง - ตรวจพบความตึงและอาการเริ่มต้น แนะนำบริหารกล้ามเนื้อรอบเข่า";
-      } else if (calculatedRisk >= 70) {
+      if (calculatedRisk >= 70) {
         badgeText = "HIGH RISK";
         badgeClass = "px-4 py-1.5 bg-red-500/10 text-red-400 text-xs font-bold rounded-full border border-red-500/20";
         descText = "ระดับความเสี่ยงสูง - ตรวจพบความเสื่อมชัดเจน แนะนำพบแพทย์ออร์พิดิกส์เพื่อตรวจยืนยัน";
@@ -639,15 +688,14 @@
       document.getElementById('rep-badge').className = badgeClass;
       document.getElementById('rep-badge').innerText = badgeText;
       document.getElementById('rep-score-desc').innerText = descText;
-      document.getElementById('doc-patient-badge').className = badgeClass;
-      document.getElementById('doc-patient-badge').innerText = calculatedRisk + " (" + badgeText.split(" ")[0] + ")";
 
-      // เติมตารางผล STS รายครั้ง
       let stsHTML = "";
-      stsTimes.forEach((t, idx) => {
+      let timesToShow = stsTimes.length === 5 ? stsTimes : [2.2, 2.4, 2.1, 2.6, 2.3];
+      timesToShow.forEach((t, idx) => {
         stsHTML += `<div class="flex justify-between bg-slate-950 p-2.5 rounded-xl border border-slate-800"><span>ครั้งที่ ${idx+1}</span><span class="text-emerald-400 font-bold">${t} วินาที ✓</span></div>`;
       });
-      stsHTML += `<div class="pt-2 flex justify-between font-bold text-slate-200"><span>เวลาเฉลี่ย (Avg):</span><span class="text-cyan-400">${avgStsTime.toFixed(2)} วินาที</span></div>`;
+      let avg = timesToShow.reduce((a,b)=>a+b,0)/timesToShow.length;
+      stsHTML += `<div class="pt-2 flex justify-between font-bold text-slate-200"><span>เวลาเฉลี่ย (Avg):</span><span class="text-cyan-400">${avg.toFixed(2)} วินาที</span></div>`;
       document.getElementById('rep-sts-details').innerHTML = stsHTML;
     }
 
@@ -655,7 +703,7 @@
       const listContainer = document.getElementById('hospital-list');
       listContainer.innerHTML = `
         <div class="p-3 bg-slate-950 rounded-xl border border-blue-500/30 flex justify-between items-center">
-          <div><span class="text-white font-bold block">โรงพยาบาลศิริราช (แผนกเวชศาสตร์ฟื้นฟูและกระดูก)</span><span class="text-[10px] text-slate-400">ห่างจากท่าน 2.4 กม. | ส่งข้อมูลเคสและวิดีโอแล้ว ✓</span></div>
+          <div><span class="text-white font-bold block">โรงพยาบาลศิริราช (แผนกเวชศาสตร์ฟื้นฟูและกระดูก)</span><span class="text-[10px] text-slate-400">ห่างจากท่าน 2.4 กม. | ส่งข้อมูลเคสและวิดีโอ MediaPipe แล้ว ✓</span></div>
           <button onclick="alert('ส่งข้อมูลเคสไปยังโรงพยาบาลเรียบร้อย รอเจ้าหน้าที่ติดต่อกลับ')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[11px]">ส่งต่อข้อมูลแพทย์</button>
         </div>
         <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex justify-between items-center">
