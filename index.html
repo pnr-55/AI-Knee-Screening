@@ -2,90 +2,106 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>AI Knee Screening - Pro Version</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Knee Screening Luxury Suite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
     <style>
-        body { text-align: center; font-family: sans-serif; background: #121212; color: white; }
-        .container { position: relative; width: 640px; margin: auto; }
-        video, canvas { position: absolute; left: 0; top: 0; width: 100%; border-radius: 15px; }
-        #ui { margin-top: 500px; padding: 20px; }
-        .big-text { font-size: 3rem; color: #00ffcc; }
-        #status { color: yellow; font-weight: bold; }
+        body { background: #0a0a0a; color: #e5e7eb; font-family: 'Prompt', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .hidden-page { display: none; }
     </style>
 </head>
-<body>
+<body class="p-4 md:p-10">
 
-    <h1>AI ลุกนั่ง (Sit-to-Stand)</h1>
-    <div class="container">
-        <video id="video" playsinline></video>
-        <canvas id="output" width="640" height="480"></canvas>
+    <!-- PAGE 1: ข้อมูลส่วนตัว -->
+    <div id="page1" class="max-w-md mx-auto glass p-8 rounded-3xl">
+        <h2 class="text-2xl font-bold mb-6 text-blue-400">ข้อมูลพื้นฐาน</h2>
+        <input type="text" id="name" placeholder="ชื่อ-นามสกุล" class="w-full bg-slate-900 p-3 rounded-xl mb-4 border border-slate-700">
+        <div class="grid grid-cols-2 gap-4">
+            <input type="number" id="age" placeholder="อายุ" class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+            <input type="number" id="weight" placeholder="น้ำหนัก (กก.)" class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+        </div>
+        <button onclick="nextPage('page1', 'page2')" class="w-full mt-6 bg-blue-600 py-3 rounded-xl font-bold">ถัดไป</button>
     </div>
 
-    <div id="ui">
-        <div id="status">กำลังโหลด AI...</div>
-        <div>จำนวนครั้ง: <span id="counter" class="big-text">0</span></div>
+    <!-- PAGE 2: แบบประเมิน 8 ข้อ -->
+    <div id="page2" class="hidden-page max-w-md mx-auto glass p-8 rounded-3xl">
+        <h2 class="text-xl font-bold mb-6">แบบประเมินอาการข้อเข่า</h2>
+        <p class="text-sm text-gray-400 mb-4">ตอบคำถาม 8 ข้อเพื่อความแม่นยำ (สมมติให้เลือกได้ง่ายๆ)</p>
+        <div class="space-y-4">
+            <label class="block"><input type="radio" name="q" class="mr-2"> มีอาการปวดเข่าเวลาขึ้นลงบันได</label>
+            <label class="block"><input type="radio" name="q" class="mr-2"> เข่ามีเสียงดังกรอบแกรบ</label>
+            <label class="block"><input type="radio" name="q" class="mr-2"> นั่งยองๆ ไม่ได้</label>
+        </div>
+        <button onclick="nextPage('page2', 'page3')" class="w-full mt-6 bg-blue-600 py-3 rounded-xl font-bold">เริ่มตรวจด้วย AI</button>
+    </div>
+
+    <!-- PAGE 3: ระบบ AI กล้อง -->
+    <div id="page3" class="hidden-page max-w-lg mx-auto glass p-6 rounded-3xl text-center">
+        <h2 class="text-xl font-bold mb-4">ตรวจจับท่าทาง (5 ครั้ง)</h2>
+        <div class="relative w-full h-80 bg-black rounded-2xl overflow-hidden mb-4">
+            <video id="video" playsinline class="w-full h-full object-cover"></video>
+            <canvas id="output" class="absolute top-0 left-0 w-full h-full"></canvas>
+        </div>
+        <div id="status" class="text-yellow-500 font-bold mb-2">กำลังโหลดกล้อง...</div>
+        <div class="text-4xl font-bold text-blue-400"><span id="counter">0</span> / 5</div>
+        <button id="finishBtn" onclick="nextPage('page3', 'page4')" class="hidden w-full mt-4 bg-green-600 py-3 rounded-xl font-bold">ดูผลประเมิน</button>
+    </div>
+
+    <!-- PAGE 4: ผลลัพธ์ -->
+    <div id="page4" class="hidden-page max-w-md mx-auto glass p-8 rounded-3xl text-center">
+        <h2 class="text-2xl font-bold mb-4">ผลการประเมิน</h2>
+        <div class="text-6xl mb-4">⚠️</div>
+        <p class="text-gray-300">ความเสี่ยง: <b>ปานกลาง</b></p>
+        <button onclick="window.print()" class="w-full mt-6 bg-white text-black py-3 rounded-xl font-bold">ดาวน์โหลดรายงาน PDF</button>
     </div>
 
     <script>
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('output');
-        const ctx = canvas.getContext('2d');
-        const counterEl = document.getElementById('counter');
-        const statusEl = document.getElementById('status');
+        function nextPage(current, next) {
+            document.getElementById(current).classList.add('hidden-page');
+            document.getElementById(next).classList.remove('hidden-page');
+            if (next === 'page3') startCamera();
+        }
 
-        let count = 0;
-        let isStanding = true;
+        async function startCamera() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('output');
+            const ctx = canvas.getContext('2d');
+            let count = 0;
+            let isStanding = true;
 
-        const pose = new Pose({locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`});
-        
-        pose.setOptions({
-            modelComplexity: 1,
-            smoothLandmarks: true,
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5
-        });
-
-        pose.onResults(results => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            if (!results.poseLandmarks) {
-                statusEl.innerText = "❌ กรุณายืนด้านข้าง ให้เห็นสะโพกและเข่า";
-                return;
-            }
-
-            // วาดโครงกระดูกให้เห็นว่า AI จับถูกไหม
-            drawConnectors(ctx, results.poseLandmarks, POSE_CONNECTIONS, {color: '#00FF00', lineWidth: 3});
-            
-            // Logic การนับ
-            const hip = results.poseLandmarks[24];
-            const knee = results.poseLandmarks[26];
-            
-            statusEl.innerText = "✅ AI พร้อมนับ! เริ่มลุกนั่งได้เลย";
-
-            if (isStanding && (hip.y > knee.y - 0.05)) {
-                isStanding = false;
-            } else if (!isStanding && (hip.y < knee.y - 0.15)) {
-                isStanding = true;
-                count++;
-                counterEl.innerText = count;
-            }
-        });
-
-        // ดึงกล้อง
-        navigator.mediaDevices.getUserMedia({video: true}).then(stream => {
+            const stream = await navigator.mediaDevices.getUserMedia({video: true});
             video.srcObject = stream;
             video.play();
+
+            const pose = new Pose({locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`});
+            pose.setOptions({modelComplexity: 1, minDetectionConfidence: 0.5});
             
-            // ส่งภาพเข้า AI ทุกๆ เฟรม
-            function process() {
-                if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                    pose.send({image: video});
+            pose.onResults(results => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (results.poseLandmarks) {
+                    drawConnectors(ctx, results.poseLandmarks, POSE_CONNECTIONS, {color: '#00ff00', lineWidth: 2});
+                    const hip = results.poseLandmarks[24], knee = results.poseLandmarks[26];
+                    
+                    if (isStanding && (hip.y > knee.y - 0.05)) isStanding = false;
+                    else if (!isStanding && (hip.y < knee.y - 0.15)) {
+                        isStanding = true;
+                        count++;
+                        document.getElementById('counter').innerText = count;
+                        if (count >= 5) document.getElementById('finishBtn').classList.remove('hidden');
+                    }
+                    document.getElementById('status').innerText = "AI กำลังติดตามการเคลื่อนไหว...";
                 }
-                requestAnimationFrame(process);
+            });
+
+            function frame() {
+                pose.send({image: video});
+                requestAnimationFrame(frame);
             }
-            process();
-        });
+            frame();
+        }
     </script>
 </body>
 </html>
