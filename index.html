@@ -32,7 +32,7 @@
 
 <main id="questions" class="page"><div class="container section-wrap"><div class="card" style="max-width:900px;margin:auto"><div class="stepbar"><span class="step">01 ข้อมูล</span><span class="step active">02 อาการ</span><span class="step">03 กล้อง</span><span class="step">04 ผลประเมิน</span></div><h2 style="margin:6px 0">แบบประเมินอาการเบื้องต้น</h2><p class="helper" style="font-size:12px;line-height:1.7">ตอบตามอาการปัจจุบันของผู้รับการประเมิน ระบบใช้คะแนนนี้เป็นข้อมูลประกอบ ไม่ใช่เกณฑ์วินิจฉัย</p><div id="questionList" style="margin-top:18px"></div><div id="qError" class="hidden" style="color:var(--danger);font-size:12px">กรุณาตอบให้ครบทุกข้อ</div><div class="actions"><button class="btn-ghost" onclick="go('profile')">ย้อนกลับ</button><button class="btn" onclick="submitQuestions()">ไปตั้งค่ากล้อง</button></div></div></div></main>
 
-<main id="camera" class="page"><div class="container section-wrap"><div class="stepbar"><span class="step">01 ข้อมูล</span><span class="step">02 อาการ</span><span class="step active">03 กล้อง</span><span class="step">04 ผลประเมิน</span></div><div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap"><div><div class="eyebrow">REAL-TIME POSE</div><h2 style="margin:10px 0 4px">Camera Assessment</h2><div class="helper" style="font-size:12px">จัดกล้องด้านข้าง ให้เห็นศีรษะ ลำตัว สะโพก เข่า และข้อเท้า</div></div><div id="cameraStatus" class="status-pill">ยังไม่เปิดกล้อง</div></div><div class="camera-layout" style="margin-top:18px"><div><div class="camera-box"><video id="video" autoplay muted playsinline></video><canvas id="poseCanvas"></canvas><div class="camera-top"><span id="frameStatus" class="status-pill">รอภาพ</span><span id="repBadge" class="status-pill">0 / 5</span></div><div class="camera-guide"></div></div><div class="helper" style="margin-top:9px">ระบบจะเริ่มนับเมื่อคุณภาพ Pose ผ่านเกณฑ์ต่อเนื่อง และจะหยุดนับชั่วคราวเมื่อภาพไม่เสถียร</div></div><div class="side-panel"><div class="mini"><div class="mini-label">Camera</div><div class="camera-controls" style="margin-top:8px"><select id="cameraSelect"><option value="">เลือกกล้อง</option></select><button class="btn-ghost" onclick="refreshCameras()">↻ ค้นหา</button><button id="openCameraBtn" class="btn" onclick="openCamera()">เปิดกล้อง</button><button id="switchCameraBtn" class="btn-ghost" onclick="switchCamera()">⇄ สลับ</button></div></div><div class="mini"><div class="mini-label">Pose Quality</div><div id="confidence" class="mini-value">—</div><div id="bodyCheck" class="mini-sub">ยังไม่ตรวจ</div><div class="progress"><div id="qualityBar"></div></div></div><div class="metric-grid"><div class="mini"><div class="mini-label">Left Knee</div><div id="angleL" class="mini-value">—</div></div><div class="mini"><div class="mini-label">Right Knee</div><div id="angleR" class="mini-value">—</div></div><div class="mini"><div class="mini-label">Timer</div><div id="timer" class="mini-value">00:00.0</div></div><div class="mini"><div class="mini-label">Data Gate</div><div id="gateState" class="mini-value" style="font-size:16px">WAIT</div></div></div><button id="startTestBtn" class="btn" onclick="startTest()" disabled>จัดท่าให้พร้อมก่อนเริ่ม</button><button id="stopTestBtn" class="btn-ghost" onclick="stopTest(true)" disabled>หยุดการทดสอบ</button><div class="test-state" id="testMessage">หลังเปิดกล้อง ระบบจะทำ calibration อัตโนมัติ</div></div></div><div class="safety" style="margin-top:18px"><b>ความปลอดภัย:</b> ใช้เก้าอี้ที่มั่นคง พื้นไม่ลื่น และควรมีผู้ดูแลอยู่ใกล้หากเสี่ยงเสียการทรงตัว หยุดทันทีหากเจ็บมาก เวียนศีรษะ หรือไม่ปลอดภัย</div></div></div></main>
+<main id="camera" class="page"><div class="container section-wrap"><div class="stepbar"><span class="step">01 ข้อมูล</span><span class="step">02 อาการ</span><span class="step active">03 กล้อง</span><span class="step">04 ผลประเมิน</span></div><div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap"><div><div class="eyebrow">REAL-TIME POSE</div><h2 style="margin:10px 0 4px">Camera Assessment</h2><div class="helper" style="font-size:12px">วางกล้องด้านข้างระดับสะโพก ให้เห็นศีรษะ ลำตัว สะโพก เข่า และข้อเท้าครบทั้งตัว</div></div><div id="cameraStatus" class="status-pill">ยังไม่เปิดกล้อง</div></div><div class="camera-layout" style="margin-top:18px"><div><div class="camera-box"><video id="video" autoplay muted playsinline></video><canvas id="poseCanvas"></canvas><div class="camera-top"><span id="frameStatus" class="status-pill">รอภาพ</span><span id="repBadge" class="status-pill">0 / 5</span></div><div class="camera-guide"></div></div><div class="helper" style="margin-top:9px">ระบบจะนับจากลำดับการเคลื่อนไหวจริง และจะไม่นับเมื่อไม่เห็นร่างกายหรือข้อมูลไม่เสถียร</div></div><div class="side-panel"><div class="mini"><div class="mini-label">Camera</div><div class="camera-controls" style="margin-top:8px"><select id="cameraSelect"><option value="">เลือกกล้อง</option></select><button class="btn-ghost" onclick="refreshCameras()">↻ ค้นหา</button><button id="openCameraBtn" class="btn" onclick="openCamera()">เปิดกล้อง</button><button id="switchCameraBtn" class="btn-ghost" onclick="switchCamera()">⇄ สลับ</button></div></div><div class="mini"><div class="mini-label">Pose Quality</div><div id="confidence" class="mini-value">—</div><div id="bodyCheck" class="mini-sub">ยังไม่ตรวจ</div><div class="progress"><div id="qualityBar"></div></div></div><div class="metric-grid"><div class="mini"><div class="mini-label">Left Knee</div><div id="angleL" class="mini-value">—</div></div><div class="mini"><div class="mini-label">Right Knee</div><div id="angleR" class="mini-value">—</div></div><div class="mini"><div class="mini-label">Timer</div><div id="timer" class="mini-value">00:00.0</div></div><div class="mini"><div class="mini-label">Data Gate</div><div id="gateState" class="mini-value" style="font-size:16px">WAIT</div></div></div><button id="startTestBtn" class="btn" onclick="startTest()" disabled>จัดท่าให้พร้อมก่อนเริ่ม</button><button id="stopTestBtn" class="btn-ghost" onclick="stopTest(true)" disabled>หยุดการทดสอบ</button><div class="test-state" id="testMessage">หลังเปิดกล้อง ระบบจะทำ calibration อัตโนมัติ</div></div></div><div class="safety" style="margin-top:18px"><b>ความปลอดภัย:</b> ใช้เก้าอี้ที่มั่นคง พื้นไม่ลื่น และควรมีผู้ดูแลอยู่ใกล้หากเสี่ยงเสียการทรงตัว หยุดทันทีหากเจ็บมาก เวียนศีรษะ หรือไม่ปลอดภัย</div></div></div></main>
 
 <main id="analyzing" class="page"><div class="container section-wrap"><div class="card" style="max-width:600px;margin:70px auto;text-align:center"><div style="width:52px;height:52px;border:4px solid #dce8f5;border-top-color:#1769e8;border-radius:50%;animation:spin 1s linear infinite;margin:auto"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><h2 style="margin:20px 0 6px">กำลังจัดทำรายงาน</h2><p class="helper" style="font-size:12px">กำลังรวมแบบสอบถาม การเคลื่อนไหว และคุณภาพข้อมูล</p></div></div></main>
 
@@ -52,7 +52,7 @@ const QUESTIONS=[
 'อาการปวดเข่าส่งผลกระทบต่อกิจวัตรประจำวันเพียงใด?',
 'มีประวัติการบาดเจ็บหรืออุบัติเหตุรุนแรงที่ข้อเข่าในอดีตหรือไม่?'];
 const OPTIONS=[['ไม่มีเลย','ปวดเล็กน้อย','ปวดมากชัดเจน'],['ไม่มีอาการ','น้อยกว่า 15 นาที','นานกว่า 15 นาที'],['นั่งได้ปกติ','ตึง/เจ็บเล็กน้อย','นั่งยองไม่ได้เลย'],['ไม่มีเสียง','มีเสียงบางครั้ง','มีเสียงและเจ็บร่วมด้วย'],['มั่นคงปกติ','ไม่มั่นคงบางครั้ง','เข่าทรุด/ไม่มั่นคงชัดเจน'],['ไม่เคยบวม','บวมเล็กน้อย นาน ๆ ครั้ง','บวมและร้อนบ่อยครั้ง'],['ไม่มีผลกระทบ','กระทบบางกิจกรรม','กระทบมาก เดินลำบาก'],['ไม่มีประวัติ','เคยเจ็บเล็กน้อย','เคยผ่าตัด/อุบัติเหตุหนัก']];
-const state={caseId:'',age:null,height:null,weight:null,qScore:0,stream:null,pose:null,currentCameraId:'',running:false,count:0,motionState:'standing',trialTimes:[],anglesL:[],anglesR:[],confidence:0,poseGoodFrames:0,poseTotalFrames:0,calibrating:false,calStart:0,calGood:0,calTotal:0,ready:false,lastCount:0,testStart:0,trialStart:0,lastPoseSend:0,raf:0,poseBusy:false,completed:false};
+const state={caseId:'',age:null,height:null,weight:null,qScore:0,stream:null,pose:null,currentCameraId:'',running:false,count:0,motionState:'standing',trialTimes:[],anglesL:[],anglesR:[],confidence:0,poseGoodFrames:0,poseTotalFrames:0,calibrating:false,calStart:0,calGood:0,calTotal:0,ready:false,lastCount:0,testStart:0,trialStart:0,lastPoseSend:0,raf:0,poseBusy:false,completed:false,hipBaselineY:null,hipSamples:[],phaseFrames:0,lastHipY:null};
 const $=id=>document.getElementById(id);
 function go(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
 function startFlow(){go('profile')}
@@ -60,23 +60,125 @@ function buildQuestions(){const box=$('questionList');box.innerHTML='';QUESTIONS
 function validateProfile(){const id=$('caseId').value.trim(),age=Number($('age').value),h=$('height').value===''?null:Number($('height').value),w=$('weight').value===''?null:Number($('weight').value);const ok=id&&Number.isFinite(age)&&age>=0&&$('consent').checked&&(h===null||h>0)&&(w===null||w>0);if(!ok){$('profileError').classList.remove('hidden');return}Object.assign(state,{caseId:id,age,height:h,weight:w});$('profileError').classList.add('hidden');go('questions')}
 function submitQuestions(){let score=0;for(let i=0;i<8;i++){const el=document.querySelector(`input[name=q${i}]:checked`);if(!el){$('qError').classList.remove('hidden');return}score+=Number(el.value)}state.qScore=score;$('qError').classList.add('hidden');go('camera');resetCameraUI();refreshCameras()}
 function setCameraStatus(text,kind=''){$('cameraStatus').textContent=text;$('cameraStatus').className='status-pill '+kind}
-function resetCameraUI(){state.running=false;state.count=0;state.motionState='standing';state.trialTimes=[];state.anglesL=[];state.anglesR=[];state.poseGoodFrames=0;state.poseTotalFrames=0;state.calibrating=false;state.ready=false;state.completed=false;$('repBadge').textContent='0 / 5';$('timer').textContent='00:00.0';$('confidence').textContent='—';$('qualityBar').style.width='0%';$('bodyCheck').textContent='ยังไม่ตรวจ';$('gateState').textContent='WAIT';$('angleL').textContent='—';$('angleR').textContent='—';$('frameStatus').textContent='รอภาพ';$('testMessage').textContent='หลังเปิดกล้อง ระบบจะทำ calibration อัตโนมัติ';$('startTestBtn').disabled=true;$('startTestBtn').textContent='จัดท่าให้พร้อมก่อนเริ่ม';$('stopTestBtn').disabled=true;setCameraStatus('ยังไม่เปิดกล้อง')}
+function resetCameraUI(){state.running=false;state.count=0;state.motionState='standing';state.trialTimes=[];state.anglesL=[];state.anglesR=[];state.poseGoodFrames=0;state.poseTotalFrames=0;state.calibrating=false;state.ready=false;state.completed=false;state.hipBaselineY=null;state.hipSamples=[];state.phaseFrames=0;state.lastHipY=null;$('repBadge').textContent='0 / 5';$('timer').textContent='00:00.0';$('confidence').textContent='—';$('qualityBar').style.width='0%';$('bodyCheck').textContent='ยังไม่ตรวจ';$('gateState').textContent='WAIT';$('angleL').textContent='—';$('angleR').textContent='—';$('frameStatus').textContent='รอภาพ';$('testMessage').textContent='หลังเปิดกล้อง ระบบจะทำ calibration อัตโนมัติ';$('startTestBtn').disabled=true;$('startTestBtn').textContent='จัดท่าให้พร้อมก่อนเริ่ม';$('stopTestBtn').disabled=true;setCameraStatus('ยังไม่เปิดกล้อง')}
 async function refreshCameras(){if(!navigator.mediaDevices?.enumerateDevices)return;try{const list=await navigator.mediaDevices.enumerateDevices();const cams=list.filter(d=>d.kind==='videoinput');const sel=$('cameraSelect'),old=state.currentCameraId;sel.innerHTML='';cams.forEach((c,i)=>{const o=document.createElement('option');o.value=c.deviceId;o.textContent=c.label||`Camera ${i+1}`;sel.appendChild(o)});if(old&&cams.some(c=>c.deviceId===old))sel.value=old;else if(cams[0])sel.value=cams[0].deviceId}catch(e){console.warn(e)}}
 async function openCamera(deviceId){if(!navigator.mediaDevices?.getUserMedia){setCameraStatus('เบราว์เซอร์ไม่รองรับ','bad');return}try{await stopCamera();setCameraStatus('กำลังเปิดกล้อง...','warn');const constraints={video:{width:{ideal:960,min:640},height:{ideal:540,min:360},frameRate:{ideal:24,max:30},...(deviceId?{deviceId:{exact:deviceId}}:{facingMode:{ideal:'user'}})},audio:false};state.stream=await navigator.mediaDevices.getUserMedia(constraints);$('video').srcObject=state.stream;await $('video').play();state.currentCameraId=state.stream.getVideoTracks()[0]?.getSettings()?.deviceId||deviceId||'';await refreshCameras();if(state.currentCameraId)$('cameraSelect').value=state.currentCameraId;await initPose();startPoseLoop();startCalibration();setCameraStatus('กล้องพร้อม • กำลังตรวจภาพ','warn');$('openCameraBtn').textContent='กล้องพร้อมใช้งาน';$('openCameraBtn').disabled=true}catch(e){console.error(e);setCameraStatus('เปิดกล้องไม่สำเร็จ','bad');alert('ไม่สามารถเปิดกล้องได้ กรุณาอนุญาต Camera และหากเปิดไฟล์โดยตรงแล้วไม่ทำงาน ให้เปิดผ่าน localhost เช่น VS Code Live Server.')}}
 async function stopCamera(){if(state.raf)cancelAnimationFrame(state.raf);state.raf=0;state.poseBusy=false;if(state.stream){state.stream.getTracks().forEach(t=>t.stop());state.stream=null}$('video').srcObject=null;state.pose=null;$('openCameraBtn').disabled=false;$('openCameraBtn').textContent='เปิดกล้อง'}
-async function initPose(){if(typeof Pose==='undefined')throw new Error('MediaPipe Pose unavailable');if(state.pose)try{state.pose.close()}catch(e){}state.pose=new Pose({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/pose/${f}`});state.pose.setOptions({modelComplexity:0,smoothLandmarks:true,enableSegmentation:false,minDetectionConfidence:.65,minTrackingConfidence:.65});state.pose.onResults(onPose)}
+async function initPose(){if(typeof Pose==='undefined')throw new Error('MediaPipe Pose unavailable');if(state.pose)try{state.pose.close()}catch(e){}state.pose=new Pose({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/pose/${f}`});state.pose.setOptions({modelComplexity:1,smoothLandmarks:true,enableSegmentation:false,minDetectionConfidence:.55,minTrackingConfidence:.55});state.pose.onResults(onPose)}
 function startPoseLoop(){if(state.raf)cancelAnimationFrame(state.raf);const loop=async ts=>{if(state.stream&&$('video').readyState>=2&&state.pose&&!state.poseBusy&&ts-state.lastPoseSend>=75){state.poseBusy=true;state.lastPoseSend=ts;try{await state.pose.send({image:$('video')})}catch(e){console.warn(e)}state.poseBusy=false}state.raf=requestAnimationFrame(loop)};state.raf=requestAnimationFrame(loop)}
 function visibility(p){return p&&Number.isFinite(p.visibility)?p.visibility:0}
 function angle(a,b,c){if(!a||!b||!c)return null;const ux=a.x-b.x,uy=a.y-b.y,vx=c.x-b.x,vy=c.y-b.y,d=Math.hypot(ux,uy)*Math.hypot(vx,vy);if(d<1e-8)return null;return Math.acos(Math.max(-1,Math.min(1,(ux*vx+uy*vy)/d)))*180/Math.PI}
 function median(a){const x=a.filter(Number.isFinite).slice().sort((a,b)=>a-b);if(!x.length)return null;const m=Math.floor(x.length/2);return x.length%2?x[m]:(x[m-1]+x[m])/2}
 function sd(a){const x=a.filter(Number.isFinite);if(x.length<2)return null;const m=x.reduce((s,v)=>s+v,0)/x.length;return Math.sqrt(x.reduce((s,v)=>s+(v-m)**2,0)/x.length)}
-function onPose(r){state.poseTotalFrames++;const lm=r.poseLandmarks;if(!lm){state.ready=false;updateGate('ไม่พบร่างกาย','bad');drawPose(null,false);return}const p={lHip:lm[23],rHip:lm[24],lKnee:lm[25],rKnee:lm[26],lAnkle:lm[27],rAnkle:lm[28]};const conf=Math.round(Math.min(...Object.values(p).map(visibility))*100);state.confidence=conf;$('confidence').textContent=conf+'%';$('qualityBar').style.width=Math.min(100,conf)+'%';const l=angle(p.lHip,p.lKnee,p.lAnkle),rr=angle(p.rHip,p.rKnee,p.rAnkle);if(l!==null)$('angleL').textContent=l.toFixed(1)+'°';if(rr!==null)$('angleR').textContent=rr.toFixed(1)+'°';const full=conf>=70;const geometry=full&&Math.abs(p.lHip.x-p.rHip.x)<.42&&Math.abs(p.lKnee.x-p.rKnee.x)<.42;const valid=full&&geometry&&l!==null&&rr!==null&&l>=65&&l<=180&&rr>=65&&rr<=180;if(valid)state.poseGoodFrames++;if(state.calibrating)updateCalibration(valid);if(state.running&&valid){state.anglesL.push(l);state.anglesR.push(rr);processRep(l,rr)}state.ready=!state.running&&state.calibrating===false&&valid;updateGate(valid?'พร้อมตรวจ':'จัดตำแหน่งให้เห็นขาและข้อเท้าชัด',valid?'ok':'warn');drawPose(r,valid);if(!state.running&&state.ready){$('startTestBtn').disabled=false;$('startTestBtn').textContent='เริ่ม 5xSTS';setCameraStatus('พร้อมทดสอบ','ok')}}
+function onPose(r){
+  state.poseTotalFrames++;
+  const lm=r.poseLandmarks;
+  if(!lm){
+    state.ready=false;
+    updateGate('ไม่พบร่างกาย • ถอยให้เห็นเต็มตัว','bad');
+    drawPose(null,false);
+    return;
+  }
+  const p={lHip:lm[23],rHip:lm[24],lKnee:lm[25],rKnee:lm[26],lAnkle:lm[27],rAnkle:lm[28]};
+  const conf=Math.round(Math.min(...Object.values(p).map(visibility))*100);
+  state.confidence=conf;
+  $('confidence').textContent=conf+'%';
+  $('qualityBar').style.width=Math.min(100,conf)+'%';
+  const l=angle(p.lHip,p.lKnee,p.lAnkle), rr=angle(p.rHip,p.rKnee,p.rAnkle);
+  if(l!==null)$('angleL').textContent=l.toFixed(1)+'°';
+  if(rr!==null)$('angleR').textContent=rr.toFixed(1)+'°';
+  const hipY=(p.lHip.y+p.rHip.y)/2;
+  const kneeY=(p.lKnee.y+p.rKnee.y)/2;
+  const ankleY=(p.lAnkle.y+p.rAnkle.y)/2;
+  const bodySpan=Math.max(.12,ankleY-hipY);
+  const full=conf>=60;
+  const geometry=full&&Math.abs(p.lHip.x-p.rHip.x)<.50&&Math.abs(p.lKnee.x-p.rKnee.x)<.50;
+  const valid=full&&geometry&&l!==null&&rr!==null&&l>=55&&l<=180&&rr>=55&&rr<=180;
+  if(valid)state.poseGoodFrames++;
+
+  if(valid && state.calibrating){
+    state.hipSamples.push(hipY);
+    if(state.hipSamples.length>90)state.hipSamples.shift();
+  }
+  if(state.calibrating)updateCalibration(valid);
+
+  if(state.running && valid){
+    state.anglesL.push(l); state.anglesR.push(rr);
+    processRep(l,rr,hipY,kneeY,ankleY,bodySpan);
+  }
+
+  state.ready=!state.running&&state.calibrating===false&&valid;
+  updateGate(valid?'พร้อมตรวจ':'จัดตำแหน่งให้เห็นศีรษะ–ข้อเท้าชัด',''+(valid?'ok':'warn'));
+  drawPose(r,valid);
+  if(!state.running&&state.ready){
+    $('startTestBtn').disabled=false;
+    $('startTestBtn').textContent='เริ่ม 5xSTS';
+    setCameraStatus('พร้อมทดสอบ','ok');
+  }
+}
 function updateGate(text,kind){$('bodyCheck').textContent=text;$('frameStatus').textContent=text;$('gateState').textContent=kind==='ok'?'READY':kind==='bad'?'STOP':'WAIT';$('gateState').style.color=kind==='ok'?'var(--success)':kind==='bad'?'var(--danger)':'var(--warning)';if(kind==='bad')setCameraStatus('หยุด • คุณภาพข้อมูลไม่พอ','bad')}
 function drawPose(r,good){const c=$('poseCanvas'),v=$('video');c.width=v.videoWidth||960;c.height=v.videoHeight||540;const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);if(!r?.poseLandmarks)return;const con=[[23,25],[25,27],[24,26],[26,28],[23,24]];x.lineWidth=5;x.strokeStyle=good?'#20c9dd':'#ff6b7f';for(const [a,b] of con){const p=r.poseLandmarks[a],q=r.poseLandmarks[b];if(!p||!q)continue;x.beginPath();x.moveTo(p.x*c.width,p.y*c.height);x.lineTo(q.x*c.width,q.y*c.height);x.stroke()}for(const i of [23,24,25,26,27,28]){const p=r.poseLandmarks[i];x.fillStyle=good?'#20c9dd':'#ff6b7f';x.beginPath();x.arc(p.x*c.width,p.y*c.height,7,0,Math.PI*2);x.fill()}}
-function startCalibration(){state.calibrating=true;state.calStart=performance.now();state.calGood=0;state.calTotal=0;state.ready=false;$('startTestBtn').disabled=true;$('testMessage').textContent='กำลัง calibrate คุณภาพภาพ… ยืนให้นิ่งและเห็นขาชัด';setCameraStatus('Calibration','warn')}
-function updateCalibration(valid){state.calTotal++;if(valid)state.calGood++;const elapsed=performance.now()-state.calStart;const pct=Math.min(100,elapsed/2500*100);$('qualityBar').style.width=Math.max(Number($('qualityBar').style.width.replace('%',''))||0,pct)+'%';if(elapsed>=2500){state.calibrating=false;const rate=state.calTotal?state.calGood/state.calTotal:0;if(rate>=.72&&state.confidence>=70){state.ready=true;$('startTestBtn').disabled=false;$('startTestBtn').textContent='เริ่ม 5xSTS';$('testMessage').textContent='Calibration ผ่าน • พร้อมเริ่มการทดสอบ';setCameraStatus('พร้อมทดสอบ','ok')}else{state.ready=false;$('testMessage').textContent='Calibration ยังไม่ผ่าน • ปรับระยะ/แสง/ตำแหน่งแล้วลองใหม่';setCameraStatus('Calibration ไม่ผ่าน','warn');setTimeout(()=>{if(state.stream)startCalibration()},900)}}}
-function startTest(){if(!state.ready){alert('กรุณารอให้ Camera Quality ผ่านก่อน');return}state.running=true;state.completed=false;state.count=0;state.motionState='standing';state.trialTimes=[];state.anglesL=[];state.anglesR=[];state.testStart=performance.now();state.trialStart=state.testStart;state.lastCount=0;$('repBadge').textContent='0 / 5';$('stopTestBtn').disabled=false;$('startTestBtn').disabled=true;$('startTestBtn').textContent='กำลังทดสอบ…';$('testMessage').textContent='ลุก–นั่งตามปกติ 5 ครั้ง ระบบจะนับเมื่อผ่านลำดับการเคลื่อนไหวครบ';setCameraStatus('กำลังทดสอบ','ok');requestAnimationFrame(updateTimer)}
-function processRep(l,r){const knee=(l+r)/2,now=performance.now();if(state.motionState==='standing'&&knee<112&&now-state.testStart>500){state.motionState='sitting'}else if(state.motionState==='sitting'&&knee>150&&now-state.lastCount>800){state.motionState='standing';state.count++;const t=(now-state.trialStart)/1000;state.trialTimes.push(t);state.trialStart=now;state.lastCount=now;$('repBadge').textContent=state.count+' / 5';if(state.count>=5)finishTest()}}
+function startCalibration(){state.calibrating=true;state.calStart=performance.now();state.calGood=0;state.calTotal=0;state.ready=false;state.hipSamples=[];state.hipBaselineY=null;state.phaseFrames=0;$('startTestBtn').disabled=true;$('testMessage').textContent='กำลังตรวจตำแหน่ง • ยืนตัวตรงและให้เห็นศีรษะถึงข้อเท้าทั้งตัว';setCameraStatus('Calibration','warn')}
+function updateCalibration(valid){
+  state.calTotal++;
+  if(valid)state.calGood++;
+  const elapsed=performance.now()-state.calStart;
+  const pct=Math.min(100,elapsed/2500*100);
+  $('qualityBar').style.width=Math.max(Number($('qualityBar').style.width.replace('%',''))||0,pct)+'%';
+  if(elapsed>=2500){
+    state.calibrating=false;
+    const rate=state.calTotal?state.calGood/state.calTotal:0;
+    if(rate>=.65&&state.confidence>=60&&state.hipSamples.length>=15){
+      state.hipBaselineY=median(state.hipSamples);
+      state.ready=true;
+      $('startTestBtn').disabled=false;
+      $('startTestBtn').textContent='เริ่ม 5xSTS';
+      $('testMessage').textContent='Calibration ผ่าน • ยืนตัวตรงเป็นจุดเริ่มต้น แล้วกดเริ่ม';
+      setCameraStatus('พร้อมทดสอบ','ok');
+    }else{
+      state.ready=false;
+      $('testMessage').textContent='Calibration ยังไม่ผ่าน • ถอยกล้องให้เห็นเต็มตัวและจัดแสงให้ชัด';
+      setCameraStatus('Calibration ไม่ผ่าน','warn');
+      setTimeout(()=>{if(state.stream)startCalibration()},900);
+    }
+  }
+}
+function startTest(){
+  if(!state.ready){alert('กรุณาจัดตำแหน่งให้ระบบขึ้น READY ก่อน');return}
+  state.running=true;state.completed=false;state.count=0;state.motionState='standing';state.trialTimes=[];state.anglesL=[];state.anglesR=[];state.phaseFrames=0;state.lastHipY=null;
+  state.testStart=performance.now();state.trialStart=state.testStart;state.lastCount=0;
+  $('repBadge').textContent='0 / 5';$('stopTestBtn').disabled=false;$('startTestBtn').disabled=true;$('startTestBtn').textContent='กำลังทดสอบ…';
+  $('testMessage').textContent='ลุก–นั่งให้ก้นแตะเก้าอี้แล้วกลับมายืนตรงครบ 5 ครั้ง • ระบบจะนับเมื่อผ่านทั้ง “ลง” และ “ยืน”';
+  setCameraStatus('กำลังทดสอบ','ok');requestAnimationFrame(updateTimer)
+}
+function processRep(l,r,hipY,kneeY,ankleY,bodySpan){
+  const knee=(l+r)/2, now=performance.now();
+  const base=state.hipBaselineY;
+  if(!Number.isFinite(base))return;
+  const hipDrop=(hipY-base)/Math.max(bodySpan,.18);
+  const sittingSignal=(knee<145 || hipDrop>0.13);
+  const standingSignal=(knee>155 && hipDrop<0.07);
+
+  if(state.motionState==='standing'){
+    if(now-state.testStart>700 && sittingSignal){
+      state.phaseFrames++;
+      if(state.phaseFrames>=3){state.motionState='sitting';state.phaseFrames=0;}
+    }else if(!sittingSignal){state.phaseFrames=0;}
+  }else if(state.motionState==='sitting'){
+    if(standingSignal){
+      state.phaseFrames++;
+      if(state.phaseFrames>=3 && now-state.lastCount>900){
+        state.motionState='standing';state.phaseFrames=0;state.count++;
+        const t=(now-state.trialStart)/1000;
+        state.trialTimes.push(t);state.trialStart=now;state.lastCount=now;
+        $('repBadge').textContent=state.count+' / 5';
+        $('testMessage').textContent=`ตรวจพบการลุก–นั่ง ${state.count} / 5 ครั้ง`;
+        if(state.count>=5)finishTest();
+      }
+    }else if(!standingSignal){state.phaseFrames=0;}
+  }
+  state.lastHipY=hipY;
+}
 function updateTimer(){if(!state.running)return;const sec=(performance.now()-state.testStart)/1000;$('timer').textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${(sec%60).toFixed(1).padStart(4,'0')}`;requestAnimationFrame(updateTimer)}
 function stopTest(manual){if(!state.running)return;state.running=false;$('stopTestBtn').disabled=true;$('startTestBtn').disabled=!state.ready;$('startTestBtn').textContent=state.ready?'เริ่มใหม่':'จัดท่าให้พร้อมก่อนเริ่ม';$('testMessage').textContent=manual?'การทดสอบถูกหยุด ยังไม่มีรายงานผล':'หยุดการทดสอบ'}
 function finishTest(){state.running=false;state.completed=true;$('stopTestBtn').disabled=true;$('startTestBtn').disabled=true;$('startTestBtn').textContent='เสร็จสิ้น';setCameraStatus('ทดสอบครบ 5 ครั้ง','ok');$('testMessage').textContent='ข้อมูลครบแล้ว กำลังสร้างรายงาน…';setTimeout(buildReport,650)}
@@ -84,7 +186,7 @@ function startCameraFromSelect(){const id=$('cameraSelect').value;if(id)openCame
 function switchCamera(){const opts=[...$('cameraSelect').options].filter(o=>o.value);if(opts.length<2){alert('ต้องมีกล้องอย่างน้อย 2 ตัวจึงจะสลับได้');return}const idx=opts.findIndex(o=>o.value===state.currentCameraId);const next=opts[(idx+1+opts.length)%opts.length];$('cameraSelect').value=next.value;openCamera(next.value)}
 function calculateConfidence(){const coverage=state.poseTotalFrames?state.poseGoodFrames/state.poseTotalFrames:0;const stability=state.anglesL.length>10&&state.anglesR.length>10?Math.max(0,1-(sd([...state.anglesL,...state.anglesR])||0)/18):0;const completion=state.trialTimes.length===5?1:state.trialTimes.length/5;return Math.round(100*(.45*state.confidence/100+.25*coverage+.15*stability+.15*completion))}
 function buildReport(){go('analyzing');setTimeout(()=>{const total=state.trialTimes.length===5?state.trialTimes.reduce((a,b)=>a+b,0):null;const l=median(state.anglesL),r=median(state.anglesR),asym=l!==null&&r!==null?Math.abs(l-r):null,angleSD=sd([...state.anglesL,...state.anglesR]),dataConf=calculateConfidence();const q=state.qScore;let signal=0;signal+=Math.min(45,q/32*45);if(total!==null)signal+=Math.min(30,Math.max(0,(total-8)/18*30));if(asym!==null)signal+=Math.min(15,asym/15*15);signal+=Math.min(10,(100-dataConf)/10);signal=Math.round(signal);let level=signal<35?'LOW':signal<65?'MODERATE':'HIGH';if(dataConf<70)level='UNCERTAIN';$('reportCase').textContent=state.caseId;$('reportAge').textContent=state.age;$('reportDate').textContent=new Date().toLocaleString('th-TH');$('screeningSignal').textContent=level==='UNCERTAIN'?'—':signal+'/100';$('signalText').textContent=level==='UNCERTAIN'?'ข้อมูลยังไม่เพียงพอสำหรับการแปลผล':'ดัชนีต้นแบบสำหรับการคัดกรอง ไม่ใช่ค่าความเสี่ยงทางคลินิกที่ผ่านการ validate';$('dataConfidence').textContent=dataConf+'%';$('confidenceText').textContent=dataConf>=80?'คุณภาพข้อมูลดี':dataConf>=70?'คุณภาพข้อมูลพอใช้':'ควรทำการทดสอบซ้ำ';$('rQ').textContent=q;$('rTime').textContent=total!==null?total.toFixed(2):'—';$('rAsym').textContent=asym!==null?asym.toFixed(1)+'°':'—';$('rSD').textContent=angleSD!==null?angleSD.toFixed(1)+'°':'—';$('rL').textContent=l!==null?l.toFixed(1)+'°':'—';$('rR').textContent=r!==null?r.toFixed(1)+'°':'—';$('rComplete').textContent=state.trialTimes.length+'/5';$('rPose').textContent=state.confidence+'%';$('rTrials').innerHTML=state.trialTimes.map((t,i)=>`<div class="report-row"><span>ครั้งที่ ${i+1}</span><b>${t.toFixed(2)} s</b></div>`).join('')||'<div class="helper">ไม่มีข้อมูลครบ 5 ครั้ง</div>';const badge=$('riskBadge');badge.className='result-badge '+(level==='LOW'?'low':level==='MODERATE'?'mod':'high');badge.textContent=level==='UNCERTAIN'?'ข้อมูลไม่เพียงพอ':level==='LOW'?'สัญญาณคัดกรองต่ำ':level==='MODERATE'?'ควรติดตาม / ประเมินเพิ่ม':'ควรประเมินโดยผู้เชี่ยวชาญ';$('rSummary').textContent=level==='UNCERTAIN'?'ข้อมูลจากกล้องหรือการทดสอบยังไม่ผ่านเกณฑ์ความน่าเชื่อถือ จึงไม่ควรตีความ Screening signal และควรทดสอบใหม่':`ระบบพบสัญญาณคัดกรองระดับ ${level==='LOW'?'ต่ำ':level==='MODERATE'?'ปานกลาง':'สูง'} จากข้อมูลที่ป้อนและการทดสอบที่ทำได้ ผลนี้เป็นการประเมินเบื้องต้นเท่านั้น ไม่ใช่การวินิจฉัย และยังไม่ควรใช้ตัดสินการรักษาเพียงลำพัง`;$('rAdvice').textContent=level==='HIGH'||level==='MODERATE'?'หากมีอาการปวด บวม เข่าทรุด เดินลำบาก หรืออาการต่อเนื่อง ควรนำผลไปปรึกษาแพทย์หรือนักกายภาพบำบัด หากระหว่างทดสอบมีอาการผิดปกติให้หยุดทันที':level==='UNCERTAIN'?'ปรับตำแหน่งกล้อง แสง และระยะห่าง แล้วทำการทดสอบซ้ำ': 'หากยังมีอาการผิดปกติของข้อเข่า ควรติดตามอาการและปรึกษาผู้เชี่ยวชาญแม้สัญญาณคัดกรองจะต่ำ';go('report')},700)}
-function downloadJSON(){const data={version:'7.2',timestamp:new Date().toISOString(),caseId:state.caseId,age:state.age,height:state.height,weight:state.weight,questionnaireScore:state.qScore,trialTimes:state.trialTimes,kneeAngleLeftMedian:median(state.anglesL),kneeAngleRightMedian:median(state.anglesR),kneeAsymmetry:state.anglesL.length&&state.anglesR.length?Math.abs(median(state.anglesL)-median(state.anglesR)):null,angleSD:sd([...state.anglesL,...state.anglesR]),poseConfidence:state.confidence,dataConfidence:calculateConfidence(),note:'Prototype preliminary screening only; not a clinical diagnosis.'};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`kneeai-${state.caseId||'case'}-${Date.now()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function downloadJSON(){const data={version:'7.3-stable-5xsts',timestamp:new Date().toISOString(),caseId:state.caseId,age:state.age,height:state.height,weight:state.weight,questionnaireScore:state.qScore,trialTimes:state.trialTimes,kneeAngleLeftMedian:median(state.anglesL),kneeAngleRightMedian:median(state.anglesR),kneeAsymmetry:state.anglesL.length&&state.anglesR.length?Math.abs(median(state.anglesL)-median(state.anglesR)):null,angleSD:sd([...state.anglesL,...state.anglesR]),poseConfidence:state.confidence,dataConfidence:calculateConfidence(),note:'Prototype preliminary screening only; not a clinical diagnosis.'};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`kneeai-${state.caseId||'case'}-${Date.now()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 async function resetAll(){await stopCamera();location.reload()}
 $('cameraSelect').addEventListener('change',e=>{if(e.target.value&&e.target.value!==state.currentCameraId)openCamera(e.target.value)});
 navigator.mediaDevices?.addEventListener('devicechange',refreshCameras);
