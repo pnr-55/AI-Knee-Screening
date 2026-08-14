@@ -1,672 +1,96 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KneeAI - AI & Mathematical Screening for Knee OA</title>
-    
-    <!-- Tailwind CSS & FontAwesome -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- MathJax for rendering math formulas -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-    <!-- MediaPipe Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
-    
-    <!-- JSPDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <style>
-        body { font-family: 'Kanit', sans-serif; }
-        .page-section { display: none; }
-        .page-section.page-active { display: block !important; }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a1324">
+<title>KneeAI — AI-based Screening and Risk Assessment</title>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+<style>
+:root{--bg:#f6f8fb;--ink:#122033;--muted:#65748a;--navy:#0a1324;--blue:#1769e8;--cyan:#17a8c5;--line:#e4e9f0;--card:#fff;--soft:#f1f5fa;--success:#12805c;--warning:#9a6700;--danger:#b4233d;--shadow:0 18px 55px rgba(18,32,51,.08);--radius:22px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Noto Sans Thai",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.hidden{display:none!important}.page{display:none}.page.active{display:block;animation:fade .3s ease}@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(228,233,240,.9)}.nav{max-width:1180px;margin:auto;height:70px;padding:0 22px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;gap:11px;align-items:center;cursor:pointer}.brandmark{width:38px;height:38px;border-radius:12px;background:linear-gradient(145deg,#0b2444,#1769e8);display:grid;place-items:center;color:#fff;font-weight:800;box-shadow:0 9px 22px rgba(23,105,232,.22)}.brandname{font-weight:800;letter-spacing:.02em}.brandsub{font-size:10px;color:#7890a8;letter-spacing:.1em;margin-top:2px}.nav-actions{display:flex;gap:9px}.container{max-width:1180px;margin:auto;padding:0 22px}.hero{padding:64px 0 36px}.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:42px;align-items:center}.eyebrow{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:999px;background:#edf6ff;color:#175ea8;font-size:12px;font-weight:700;border:1px solid #dbeeff}.hero h1{font-size:clamp(36px,5vw,64px);line-height:1.04;letter-spacing:-.045em;margin:20px 0 16px}.hero h1 span{color:var(--blue)}.hero p{color:var(--muted);font-size:16px;line-height:1.9;max-width:720px}.hero-visual{min-height:410px;border-radius:32px;background:radial-gradient(circle at 55% 42%,rgba(23,105,232,.22),transparent 30%),linear-gradient(145deg,#edf6ff,#fff);border:1px solid #dfe9f3;position:relative;overflow:hidden;box-shadow:var(--shadow)}.hero-visual:before{content:"";position:absolute;width:340px;height:340px;border-radius:50%;border:1px solid rgba(23,105,232,.12);left:50%;top:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 38px rgba(23,105,232,.025),0 0 0 76px rgba(23,105,232,.02)}.joint{position:absolute;left:50%;top:50%;width:110px;height:110px;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,#ff6b65 0 8%,#ffb5a8 9% 24%,#dceeff 25% 48%,#fff 49%);box-shadow:0 0 55px rgba(255,91,85,.25)}.bone{position:absolute;background:linear-gradient(90deg,#d6e5f2,#fff,#d6e5f2);border-radius:999px;transform-origin:center}.bone.a{height:34px;width:220px;left:calc(50% - 195px);top:calc(50% - 100px);transform:rotate(72deg)}.bone.b{height:34px;width:210px;left:calc(50% - 20px);top:calc(50% + 62px);transform:rotate(72deg)}.hero-label{position:absolute;left:26px;bottom:24px;background:rgba(255,255,255,.86);border:1px solid #dfe7ef;border-radius:16px;padding:13px 15px;font-size:12px;color:#4c5e73;box-shadow:0 10px 28px rgba(18,32,51,.07)}
+.disclaimer{margin-top:24px;padding:14px 16px;border:1px solid #e7e0c8;background:#fffdf5;border-radius:15px;color:#725a17;font-size:12px;line-height:1.7}.features{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:24px 0 70px}.feature,.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.feature{padding:21px}.icon{width:38px;height:38px;border-radius:12px;background:#eff6ff;color:var(--blue);display:grid;place-items:center;font-weight:800;margin-bottom:14px}.feature h3{font-size:14px;margin:0 0 6px}.feature p{font-size:12px;line-height:1.7;color:var(--muted);margin:0}
+.section-wrap{padding:38px 0 70px}.section-head{max-width:760px;margin:0 auto 28px;text-align:center}.section-head .eyebrow{margin-bottom:10px}.section-head h2{font-size:32px;margin:8px 0}.section-head p{color:var(--muted);line-height:1.8}
+.card{padding:28px}.stepbar{display:flex;gap:7px;overflow:auto;margin-bottom:18px}.step{white-space:nowrap;padding:8px 12px;border-radius:999px;background:#f2f5f9;color:#7a899b;font-size:11px;font-weight:700}.step.active{background:#eaf3ff;color:#1769e8}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:7px}.field input,.field select{width:100%;border:1px solid #dbe2ea;background:#fff;border-radius:13px;padding:12px 13px;font:inherit;outline:none;transition:.18s}.field input:focus,.field select:focus{border-color:#8db8f7;box-shadow:0 0 0 4px rgba(23,105,232,.08)}.required{color:#c62d47}.helper{font-size:11px;color:#8190a1;margin-top:6px}.actions{display:flex;justify-content:space-between;gap:10px;margin-top:22px}.btn,.btn-ghost{border:0;border-radius:13px;padding:12px 18px;font:inherit;font-weight:750;cursor:pointer}.btn{background:linear-gradient(135deg,#145fd3,#1686c7);color:#fff;box-shadow:0 10px 25px rgba(23,105,232,.18)}.btn:hover{filter:brightness(1.03)}.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}.btn-ghost{background:#f5f7fa;color:#34465b;border:1px solid #e1e6ed}.consent{margin-top:18px;padding:15px;border:1px solid #e2e8f0;background:#fafbfd;border-radius:14px;display:flex;gap:10px;align-items:flex-start;font-size:12px;color:#5f7084;line-height:1.7}.consent input{margin-top:4px}.privacy{font-size:11px;color:#8290a1;margin-top:10px;line-height:1.7}
+.question{padding:18px;border:1px solid var(--line);border-radius:17px;margin-bottom:12px}.question-title{font-weight:750;font-size:13px;line-height:1.65}.options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.option{position:relative}.option input{position:absolute;opacity:0}.option span{display:block;padding:11px;border:1px solid #e1e6ed;border-radius:12px;font-size:11px;line-height:1.45;color:#596a7e;background:#fff;cursor:pointer;height:100%}.option input:checked+span{border-color:#8cb9f8;background:#eff6ff;color:#135cae;box-shadow:0 0 0 3px rgba(23,105,232,.06)}
+.camera-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px}.camera-box{position:relative;background:#07101e;border-radius:22px;overflow:hidden;aspect-ratio:16/10;min-height:340px;border:1px solid #1a304b}.camera-box video,.camera-box canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.camera-box canvas{pointer-events:none}.camera-top{position:absolute;top:13px;left:13px;right:13px;display:flex;justify-content:space-between;gap:8px;z-index:3}.status-pill{padding:8px 11px;border-radius:999px;background:rgba(7,16,30,.78);backdrop-filter:blur(8px);color:#dce8f5;font-size:11px;border:1px solid rgba(255,255,255,.1)}.status-pill.ok{color:#8ce6bf}.status-pill.warn{color:#ffd26c}.status-pill.bad{color:#ff9cac}.camera-guide{position:absolute;inset:15%;border:1px dashed rgba(255,255,255,.28);border-radius:20px;pointer-events:none}.side-panel{display:flex;flex-direction:column;gap:11px}.mini{padding:16px;border-radius:17px;background:#fafbfd;border:1px solid var(--line)}.mini-label{font-size:10px;color:#8492a3;text-transform:uppercase;letter-spacing:.08em}.mini-value{font-size:22px;font-weight:800;margin-top:5px}.mini-sub{font-size:11px;color:#7a899a;margin-top:4px;line-height:1.5}.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.camera-controls{display:grid;grid-template-columns:1fr 1fr;gap:9px}.camera-controls select{grid-column:1/-1;width:100%;padding:11px;border-radius:12px;border:1px solid #dbe2ea;background:#fff}.progress{height:7px;border-radius:99px;background:#e9eef4;overflow:hidden;margin-top:8px}.progress>div{height:100%;width:0;background:linear-gradient(90deg,#1769e8,#17a8c5);transition:.2s}.safety{padding:14px;border-radius:14px;background:#fffaf0;border:1px solid #f1e3ba;color:#755c16;font-size:11px;line-height:1.7}.test-state{font-size:11px;color:#6e7e91;line-height:1.6}
+.result-hero{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}.result-banner{padding:26px;border-radius:22px;background:linear-gradient(135deg,#f7fbff,#fff);border:1px solid #dce8f5}.result-badge{display:inline-flex;padding:8px 12px;border-radius:999px;font-size:11px;font-weight:800}.result-badge.low{background:#eaf8f1;color:#137650}.result-badge.mod{background:#fff5d9;color:#8b6500}.result-badge.high{background:#ffedf0;color:#a3213b}.big-score{font-size:46px;font-weight:850;letter-spacing:-.04em;margin-top:12px}.score-label{font-size:12px;color:#728196}.data-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}.data-card{padding:16px;border:1px solid var(--line);border-radius:16px;background:#fff}.data-card .label{font-size:10px;color:#8491a1}.data-card .value{font-size:22px;font-weight:800;margin-top:6px}.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.report-list{display:grid;gap:8px}.report-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #edf0f4;font-size:12px}.report-row:last-child{border-bottom:0}.notice{padding:16px;border-radius:16px;background:#f7f9fc;border:1px solid #e5eaf0;color:#5f7084;font-size:12px;line-height:1.8}.privacy-box{padding:16px;border-radius:16px;background:#f7fbff;border:1px solid #dbeafb;color:#50667d;font-size:11px;line-height:1.8}.footer{padding:34px 0 50px;color:#8794a5;font-size:11px;text-align:center}
+@media(max-width:900px){.hero-grid,.camera-layout,.result-hero{grid-template-columns:1fr}.hero-visual{min-height:320px}.features{grid-template-columns:1fr 1fr}.data-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.nav{height:62px;padding:0 15px}.brandsub{display:none}.nav-actions .btn-ghost{display:none}.container{padding:0 15px}.hero{padding-top:40px}.hero h1{font-size:38px}.features,.form-grid,.result-grid{grid-template-columns:1fr}.options{grid-template-columns:1fr}.camera-box{min-height:280px}.actions{flex-direction:column}.actions .btn,.actions .btn-ghost{width:100%}}
+@media print{.topbar,.no-print{display:none!important}.page{display:none!important}.page#report{display:block!important}.card,.result-banner{box-shadow:none!important}.container{max-width:none}.footer{display:none}}
+</style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
-
-    <!-- NAVIGATION HEADER -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchPage('home')">
-                <div class="bg-blue-600 text-white p-2 rounded-xl shadow-md">
-                    <i class="fa-solid fa-bone text-xl"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-xl text-slate-900 leading-none">KneeAI</h1>
-                    <p class="text-[10px] text-blue-600 font-semibold tracking-wide">MATH & AI KNEE OA SCREENING</p>
-                </div>
-            </div>
-            
-            <nav class="hidden md:flex items-center space-x-2 text-sm font-medium text-slate-600">
-                <button onclick="switchPage('home')" class="px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">หน้าแรก</button>
-                <button onclick="switchPage('survey')" class="px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">ประวัติ & แบบประเมิน</button>
-                <button onclick="switchPage('camera')" class="px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">AI สแกนเข่า</button>
-                <button onclick="switchPage('math-model')" class="px-3 py-1.5 rounded-lg text-blue-600 hover:bg-blue-50 transition font-semibold"><i class="fa-solid fa-calculator mr-1"></i> โมเดลคณิตศาสตร์</button>
-                <button onclick="switchPage('doctor-dashboard')" class="bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-lg border border-indigo-200 hover:bg-indigo-100 transition font-semibold">
-                    <i class="fa-solid fa-user-md mr-1"></i> Dashboard แพทย์
-                </button>
-            </nav>
-        </div>
-    </header>
-
-    <!-- MAIN CONTAINER -->
-    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
-
-        <!-- 1. HOME PAGE -->
-        <section id="page-home" class="page-section page-active space-y-8">
-            <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-800 rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between">
-                <div class="max-w-xl space-y-5 z-10">
-                    <span class="bg-white/20 text-white text-xs font-bold px-3.5 py-1.5 rounded-full border border-white/30 backdrop-blur-sm">
-                        Biomechanical & Vector Analysis
-                    </span>
-                    <h2 class="text-3xl md:text-5xl font-extrabold leading-tight">ระบบคัดกรองข้อเข่าเสื่อม ด้วย AI และแบบจำลองคณิตศาสตร์</h2>
-                    <p class="text-blue-100 text-sm md:text-base leading-relaxed">
-                        วิเคราะห์โครงสร้างข้อเข่าด้วยเวกเตอร์เรขาคณิต (Femorotibial Angle) ร่วมกับแบบประเมินอาการ KOOS/WOMAC และแบบจำลองทางสถิติน้ำหนักความเสี่ยง
-                    </p>
-                    <div class="pt-2 flex flex-wrap gap-3">
-                        <button onclick="switchPage('survey')" class="bg-white text-blue-700 font-bold px-7 py-3.5 rounded-2xl shadow-lg hover:bg-blue-50 transition flex items-center gap-2">
-                            <span>เริ่มทำแบบประเมิน & คัดกรอง</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="mt-8 md:mt-0 z-10 flex justify-center">
-                    <div class="w-64 h-64 bg-white/10 rounded-full border border-white/20 flex items-center justify-center backdrop-blur-md shadow-inner text-center p-4">
-                        <div>
-                            <i class="fa-solid fa-square-root-variable text-6xl text-blue-200 mb-2"></i>
-                            <p class="text-xs font-bold text-blue-100">Vector & Multi-Factor Weighted Analysis</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 2. SURVEY PAGE (รวมข้อมูลประวัติ + แบบประเมิน 8 ข้อ) -->
-        <section id="page-survey" class="page-section space-y-6">
-            <div class="max-w-3xl mx-auto bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-                <div>
-                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">ขั้นตอนที่ 1 จาก 2</span>
-                    <h2 class="text-2xl font-bold text-slate-900">1. บันทึกประวัติผู้ป่วย (Patient Profile)</h2>
-                </div>
-
-                <!-- ข้อมูลทั่วไป -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อ - นามสกุล <span class="text-rose-500">*</span></label>
-                        <input type="text" id="patient-name" placeholder="เช่น สมชาย ใจดี" class="w-full px-3.5 py-2.5 border rounded-xl text-sm bg-slate-50">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">เลขประจำตัวผู้ป่วย (HN)</label>
-                        <input type="text" id="patient-hn" placeholder="เช่น HN67001" class="w-full px-3.5 py-2.5 border rounded-xl text-sm bg-slate-50">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">อายุ (ปี)</label>
-                        <input type="number" id="user-age" value="58" class="w-full px-3.5 py-2 border rounded-xl text-sm bg-slate-50">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">เพศ</label>
-                        <select id="patient-gender" class="w-full px-3.5 py-2 border rounded-xl text-sm bg-slate-50">
-                            <option value="หญิง">หญิง</option>
-                            <option value="ชาย">ชาย</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">ส่วนสูง (ซม.)</label>
-                        <input type="number" id="user-height" value="158" class="w-full px-3.5 py-2 border rounded-xl text-sm bg-slate-50">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">น้ำหนัก (กก.)</label>
-                        <input type="number" id="user-weight" value="65" class="w-full px-3.5 py-2 border rounded-xl text-sm bg-slate-50">
-                    </div>
-                </div>
-
-                <hr class="border-slate-100 my-4">
-
-                <!-- แบบประเมินอาการและความเสี่ยง 8 ข้อ -->
-                <div class="space-y-4">
-                    <div>
-                        <h3 class="text-base font-bold text-slate-800">2. แบบประเมินอาการและความเสี่ยงข้อเข่าเสื่อม/ขาผิดรูป (KOOS/WOMAC Adapted)</h3>
-                        <p class="text-xs text-slate-500">กรุณาเลือก ระดับอาการ ที่ตรงกับความรู้สึกของผู้ป่วยในรอบ 1 สัปดาห์ที่ผ่านมา</p>
-                    </div>
-
-                    <div class="space-y-3 text-xs" id="survey-questions-container">
-                        <!-- คำถามข้อที่ 1 -->
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
-                            <p class="font-semibold text-slate-800">1. รู้สึกปวดหรือขัดบริเวณข้อเข่าขณะเดินบนพื้นราบหรือขึ้น-ลงบันไดหรือไม่?</p>
-                            <select class="q-score w-full p-2.5 border rounded-xl bg-white text-slate-700">
-                                <option value="0">0 - ไม่มีอาการเลย</option>
-                                <option value="1">1 - เล็กน้อย (นานๆ ครั้ง)</option>
-                                <option value="2">2 - ปานกลาง (ปวดเมื่อเดินไกล)</option>
-                                <option value="3">3 - มาก (ปวดเกือบทุกครั้งที่เดิน)</option>
-                                <option value="4">4 - รุนแรงมาก (ปวดตลอดเวลาแม้ไม่ได้เดิน)</option>
-                            </select>
-                        </div>
-
-                        <!-- คำถามข้อที่ 2 -->
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
-                            <p class="font-semibold text-slate-800">2. มีอาการข้อเข่าตึงฝืด หรือยึดแข็งหลังตื่นนอนตอนเช้าหรือไม่?</p>
-                            <select class="q-score w-full p-2.5 border rounded-xl bg-white text-slate-700">
-                                <option value="0">0 - ไม่มีอาการ</option>
-                                <option value="1">1 - ตึงน้อยกว่า 10 นาทีแล้วหาย</option>
-                                <option value="2">2 - ตึงประมาณ 10-30 นาที</option>
-                                <option value="3">3 - ตึงมากกว่า 30 นาที</option>
-                                <option value="4">4 - ข้อตึงเกือบตลอดวัน ขยับยากมาก</option>
-                            </select>
-                        </div>
-
-                        <!-- คำถามข้อที่ 3 -->
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
-                            <p class="font-semibold text-slate-800">3. มีเสียงดังกรอบแกรบ (Crepitus) หรือรู้สึกว่ากระดูกขัดกันในข้อเข่าขณะเคลื่อนไหวหรือไม่?</p>
-                            <select class="q-score w-full p-2.5 border rounded-xl bg-white text-slate-700">
-                                <option value="0">0 - ไม่มีเสียง</option>
-                                <option value="1">1 - ได้ยินเสียงนานๆ ครั้ง ไม่ปวด</option>
-                                <option value="2">2 - ได้ยินเสียงบ่อยครั้ง ไม่ปวด</option>
-                                <option value="3">3 - ได้ยินเสียงชัดเจน ร่วมกับเริ่มมีอาการปวด</option>
-                                <option value="4">4 - ได้ยินและรู้สึกสะดุดขัดอย่างรุนแรงทุกครั้งที่งอ/เหยียด</option>
-                            </select>
-                        </div>
-
-                        <!-- คำถามข้อที่ 4 -->
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
-                            <p class="font-semibold text-slate-800">4. สังเกตเห็นรูปร่างของขาเปลี่ยนไป เช่น เข่าโค้งโก่งออกด้านนอก (O-leg) หรือชนกัน (X-leg) หรือไม่?</p>
-                            <select class="q-score w-full p-2.5 border rounded-xl bg-white text-slate-700">
-                                <option value="0">0 - ขาตรงปกติ</option>
-                                <option value="1">1 - รู้สึกว่าโก่งเล็กน้อย ยืนชิดส้นเท้าแล้วเข่าห่างกันเล็กน้อย</option>
-                                <option value="2">2 - สังเกตเห็นได้ชัดเจนว่าขาโก่งออก/ชิดเข้าหากัน</option>
-                                <option value="3">3 - ขาโก่งมาก จนส้นเท้าไม่สามารถยืนชิดกันได้</option>
-                                <option value="4">4 - ขาผิดรูปอย่างรุนแรง ทรงตัวลำบากเวล่ายืน</option>
-                            </select>
-                        </div>
-
-                        <!-- คำถามข้อที่ 5 -->
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
-                            <p class="font-semibold text-slate-800">5. มีปัญหาในการลุกขึ้นยืนจากเก้าอี้ หรือลุกจากการนั่งพื้น/นั่งยองๆ หรือไม่?</p>
-                            <select class="q-score w-full p-2.5 border rounded-xl bg-white text-slate-700">
-                                <option value="0">0 - ลุกได้สะดวกปกติ</option>
-                                <option value="1">1 - ลุกได้แต่ต้องใช้แรงมากกว่าปกติเล็กน้อย</option>
-                                <option value="2">2 - ต้องใช้มือดันโคนขาหรือพนักพิงช่วยลุก</option>
-                                <option value="3">3 - ลุกยากมาก ต้องมีคนช่วยพยุง</option>
-                                <option value="4">4 - ไม่สามารถลุกขึ้นยืนด้วยตนเองได้เลย</option>
-                            </select>
-                        </div>
-
-                        <!-- คำถามข้อที่ 6 -->
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
-                            <p class="font-semibold text-slate-800">6. มีอาการบวม ร้อน หรือกดเจ็บบริเวณรอบๆ ข้อเข่าหรือไม่?</p>
-                            <select class="q-score w-full p-2.5 border rounded-xl bg-white text-slate-700">
-                                <option value="0">0 - ไม่มีอาการบวมกดเจ็บ</option>
-                                <option value="1">1 - มีอาการบวมอุ่นๆ นานๆ ครั้งหลังใช้งานหนัก</option>
-                                <option value="2">2 - บวมเล็กน้อยเป็นประจำ กดแล้วเจ็บ</option>
-                                <option value="3">3 - ข้อเข่าบวมตึงชัดเจน ร้อน ตลอดทั้งวัน</option>
-                                <option value="4">4 - บวมโตอย่างรุนแรง มีน้ำในข้อเข่าจนงอเข่าไม่ได้</option>
-                            </select>
-                        </div>
-
-                        <!-- คำถามข้อที่ 7 -->
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
-                            <p class="font-semibold text-slate-800">7. รู้สึกว่าข้อเข่าหลวม ไม่มั่นคง หรือเหมือนจะทรงตัวไม่อยู่ขณะก้าวเดินหรือไม่?</p>
-                            <select class="q-score w-full p-2.5 border rounded-xl bg-white text-slate-700">
-                                <option value="0">0 - มั่นคงดีมาก</option>
-                                <option value="1">1 - รู้สึกโอนเอียงนานๆ ครั้งเวลาก้าวพลาด</option>
-                                <option value="2">2 - รู้สึกข้อเข่าไม่ค่อยมั่นคงเมื่อเดินบนพื้นขรุขระ</option>
-                                <option value="3">3 - รู้สึกเข่าพร้อมจะพับ/ทรุดอยู่บ่อยครั้งขณะเดิน</option>
-                                <option value="4">4 - ข้อเข่าหลวมรุนแรง ต้องใช้อุปกรณ์ช่วยเดิน (Walker/ไม้เท้า)</option>
-                            </select>
-                        </div>
-
-                        <!-- คำถามข้อที่ 8 -->
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80 space-y-2">
-                            <p class="font-semibold text-slate-800">8. อาการที่ข้อเข่ากระทบต่อการทำกิจวัตรประจำวัน (เช่น อาบน้ำ แต่งตัว ซื้อของ) มากน้อยเพียงใด?</p>
-                            <select class="q-score w-full p-2.5 border rounded-xl bg-white text-slate-700">
-                                <option value="0">0 - ไม่กระทบเลย</option>
-                                <option value="1">1 - กระทบเล็กน้อย ยังทำเองได้หมด</option>
-                                <option value="2">2 - กระทบปานกลาง ทำงานบ้าน/เดินช้อปปิ้งได้ช้าลง</option>
-                                <option value="3">3 - กระทบมาก ลำบากในการทำกิจวัตรประจำวัน</option>
-                                <option value="4">4 - ไม่สามารถช่วยเหลือตัวเองในชีวิตประจำวันได้</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="saveSurveyAndOpenCam()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg transition text-center text-base">
-                    บันทึกข้อมูล & ไปยังขั้นตอนถ่ายภาพสแกน <i class="fa-solid fa-camera ml-2"></i>
-                </button>
-            </div>
-        </section>
-
-        <!-- 3. AI CAMERA SCAN PAGE -->
-        <section id="page-camera" class="page-section space-y-6">
-            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">ขั้นตอนที่ 2 จาก 2</span>
-                        <h2 class="text-2xl font-bold text-slate-900">Vector Pose Analysis</h2>
-                    </div>
-                    <div id="cam-status" class="text-xs font-bold px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-600">
-                        รอเปิดกล้อง
-                    </div>
-                </div>
-
-                <div class="relative bg-slate-950 rounded-2xl overflow-hidden aspect-video max-w-2xl mx-auto flex items-center justify-center border-2 border-slate-800">
-                    <video id="webcam" class="hidden" playsinline></video>
-                    <canvas id="knee_canvas" class="w-full h-full object-contain"></canvas>
-                    
-                    <div id="scan-countdown-overlay" class="absolute inset-0 bg-slate-950/60 hidden flex-col items-center justify-center text-white">
-                        <span id="scan-timer-num" class="text-7xl font-black text-emerald-400 animate-pulse">5</span>
-                        <p class="text-xs text-emerald-200 mt-2 font-medium">กำลังคำนวณพิกัดจุดเวกเตอร์...</p>
-                    </div>
-                </div>
-
-                <div class="flex justify-center gap-3">
-                    <button onclick="startKneeCamera()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3.5 rounded-2xl shadow-md transition flex items-center gap-2">
-                        <i class="fa-solid fa-video"></i>
-                        <span>เปิดกล้องเพื่อประมวลผล</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. SCAN RESULT ANALYSIS PAGE -->
-        <section id="page-result" class="page-section space-y-6">
-            <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-                
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4 gap-4">
-                    <div>
-                        <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">รายงานวิเคราะห์ทางการแพทย์และคณิตศาสตร์</span>
-                        <h2 class="text-2xl font-bold text-slate-900" id="res-patient-name">ชื่อผู้ป่วย: -</h2>
-                        <p class="text-xs text-slate-500">HN: <span id="res-patient-hn">-</span> | เพศ: <span id="res-gender">-</span> | อายุ: <span id="res-age">-</span> ปี | BMI: <span id="res-bmi">-</span> kg/m²</p>
-                    </div>
-                    <div id="res-risk-badge" class="px-5 py-2 rounded-2xl font-bold text-sm bg-rose-100 text-rose-700">
-                        ความเสี่ยง: กำลังคำนวณ
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="md:col-span-1 space-y-2">
-                        <h3 class="text-xs font-bold text-slate-700">Vector Landmark Snapshot</h3>
-                        <div class="bg-slate-900 rounded-2xl overflow-hidden border border-slate-300 shadow-inner">
-                            <img id="captured-snapshot" class="w-full h-auto object-cover" alt="Captured Scan" src="" />
-                        </div>
-                    </div>
-
-                    <div class="md:col-span-2 space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="p-4 bg-slate-50 border rounded-2xl space-y-1">
-                                <span class="text-xs text-slate-500 font-semibold">Left Knee Angle ($\theta_L$)</span>
-                                <div class="text-3xl font-extrabold text-slate-800"><span id="angle-left">--</span>° <span class="text-xs text-slate-400 font-normal">$\pm 0.8^\circ$</span></div>
-                                <span class="text-[10px] text-slate-400">มุมปกติ: $175^\circ - 178^\circ$</span>
-                            </div>
-
-                            <div class="p-4 bg-slate-50 border rounded-2xl space-y-1">
-                                <span class="text-xs text-slate-500 font-semibold">Right Knee Angle ($\theta_R$)</span>
-                                <div class="text-3xl font-extrabold text-slate-800"><span id="angle-right">--</span>° <span class="text-xs text-slate-400 font-normal">$\pm 0.8^\circ$</span></div>
-                                <span class="text-[10px] text-slate-400">มุมปกติ: $175^\circ - 178^\circ$</span>
-                            </div>
-
-                            <div class="p-4 bg-slate-50 border rounded-2xl space-y-1">
-                                <span class="text-xs text-slate-500 font-semibold">Survey Score (KOOS/WOMAC)</span>
-                                <div class="text-2xl font-extrabold text-slate-800"><span id="res-survey-score">0</span> <span class="text-xs">/ 32</span></div>
-                                <span class="text-[10px] text-slate-400">คะแนนประเมินอาการ 8 ข้อ</span>
-                            </div>
-
-                            <div class="p-4 bg-slate-50 border rounded-2xl space-y-1">
-                                <span class="text-xs text-slate-500 font-semibold">Weighted Risk Score ($R$)</span>
-                                <div class="text-2xl font-extrabold text-indigo-600"><span id="res-score">0</span> <span class="text-xs text-slate-400">/ 100</span></div>
-                                <span class="text-[10px] text-indigo-600">คำนวณจาก Weighted Composite Formula</span>
-                            </div>
-                        </div>
-
-                        <!-- Mathematics Explanation Box -->
-                        <div class="p-4 bg-indigo-50/60 border border-indigo-100 rounded-2xl space-y-2 text-xs text-indigo-950">
-                            <h4 class="font-bold flex items-center gap-1.5 text-indigo-900">
-                                <i class="fa-solid fa-square-root-variable"></i>
-                                <span>หลักการทางคณิตศาสตร์ที่ใช้ประมวลผล (Mathematical Foundation)</span>
-                            </h4>
-                            <p class="leading-relaxed">
-                                มุมข้อเข่าคำนวณด้วย Dot Product ระหว่างเวกเตอร์ท่อนบน $\vec{u}$ และท่อนล่าง $\vec{v}$ นำมาประมวลผลร่วมกับคะแนนประเมินด้วยสูตรถ่วงน้ำหนัก:
-                            </p>
-                            <div class="bg-white p-2.5 rounded-xl border border-indigo-100 text-center font-mono font-semibold text-slate-800">
-                                $R = 0.40 \times S_{\text{Angle}} + 0.40 \times S_{\text{Survey}} + 0.20 \times S_{\text{BMI}}$
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Medical Disclaimer -->
-                <div class="p-4 rounded-2xl bg-slate-100 border border-slate-200 text-[11px] text-slate-500 flex items-start gap-2 leading-relaxed">
-                    <i class="fa-solid fa-circle-info text-slate-400 text-sm mt-0.5"></i>
-                    <div>
-                        <b>Medical Disclaimer:</b> ระบบ KneeAI เป็นนวัตกรรมปัญญาประดิษฐ์ร่วมกับแบบจำลองทางเรขาคณิตสำหรับคัดกรองเบื้องต้น (Screening Tool) เพื่อช่วยลดภาระงานของบุคลากรทางการแพทย์เท่านั้น ไม่สามารถใช้ทดแทนการวินิจฉัยด้วยภาพถ่ายรังสี (X-Ray / MRI) โดยแพทย์เฉพาะทางออร์โธปิดิกส์ได้
-                    </div>
-                </div>
-
-                <div class="flex flex-wrap gap-3 justify-center pt-2">
-                    <button onclick="exportKneePDF()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-6 py-3.5 rounded-xl transition flex items-center gap-2 shadow-md">
-                        <i class="fa-solid fa-file-pdf text-red-400"></i>
-                        <span>ดาวน์โหลดใบรายงานผลการคัดกรอง (PDF)</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- 5. MATHEMATICAL MODEL DEDICATED PAGE -->
-        <section id="page-math-model" class="page-section space-y-6">
-            <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-                <div class="border-b pb-4">
-                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Mathematics & Algorithm Design</span>
-                    <h2 class="text-2xl font-bold text-slate-900">แบบจำลองทางคณิตศาสตร์ของ KneeAI</h2>
-                    <p class="text-xs text-slate-500">อธิบายการประมวลผลพิกัดร่างกาย 2D Landmark สู่ค่าดรรชนีชี้วัดทางชีวกลศาสตร์ (Biomechanical Indices)</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="p-5 bg-slate-50 border rounded-2xl space-y-3">
-                        <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">1</span>
-                            <span>การหาพิกัดและคำนวณมุมเวกเตอร์ (Vector Angle)</span>
-                        </h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            กำหนดจุดพิกัด $P_1$ [สะโพก], $P_2$ [เข่า], และ $P_3$ [ข้อเท้า] สร้างเวกเตอร์ $\vec{u}$ และ $\vec{v}$ คำนวณมุมด้วยสมการ:
-                        </p>
-                        <div class="bg-white p-3 rounded-xl border text-xs space-y-1 font-mono text-center">
-                            $\theta = \arccos\left( \frac{\vec{u} \cdot \vec{v}}{\|\vec{u}\| \|\vec{v}\|} \right)$
-                        </div>
-                    </div>
-
-                    <div class="p-5 bg-slate-50 border rounded-2xl space-y-3">
-                        <h3 class="font-bold text-sm text-slate-800 flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">2</span>
-                            <span>แบบจำลองความเสี่ยงถ่วงน้ำหนัก (Weighted Risk Index)</span>
-                        </h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            การคำนวณดรรชนีความเสี่ยงรวม $R$ โดยรวม 3 ปัจจัยสำคัญ ได้แก่ มุมเบี่ยงเบนข้อเข่า ($40\%$), แบบประเมิน KOOS/WOMAC ($40\%$), และ BMI ($20\%$):
-                        </p>
-                        <div class="bg-white p-3 rounded-xl border text-xs space-y-1 font-mono text-center">
-                            $R = 0.40(S_{\text{Angle}}) + 0.40(S_{\text{Survey}}) + 0.20(S_{\text{BMI}})$
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 6. DOCTOR DASHBOARD -->
-        <section id="page-doctor-dashboard" class="page-section space-y-6">
-            <div class="bg-slate-900 text-white p-6 rounded-3xl shadow-xl space-y-6">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                    <div>
-                        <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Hospital Portal</span>
-                        <h2 class="text-2xl font-bold">KneeAI - Dashboard สำหรับแพทย์</h2>
-                    </div>
-                </div>
-                <p class="text-xs text-slate-400">รายการคัดกรองผู้ป่วยรอการวินิจฉัย</p>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- LOGIC SCRIPT -->
-    <script>
-        const kneeState = {
-            patientName: "",
-            patientHN: "",
-            gender: "หญิง",
-            age: 50,
-            height: 160,
-            weight: 60,
-            bmi: 23.44,
-            surveyScore: 0,
-            riskScore: 0,
-            angleLeft: 0,
-            angleRight: 0,
-            capturedImageData: "",
-            riskLevel: "กำลังคำนวณ"
-        };
-
-        function switchPage(pageId) {
-            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('page-active'));
-            const target = document.getElementById(`page-${pageId}`);
-            if(target) target.classList.add('page-active');
-            window.scrollTo({top: 0, behavior: 'smooth'});
-            if(window.MathJax) MathJax.typesetPromise();
-        }
-
-        function saveSurveyAndOpenCam() {
-            const nameInput = document.getElementById('patient-name').value.trim();
-            kneeState.patientName = nameInput || "ผู้ป่วยไม่ระบุนาม";
-
-            const hnInput = document.getElementById('patient-hn').value.trim();
-            kneeState.patientHN = hnInput || ("HN-" + Math.floor(100000 + Math.random() * 900000));
-
-            kneeState.gender = document.getElementById('patient-gender').value;
-            kneeState.age = parseInt(document.getElementById('user-age').value) || 50;
-            kneeState.height = parseFloat(document.getElementById('user-height').value) || 160;
-            kneeState.weight = parseFloat(document.getElementById('user-weight').value) || 60;
-            
-            const hM = kneeState.height / 100;
-            kneeState.bmi = (kneeState.weight / (hM * hM)).toFixed(2);
-
-            // คำนวณคะแนนรวมแบบประเมิน 8 ข้อ (คะแนนเต็ม 32)
-            let totalSurvey = 0;
-            document.querySelectorAll('.q-score').forEach(select => {
-                totalSurvey += parseInt(select.value) || 0;
-            });
-            kneeState.surveyScore = totalSurvey;
-
-            document.getElementById('cam-status').innerText = `ผู้ป่วย: ${kneeState.patientName}`;
-            switchPage('camera');
-        }
-
-        let videoEl, canvasEl, ctx, pose, camera;
-        let countdownTimer = null;
-        let countdownValue = 5;
-        let isCountingDown = false;
-
-        function initKneePose() {
-            videoEl = document.getElementById('webcam');
-            canvasEl = document.getElementById('knee_canvas');
-            ctx = canvasEl.getContext('2d');
-
-            pose = new Pose({
-                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
-            });
-
-            pose.setOptions({
-                modelComplexity: 1,
-                smoothLandmarks: true,
-                minDetectionConfidence: 0.6,
-                minTrackingConfidence: 0.6
-            });
-
-            pose.onResults(onKneeResults);
-        }
-
-        // Vector Mathematical Angle Calculation: Dot Product Formula
-        function calculateVectorAngle(A, B, C) {
-            const ux = A.x - B.x;
-            const uy = A.y - B.y;
-            const vx = C.x - B.x;
-            const vy = C.y - B.y;
-
-            const dotProduct = (ux * vx) + (uy * vy);
-            const magU = Math.sqrt(ux * ux + uy * uy);
-            const magV = Math.sqrt(vx * vx + vy * vy);
-
-            if (magU * magV === 0) return 180;
-
-            const cosTheta = Math.max(-1, Math.min(1, dotProduct / (magU * magV)));
-            return Math.round(Math.acos(cosTheta) * (180 / Math.PI));
-        }
-
-        function onKneeResults(results) {
-            canvasEl.width = videoEl.videoWidth || 640;
-            canvasEl.height = videoEl.videoHeight || 480;
-
-            ctx.save();
-            ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-            ctx.drawImage(results.image, 0, 0, canvasEl.width, canvasEl.height);
-
-            let isPositionCorrect = false;
-
-            if (results.poseLandmarks) {
-                const lm = results.poseLandmarks;
-
-                const leftLegVisible = lm[23]?.visibility > 0.65 && lm[25]?.visibility > 0.65 && lm[27]?.visibility > 0.65;
-                const rightLegVisible = lm[24]?.visibility > 0.65 && lm[26]?.visibility > 0.65 && lm[28]?.visibility > 0.65;
-
-                isPositionCorrect = leftLegVisible && rightLegVisible;
-
-                if (leftLegVisible) kneeState.angleLeft = calculateVectorAngle(lm[23], lm[25], lm[27]);
-                if (rightLegVisible) kneeState.angleRight = calculateVectorAngle(lm[24], lm[26], lm[28]);
-
-                const drawColor = isPositionCorrect ? '#10B981' : '#EF4444';
-                const legConnections = [[23, 25], [25, 27], [24, 26], [26, 28], [23, 24]];
-
-                legConnections.forEach(([i, j]) => {
-                    if (lm[i] && lm[j]) {
-                        ctx.beginPath();
-                        ctx.moveTo(lm[i].x * canvasEl.width, lm[i].y * canvasEl.height);
-                        ctx.lineTo(lm[j].x * canvasEl.width, lm[j].y * canvasEl.height);
-                        ctx.lineWidth = 4;
-                        ctx.strokeStyle = drawColor;
-                        ctx.stroke();
-                    }
-                });
-            }
-
-            const overlay = document.getElementById('scan-countdown-overlay');
-            const timerNum = document.getElementById('scan-timer-num');
-
-            if (isPositionCorrect) {
-                overlay.classList.remove('hidden');
-                overlay.classList.add('flex');
-
-                if (!isCountingDown) {
-                    isCountingDown = true;
-                    countdownValue = 5;
-                    timerNum.innerText = countdownValue;
-
-                    countdownTimer = setInterval(() => {
-                        countdownValue--;
-                        timerNum.innerText = countdownValue;
-
-                        if (countdownValue <= 0) {
-                            clearInterval(countdownTimer);
-                            captureSnapshotAndFinish();
-                        }
-                    }, 1000);
-                }
-            } else {
-                overlay.classList.add('hidden');
-                overlay.classList.remove('flex');
-                if (isCountingDown) {
-                    clearInterval(countdownTimer);
-                    isCountingDown = false;
-                }
-            }
-
-            ctx.restore();
-        }
-
-        function captureSnapshotAndFinish() {
-            kneeState.capturedImageData = canvasEl.toDataURL('image/png');
-            document.getElementById('captured-snapshot').src = kneeState.capturedImageData;
-
-            if(camera) camera.stop();
-
-            renderKneeResults();
-            switchPage('result');
-        }
-
-        function startKneeCamera() {
-            if(!pose) initKneePose();
-            isCountingDown = false;
-            if(countdownTimer) clearInterval(countdownTimer);
-
-            camera = new Camera(videoEl, {
-                onFrame: async () => { await pose.send({image: videoEl}); },
-                width: 640,
-                height: 480
-            });
-            camera.start();
-        }
-
-        function renderKneeResults() {
-            document.getElementById('res-patient-name').innerText = "ชื่อผู้ป่วย: " + kneeState.patientName;
-            document.getElementById('res-patient-hn').innerText = kneeState.patientHN;
-            document.getElementById('res-gender').innerText = kneeState.gender;
-            document.getElementById('res-age').innerText = kneeState.age;
-            document.getElementById('res-bmi').innerText = kneeState.bmi;
-            document.getElementById('res-survey-score').innerText = kneeState.surveyScore;
-
-            const angleL = kneeState.angleLeft || 173;
-            const angleR = kneeState.angleRight || 175;
-
-            document.getElementById('angle-left').innerText = angleL;
-            document.getElementById('angle-right').innerText = angleR;
-
-            // --- สมการคณิตศาสตร์ถ่วงน้ำหนักความเสี่ยง (Multi-Factor Weighted Index) ---
-            // 1. ปัจจัยด้านมุมขา (Weight = 40%)
-            const minAngle = Math.min(angleL, angleR);
-            let angleDeficit = Math.max(0, 175 - minAngle);
-            let angleRisk = Math.min(100, angleDeficit * 12); 
-
-            // 2. ปัจจัยด้านแบบประเมิน 8 ข้อ (Weight = 40%)
-            let surveyRisk = (kneeState.surveyScore / 32) * 100;
-
-            // 3. ปัจจัยด้าน BMI (Weight = 20%)
-            let bmiRisk = Math.min(100, Math.max(0, (kneeState.bmi - 23) * 8));
-
-            // รวมคะแนนแบบถ่วงน้ำหนัก (Weighted Average)
-            let totalScore = Math.round((angleRisk * 0.40) + (surveyRisk * 0.40) + (bmiRisk * 0.20));
-            
-            document.getElementById('res-score').innerText = totalScore;
-
-            const badge = document.getElementById('res-risk-badge');
-
-            if(totalScore >= 60) {
-                kneeState.riskLevel = "ความเสี่ยงสูงมาก (Severe Risk)";
-                badge.innerText = "ความเสี่ยงสูงมาก";
-                badge.className = "px-5 py-2 rounded-2xl font-bold text-sm bg-rose-600 text-white";
-            } else if(totalScore >= 40) {
-                kneeState.riskLevel = "ความเสี่ยงสูง (High Risk)";
-                badge.innerText = "ความเสี่ยงสูง";
-                badge.className = "px-5 py-2 rounded-2xl font-bold text-sm bg-rose-100 text-rose-700";
-            } else if(totalScore >= 20) {
-                kneeState.riskLevel = "ความเสี่ยงปานกลาง (Moderate Risk)";
-                badge.innerText = "ความเสี่ยงปานกลาง";
-                badge.className = "px-5 py-2 rounded-2xl font-bold text-sm bg-amber-100 text-amber-700";
-            } else {
-                kneeState.riskLevel = "ปกติ / ความเสี่ยงต่ำ (Low Risk)";
-                badge.innerText = "ปกติ (Low Risk)";
-                badge.className = "px-5 py-2 rounded-2xl font-bold text-sm bg-emerald-100 text-emerald-700";
-            }
-        }
-
-        function exportKneePDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            doc.setFontSize(16);
-            doc.text("KneeAI - Patient Medical & Biomechanical Report", 14, 20);
-            doc.setFontSize(10);
-            doc.text(`Patient Name: ${kneeState.patientName}`, 14, 28);
-            doc.text(`HN: ${kneeState.patientHN} | Gender: ${kneeState.gender} | Age: ${kneeState.age}`, 14, 34);
-            doc.text(`BMI: ${kneeState.bmi} kg/m2`, 14, 40);
-            doc.text(`Survey Score: ${kneeState.surveyScore} / 32`, 14, 46);
-            doc.text(`Knee Angle (Left): ${kneeState.angleLeft} deg | (Right): ${kneeState.angleRight} deg`, 14, 52);
-            doc.text(`Calculated Risk Score: ${document.getElementById('res-score').innerText} / 100`, 14, 58);
-            doc.text(`Clinical Status: ${kneeState.riskLevel}`, 14, 64);
-
-            doc.save(`KneeAI_${kneeState.patientHN}.pdf`);
-        }
-    </script>
+<body>
+<header class="topbar no-print"><div class="nav"><div class="brand" onclick="go('home')"><div class="brandmark">K</div><div><div class="brandname">KneeAI</div><div class="brandsub">AI-BASED SCREENING</div></div></div><div class="nav-actions"><button class="btn-ghost" onclick="go('guide')">วิธีการ</button><button class="btn" onclick="startFlow()">เริ่มการประเมิน</button></div></div></header>
+
+<main id="home" class="page active"><div class="container hero"><div class="hero-grid"><div><div class="eyebrow">AI • COMPUTER VISION • MATHEMATICS</div><h1>AI-based Screening and Risk Assessment System for <span>Knee Osteoarthritis</span> and <span>Genu Varum</span></h1><p>ระบบช่วยคัดกรองและประเมินความเสี่ยงเบื้องต้นของความผิดปกติที่เกี่ยวข้องกับข้อเข่า โดยผสานแบบสอบถามอาการ การวิเคราะห์ท่าทางจากกล้อง และการคำนวณทางคณิตศาสตร์เพื่อสร้างข้อมูลประกอบการติดตาม</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px"><button class="btn" onclick="startFlow()">เริ่มการประเมิน</button><button class="btn-ghost" onclick="go('guide')">ดูวิธีการทำงาน</button></div><div class="disclaimer"><b>การประเมินเบื้องต้นเท่านั้น</b><br>ผลจากระบบนี้ไม่ใช่การวินิจฉัยทางการแพทย์ และไม่ควรใช้แทนการตรวจโดยแพทย์หรือนักกายภาพบำบัด หากมีอาการรุนแรงหรือไม่ปลอดภัย ให้หยุดการทดสอบ</div></div><div class="hero-visual" aria-label="Knee AI visual"><div class="bone a"></div><div class="joint"></div><div class="bone b"></div><div class="hero-label"><b>AI-assisted screening</b><br>Pose • Motion • Mathematical analysis</div></div></div></div><div class="container"><div class="features"><div class="feature"><div class="icon">AI</div><h3>AI Pose Analysis</h3><p>ตรวจตำแหน่งสะโพก เข่า และข้อเท้าจากภาพแบบเรียลไทม์</p></div><div class="feature"><div class="icon">∠</div><h3>Mathematical Analysis</h3><p>คำนวณมุมเข่า ความสมมาตร และความแปรปรวนของข้อมูลหลายเฟรม</p></div><div class="feature"><div class="icon">5×</div><h3>Functional Screening</h3><p>ทดสอบ 5x Sit-to-Stand ด้วยการตรวจจับลำดับการเคลื่อนไหว</p></div><div class="feature"><div class="icon">✓</div><h3>Reliability Gate</h3><p>ตรวจคุณภาพภาพและข้อมูลก่อนสร้างผลประเมิน</p></div></div></div></main>
+
+<main id="guide" class="page"><div class="container section-wrap"><div class="section-head"><div class="eyebrow">HOW IT WORKS</div><h2>ประเมินอย่างเป็นระบบ</h2><p>ระบบแบ่งการประเมินเป็นขั้นตอน เพื่อไม่ให้ AI สร้างผลจากภาพที่คุณภาพไม่เพียงพอ</p></div><div class="card"><div class="features" style="margin:0"><div class="feature"><div class="icon">01</div><h3>ข้อมูลผู้รับการประเมิน</h3><p>อายุเป็นข้อมูลที่จำเป็น แต่ไม่มีการจำกัดช่วงอายุ</p></div><div class="feature"><div class="icon">02</div><h3>แบบสอบถาม 8 ข้อ</h3><p>บันทึกอาการและผลกระทบต่อการใช้งานข้อเข่า</p></div><div class="feature"><div class="icon">03</div><h3>Camera + Pose</h3><p>ตรวจคุณภาพภาพและ landmark ก่อนเริ่ม 5xSTS</p></div><div class="feature"><div class="icon">04</div><h3>รายงาน</h3><p>แสดงค่าที่วัดได้จริง พร้อมข้อจำกัดและคำแนะนำ</p></div></div><div class="notice" style="margin-top:18px"><b>ข้อควรเตรียม:</b> เก้าอี้ที่มั่นคง พื้นไม่ลื่น พื้นที่รอบตัวโล่ง และกล้องที่เห็นร่างกายได้ชัด ระบบใช้กล้องด้านข้างเป็นหลักสำหรับ 5xSTS และมุมเข่า ส่วนการประเมินแนวเข่าด้านหน้าเป็นเพียงสัญญาณเชิงทดลอง ไม่ใช่การวินิจฉัย genu varum</div><div style="text-align:center;margin-top:20px"><button class="btn" onclick="startFlow()">เริ่มการประเมิน</button></div></div></div></main>
+
+<main id="profile" class="page"><div class="container section-wrap"><div class="card" style="max-width:760px;margin:auto"><div class="stepbar"><span class="step active">01 ข้อมูล</span><span class="step">02 อาการ</span><span class="step">03 กล้อง</span><span class="step">04 ผลประเมิน</span></div><h2 style="margin:6px 0 5px">ข้อมูลผู้รับการประเมิน</h2><p class="helper" style="font-size:12px">กรอกอายุเพื่อใช้เป็นข้อมูลประกอบการวิเคราะห์และการทำ validation ในภายหลัง — <b>ไม่จำกัดอายุ</b></p><div class="form-grid" style="margin-top:18px"><div class="field"><label>รหัส / ชื่อเคส <span class="required">*</span></label><input id="caseId" placeholder="เช่น KNEE-001" autocomplete="off"><div class="helper">ใช้รหัสแทนชื่อจริงได้ เพื่อลดการเก็บข้อมูลระบุตัวบุคคล</div></div><div class="field"><label>อายุ <span class="required">*</span></label><input id="age" type="number" inputmode="numeric" min="0" step="1" placeholder="กรอกอายุ"><div class="helper">บังคับกรอก แต่ไม่มีการกำหนดอายุขั้นต่ำหรือสูงสุด</div></div><div class="field"><label>ส่วนสูง (ซม.) <span class="helper" style="display:inline">ไม่บังคับ</span></label><input id="height" type="number" min="0" step="0.1" placeholder="เช่น 165"></div><div class="field"><label>น้ำหนัก (กก.) <span class="helper" style="display:inline">ไม่บังคับ</span></label><input id="weight" type="number" min="0" step="0.1" placeholder="เช่น 60"></div></div><div class="consent"><input id="consent" type="checkbox"><div><b>ยืนยันการใช้งานและความเป็นส่วนตัว</b><br>ฉันเข้าใจว่าระบบนี้เป็นการคัดกรองเบื้องต้น ไม่ใช่การวินิจฉัย และยินยอมให้ระบบประมวลผลข้อมูลที่จำเป็นสำหรับการประเมินในเบราว์เซอร์<br><span class="privacy">Privacy Notice: ควรปรับรายละเอียดวัตถุประสงค์ ฐานการประมวลผล ระยะเวลาเก็บรักษา ผู้รับข้อมูล และสิทธิของเจ้าของข้อมูลให้ตรงกับการใช้งานจริงก่อนนำไปใช้งานจริงตาม PDPA</span></div></div><div id="profileError" class="hidden" style="color:var(--danger);font-size:12px;margin-top:12px">กรุณากรอกรหัส/ชื่อเคส กรอกอายุ และยืนยันการใช้งาน</div><div class="actions"><button class="btn-ghost" onclick="go('home')">ย้อนกลับ</button><button class="btn" onclick="validateProfile()">ถัดไป</button></div></div></div></main>
+
+<main id="questions" class="page"><div class="container section-wrap"><div class="card" style="max-width:900px;margin:auto"><div class="stepbar"><span class="step">01 ข้อมูล</span><span class="step active">02 อาการ</span><span class="step">03 กล้อง</span><span class="step">04 ผลประเมิน</span></div><h2 style="margin:6px 0">แบบประเมินอาการเบื้องต้น</h2><p class="helper" style="font-size:12px;line-height:1.7">ตอบตามอาการปัจจุบันของผู้รับการประเมิน ระบบใช้คะแนนนี้เป็นข้อมูลประกอบ ไม่ใช่เกณฑ์วินิจฉัย</p><div id="questionList" style="margin-top:18px"></div><div id="qError" class="hidden" style="color:var(--danger);font-size:12px">กรุณาตอบให้ครบทุกข้อ</div><div class="actions"><button class="btn-ghost" onclick="go('profile')">ย้อนกลับ</button><button class="btn" onclick="submitQuestions()">ไปตั้งค่ากล้อง</button></div></div></div></main>
+
+<main id="camera" class="page"><div class="container section-wrap"><div class="stepbar"><span class="step">01 ข้อมูล</span><span class="step">02 อาการ</span><span class="step active">03 กล้อง</span><span class="step">04 ผลประเมิน</span></div><div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap"><div><div class="eyebrow">REAL-TIME POSE</div><h2 style="margin:10px 0 4px">Camera Assessment</h2><div class="helper" style="font-size:12px">จัดกล้องด้านข้าง ให้เห็นศีรษะ ลำตัว สะโพก เข่า และข้อเท้า</div></div><div id="cameraStatus" class="status-pill">ยังไม่เปิดกล้อง</div></div><div class="camera-layout" style="margin-top:18px"><div><div class="camera-box"><video id="video" autoplay muted playsinline></video><canvas id="poseCanvas"></canvas><div class="camera-top"><span id="frameStatus" class="status-pill">รอภาพ</span><span id="repBadge" class="status-pill">0 / 5</span></div><div class="camera-guide"></div></div><div class="helper" style="margin-top:9px">ระบบจะเริ่มนับเมื่อคุณภาพ Pose ผ่านเกณฑ์ต่อเนื่อง และจะหยุดนับชั่วคราวเมื่อภาพไม่เสถียร</div></div><div class="side-panel"><div class="mini"><div class="mini-label">Camera</div><div class="camera-controls" style="margin-top:8px"><select id="cameraSelect"><option value="">เลือกกล้อง</option></select><button class="btn-ghost" onclick="refreshCameras()">↻ ค้นหา</button><button id="openCameraBtn" class="btn" onclick="openCamera()">เปิดกล้อง</button><button id="switchCameraBtn" class="btn-ghost" onclick="switchCamera()">⇄ สลับ</button></div></div><div class="mini"><div class="mini-label">Pose Quality</div><div id="confidence" class="mini-value">—</div><div id="bodyCheck" class="mini-sub">ยังไม่ตรวจ</div><div class="progress"><div id="qualityBar"></div></div></div><div class="metric-grid"><div class="mini"><div class="mini-label">Left Knee</div><div id="angleL" class="mini-value">—</div></div><div class="mini"><div class="mini-label">Right Knee</div><div id="angleR" class="mini-value">—</div></div><div class="mini"><div class="mini-label">Timer</div><div id="timer" class="mini-value">00:00.0</div></div><div class="mini"><div class="mini-label">Data Gate</div><div id="gateState" class="mini-value" style="font-size:16px">WAIT</div></div></div><button id="startTestBtn" class="btn" onclick="startTest()" disabled>จัดท่าให้พร้อมก่อนเริ่ม</button><button id="stopTestBtn" class="btn-ghost" onclick="stopTest(true)" disabled>หยุดการทดสอบ</button><div class="test-state" id="testMessage">หลังเปิดกล้อง ระบบจะทำ calibration อัตโนมัติ</div></div></div><div class="safety" style="margin-top:18px"><b>ความปลอดภัย:</b> ใช้เก้าอี้ที่มั่นคง พื้นไม่ลื่น และควรมีผู้ดูแลอยู่ใกล้หากเสี่ยงเสียการทรงตัว หยุดทันทีหากเจ็บมาก เวียนศีรษะ หรือไม่ปลอดภัย</div></div></div></main>
+
+<main id="analyzing" class="page"><div class="container section-wrap"><div class="card" style="max-width:600px;margin:70px auto;text-align:center"><div style="width:52px;height:52px;border:4px solid #dce8f5;border-top-color:#1769e8;border-radius:50%;animation:spin 1s linear infinite;margin:auto"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><h2 style="margin:20px 0 6px">กำลังจัดทำรายงาน</h2><p class="helper" style="font-size:12px">กำลังรวมแบบสอบถาม การเคลื่อนไหว และคุณภาพข้อมูล</p></div></div></main>
+
+<main id="report" class="page"><div class="container section-wrap"><div class="card"><div style="display:flex;justify-content:space-between;gap:15px;align-items:flex-start;flex-wrap:wrap"><div><div class="eyebrow">PRELIMINARY REPORT</div><h2 style="font-size:30px;margin:12px 0 5px">สรุปผลการประเมินเบื้องต้น</h2><div class="helper"><span id="reportCase">—</span> • อายุ <span id="reportAge">—</span> ปี • <span id="reportDate">—</span></div></div><div id="riskBadge" class="result-badge low">—</div></div><div class="result-hero" style="margin-top:22px"><div class="result-banner"><div class="score-label">Screening signal</div><div id="screeningSignal" class="big-score">—</div><div id="signalText" class="helper" style="font-size:12px;margin-top:6px">—</div></div><div class="result-banner"><div class="score-label">Data confidence</div><div id="dataConfidence" class="big-score">—</div><div id="confidenceText" class="helper" style="font-size:12px;margin-top:6px">—</div></div></div><div class="data-grid"><div class="data-card"><div class="label">Questionnaire</div><div id="rQ" class="value">—</div><div class="helper">เต็ม 32</div></div><div class="data-card"><div class="label">5xSTS</div><div id="rTime" class="value">—</div><div class="helper">วินาที</div></div><div class="data-card"><div class="label">Knee asymmetry</div><div id="rAsym" class="value">—</div><div class="helper">ซ้าย–ขวา</div></div><div class="data-card"><div class="label">Angle SD</div><div id="rSD" class="value">—</div><div class="helper">องศา</div></div></div><div class="result-grid"><div class="card" style="box-shadow:none"><h3 style="margin-top:0">ค่าที่ตรวจได้</h3><div class="report-list"><div class="report-row"><span>มุมเข่าซ้าย (median)</span><b id="rL">—</b></div><div class="report-row"><span>มุมเข่าขวา (median)</span><b id="rR">—</b></div><div class="report-row"><span>ความครบถ้วนของ 5xSTS</span><b id="rComplete">—</b></div><div class="report-row"><span>คุณภาพ Pose ระหว่างการทดสอบ</span><b id="rPose">—</b></div></div></div><div class="card" style="box-shadow:none"><h3 style="margin-top:0">5xSTS รายครั้ง</h3><div id="rTrials" class="report-list"></div></div></div><div class="card" style="box-shadow:none;margin-top:18px;background:#fbfcfe"><h3 style="margin-top:0">สรุปและคำแนะนำ</h3><p id="rSummary" style="font-size:13px;line-height:1.9;color:#5c6d80">—</p><div id="rAdvice" class="notice" style="margin-top:12px">—</div></div><div class="privacy-box" style="margin-top:18px"><b>ข้อจำกัดและความเป็นส่วนตัว</b><br>ผลนี้เป็นการคัดกรองเบื้องต้น ไม่ใช่การวินิจฉัย และค่า Screening signal เป็นดัชนีต้นแบบที่ยังต้องผ่าน validation กับข้อมูลจริงก่อนใช้เชิงคลินิก ระบบต้นแบบนี้ประมวลผลข้อมูลกล้องในเบราว์เซอร์เป็นหลักและไม่ได้อัปโหลดวิดีโอไปเซิร์ฟเวอร์โดยอัตโนมัติ อย่างไรก็ตาม ก่อนใช้งานจริงต้องจัดทำ Privacy Notice และมาตรการคุ้มครองข้อมูลให้สอดคล้องกับการใช้งานจริงและกฎหมายที่เกี่ยวข้อง</div><div class="actions no-print"><button class="btn" onclick="window.print()">พิมพ์ / บันทึก PDF</button><button class="btn-ghost" onclick="downloadJSON()">ดาวน์โหลดข้อมูล JSON</button><button class="btn-ghost" onclick="resetAll()">เริ่มเคสใหม่</button></div></div></div></main>
+
+<footer class="footer no-print">KneeAI • AI-assisted preliminary screening • Not a medical diagnosis</footer>
+
+<script>
+'use strict';
+const QUESTIONS=[
+'มีอาการปวดข้อเข่าเวลาเดินขึ้น–ลงบันไดหรือไม่?',
+'มีอาการข้อเข่าติด ฝืด หรือขัด เมื่อเริ่มขยับหลังตื่นนอนหรือนั่งนาน ๆ หรือไม่?',
+'ความสามารถในการนั่งยอง ๆ หรือพับเข่าสุดเป็นอย่างไร?',
+'มีเสียงดังกรอบแกรบในข้อเข่าเวลาขยับหรือไม่?',
+'รู้สึกว่าข้อเข่าหลวม ไม่มั่นคง หรือทรงตัวได้ไม่ดีหรือไม่?',
+'มีอาการบวม แดง หรือร้อนบริเวณข้อเข่าหลังใช้งานหรือไม่?',
+'อาการปวดเข่าส่งผลกระทบต่อกิจวัตรประจำวันเพียงใด?',
+'มีประวัติการบาดเจ็บหรืออุบัติเหตุรุนแรงที่ข้อเข่าในอดีตหรือไม่?'];
+const OPTIONS=[['ไม่มีเลย','ปวดเล็กน้อย','ปวดมากชัดเจน'],['ไม่มีอาการ','น้อยกว่า 15 นาที','นานกว่า 15 นาที'],['นั่งได้ปกติ','ตึง/เจ็บเล็กน้อย','นั่งยองไม่ได้เลย'],['ไม่มีเสียง','มีเสียงบางครั้ง','มีเสียงและเจ็บร่วมด้วย'],['มั่นคงปกติ','ไม่มั่นคงบางครั้ง','เข่าทรุด/ไม่มั่นคงชัดเจน'],['ไม่เคยบวม','บวมเล็กน้อย นาน ๆ ครั้ง','บวมและร้อนบ่อยครั้ง'],['ไม่มีผลกระทบ','กระทบบางกิจกรรม','กระทบมาก เดินลำบาก'],['ไม่มีประวัติ','เคยเจ็บเล็กน้อย','เคยผ่าตัด/อุบัติเหตุหนัก']];
+const state={caseId:'',age:null,height:null,weight:null,qScore:0,stream:null,pose:null,currentCameraId:'',running:false,count:0,motionState:'standing',trialTimes:[],anglesL:[],anglesR:[],confidence:0,poseGoodFrames:0,poseTotalFrames:0,calibrating:false,calStart:0,calGood:0,calTotal:0,ready:false,lastCount:0,testStart:0,trialStart:0,lastPoseSend:0,raf:0,poseBusy:false,completed:false};
+const $=id=>document.getElementById(id);
+function go(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+function startFlow(){go('profile')}
+function buildQuestions(){const box=$('questionList');box.innerHTML='';QUESTIONS.forEach((q,i)=>{const div=document.createElement('div');div.className='question';div.innerHTML=`<div class="question-title">${i+1}. ${q}</div><div class="options">${OPTIONS[i].map((o,j)=>`<label class="option"><input type="radio" name="q${i}" value="${j*2}"><span>${o}</span></label>`).join('')}</div>`;box.appendChild(div)})}
+function validateProfile(){const id=$('caseId').value.trim(),age=Number($('age').value),h=$('height').value===''?null:Number($('height').value),w=$('weight').value===''?null:Number($('weight').value);const ok=id&&Number.isFinite(age)&&age>=0&&$('consent').checked&&(h===null||h>0)&&(w===null||w>0);if(!ok){$('profileError').classList.remove('hidden');return}Object.assign(state,{caseId:id,age,height:h,weight:w});$('profileError').classList.add('hidden');go('questions')}
+function submitQuestions(){let score=0;for(let i=0;i<8;i++){const el=document.querySelector(`input[name=q${i}]:checked`);if(!el){$('qError').classList.remove('hidden');return}score+=Number(el.value)}state.qScore=score;$('qError').classList.add('hidden');go('camera');resetCameraUI();refreshCameras()}
+function setCameraStatus(text,kind=''){$('cameraStatus').textContent=text;$('cameraStatus').className='status-pill '+kind}
+function resetCameraUI(){state.running=false;state.count=0;state.motionState='standing';state.trialTimes=[];state.anglesL=[];state.anglesR=[];state.poseGoodFrames=0;state.poseTotalFrames=0;state.calibrating=false;state.ready=false;state.completed=false;$('repBadge').textContent='0 / 5';$('timer').textContent='00:00.0';$('confidence').textContent='—';$('qualityBar').style.width='0%';$('bodyCheck').textContent='ยังไม่ตรวจ';$('gateState').textContent='WAIT';$('angleL').textContent='—';$('angleR').textContent='—';$('frameStatus').textContent='รอภาพ';$('testMessage').textContent='หลังเปิดกล้อง ระบบจะทำ calibration อัตโนมัติ';$('startTestBtn').disabled=true;$('startTestBtn').textContent='จัดท่าให้พร้อมก่อนเริ่ม';$('stopTestBtn').disabled=true;setCameraStatus('ยังไม่เปิดกล้อง')}
+async function refreshCameras(){if(!navigator.mediaDevices?.enumerateDevices)return;try{const list=await navigator.mediaDevices.enumerateDevices();const cams=list.filter(d=>d.kind==='videoinput');const sel=$('cameraSelect'),old=state.currentCameraId;sel.innerHTML='';cams.forEach((c,i)=>{const o=document.createElement('option');o.value=c.deviceId;o.textContent=c.label||`Camera ${i+1}`;sel.appendChild(o)});if(old&&cams.some(c=>c.deviceId===old))sel.value=old;else if(cams[0])sel.value=cams[0].deviceId}catch(e){console.warn(e)}}
+async function openCamera(deviceId){if(!navigator.mediaDevices?.getUserMedia){setCameraStatus('เบราว์เซอร์ไม่รองรับ','bad');return}try{await stopCamera();setCameraStatus('กำลังเปิดกล้อง...','warn');const constraints={video:{width:{ideal:960,min:640},height:{ideal:540,min:360},frameRate:{ideal:24,max:30},...(deviceId?{deviceId:{exact:deviceId}}:{facingMode:{ideal:'user'}})},audio:false};state.stream=await navigator.mediaDevices.getUserMedia(constraints);$('video').srcObject=state.stream;await $('video').play();state.currentCameraId=state.stream.getVideoTracks()[0]?.getSettings()?.deviceId||deviceId||'';await refreshCameras();if(state.currentCameraId)$('cameraSelect').value=state.currentCameraId;await initPose();startPoseLoop();startCalibration();setCameraStatus('กล้องพร้อม • กำลังตรวจภาพ','warn');$('openCameraBtn').textContent='กล้องพร้อมใช้งาน';$('openCameraBtn').disabled=true}catch(e){console.error(e);setCameraStatus('เปิดกล้องไม่สำเร็จ','bad');alert('ไม่สามารถเปิดกล้องได้ กรุณาอนุญาต Camera และหากเปิดไฟล์โดยตรงแล้วไม่ทำงาน ให้เปิดผ่าน localhost เช่น VS Code Live Server.')}}
+async function stopCamera(){if(state.raf)cancelAnimationFrame(state.raf);state.raf=0;state.poseBusy=false;if(state.stream){state.stream.getTracks().forEach(t=>t.stop());state.stream=null}$('video').srcObject=null;state.pose=null;$('openCameraBtn').disabled=false;$('openCameraBtn').textContent='เปิดกล้อง'}
+async function initPose(){if(typeof Pose==='undefined')throw new Error('MediaPipe Pose unavailable');if(state.pose)try{state.pose.close()}catch(e){}state.pose=new Pose({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/pose/${f}`});state.pose.setOptions({modelComplexity:0,smoothLandmarks:true,enableSegmentation:false,minDetectionConfidence:.65,minTrackingConfidence:.65});state.pose.onResults(onPose)}
+function startPoseLoop(){if(state.raf)cancelAnimationFrame(state.raf);const loop=async ts=>{if(state.stream&&$('video').readyState>=2&&state.pose&&!state.poseBusy&&ts-state.lastPoseSend>=75){state.poseBusy=true;state.lastPoseSend=ts;try{await state.pose.send({image:$('video')})}catch(e){console.warn(e)}state.poseBusy=false}state.raf=requestAnimationFrame(loop)};state.raf=requestAnimationFrame(loop)}
+function visibility(p){return p&&Number.isFinite(p.visibility)?p.visibility:0}
+function angle(a,b,c){if(!a||!b||!c)return null;const ux=a.x-b.x,uy=a.y-b.y,vx=c.x-b.x,vy=c.y-b.y,d=Math.hypot(ux,uy)*Math.hypot(vx,vy);if(d<1e-8)return null;return Math.acos(Math.max(-1,Math.min(1,(ux*vx+uy*vy)/d)))*180/Math.PI}
+function median(a){const x=a.filter(Number.isFinite).slice().sort((a,b)=>a-b);if(!x.length)return null;const m=Math.floor(x.length/2);return x.length%2?x[m]:(x[m-1]+x[m])/2}
+function sd(a){const x=a.filter(Number.isFinite);if(x.length<2)return null;const m=x.reduce((s,v)=>s+v,0)/x.length;return Math.sqrt(x.reduce((s,v)=>s+(v-m)**2,0)/x.length)}
+function onPose(r){state.poseTotalFrames++;const lm=r.poseLandmarks;if(!lm){state.ready=false;updateGate('ไม่พบร่างกาย','bad');drawPose(null,false);return}const p={lHip:lm[23],rHip:lm[24],lKnee:lm[25],rKnee:lm[26],lAnkle:lm[27],rAnkle:lm[28]};const conf=Math.round(Math.min(...Object.values(p).map(visibility))*100);state.confidence=conf;$('confidence').textContent=conf+'%';$('qualityBar').style.width=Math.min(100,conf)+'%';const l=angle(p.lHip,p.lKnee,p.lAnkle),rr=angle(p.rHip,p.rKnee,p.rAnkle);if(l!==null)$('angleL').textContent=l.toFixed(1)+'°';if(rr!==null)$('angleR').textContent=rr.toFixed(1)+'°';const full=conf>=70;const geometry=full&&Math.abs(p.lHip.x-p.rHip.x)<.42&&Math.abs(p.lKnee.x-p.rKnee.x)<.42;const valid=full&&geometry&&l!==null&&rr!==null&&l>=65&&l<=180&&rr>=65&&rr<=180;if(valid)state.poseGoodFrames++;if(state.calibrating)updateCalibration(valid);if(state.running&&valid){state.anglesL.push(l);state.anglesR.push(rr);processRep(l,rr)}state.ready=!state.running&&state.calibrating===false&&valid;updateGate(valid?'พร้อมตรวจ':'จัดตำแหน่งให้เห็นขาและข้อเท้าชัด',valid?'ok':'warn');drawPose(r,valid);if(!state.running&&state.ready){$('startTestBtn').disabled=false;$('startTestBtn').textContent='เริ่ม 5xSTS';setCameraStatus('พร้อมทดสอบ','ok')}}
+function updateGate(text,kind){$('bodyCheck').textContent=text;$('frameStatus').textContent=text;$('gateState').textContent=kind==='ok'?'READY':kind==='bad'?'STOP':'WAIT';$('gateState').style.color=kind==='ok'?'var(--success)':kind==='bad'?'var(--danger)':'var(--warning)';if(kind==='bad')setCameraStatus('หยุด • คุณภาพข้อมูลไม่พอ','bad')}
+function drawPose(r,good){const c=$('poseCanvas'),v=$('video');c.width=v.videoWidth||960;c.height=v.videoHeight||540;const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);if(!r?.poseLandmarks)return;const con=[[23,25],[25,27],[24,26],[26,28],[23,24]];x.lineWidth=5;x.strokeStyle=good?'#20c9dd':'#ff6b7f';for(const [a,b] of con){const p=r.poseLandmarks[a],q=r.poseLandmarks[b];if(!p||!q)continue;x.beginPath();x.moveTo(p.x*c.width,p.y*c.height);x.lineTo(q.x*c.width,q.y*c.height);x.stroke()}for(const i of [23,24,25,26,27,28]){const p=r.poseLandmarks[i];x.fillStyle=good?'#20c9dd':'#ff6b7f';x.beginPath();x.arc(p.x*c.width,p.y*c.height,7,0,Math.PI*2);x.fill()}}
+function startCalibration(){state.calibrating=true;state.calStart=performance.now();state.calGood=0;state.calTotal=0;state.ready=false;$('startTestBtn').disabled=true;$('testMessage').textContent='กำลัง calibrate คุณภาพภาพ… ยืนให้นิ่งและเห็นขาชัด';setCameraStatus('Calibration','warn')}
+function updateCalibration(valid){state.calTotal++;if(valid)state.calGood++;const elapsed=performance.now()-state.calStart;const pct=Math.min(100,elapsed/2500*100);$('qualityBar').style.width=Math.max(Number($('qualityBar').style.width.replace('%',''))||0,pct)+'%';if(elapsed>=2500){state.calibrating=false;const rate=state.calTotal?state.calGood/state.calTotal:0;if(rate>=.72&&state.confidence>=70){state.ready=true;$('startTestBtn').disabled=false;$('startTestBtn').textContent='เริ่ม 5xSTS';$('testMessage').textContent='Calibration ผ่าน • พร้อมเริ่มการทดสอบ';setCameraStatus('พร้อมทดสอบ','ok')}else{state.ready=false;$('testMessage').textContent='Calibration ยังไม่ผ่าน • ปรับระยะ/แสง/ตำแหน่งแล้วลองใหม่';setCameraStatus('Calibration ไม่ผ่าน','warn');setTimeout(()=>{if(state.stream)startCalibration()},900)}}}
+function startTest(){if(!state.ready){alert('กรุณารอให้ Camera Quality ผ่านก่อน');return}state.running=true;state.completed=false;state.count=0;state.motionState='standing';state.trialTimes=[];state.anglesL=[];state.anglesR=[];state.testStart=performance.now();state.trialStart=state.testStart;state.lastCount=0;$('repBadge').textContent='0 / 5';$('stopTestBtn').disabled=false;$('startTestBtn').disabled=true;$('startTestBtn').textContent='กำลังทดสอบ…';$('testMessage').textContent='ลุก–นั่งตามปกติ 5 ครั้ง ระบบจะนับเมื่อผ่านลำดับการเคลื่อนไหวครบ';setCameraStatus('กำลังทดสอบ','ok');requestAnimationFrame(updateTimer)}
+function processRep(l,r){const knee=(l+r)/2,now=performance.now();if(state.motionState==='standing'&&knee<112&&now-state.testStart>500){state.motionState='sitting'}else if(state.motionState==='sitting'&&knee>150&&now-state.lastCount>800){state.motionState='standing';state.count++;const t=(now-state.trialStart)/1000;state.trialTimes.push(t);state.trialStart=now;state.lastCount=now;$('repBadge').textContent=state.count+' / 5';if(state.count>=5)finishTest()}}
+function updateTimer(){if(!state.running)return;const sec=(performance.now()-state.testStart)/1000;$('timer').textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${(sec%60).toFixed(1).padStart(4,'0')}`;requestAnimationFrame(updateTimer)}
+function stopTest(manual){if(!state.running)return;state.running=false;$('stopTestBtn').disabled=true;$('startTestBtn').disabled=!state.ready;$('startTestBtn').textContent=state.ready?'เริ่มใหม่':'จัดท่าให้พร้อมก่อนเริ่ม';$('testMessage').textContent=manual?'การทดสอบถูกหยุด ยังไม่มีรายงานผล':'หยุดการทดสอบ'}
+function finishTest(){state.running=false;state.completed=true;$('stopTestBtn').disabled=true;$('startTestBtn').disabled=true;$('startTestBtn').textContent='เสร็จสิ้น';setCameraStatus('ทดสอบครบ 5 ครั้ง','ok');$('testMessage').textContent='ข้อมูลครบแล้ว กำลังสร้างรายงาน…';setTimeout(buildReport,650)}
+function startCameraFromSelect(){const id=$('cameraSelect').value;if(id)openCamera(id)}
+function switchCamera(){const opts=[...$('cameraSelect').options].filter(o=>o.value);if(opts.length<2){alert('ต้องมีกล้องอย่างน้อย 2 ตัวจึงจะสลับได้');return}const idx=opts.findIndex(o=>o.value===state.currentCameraId);const next=opts[(idx+1+opts.length)%opts.length];$('cameraSelect').value=next.value;openCamera(next.value)}
+function calculateConfidence(){const coverage=state.poseTotalFrames?state.poseGoodFrames/state.poseTotalFrames:0;const stability=state.anglesL.length>10&&state.anglesR.length>10?Math.max(0,1-(sd([...state.anglesL,...state.anglesR])||0)/18):0;const completion=state.trialTimes.length===5?1:state.trialTimes.length/5;return Math.round(100*(.45*state.confidence/100+.25*coverage+.15*stability+.15*completion))}
+function buildReport(){go('analyzing');setTimeout(()=>{const total=state.trialTimes.length===5?state.trialTimes.reduce((a,b)=>a+b,0):null;const l=median(state.anglesL),r=median(state.anglesR),asym=l!==null&&r!==null?Math.abs(l-r):null,angleSD=sd([...state.anglesL,...state.anglesR]),dataConf=calculateConfidence();const q=state.qScore;let signal=0;signal+=Math.min(45,q/32*45);if(total!==null)signal+=Math.min(30,Math.max(0,(total-8)/18*30));if(asym!==null)signal+=Math.min(15,asym/15*15);signal+=Math.min(10,(100-dataConf)/10);signal=Math.round(signal);let level=signal<35?'LOW':signal<65?'MODERATE':'HIGH';if(dataConf<70)level='UNCERTAIN';$('reportCase').textContent=state.caseId;$('reportAge').textContent=state.age;$('reportDate').textContent=new Date().toLocaleString('th-TH');$('screeningSignal').textContent=level==='UNCERTAIN'?'—':signal+'/100';$('signalText').textContent=level==='UNCERTAIN'?'ข้อมูลยังไม่เพียงพอสำหรับการแปลผล':'ดัชนีต้นแบบสำหรับการคัดกรอง ไม่ใช่ค่าความเสี่ยงทางคลินิกที่ผ่านการ validate';$('dataConfidence').textContent=dataConf+'%';$('confidenceText').textContent=dataConf>=80?'คุณภาพข้อมูลดี':dataConf>=70?'คุณภาพข้อมูลพอใช้':'ควรทำการทดสอบซ้ำ';$('rQ').textContent=q;$('rTime').textContent=total!==null?total.toFixed(2):'—';$('rAsym').textContent=asym!==null?asym.toFixed(1)+'°':'—';$('rSD').textContent=angleSD!==null?angleSD.toFixed(1)+'°':'—';$('rL').textContent=l!==null?l.toFixed(1)+'°':'—';$('rR').textContent=r!==null?r.toFixed(1)+'°':'—';$('rComplete').textContent=state.trialTimes.length+'/5';$('rPose').textContent=state.confidence+'%';$('rTrials').innerHTML=state.trialTimes.map((t,i)=>`<div class="report-row"><span>ครั้งที่ ${i+1}</span><b>${t.toFixed(2)} s</b></div>`).join('')||'<div class="helper">ไม่มีข้อมูลครบ 5 ครั้ง</div>';const badge=$('riskBadge');badge.className='result-badge '+(level==='LOW'?'low':level==='MODERATE'?'mod':'high');badge.textContent=level==='UNCERTAIN'?'ข้อมูลไม่เพียงพอ':level==='LOW'?'สัญญาณคัดกรองต่ำ':level==='MODERATE'?'ควรติดตาม / ประเมินเพิ่ม':'ควรประเมินโดยผู้เชี่ยวชาญ';$('rSummary').textContent=level==='UNCERTAIN'?'ข้อมูลจากกล้องหรือการทดสอบยังไม่ผ่านเกณฑ์ความน่าเชื่อถือ จึงไม่ควรตีความ Screening signal และควรทดสอบใหม่':`ระบบพบสัญญาณคัดกรองระดับ ${level==='LOW'?'ต่ำ':level==='MODERATE'?'ปานกลาง':'สูง'} จากข้อมูลที่ป้อนและการทดสอบที่ทำได้ ผลนี้เป็นการประเมินเบื้องต้นเท่านั้น ไม่ใช่การวินิจฉัย และยังไม่ควรใช้ตัดสินการรักษาเพียงลำพัง`;$('rAdvice').textContent=level==='HIGH'||level==='MODERATE'?'หากมีอาการปวด บวม เข่าทรุด เดินลำบาก หรืออาการต่อเนื่อง ควรนำผลไปปรึกษาแพทย์หรือนักกายภาพบำบัด หากระหว่างทดสอบมีอาการผิดปกติให้หยุดทันที':level==='UNCERTAIN'?'ปรับตำแหน่งกล้อง แสง และระยะห่าง แล้วทำการทดสอบซ้ำ': 'หากยังมีอาการผิดปกติของข้อเข่า ควรติดตามอาการและปรึกษาผู้เชี่ยวชาญแม้สัญญาณคัดกรองจะต่ำ';go('report')},700)}
+function downloadJSON(){const data={version:'7.2',timestamp:new Date().toISOString(),caseId:state.caseId,age:state.age,height:state.height,weight:state.weight,questionnaireScore:state.qScore,trialTimes:state.trialTimes,kneeAngleLeftMedian:median(state.anglesL),kneeAngleRightMedian:median(state.anglesR),kneeAsymmetry:state.anglesL.length&&state.anglesR.length?Math.abs(median(state.anglesL)-median(state.anglesR)):null,angleSD:sd([...state.anglesL,...state.anglesR]),poseConfidence:state.confidence,dataConfidence:calculateConfidence(),note:'Prototype preliminary screening only; not a clinical diagnosis.'};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`kneeai-${state.caseId||'case'}-${Date.now()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+async function resetAll(){await stopCamera();location.reload()}
+$('cameraSelect').addEventListener('change',e=>{if(e.target.value&&e.target.value!==state.currentCameraId)openCamera(e.target.value)});
+navigator.mediaDevices?.addEventListener('devicechange',refreshCameras);
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.running){state.running=false;$('stopTestBtn').disabled=true;$('testMessage').textContent='พักการประเมินชั่วคราวเพราะออกจากหน้า';setCameraStatus('พักชั่วคราว','warn')}});
+window.addEventListener('beforeunload',()=>{if(state.stream)state.stream.getTracks().forEach(t=>t.stop())});
+buildQuestions();
+</script>
 </body>
 </html>
