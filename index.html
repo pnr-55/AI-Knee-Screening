@@ -74,23 +74,7 @@ body{font-family:Arial,'Noto Sans Thai',sans-serif;background:#030712;color:#f3f
   }
 </style>
 
-
-<style id="ai-math-css">
-  .math-section{margin-top:1.5rem;padding:1.25rem;border-radius:1.25rem;
-    background:linear-gradient(145deg,rgba(8,15,32,.92),rgba(15,23,42,.72));
-    border:1px solid rgba(34,211,238,.12)}
-  .math-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
-  .math-metric{padding:1rem;border-radius:1rem;background:rgba(2,6,23,.55);border:1px solid rgba(148,163,184,.1)}
-  .math-metric .value{font-size:1.35rem;font-weight:700;color:#67e8f9}
-  .math-metric .label{font-size:.68rem;color:#94a3b8;margin-bottom:.3rem}
-  .formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.72rem;
-    color:#c4b5fd;background:rgba(2,6,23,.7);padding:.7rem;border-radius:.75rem;overflow:auto}
-  .bar-row{display:grid;grid-template-columns:42px 1fr 64px;gap:.5rem;align-items:center;font-size:.7rem}
-  .bar-track{height:8px;background:#111827;border-radius:99px;overflow:hidden}
-  .bar-fill{height:100%;background:linear-gradient(90deg,#2563eb,#22d3ee);border-radius:99px;transition:width .5s}
-  @media(max-width:640px){.math-grid{grid-template-columns:1fr}}
-</style>
-
+<style id="v70-final">#calBar{transition:width .2s ease}select{color:#e2e8f0}</style>
 </head>
 <body class="min-h-screen">
 <header class="no-print sticky top-0 z-40 bg-slate-950/95 border-b border-slate-800">
@@ -122,401 +106,66 @@ body{font-family:Arial,'Noto Sans Thai',sans-serif;background:#030712;color:#f3f
 <main id="info" class="page max-w-xl mx-auto px-5 py-10">
 <div class="card rounded-3xl p-7"><div class="text-xs text-cyan-400">STEP 1 / 4</div><h2 class="text-xl font-bold mt-2">ข้อมูลผู้รับการคัดกรอง</h2>
 <div class="space-y-4 mt-6"><label class="block text-sm">ชื่อหรือรหัสเคส<input id="name" class="w-full mt-2 p-3 rounded-xl bg-slate-950 border border-slate-800" placeholder="เช่น KS-001"></label>
-<div class="grid grid-cols-3 gap-3"><label class="text-sm">อายุ<input id="age" type="number" min="18" max="120" class="w-full mt-2 p-3 rounded-xl bg-slate-950 border border-slate-800"></label><label class="text-sm">ส่วนสูง<input id="height" type="number" min="100" max="230" class="w-full mt-2 p-3 rounded-xl bg-slate-950 border border-slate-800"></label><label class="text-sm">น้ำหนัก<input id="weight" type="number" min="25" max="250" class="w-full mt-2 p-3 rounded-xl bg-slate-950 border border-slate-800"></label></div></div>
+<div class="grid grid-cols-3 gap-3"><label class="text-sm">อายุ (ไม่บังคับ)<input id="age" type="number" placeholder="ไม่จำเป็นต้องกรอก" class="w-full mt-2 p-3 rounded-xl bg-slate-950 border border-slate-800"></label><label class="text-sm">ส่วนสูง<input id="height" type="number" min="100" max="230" class="w-full mt-2 p-3 rounded-xl bg-slate-950 border border-slate-800"></label><label class="text-sm">น้ำหนัก<input id="weight" type="number" min="25" max="250" class="w-full mt-2 p-3 rounded-xl bg-slate-950 border border-slate-800"></label></div></div>
 <div class="flex gap-3 mt-7"><button onclick="showPage('home')" class="pill px-5 py-3 rounded-xl text-sm">ย้อนกลับ</button><button onclick="validateInfo()" class="btn flex-1 py-3 rounded-xl text-sm font-semibold">ถัดไป</button></div></div></main>
 
 <main id="questionnaire" class="page max-w-4xl mx-auto px-5 py-10"><div class="card rounded-3xl p-7"><div class="text-xs text-cyan-400">STEP 2 / 4</div><h2 class="text-xl font-bold mt-2">แบบประเมินอาการเบื้องต้น 8 ข้อ</h2><div id="questions" class="space-y-5 mt-6"></div><div id="qError" class="text-sm bad hidden mt-4">กรุณาตอบให้ครบทุกข้อ</div><div class="flex gap-3 mt-7"><button onclick="showPage('info')" class="pill px-5 py-3 rounded-xl text-sm">ย้อนกลับ</button><button onclick="submitQuestionnaire()" class="btn flex-1 py-3 rounded-xl text-sm font-semibold">ไปตรวจด้วยกล้อง</button></div></div></main>
 
 <main id="camera" class="page max-w-5xl mx-auto px-5 py-8"><div class="card rounded-3xl p-6"><div class="flex flex-wrap items-center justify-between gap-3"><div><div class="text-xs text-cyan-400">STEP 3 / 4</div><h2 id="cameraTitle" class="text-xl font-bold">เตรียมกล้อง</h2></div><div id="status" class="pill px-3 py-2 rounded-full text-xs">ยังไม่เปิดกล้อง</div></div>
-<div class="grid lg:grid-cols-[1fr_300px] gap-5 mt-5"><div><div class="video-wrap rounded-2xl border border-slate-800"><video id="video" autoplay muted playsinline></video><canvas id="canvas"></canvas><div id="cameraOverlay" class="absolute inset-x-4 top-4 flex justify-between text-xs"><span id="frameStatus" class="bg-black/70 px-3 py-2 rounded-lg">รอภาพ</span><span id="countBadge" class="bg-black/70 px-3 py-2 rounded-lg">0 / 5</span></div></div><div id="hint" class="mt-3 text-sm text-slate-400">กด “เปิดกล้อง” → หันด้านข้าง → ให้เห็นตั้งแต่สะโพกถึงข้อเท้าครบ → รอข้อความ “พร้อมตรวจ”</div></div>
-<div class="space-y-3"><div class="pill rounded-2xl p-4"><div class="text-xs text-slate-400">คุณภาพ Pose</div><div id="confidence" class="text-2xl font-bold mt-1">—</div><div id="bodyCheck" class="text-xs text-slate-500 mt-1">ยังไม่ตรวจ</div></div><div class="pill rounded-2xl p-4"><div class="text-xs text-slate-400">มุมเข่าเฉลี่ยล่าสุด</div><div class="grid grid-cols-2 gap-2 mt-2"><div><span class="text-xs text-slate-500">ซ้าย</span><div id="angleL" class="text-xl font-bold">—</div></div><div><span class="text-xs text-slate-500">ขวา</span><div id="angleR" class="text-xl font-bold">—</div></div></div></div><div class="pill rounded-2xl p-4"><div class="text-xs text-slate-400">เวลา</div><div id="timer" class="text-2xl font-bold mono">00:00.0</div></div><button id="openCam" onclick="openCamera()" class="btn w-full py-3 rounded-xl text-sm font-semibold">เปิดกล้อง</button><button id="startTest" onclick="startTest()" disabled class="w-full py-3 rounded-xl bg-slate-800 text-slate-400 text-sm font-semibold">จัดท่าให้พร้อมก่อนเริ่ม</button><button id="stopTest" onclick="stopTest(true)" disabled class="w-full py-3 rounded-xl bg-rose-950/50 text-rose-300 text-sm">หยุดการทดสอบ</button></div></div>
+<div class="grid lg:grid-cols-[1fr_300px] gap-5 mt-5"><div><div class="video-wrap rounded-2xl border border-slate-800"><video id="video" autoplay muted playsinline></video><canvas id="canvas"></canvas><div id="cameraOverlay" class="absolute inset-x-4 top-4 flex justify-between text-xs"><span id="frameStatus" class="bg-black/70 px-3 py-2 rounded-lg">รอภาพ</span><span id="countBadge" class="bg-black/70 px-3 py-2 rounded-lg">0 / 5</span></div></div><div id="hint" class="mt-3 text-sm text-slate-400">กด “เปิดกล้อง” แล้วจัดท่าด้านข้างให้เห็นตัวเต็ม</div></div>
+<div class="space-y-3"><div class="pill rounded-2xl p-4"><div class="text-xs text-slate-400">คุณภาพ Pose</div><div id="confidence" class="text-2xl font-bold mt-1">—</div><div id="bodyCheck" class="text-xs text-slate-500 mt-1">ยังไม่ตรวจ</div></div><div class="pill rounded-2xl p-4"><div class="text-xs text-slate-400">มุมเข่าเฉลี่ยล่าสุด</div><div class="grid grid-cols-2 gap-2 mt-2"><div><span class="text-xs text-slate-500">ซ้าย</span><div id="angleL" class="text-xl font-bold">—</div></div><div><span class="text-xs text-slate-500">ขวา</span><div id="angleR" class="text-xl font-bold">—</div></div></div></div><div class="pill rounded-2xl p-4"><div class="text-xs text-slate-400">เวลา</div><div id="timer" class="text-2xl font-bold mono">00:00.0</div></div><select id="cameraSelect" class="w-full py-3 px-3 rounded-xl bg-slate-950 border border-slate-800 text-sm"><option value="">เลือกกล้อง</option></select><div class="grid grid-cols-2 gap-2"><button id="openCam" onclick="openCamera()" class="btn w-full py-3 rounded-xl text-sm font-semibold">เปิดกล้อง</button><button id="switchCam" onclick="switchCamera()" disabled class="w-full py-3 rounded-xl bg-slate-800 text-slate-300 text-sm font-semibold">⇄ สลับกล้อง</button></div><div class="pill rounded-2xl p-4"><div class="flex justify-between text-xs"><span>Auto Calibration</span><span id="calText">0%</span></div><div class="h-2 bg-slate-950 rounded-full overflow-hidden mt-2"><div id="calBar" class="h-full bg-cyan-400" style="width:0%"></div></div><div id="calStatus" class="text-xs text-slate-500 mt-2">รอเปิดกล้อง</div></div><button id="startTest" onclick="startTest()" disabled class="w-full py-3 rounded-xl bg-slate-800 text-slate-400 text-sm font-semibold">จัดท่าให้พร้อมก่อนเริ่ม</button><button id="stopTest" onclick="stopTest(true)" disabled class="w-full py-3 rounded-xl bg-rose-950/50 text-rose-300 text-sm">หยุดการทดสอบ</button></div></div>
 <div id="safety" class="mt-5 bg-amber-950/30 border border-amber-800/50 rounded-xl p-4 text-xs text-amber-200">การประเมินนี้เป็นการคัดกรองเบื้องต้น ไม่สามารถยืนยันโรคหรือทดแทนการตรวจโดยบุคลากรทางการแพทย์</div></div></main>
 
 <main id="analyzing" class="page max-w-xl mx-auto px-5 py-20 text-center"><div class="card rounded-3xl p-10"><div class="animate-spin w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full mx-auto"></div><h2 class="text-xl font-bold mt-6">กำลังจัดทำผล...</h2><p class="text-sm text-slate-400 mt-2">กำลังรวมคะแนนแบบสอบถามและผล 5xSTS</p></div></main>
 
 <main id="report" class="page max-w-5xl mx-auto px-5 py-8"><div class="card rounded-3xl p-7"><div class="flex flex-wrap justify-between gap-4 border-b border-slate-800 pb-5"><div><div class="text-xs text-cyan-400">STEP 4 / 4</div><h2 class="text-2xl font-bold">รายงานผลคัดกรองเบื้องต้น</h2><p class="text-xs text-slate-400 mt-1"><span id="rName">—</span> • อายุ <span id="rAge">—</span> ปี • <span id="rDate">—</span></p></div><div id="riskBadge" class="px-4 py-2 rounded-full text-sm font-bold pill">—</div></div>
-<div class="grid md:grid-cols-3 gap-4 mt-6"><div class="pill rounded-2xl p-5"><div class="text-xs text-slate-400">คะแนนแบบสอบถาม</div><div id="rQ" class="text-3xl font-bold mt-2">—</div><div class="text-xs text-slate-500">เต็ม 32</div></div><div class="pill rounded-2xl p-5"><div class="text-xs text-slate-400">เวลา 5xSTS</div><div id="rTime" class="text-3xl font-bold mt-2">—</div><div class="text-xs text-slate-500">วินาที</div></div><div class="pill rounded-2xl p-5"><div class="text-xs text-slate-400">ความครบถ้วนของข้อมูล</div><div id="rQuality" class="text-3xl font-bold mt-2">—</div></div></div>
+<div class="grid md:grid-cols-4 gap-4 mt-6"><div class="pill rounded-2xl p-5"><div class="text-xs text-slate-400">Screening Index</div><div id="rIndex" class="text-3xl font-bold mt-2">—</div><div class="text-xs text-slate-500">ดัชนีต้นแบบ</div></div><div class="pill rounded-2xl p-5"><div class="text-xs text-slate-400">Data Confidence</div><div id="rConfidence" class="text-3xl font-bold mt-2">—</div></div><div class="pill rounded-2xl p-5"><div class="text-xs text-slate-400">L/R Asymmetry</div><div id="rAsym2" class="text-3xl font-bold mt-2">—</div></div><div class="pill rounded-2xl p-5"><div class="text-xs text-slate-400">Angle SD</div><div id="rSD" class="text-3xl font-bold mt-2">—</div></div></div><div class="grid md:grid-cols-3 gap-4 mt-4"><div class="pill rounded-2xl p-5"><div class="text-xs text-slate-400">คะแนนแบบสอบถาม</div><div id="rQ" class="text-3xl font-bold mt-2">—</div><div class="text-xs text-slate-500">เต็ม 32</div></div><div class="pill rounded-2xl p-5"><div class="text-xs text-slate-400">เวลา 5xSTS</div><div id="rTime" class="text-3xl font-bold mt-2">—</div><div class="text-xs text-slate-500">วินาที</div></div><div class="pill rounded-2xl p-5"><div class="text-xs text-slate-400">ความครบถ้วนของข้อมูล</div><div id="rQuality" class="text-3xl font-bold mt-2">—</div></div></div>
 <div class="grid md:grid-cols-2 gap-5 mt-5"><div class="pill rounded-2xl p-5"><h3 class="font-bold">มุมเข่าที่วัดได้</h3><div class="grid grid-cols-2 gap-3 mt-4"><div class="bg-slate-950 rounded-xl p-4"><span class="text-xs text-slate-500">ซ้าย</span><div id="rL" class="text-2xl font-bold">—</div></div><div class="bg-slate-950 rounded-xl p-4"><span class="text-xs text-slate-500">ขวา</span><div id="rR" class="text-2xl font-bold">—</div></div></div><p id="rAsym" class="text-xs text-slate-400 mt-4">—</p></div><div class="pill rounded-2xl p-5"><h3 class="font-bold">ผล 5xSTS รายครั้ง</h3><div id="rTrials" class="space-y-2 mt-4 text-sm"></div></div></div>
 <div class="mt-5 bg-slate-950 rounded-2xl p-5"><h3 class="font-bold">สรุปเบื้องต้น</h3><p id="rSummary" class="text-sm text-slate-300 leading-7 mt-2">—</p><div id="rAdvice" class="text-sm mt-4 p-4 rounded-xl bg-amber-950/30 border border-amber-800/40 text-amber-200">—</div></div>
 <div class="flex flex-wrap gap-3 mt-6 no-print"><button onclick="window.print()" class="btn px-5 py-3 rounded-xl text-sm">พิมพ์ / บันทึก PDF</button><button onclick="downloadJSON()" class="pill px-5 py-3 rounded-xl text-sm">ดาวน์โหลดข้อมูล</button><button onclick="resetAll()" class="pill px-5 py-3 rounded-xl text-sm">เริ่มเคสใหม่</button></div>
 </div></main>
 
+<div class="max-w-5xl mx-auto px-5"><div class="card rounded-3xl p-6 mt-5"><h3 class="font-bold">📐 Mathematics Engine</h3><div class="grid md:grid-cols-3 gap-3 mt-4"><div class="pill p-4 rounded-xl text-xs">θ = cos⁻¹[(u·v)/(|u||v|)]</div><div class="pill p-4 rounded-xl text-xs">Asymmetry = |median(L) − median(R)|</div><div class="pill p-4 rounded-xl text-xs">SD = √[Σ(x−x̄)²/n]</div></div><p class="text-xs text-slate-500 mt-4 leading-6">ดัชนีคัดกรองเป็นค่าต้นแบบ ไม่ใช่เกณฑ์วินิจฉัย และต้อง validation กับข้อมูลจริงก่อนใช้งานทางคลินิก</p></div></div>
+
 <script>
 'use strict';
-const QUESTIONS=[
-'ท่านมีอาการปวดข้อเข่าเวลาเดินขึ้น-ลงบันไดหรือไม่?',
-'มีอาการข้อเข่าติด ฝืด ขัด เมื่อเริ่มขยับหลังตื่นนอนหรือนั่งนาน ๆ?',
-'ความสามารถในการนั่งยอง ๆ หรือพับเข่าสุดเป็นอย่างไร?',
-'มีเสียงดังกรอบแกรบในข้อเข่าเวลาขยับหรือไม่?',
-'รู้สึกว่าข้อเข่าหลวม ไม่มั่นคง หรือทรงตัวได้ไม่ดีหรือไม่?',
-'มีอาการบวม แดง หรือร้อนบริเวณข้อเข่าหลังใช้งานหรือไม่?',
-'อาการปวดเข่าส่งผลกระทบต่อกิจวัตรประจำวันเพียงใด?',
-'มีประวัติการบาดเจ็บหรืออุบัติเหตุรุนแรงที่ข้อเข่าในอดีตหรือไม่?'];
+const QUESTIONS=['ท่านมีอาการปวดข้อเข่าเวลาเดินขึ้น-ลงบันไดหรือไม่?','มีอาการข้อเข่าติด ฝืด ขัด เมื่อเริ่มขยับหลังตื่นนอนหรือนั่งนาน ๆ?','ความสามารถในการนั่งยอง ๆ หรือพับเข่าสุดเป็นอย่างไร?','มีเสียงดังกรอบแกรบในข้อเข่าเวลาขยับหรือไม่?','รู้สึกว่าข้อเข่าหลวม ไม่มั่นคง หรือทรงตัวได้ไม่ดีหรือไม่?','มีอาการบวม แดง หรือร้อนบริเวณข้อเข่าหลังใช้งานหรือไม่?','อาการปวดเข่าส่งผลกระทบต่อกิจวัตรประจำวันเพียงใด?','มีประวัติการบาดเจ็บหรืออุบัติเหตุรุนแรงที่ข้อเข่าในอดีตหรือไม่?'];
 const OPTIONS=[['ไม่มีเลย','ปวดเล็กน้อย','ปวดมากชัดเจน'],['ไม่มีอาการ','น้อยกว่า 15 นาที','นานกว่า 15 นาที'],['นั่งได้ปกติ','ตึง/เจ็บเล็กน้อย','นั่งยองไม่ได้เลย'],['ไม่มีเสียง','มีเสียงบางครั้ง','มีเสียงและเจ็บร่วมด้วย'],['มั่นคงปกติ','ไม่มั่นคงบางครั้ง','เข่าทรุด/ไม่มั่นคงชัดเจน'],['ไม่เคยบวม','บวมเล็กน้อย นาน ๆ ครั้ง','บวมและร้อนบ่อยครั้ง'],['ไม่มีผลกระทบ','กระทบบางกิจกรรม','กระทบมาก เดินลำบาก'],['ไม่มีประวัติ','เคยเจ็บเล็กน้อย','เคยผ่าตัด/อุบัติเหตุหนัก']];
-let state={name:'',age:0,height:0,weight:0,qScore:0,stream:null,pose:null,running:false,count:0,state:'unknown',trialStart:0,trialTimes:[],testStart:0,lastValid:0,lastCount:0,anglesL:[],anglesR:[],confidence:0,snapshot:null,videoUrl:null,recorder:null,raf:null,ready:false,poseBusy:false,lastPoseSend:0,poseFrames:0,goodFrames:0,badFrames:0,lastStateChange:0};
+let state={name:'',age:null,height:null,weight:null,qScore:0,stream:null,pose:null,running:false,count:0,state:'unknown',trialStart:0,trialTimes:[],testStart:0,lastCount:0,anglesL:[],anglesR:[],confidence:0,snapshot:null,videoUrl:null,recorder:null,raf:null,ready:false,calibrating:false,calStart:0,calGood:0,calFrames:0,poseFrames:0,goodFrames:0,lastPoseAt:0,poseBusy:false,cameraId:null,cameras:[]};
 const $=id=>document.getElementById(id);
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 function startAssessment(){showPage('info');}
-function buildQuestions(){
- const q=$('questions'); q.innerHTML='';
- QUESTIONS.forEach((text,i)=>{const box=document.createElement('div');box.className='pill rounded-2xl p-5';box.innerHTML=`<p class="font-semibold text-sm">${i+1}. ${text}</p><div class="grid sm:grid-cols-3 gap-2 mt-3">${OPTIONS[i].map((o,j)=>`<label class="cursor-pointer border border-slate-800 rounded-xl p-3 flex gap-2 items-center"><input type="radio" name="q${i+1}" value="${j*2}"><span>${o} (${j*2})</span></label>`).join('')}</div></div>`;q.appendChild(box);});
-}
-function validateInfo(){const n=$('name').value.trim(),a=Number($('age').value),h=Number($('height').value),w=Number($('weight').value);if(!n||!Number.isFinite(a)||a<18||a>120||!Number.isFinite(h)||h<100||h>230||!Number.isFinite(w)||w<25||w>250){alert('กรุณากรอกข้อมูลให้ครบและอยู่ในช่วงที่เหมาะสม');return}Object.assign(state,{name:n,age:a,height:h,weight:w});showPage('questionnaire');}
-function submitQuestionnaire(){let score=0;for(let i=1;i<=8;i++){const el=document.querySelector(`input[name=q${i}]:checked`);if(!el){$('qError').classList.remove('hidden');return}score+=Number(el.value)}$('qError').classList.add('hidden');state.qScore=score;showPage('camera');resetCameraUI();}
+function buildQuestions(){const q=$('questions');q.innerHTML='';QUESTIONS.forEach((text,i)=>{const box=document.createElement('div');box.className='pill rounded-2xl p-5';box.innerHTML=`<p class="font-semibold text-sm">${i+1}. ${text}</p><div class="grid sm:grid-cols-3 gap-2 mt-3">${OPTIONS[i].map((o,j)=>`<label class="cursor-pointer"><input class="mr-2" type="radio" name="q${i+1}" value="${j*2}">${o} (${j*2})</label>`).join('')}</div>`;q.appendChild(box);});}
+function validateInfo(){const n=$('name').value.trim();const ageRaw=$('age').value.trim();const hRaw=$('height').value.trim();const wRaw=$('weight').value.trim();const age=ageRaw===''?null:Number(ageRaw);const h=hRaw===''?null:Number(hRaw);const w=wRaw===''?null:Number(wRaw);if(!n){alert('กรุณากรอกชื่อหรือรหัสเคส');return}if(age!==null&&!Number.isFinite(age)){alert('อายุไม่ถูกต้อง');return}if(h!==null&&(!Number.isFinite(h)||h<80||h>250)){alert('ส่วนสูงควรอยู่ระหว่าง 80–250 ซม. หรือเว้นว่าง');return}if(w!==null&&(!Number.isFinite(w)||w<15||w>300)){alert('น้ำหนักควรอยู่ระหว่าง 15–300 กก. หรือเว้นว่าง');return}Object.assign(state,{name:n,age,height:h,weight:w});showPage('questionnaire');}
+function submitQuestionnaire(){let score=0;for(let i=1;i<=8;i++){const el=document.querySelector(`input[name=q${i}]:checked`);if(!el){$('qError').classList.remove('hidden');return}score+=Number(el.value)}$('qError').classList.add('hidden');state.qScore=score;showPage('camera');resetCameraUI();enumerateCameras();}
 function setStatus(text,kind=''){const s=$('status');s.textContent=text;s.className='pill px-3 py-2 rounded-full text-xs '+(kind==='ok'?'ok':kind==='warn'?'warn':kind==='bad'?'bad':'');}
-function resetCameraUI(){cancelAnimationFrame(state.raf);try{state.pose?.close?.()}catch(e){};stopCameraTracks();state.running=false;state.count=0;state.state='unknown';state.trialTimes=[];state.anglesL=[];state.anglesR=[];state.ready=false;$('countBadge').textContent='0 / 5';$('startTest').disabled=true;$('startTest').textContent='จัดท่าให้พร้อมก่อนเริ่ม';$('stopTest').disabled=true;$('timer').textContent='00:00.0';$('confidence').textContent='—';$('bodyCheck').textContent='ยังไม่ตรวจ';$('angleL').textContent='—';$('angleR').textContent='—';$('frameStatus').textContent='รอภาพ';setStatus('ยังไม่เปิดกล้อง');}
-
-function wait(ms){return new Promise(r=>setTimeout(r,ms));}
-
-function stopCameraTracks(){
-  if(state.stream){
-    state.stream.getTracks().forEach(t=>{try{t.stop()}catch(e){}});
-    state.stream=null;
-  }
-  const v=$('video');
-  if(v) v.srcObject=null;
-}
-
-function setCameraCanvasSize(){
-  const v=$('video'),c=$('canvas');
-  if(!v||!c||!v.videoWidth)return;
-  if(c.width!==v.videoWidth)c.width=v.videoWidth;
-  if(c.height!==v.videoHeight)c.height=v.videoHeight;
-}
-
-async function openCamera(){
-  if(!window.isSecureContext && location.protocol!=='file:'){
-    setStatus('ต้องเปิดผ่าน HTTPS หรือ localhost','bad');
-    alert('กล้องต้องใช้ HTTPS หรือ localhost');
-    return;
-  }
-  if(!navigator.mediaDevices?.getUserMedia){
-    alert('เบราว์เซอร์นี้ไม่รองรับ Camera API กรุณาใช้ Chrome/Edge รุ่นใหม่');
-    return;
-  }
-
-  try{
-    $('openCam').disabled=true;
-    setStatus('กำลังเตรียมกล้อง...','warn');
-    stopCameraTracks();
-
-    // Audio is deliberately omitted: it is not needed for knee screening and
-    // removing it avoids an unnecessary permission/device failure.
-    const constraints={
-      video:{
-        facingMode:{ideal:'user'},
-        width:{ideal:960,min:640,max:1280},
-        height:{ideal:540,min:360,max:720},
-        frameRate:{ideal:24,max:30}
-      },
-      audio:false
-    };
-
-    state.stream=await navigator.mediaDevices.getUserMedia(constraints);
-    const video=$('video');
-    video.srcObject=state.stream;
-    video.muted=true;
-    video.playsInline=true;
-    video.autoplay=true;
-    await video.play();
-
-    setCameraCanvasSize();
-
-    // Camera hardware can stop independently (USB camera unplug, browser revoke, etc.).
-    const track=state.stream.getVideoTracks()[0];
-    if(track){
-      track.addEventListener('ended',()=>{
-        state.running=false;
-        state.ready=false;
-        setStatus('กล้องหยุดทำงาน','bad');
-        $('frameStatus').textContent='กล้องหลุด';
-        $('startTest').disabled=true;
-        $('openCam').disabled=false;
-        $('openCam').textContent='เปิดกล้องอีกครั้ง';
-      });
-    }
-
-    await initPose();
-    startLoop();
-    state.poseFrames=0;
-    state.goodFrames=0;
-    state.badFrames=0;
-    state.ready=false;
-
-    $('openCam').textContent='กล้องพร้อมใช้งาน';
-    setStatus('กำลังปรับภาพและตรวจร่างกาย','warn');
-  }catch(e){
-    console.error(e);
-    stopCameraTracks();
-    $('openCam').disabled=false;
-    $('openCam').textContent='เปิดกล้อง';
-    let msg='เปิดกล้องไม่สำเร็จ';
-    if(e?.name==='NotAllowedError') msg='ไม่ได้รับอนุญาตให้ใช้กล้อง';
-    else if(e?.name==='NotFoundError') msg='ไม่พบกล้อง';
-    else if(e?.name==='NotReadableError') msg='กล้องกำลังถูกใช้งานโดยโปรแกรมอื่น';
-    else if(e?.name==='OverconstrainedError') msg='ตั้งค่ากล้องไม่สำเร็จ กำลังลองโหมดสำรอง';
-    setStatus(msg,'bad');
-    alert(msg+'\n\nปิดแอปที่ใช้กล้องอยู่ แล้วลองใหม่อีกครั้ง');
-  }
-}
-
-async function initPose(){
-  if(typeof Pose==='undefined')throw new Error('MediaPipe Pose โหลดไม่สำเร็จ');
-
-  if(state.pose){
-    try{state.pose.close?.()}catch(e){}
-    state.pose=null;
-  }
-
-  state.pose=new Pose({
-    locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/pose/${f}`
-  });
-
-  // Complexity 0 is intentionally used for stability and lower CPU usage.
-  state.pose.setOptions({
-    modelComplexity:0,
-    smoothLandmarks:true,
-    enableSegmentation:false,
-    minDetectionConfidence:.65,
-    minTrackingConfidence:.65
-  });
-  state.pose.onResults(onPoseResults);
-}
-
-function startLoop(){
-  cancelAnimationFrame(state.raf);
-  state.poseBusy=false;
-  state.lastPoseSend=0;
-
-  const tick=async(now)=>{
-    if(!state.stream || !state.pose) return;
-
-    const video=$('video');
-    const canSend=video.readyState>=2 && video.videoWidth>0 && !video.paused;
-    // Limit inference to ~15 FPS. This prevents CPU overload and frame backlog.
-    if(canSend && !state.poseBusy && now-state.lastPoseSend>=66){
-      state.poseBusy=true;
-      state.lastPoseSend=now;
-      try{
-        await state.pose.send({image:video});
-      }catch(e){
-        console.warn('Pose frame skipped',e);
-      }finally{
-        state.poseBusy=false;
-      }
-    }
-    state.raf=requestAnimationFrame(tick);
-  };
-  state.raf=requestAnimationFrame(tick);
-}
-
-function angle(a,b,c){
-  if(!a||!b||!c)return null;
-  const ab={x:a.x-b.x,y:a.y-b.y}, cb={x:c.x-b.x,y:c.y-b.y};
-  const mag=Math.hypot(ab.x,ab.y)*Math.hypot(cb.x,cb.y);
-  if(mag<1e-8)return null;
-  const dot=ab.x*cb.x+ab.y*cb.y;
-  return Math.acos(Math.max(-1,Math.min(1,dot/mag)))*180/Math.PI;
-}
-
+function resetCameraUI(){state.running=false;state.count=0;state.state='unknown';state.trialTimes=[];state.anglesL=[];state.anglesR=[];state.ready=false;state.calibrating=false;state.poseFrames=0;state.goodFrames=0;state.calGood=0;state.calFrames=0;$('countBadge').textContent='0 / 5';$('startTest').disabled=true;$('startTest').textContent='รอ Calibration';$('stopTest').disabled=true;$('timer').textContent='00:00.0';$('confidence').textContent='—';$('bodyCheck').textContent='ยังไม่ตรวจ';$('angleL').textContent='—';$('angleR').textContent='—';$('frameStatus').textContent='รอภาพ';$('calText').textContent='0%';$('calBar').style.width='0%';$('calStatus').textContent='รอเปิดกล้อง';setStatus('ยังไม่เปิดกล้อง');}
+async function enumerateCameras(){if(!navigator.mediaDevices?.enumerateDevices)return[];const dev=await navigator.mediaDevices.enumerateDevices();state.cameras=dev.filter(d=>d.kind==='videoinput');const sel=$('cameraSelect');const current=state.cameraId||sel.value;sel.innerHTML='';state.cameras.forEach((c,i)=>{const o=document.createElement('option');o.value=c.deviceId;o.textContent=c.label||`กล้อง ${i+1}`;sel.appendChild(o)});if(current&&state.cameras.some(c=>c.deviceId===current))sel.value=current;else if(state.cameras[0])sel.value=state.cameras[0].deviceId;return state.cameras;}
+async function stopCamera(){if(state.raf)cancelAnimationFrame(state.raf);if(state.stream)state.stream.getTracks().forEach(t=>t.stop());state.stream=null;state.poseBusy=false;}
+async function openCamera(deviceId=null){if(!navigator.mediaDevices?.getUserMedia){alert('เบราว์เซอร์นี้ไม่รองรับกล้อง');return}try{await stopCamera();await enumerateCameras();deviceId=deviceId||$('cameraSelect').value||state.cameras[0]?.deviceId;const video={width:{ideal:1280},height:{ideal:720},frameRate:{ideal:24,max:30}};if(deviceId)video.deviceId={exact:deviceId};else video.facingMode={ideal:'user'};setStatus('กำลังเปิดกล้อง...','warn');state.stream=await navigator.mediaDevices.getUserMedia({video,audio:false});$('video').srcObject=state.stream;$('video').classList.remove('hidden');await $('video').play();state.cameraId=state.stream.getVideoTracks()[0]?.getSettings()?.deviceId||deviceId;await enumerateCameras();$('cameraSelect').value=state.cameraId||$('cameraSelect').value;$('openCam').textContent='กล้องพร้อมใช้งาน';$('openCam').disabled=false;$('switchCam').disabled=state.cameras.length<2;await initPose();startLoop();startCalibration();}catch(e){console.error(e);setStatus('เปิดกล้องไม่สำเร็จ','bad');alert('เปิดกล้องไม่ได้ กรุณาอนุญาตสิทธิ์ Camera และลองใหม่');}}
+async function switchCamera(){if(state.cameras.length<2)await enumerateCameras();if(state.cameras.length<2){alert('ต้องมีกล้องอย่างน้อย 2 ตัว');return}const i=state.cameras.findIndex(c=>c.deviceId===($('cameraSelect').value||state.cameraId));const next=state.cameras[(i+1)%state.cameras.length];$('cameraSelect').value=next.deviceId;await openCamera(next.deviceId);}
+async function initPose(){if(typeof Pose==='undefined')throw new Error('MediaPipe Pose โหลดไม่สำเร็จ');if(state.pose){try{state.pose.close()}catch(e){}}state.pose=new Pose({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/pose/${f}`});state.pose.setOptions({modelComplexity:1,smoothLandmarks:true,enableSegmentation:false,minDetectionConfidence:.65,minTrackingConfidence:.65});state.pose.onResults(onPoseResults);}
+function startLoop(){cancelAnimationFrame(state.raf);const tick=async(ts)=>{if(state.stream&&$('video').readyState>=2&&state.pose&&!state.poseBusy&&ts-state.lastPoseAt>=50){state.poseBusy=true;state.lastPoseAt=ts;try{await state.pose.send({image:$('video')})}catch(e){console.warn(e)}finally{state.poseBusy=false}}state.raf=requestAnimationFrame(tick)};state.raf=requestAnimationFrame(tick);}
+function angle(a,b,c){if(!a||!b||!c)return null;const ab={x:a.x-b.x,y:a.y-b.y},cb={x:c.x-b.x,y:c.y-b.y};const mag=Math.hypot(ab.x,ab.y)*Math.hypot(cb.x,cb.y);if(mag<1e-7)return null;return Math.acos(Math.max(-1,Math.min(1,(ab.x*cb.x+ab.y*cb.y)/mag)))*180/Math.PI;}
 function visibility(l){return l&&Number.isFinite(l.visibility)?l.visibility:0}
-
-function poseInSideView(pts){
-  // For a true side view, the two hips should not be extremely far apart.
-  // This is a guidance signal, not a hard medical rule.
-  return Math.abs(pts.lHip.x-pts.rHip.x)<0.30;
-}
-
-function onPoseResults(r){
-  state.poseFrames=(state.poseFrames||0)+1;
-  const lm=r.poseLandmarks;
-
-  if(!lm){
-    state.badFrames=(state.badFrames||0)+1;
-    state.ready=false;
-    updateReadiness('ไม่พบร่างกาย');
-    drawPose(r,false);
-    return;
-  }
-
-  const ids={lHip:23,rHip:24,lKnee:25,rKnee:26,lAnkle:27,rAnkle:28};
-  const pts={};
-  for(const k in ids)pts[k]=lm[ids[k]];
-
-  const vs=Object.values(pts).map(visibility);
-  const conf=Math.round(Math.min(...vs)*100);
-  state.confidence=conf;
-  $('confidence').textContent=conf+'%';
-
-  const angles=getKneeMathFromPose(r.poseLandmarks);
-  const aL=angles?.left??null, aR=angles?.right??null;
-  const full=conf>=70;
-  const side=full && poseInSideView(pts);
-  const validAngles=aL!=null&&aR!=null&&aL>=70&&aL<=180&&aR>=70&&aR<=180;
-
-  // Require several consecutive good frames before enabling the test.
-  if(full && side && validAngles){
-    state.goodFrames=(state.goodFrames||0)+1;
-    state.badFrames=0;
-  }else{
-    state.goodFrames=0;
-    state.badFrames=(state.badFrames||0)+1;
-  }
-
-  const stable=state.goodFrames>=8;
-  state.ready=stable;
-
-  if(validAngles){
-    $('angleL').textContent=aL.toFixed(1)+'°';
-    $('angleR').textContent=aR.toFixed(1)+'°';
-
-    if(state.running && stable){
-      state.anglesL.push(aL);
-      state.anglesR.push(aR);
-      // Keep arrays bounded so a long failed session cannot grow memory.
-      if(state.anglesL.length>300)state.anglesL.shift();
-      if(state.anglesR.length>300)state.anglesR.shift();
-    }
-  }
-
-  if(!full) updateReadiness('ถอย/ขยับให้เห็นขาและข้อเท้าชัด');
-  else if(!side) updateReadiness('หันด้านข้างให้กล้อง');
-  else if(!validAngles) updateReadiness('ตรวจมุมเข่าไม่ชัด กำลังปรับภาพ');
-  else if(!stable) updateReadiness('กำลังยืนยันภาพ... '+state.goodFrames+'/8');
-  else updateReadiness('พร้อมตรวจ');
-
-  drawPose(r,stable);
-
-  if(state.running){
-    if(stable && validAngles) processRep(aL,aR);
-    else if(state.badFrames>=4) setStatus('หยุดนับชั่วคราว: ภาพไม่ชัด','warn');
-  }
-}
-
-function updateReadiness(msg){
-  $('bodyCheck').textContent=msg;
-  $('frameStatus').textContent=msg;
-  if(state.running){
-    if(msg==='พร้อมตรวจ')setStatus('กำลังทดสอบ','ok');
-  }else if(state.ready){
-    $('startTest').disabled=false;
-    $('startTest').textContent='เริ่ม 5xSTS';
-    setStatus('พร้อมทดสอบ','ok');
-  }else{
-    $('startTest').disabled=true;
-    $('startTest').textContent='จัดท่าให้พร้อมก่อนเริ่ม';
-    if(msg!=='กำลังยืนยันภาพ...')setStatus(msg,'warn');
-  }
-}
-
-function drawPose(r,good){
-  const c=$('canvas'),v=$('video');
-  setCameraCanvasSize();
-  const x=c.getContext('2d');
-  x.clearRect(0,0,c.width,c.height);
-  if(!r?.poseLandmarks)return;
-  x.save();
-  x.scale(c.width,c.height);
-  x.strokeStyle=good?'#22d3ee':'#fb7185';
-  x.lineWidth=.008;
-  const con=[[23,25],[25,27],[24,26],[26,28],[23,24]];
-  for(const [a,b] of con){
-    const p=r.poseLandmarks[a],q=r.poseLandmarks[b];
-    if(!p||!q)continue;
-    x.beginPath();x.moveTo(p.x,p.y);x.lineTo(q.x,q.y);x.stroke();
-  }
-  for(const i of [23,24,25,26,27,28]){
-    const p=r.poseLandmarks[i];if(!p)continue;
-    x.fillStyle=good?'#22d3ee':'#fb7185';
-    x.beginPath();x.arc(p.x,p.y,.018,0,Math.PI*2);x.fill();
-  }
-  x.restore();
-}
-
-function startTest(){
-  if(!state.ready){
-    alert('รอให้ระบบยืนยันภาพร่างกายก่อน แล้วจึงเริ่มทดสอบ');
-    return;
-  }
-
-  state.running=true;
-  state.count=0;
-  state.state='standing'; // The user is asked to start from standing.
-  state.trialTimes=[];
-  state.anglesL=[];
-  state.anglesR=[];
-  state.testStart=performance.now();
-  state.trialStart=state.testStart;
-  state.lastCount=0;
-  state.lastStateChange=performance.now();
-
-  $('countBadge').textContent='0 / 5';
-  $('stopTest').disabled=false;
-  $('startTest').disabled=true;
-  $('startTest').textContent='กำลังทดสอบ...';
-  $('cameraTitle').textContent='5xSTS: ลุก–นั่ง 5 ครั้ง';
-  setStatus('กำลังทดสอบ','ok');
-  requestAnimationFrame(updateTimer);
-}
-
-function processRep(aL,aR){
-  if(aL==null||aR==null)return;
-
-  const knee=(aL+aR)/2;
-  const now=performance.now();
-
-  // Hysteresis + dwell time prevents one noisy frame from changing state.
-  if(state.state==='standing' && knee<112){
-    if(now-state.lastStateChange>=180){
-      state.state='sitting';
-      state.lastStateChange=now;
-    }
-  }else if(state.state==='sitting' && knee>152){
-    if(now-state.lastStateChange>=180 && now-state.lastCount>=750){
-      state.state='standing';
-      state.lastStateChange=now;
-      state.count++;
-
-      const t=(now-state.trialStart)/1000;
-      state.trialTimes.push(t);
-      state.trialStart=now;
-
-      $('countBadge').textContent=state.count+' / 5';
-
-      if(state.count>=5)finishTest();
-    }
-  }
-}
-
-function updateTimer(){
-  if(!state.running)return;
-  const ms=performance.now()-state.testStart;
-  const sec=ms/1000;
-  $('timer').textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${(sec%60).toFixed(1).padStart(4,'0')}`;
-  requestAnimationFrame(updateTimer);
-}
-
-function stopTest(manual=false){
-  state.running=false;
-  $('stopTest').disabled=true;
-  if(manual){
-    state.trialTimes=[];
-    state.count=0;
-    $('countBadge').textContent='0 / 5';
-    setStatus('หยุดการทดสอบ','warn');
-    $('startTest').disabled=!state.ready;
-    $('startTest').textContent=state.ready?'เริ่ม 5xSTS':'จัดท่าให้พร้อมก่อนเริ่ม';
-  }
-}
-
-function avg(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:null}
-function captureSnapshot(){try{const c=document.createElement('canvas');c.width=$('video').videoWidth||1280;c.height=$('video').videoHeight||720;const x=c.getContext('2d');x.drawImage($('video'),0,0,c.width,c.height);return c.toDataURL('image/jpeg',.82)}catch(e){return null}}
-function startRecording(){try{const stream=$('video').captureStream?$('video').captureStream():null;if(!stream||!window.MediaRecorder)return;state.recorder=new MediaRecorder(stream,{mimeType:'video/webm'});const chunks=[];state.recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};state.recorder.onstop=()=>{if(chunks.length){state.videoUrl=URL.createObjectURL(new Blob(chunks,{type:'video/webm'}));$('playback_video').src=state.videoUrl}};state.recorder.start(250)}catch(e){console.warn('recording unavailable',e)}}
-function stopStreamRecording(){if(state.recorder&&state.recorder.state!=='inactive')state.recorder.stop()}
-function buildReport(l,r){showPage('analyzing');setTimeout(()=>{const time=state.trialTimes.reduce((a,b)=>a+b,0);const asym=l!=null&&r!=null?Math.abs(l-r):null;const q=state.qScore;let level='LOW',reason='ข้อมูลคัดกรองยังไม่พบสัญญาณความเสี่ยงเด่นจากแบบสอบถามและการทดสอบที่ทำได้';if(q>=16||time>=15|| (asym!=null&&asym>=10))level='MODERATE';if(q>=24||time>=20)level='HIGH';$('rName').textContent=state.name;$('rAge').textContent=state.age;$('rDate').textContent=new Date().toLocaleString('th-TH');$('rQ').textContent=q;$('rTime').textContent=time?time.toFixed(1):'—';$('rQuality').textContent=state.confidence>=75?'ดี':'จำกัด';$('rL').textContent=l?l.toFixed(1)+'°':'—';$('rR').textContent=r?r.toFixed(1)+'°':'—';$('rAsym').textContent=asym!=null?`ความต่างซ้าย–ขวา ${asym.toFixed(1)}° (ค่าจากภาพ ไม่ใช่เกณฑ์วินิจฉัย)`: 'ไม่สามารถคำนวณความต่างได้';$('rTrials').innerHTML=state.trialTimes.map((t,i)=>`<div class="flex justify-between bg-slate-950 rounded-lg px-3 py-2"><span>ครั้งที่ ${i+1}</span><b>${t.toFixed(2)} วินาที</b></div>`).join('');$('riskBadge').textContent=level==='LOW'?'ความเสี่ยงคัดกรองต่ำ':level==='MODERATE'?'ควรติดตาม/ประเมินเพิ่ม':'ควรพบผู้เชี่ยวชาญ';$('riskBadge').className='px-4 py-2 rounded-full text-sm font-bold '+(level==='HIGH'?'bg-rose-950/50 text-rose-300':level==='MODERATE'?'bg-amber-950/50 text-amber-300':'bg-emerald-950/50 text-emerald-300');if(level==='HIGH')reason='คะแนนแบบสอบถามหรือเวลาทดสอบอยู่ในระดับที่ควรได้รับการประเมินเพิ่มเติมโดยบุคลากรทางการแพทย์';else if(level==='MODERATE')reason='พบข้อมูลบางส่วนที่ควรติดตาม เช่น อาการจากแบบสอบถามหรือสมรรถภาพในการลุก–นั่ง';$('rSummary').textContent=reason+'. ผลนี้เป็น “การคัดกรองเบื้องต้น” ไม่ใช่การวินิจฉัยโรค และเกณฑ์ความเสี่ยงในระบบเป็นเกณฑ์คัดกรองเพื่อการทดลองใช้งาน ไม่ควรใช้ตัดสินการรักษาเพียงลำพัง';$('rAdvice').textContent=(level==='HIGH'||level==='MODERATE')?'แนะนำให้นำผลนี้ไปปรึกษาแพทย์/นักกายภาพบำบัด โดยเฉพาะหากมีปวดมาก บวม แดง ร้อน เข่าทรุด หรือเดินลำบาก หากมีอาการรุนแรงหรือเกิดอุบัติเหตุเฉียบพลันให้หยุดการทดสอบและขอความช่วยเหลือ':'หากยังมีอาการปวดหรือใช้งานเข่าผิดปกติ ควรติดตามอาการและปรึกษาผู้เชี่ยวชาญแม้คะแนนคัดกรองจะต่ำ';if(state.snapshot){const c=$('snapshot_canvas');const img=new Image();img.onload=()=>{c.width=img.width;c.height=img.height;c.getContext('2d').drawImage(img,0,0)};img.src=state.snapshot}showPage('report')},700)}
-function downloadJSON(){const data={...state,stream:undefined,pose:undefined,recorder:undefined,raf:undefined,videoUrl:undefined,snapshot:undefined};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`knee-screening-${Date.now()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-function resetAll(){cancelAnimationFrame(state.raf);try{state.pose?.close?.()}catch(e){};stopCameraTracks();if(state.videoUrl)URL.revokeObjectURL(state.videoUrl);location.reload()}
-window.addEventListener('beforeunload',()=>{if(state.stream)state.stream.getTracks().forEach(t=>t.stop())});document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.running){state.pausedByVisibility=true;setStatus('หยุดชั่วคราวเพราะออกจากหน้า','warn');}else if(!document.hidden&&state.pausedByVisibility){state.pausedByVisibility=false;setStatus('กำลังทดสอบ','ok');}});buildQuestions();
+function onPoseResults(r){state.poseFrames++;const lm=r.poseLandmarks;if(!lm){state.ready=false;updateReadiness('ไม่พบร่างกาย');return}const pts={lHip:lm[23],rHip:lm[24],lKnee:lm[25],rKnee:lm[26],lAnkle:lm[27],rAnkle:lm[28]};const vs=Object.values(pts).map(visibility);const conf=Math.round(Math.min(...vs)*100);state.confidence=conf;$('confidence').textContent=conf+'%';const aL=angle(pts.lHip,pts.lKnee,pts.lAnkle),aR=angle(pts.rHip,pts.rKnee,pts.rAnkle);const angleOK=Number.isFinite(aL)&&Number.isFinite(aR)&&aL>=70&&aL<=180&&aR>=70&&aR<=180;const bodySpan=Math.max(...Object.values(pts).map(p=>p?.y||0))-Math.min(...Object.values(pts).map(p=>p?.y||1));const full=conf>=70&&bodySpan>.45;const sideEnough=full&&Math.abs(pts.lHip.x-pts.rHip.x)<.40;const good=angleOK&&sideEnough;if(good)state.goodFrames++;if(aL!=null&&aR!=null){$('angleL').textContent=aL.toFixed(1)+'°';$('angleR').textContent=aR.toFixed(1)+'°';if(state.running&&good){state.anglesL.push(aL);state.anglesR.push(aR)}}updateCalibration(good);state.ready=good&&!state.calibrating;updateReadiness(good?(state.calibrating?'กำลัง Calibration':'พร้อมตรวจ'):'ขยับให้เห็นสะโพก–เข่า–ข้อเท้าชัด');drawPose(r,good);if(state.running&&good)processRep(aL,aR);}
+function startCalibration(){state.calibrating=true;state.ready=false;state.calStart=performance.now();state.calGood=0;state.calFrames=0;$('startTest').disabled=true;$('startTest').textContent='กำลัง Calibration';$('calStatus').textContent='ยืนนิ่งและจัดท่าให้เห็นสะโพก–เข่า–ข้อเท้า';}
+function updateCalibration(good){if(!state.calibrating)return;state.calFrames++;if(good)state.calGood++;const elapsed=performance.now()-state.calStart;const pct=Math.min(100,elapsed/2500*100);$('calText').textContent=Math.round(pct)+'%';$('calBar').style.width=pct+'%';const rate=state.calFrames?state.calGood/state.calFrames:0;if(elapsed>=2500){state.calibrating=false;if(rate>=.75&&state.confidence>=70){state.ready=true;$('startTest').disabled=false;$('startTest').textContent='เริ่ม 5xSTS';$('calStatus').textContent='Calibration ผ่าน ✓';setStatus('พร้อมทดสอบ','ok')}else{state.ready=false;$('calStatus').textContent='ไม่ผ่าน — ปรับตำแหน่งแล้วรอใหม่';setStatus('ภาพยังไม่เสถียร','warn');setTimeout(startCalibration,700)}}}
+function updateReadiness(msg){$('bodyCheck').textContent=msg;$('frameStatus').textContent=msg;if(state.running){if(msg!=='พร้อมตรวจ')setStatus('หยุดนับชั่วคราว: ภาพไม่ชัด','warn');else setStatus('กำลังทดสอบ','ok')}else if(state.ready&&!state.calibrating){$('startTest').disabled=false;$('startTest').textContent='เริ่ม 5xSTS';}else if(state.calibrating){$('startTest').disabled=true}else{$('startTest').disabled=true;$('startTest').textContent='จัดท่าให้เห็นขาชัดก่อนเริ่ม';}}
+function drawPose(r,good){const c=$('canvas'),v=$('video');c.width=v.videoWidth||1280;c.height=v.videoHeight||720;const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);if(!r.poseLandmarks)return;x.save();x.scale(c.width,c.height);x.strokeStyle=good?'#22d3ee':'#fb7185';x.lineWidth=.008;const con=[[23,25],[25,27],[24,26],[26,28],[23,24]];for(const [a,b] of con){const p=r.poseLandmarks[a],q=r.poseLandmarks[b];if(!p||!q)continue;x.beginPath();x.moveTo(p.x,p.y);x.lineTo(q.x,q.y);x.stroke()}for(const i of [23,24,25,26,27,28]){const p=r.poseLandmarks[i];if(!p)continue;x.fillStyle=good?'#22d3ee':'#fb7185';x.beginPath();x.arc(p.x,p.y,.018,0,Math.PI*2);x.fill()}x.restore();}
+function startTest(){if(!state.ready||state.calibrating||state.confidence<70){alert('กรุณารอ Calibration และจัดท่าให้ระบบเห็นสะโพก เข่า และข้อเท้าชัดเจน');return}state.running=true;state.count=0;state.state='standing';state.trialTimes=[];state.anglesL=[];state.anglesR=[];state.testStart=performance.now();state.trialStart=state.testStart;state.lastCount=0;$('countBadge').textContent='0 / 5';$('stopTest').disabled=false;$('startTest').disabled=true;$('startTest').textContent='กำลังทดสอบ...';$('cameraTitle').textContent='5xSTS: ลุก–นั่ง 5 ครั้ง';setStatus('กำลังทดสอบ','ok');requestAnimationFrame(updateTimer);}
+function processRep(aL,aR){if(!Number.isFinite(aL)||!Number.isFinite(aR))return;const knee=(aL+aR)/2,now=performance.now();if(state.state==='standing'&&knee<112){state.state='sitting';}else if(state.state==='sitting'&&knee>152&&now-state.lastCount>750){state.state='standing';state.count++;const t=(now-state.trialStart)/1000;state.trialTimes.push(t);state.trialStart=now;state.lastCount=now;$('countBadge').textContent=state.count+' / 5';if(state.count>=5)finishTest();}}
+function updateTimer(){if(!state.running)return;const sec=(performance.now()-state.testStart)/1000;$('timer').textContent=`${String(Math.floor(sec/60)).padStart(2,'0')}:${(sec%60).toFixed(1).padStart(4,'0')}`;requestAnimationFrame(updateTimer);}
+function stopTest(manual=false){if(!state.running&&!manual)return;state.running=false;$('stopTest').disabled=true;if(manual){state.trialTimes=[];state.count=0;$('countBadge').textContent='0 / 5';setStatus('หยุดการทดสอบ','warn');$('startTest').disabled=!state.ready;$('startTest').textContent=state.ready?'เริ่ม 5xSTS':'จัดท่าให้เห็นขาชัดก่อนเริ่ม';}}
+function median(a){const v=a.filter(Number.isFinite).slice().sort((a,b)=>a-b);if(!v.length)return NaN;const m=Math.floor(v.length/2);return v.length%2?v[m]:(v[m-1]+v[m])/2}
+function sd(a){const v=a.filter(Number.isFinite);if(v.length<2)return NaN;const m=v.reduce((s,x)=>s+x,0)/v.length;return Math.sqrt(v.reduce((s,x)=>s+(x-m)**2,0)/v.length)}
+function finishTest(){state.running=false;$('stopTest').disabled=true;const total=state.trialTimes.length===5?state.trialTimes.reduce((a,b)=>a+b,0):NaN;if(!Number.isFinite(total)){setStatus('ข้อมูลไม่ครบ — ไม่สร้างผล','bad');return}setStatus('ทดสอบครบ 5 ครั้ง','ok');state.snapshot=captureSnapshot();buildReport();}
+function captureSnapshot(){try{const c=document.createElement('canvas');c.width=$('video').videoWidth||1280;c.height=$('video').videoHeight||720;c.getContext('2d').drawImage($('video'),0,0,c.width,c.height);return c.toDataURL('image/jpeg',.82)}catch(e){return null}}
+function calculateMetrics(){const total=state.trialTimes.length===5?state.trialTimes.reduce((a,b)=>a+b,0):NaN;const l=median(state.anglesL),r=median(state.anglesR),asym=Number.isFinite(l)&&Number.isFinite(r)?Math.abs(l-r):NaN,angleSD=sd([...state.anglesL,...state.anglesR]);const coverage=state.poseFrames?Math.min(100,state.goodFrames/state.poseFrames*100):0;const stability=Number.isFinite(angleSD)?Math.max(0,Math.min(100,100-angleSD/15*100)):0;const completion=state.trialTimes.length===5?100:state.trialTimes.length/5*100;const conf=Math.round(.35*state.confidence+.25*stability+.20*coverage+.20*completion);const index=conf>=70?Math.round(Math.min(100,Math.max(0,.45*Math.min(1,Math.max(0,(total-8)/12))*100+.25*Math.min(100,asym||0)/15*100+.15*Math.min(100,angleSD||0)/15*100+.15*(100-conf)))):NaN;return{total,l,r,asym,angleSD,conf,index}}
+function buildReport(){showPage('analyzing');setTimeout(()=>{const m=calculateMetrics();$('rName').textContent=state.name;$('rAge').textContent=state.age==null?'ไม่ระบุ':state.age;$('rDate').textContent=new Date().toLocaleString('th-TH');$('rQ').textContent=state.qScore;$('rTime').textContent=Number.isFinite(m.total)?m.total.toFixed(2):'—';$('rQuality').textContent=m.conf>=70?'ผ่าน':'ไม่เพียงพอ';$('rL').textContent=Number.isFinite(m.l)?m.l.toFixed(1)+'°':'—';$('rR').textContent=Number.isFinite(m.r)?m.r.toFixed(1)+'°':'—';$('rAsym').textContent=Number.isFinite(m.asym)?`ความต่างซ้าย–ขวา ${m.asym.toFixed(1)}°`:'—';$('rIndex').textContent=Number.isFinite(m.index)?m.index+'/100':'INVALID';$('rConfidence').textContent=m.conf+'%';$('rAsym2').textContent=Number.isFinite(m.asym)?m.asym.toFixed(1)+'°':'—';$('rSD').textContent=Number.isFinite(m.angleSD)?m.angleSD.toFixed(1)+'°':'—';$('rTrials').innerHTML=state.trialTimes.map((t,i)=>`<div class="flex justify-between bg-slate-950 rounded-lg px-3 py-2"><span>ครั้งที่ ${i+1}</span><b>${t.toFixed(2)} วินาที</b></div>`).join('');let level='INVALID';if(Number.isFinite(m.index))level=m.index<30?'LOW':m.index<60?'MODERATE':'HIGH';$('riskBadge').textContent=level==='INVALID'?'ข้อมูลไม่เพียงพอ':level==='LOW'?'ข้อมูลคัดกรองต่ำ':level==='MODERATE'?'ควรติดตาม':'ควรประเมินเพิ่มเติม';$('riskBadge').className='px-4 py-2 rounded-full text-sm font-bold '+(level==='HIGH'||level==='INVALID'?'bg-rose-950/50 text-rose-300':level==='MODERATE'?'bg-amber-950/50 text-amber-300':'bg-emerald-950/50 text-emerald-300');$('rSummary').textContent=level==='INVALID'?'ระบบไม่ออกคะแนนเพราะคุณภาพข้อมูลไม่ถึงเกณฑ์ความน่าเชื่อถือ กรุณาทดสอบใหม่':`ผลคัดกรองเชิงต้นแบบอยู่ในระดับ ${level} โดยพิจารณาจากเวลาลุก–นั่ง ความไม่สมมาตรของมุม และความแปรปรวนของข้อมูล`;$('rAdvice').textContent='ผลนี้เป็นการคัดกรองเบื้องต้น ไม่ใช่การวินิจฉัย และ Screening Index ยังต้อง validation กับข้อมูลจริงเทียบกับ reference ก่อนนำไปใช้เชิงคลินิก หากมีปวดมาก บวม แดง ร้อน เข่าทรุด เวียนศีรษะ หรือไม่ปลอดภัย ให้หยุดการทดสอบ';if(state.snapshot){const c=$('snapshot_canvas');const img=new Image();img.onload=()=>{c.width=img.width;c.height=img.height;c.getContext('2d').drawImage(img,0,0)};img.src=state.snapshot}showPage('report')},600)}
+function downloadJSON(){const m=calculateMetrics();const data={version:'7.0',timestamp:new Date().toISOString(),caseId:state.name,age:state.age,heightCm:state.height,weightKg:state.weight,questionnaireScore:state.qScore,trialTimes:state.trialTimes,anglesLeft:state.anglesL,anglesRight:state.anglesR,metrics:m};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`knee-screening-v7-${Date.now()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function resetAll(){stopCamera();if(state.videoUrl)URL.revokeObjectURL(state.videoUrl);location.reload()}
+$('cameraSelect').addEventListener('change',e=>{if(e.target.value)openCamera(e.target.value)});navigator.mediaDevices?.addEventListener('devicechange',enumerateCameras);window.addEventListener('beforeunload',()=>{stopCamera();try{state.pose?.close()}catch(e){}});document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.running){state.running=false;setStatus('หยุดชั่วคราวเพราะออกจากหน้า','warn')}});buildQuestions();
 </script>
 
 <footer class="no-print mt-10 border-t border-slate-800/70 bg-slate-950/45">
@@ -525,155 +174,5 @@ window.addEventListener('beforeunload',()=>{if(state.stream)state.stream.getTrac
     <div class="text-[10px] text-slate-500 mt-1">เครื่องมือคัดกรองเบื้องต้น ไม่ใช่การวินิจฉัยทางการแพทย์</div>
   </div>
 </footer>
-
-
-<script id="ai-math-engine">
-(() => {
-  "use strict";
-
-  window.AIMath = {
-    clamp(v,a,b){ return Math.min(b, Math.max(a,v)); },
-
-    angle(a,b,c){
-      if(!a || !b || !c) return NaN;
-      const ux=a.x-b.x, uy=a.y-b.y;
-      const vx=c.x-b.x, vy=c.y-b.y;
-      const nu=Math.hypot(ux,uy), nv=Math.hypot(vx,vy);
-      if(nu < 1e-8 || nv < 1e-8) return NaN;
-      const cos=this.clamp((ux*vx+uy*vy)/(nu*nv),-1,1);
-      return Math.acos(cos)*180/Math.PI;
-    },
-
-    mean(xs){
-      const a=xs.filter(Number.isFinite);
-      return a.length ? a.reduce((s,x)=>s+x,0)/a.length : NaN;
-    },
-
-    median(xs){
-      const a=xs.filter(Number.isFinite).slice().sort((x,y)=>x-y);
-      if(!a.length) return NaN;
-      const m=Math.floor(a.length/2);
-      return a.length%2 ? a[m] : (a[m-1]+a[m])/2;
-    },
-
-    sd(xs){
-      const a=xs.filter(Number.isFinite);
-      if(!a.length) return NaN;
-      const m=this.mean(a);
-      return Math.sqrt(this.mean(a.map(x=>(x-m)**2)));
-    },
-
-    asymmetry(left,right){
-      return Math.abs(left-right);
-    },
-
-    percentChange(first,last){
-      if(!Number.isFinite(first)||!Number.isFinite(last)||Math.abs(first)<1e-8) return NaN;
-      return ((last-first)/first)*100;
-    },
-
-    confidenceScore(validFrames,totalFrames){
-      if(!totalFrames) return 0;
-      return this.clamp(validFrames/totalFrames*100,0,100);
-    },
-
-    normalize(x,min,max){
-      if(max===min) return 0;
-      return this.clamp((x-min)/(max-min),0,1);
-    },
-
-    riskIndex({questionnaire=0,stsMean=NaN,asymmetry=NaN,angleSd=NaN,confidence=100}={}){
-      // This is a transparent screening index, not a diagnostic score.
-      const q = this.clamp(questionnaire/32,0,1);
-      const t = Number.isFinite(stsMean) ? this.normalize(stsMean,8,20) : 0;
-      const a = Number.isFinite(asymmetry) ? this.normalize(asymmetry,0,15) : 0;
-      const s = Number.isFinite(angleSd) ? this.normalize(angleSd,0,15) : 0;
-      const c = 1-this.clamp(confidence/100,0,1);
-      return Math.round(this.clamp((.35*q+.25*t+.18*a+.12*s+.10*c)*100,0,100));
-    },
-
-    riskLabel(score){
-      if(score < 30) return "LOW";
-      if(score < 60) return "MODERATE";
-      return "HIGH";
-    },
-
-    summarize(data){
-      const left=this.mean(data.leftAngles||[]);
-      const right=this.mean(data.rightAngles||[]);
-      const all=[...(data.leftAngles||[]),...(data.rightAngles||[])];
-      const sts=data.stsTimes||[];
-      const stsMean=this.mean(sts);
-      const asym=Number.isFinite(left)&&Number.isFinite(right)?this.asymmetry(left,right):NaN;
-      const angleSd=this.sd(all);
-      const fatigue=sts.length>=2?this.percentChange(sts[0],sts[sts.length-1]):NaN;
-      const confidence=this.confidenceScore(data.validFrames||0,data.totalFrames||0);
-      const risk=this.riskIndex({questionnaire:data.questionnaire||0,stsMean,asymmetry:asym,angleSd,confidence});
-      return {left,right,asym,angleSd,stsMean,fatigue,confidence,risk,label:this.riskLabel(risk)};
-    }
-  };
-
-  function fmt(v,suffix=""){
-    return Number.isFinite(v) ? v.toFixed(1)+suffix : "—";
-  }
-
-  window.renderAIMathReport = function(data){
-    const r=window.AIMath.summarize(data||{});
-    const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
-    set("math-left-mean",fmt(r.left,"°"));
-    set("math-right-mean",fmt(r.right,"°"));
-    set("math-asymmetry",fmt(r.asym,"°"));
-    set("math-angle-sd",fmt(r.angleSd,"°"));
-    set("math-sts-mean",fmt(r.stsMean," s"));
-    set("math-fatigue",Number.isFinite(r.fatigue)?(r.fatigue>0?"+":"")+r.fatigue.toFixed(1)+"%":"—");
-
-    const q=document.getElementById("math-quality");
-    if(q){
-      q.textContent = r.confidence>=80 ? "คุณภาพข้อมูลดี" :
-                      r.confidence>=60 ? "คุณภาพข้อมูลปานกลาง" : "ควรทดสอบซ้ำ";
-      q.className="text-[10px] px-3 py-1 rounded-full border " +
-        (r.confidence>=80 ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/20" :
-         r.confidence>=60 ? "bg-amber-500/10 text-amber-300 border-amber-500/20" :
-         "bg-red-500/10 text-red-300 border-red-500/20");
-    }
-
-    const chart=document.getElementById("math-sts-chart");
-    if(chart){
-      chart.innerHTML="";
-      (data.stsTimes||[]).forEach((t,i)=>{
-        const pct=Number.isFinite(t)?Math.min(100,Math.max(4,t/Math.max(...data.stsTimes,1)*100)):0;
-        chart.insertAdjacentHTML("beforeend",
-          `<div class="bar-row"><span>ครั้ง ${i+1}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><span class="text-right text-cyan-300">${fmt(t," s")}</span></div>`);
-      });
-    }
-
-    set("rep-angle-l",fmt(r.left,"°"));
-    set("rep-angle-r",fmt(r.right,"°"));
-    set("rep-asymmetry",fmt(r.asym,"°"));
-    return r;
-  };
-
-  // Helper for direct integration into a MediaPipe onResults callback:
-  // landmarks must use x/y in normalized image coordinates.
-  window.getKneeMathFromPose = function(landmarks){
-    if(!landmarks || landmarks.length<29) return null;
-    const L={hip:landmarks[23],knee:landmarks[25],ankle:landmarks[27]};
-    const R={hip:landmarks[24],knee:landmarks[26],ankle:landmarks[28]};
-    return {
-      left:window.AIMath.angle(L.hip,L.knee,L.ankle),
-      right:window.AIMath.angle(R.hip,R.knee,R.ankle)
-    };
-  };
-})();
-</script>
-
-
-<script id="camera-stability-patch">
-(() => {
-  // Prevent accidental double-clicks from starting duplicate camera sessions.
-  const b=document.getElementById('openCam');
-  if(b)b.addEventListener('click',()=>{b.disabled=true},{capture:true});
-})();
-</script>
 
 </body></html>
