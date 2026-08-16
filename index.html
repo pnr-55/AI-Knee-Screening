@@ -1,5 +1,5 @@
 <!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KneeAI V8 — AI Knee Screening</title><script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script><style>
-*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#102033;font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif}.page{display:none}.page.active{display:block}.wrap{max-width:1100px;margin:auto;padding:20px}.top{position:sticky;top:0;z-index:9;background:#fff;border-bottom:1px solid #dfe6ef;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}.brand{font-weight:900}.btn,.ghost{padding:11px 16px;border-radius:11px;border:0;font-weight:800;cursor:pointer}.btn{background:#1769e8;color:#fff}.ghost{background:#eef2f6;color:#24364a;border:1px solid #dce3eb}.card{background:#fff;border:1px solid #dfe6ef;border-radius:20px;padding:24px;box-shadow:0 12px 35px #10203312}.hero{padding:65px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.features{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}.feature{padding:18px;border:1px solid #dfe6ef;border-radius:16px;background:#fff}.muted,.helper{color:#68798e;font-size:12px;line-height:1.7}.form{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:5px}.field input,.field select{width:100%;padding:11px;border:1px solid #d7e0e9;border-radius:10px}.steps{display:flex;gap:6px;margin-bottom:18px;overflow:auto}.step{padding:7px 10px;background:#eef2f6;border-radius:99px;font-size:10px;white-space:nowrap}.activeStep{background:#e8f2ff;color:#1769e8;font-weight:800}.q{border:1px solid #e0e6ed;border-radius:14px;padding:14px;margin:10px 0}.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}.opts label{border:1px solid #dfe5ec;border-radius:9px;padding:9px;font-size:11px}.camera{position:relative;background:#07101d;border-radius:18px;overflow:hidden;aspect-ratio:16/10}.camera video,.camera canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.pill{position:absolute;z-index:2;top:10px;left:10px;background:#07101ddd;color:#fff;padding:7px 10px;border-radius:99px;font-size:10px}.counter{left:auto;right:10px}.record{display:none;position:absolute;right:10px;top:48px;background:#a91936;color:#fff;padding:6px 9px;border-radius:99px;font-size:10px}.record.on{display:block}.side{display:grid;gap:9px}.mini{padding:13px;background:#f8fafc;border:1px solid #dfe6ef;border-radius:14px}.big{font-size:23px;font-weight:900}.bar{height:7px;background:#e5ebf2;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:#1769e8}.actions{display:flex;gap:8px;justify-content:space-between;margin-top:18px}.report{margin-top:15px}.risk{font-size:28px;font-weight:900}.badge{display:inline-block;padding:7px 10px;border-radius:99px;font-size:10px;font-weight:900}.low{background:#e7f8ef;color:#137650}.mod{background:#fff4d5;color:#8a6500}.high{background:#ffebef;color:#a3213b}.data{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}.data>div{padding:13px;border:1px solid #dfe6ef;border-radius:13px}.data b{display:block;font-size:19px;margin-top:4px}.rows .row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #edf0f4;font-size:11px}.doctorGrid{display:grid;grid-template-columns:280px 1fr;gap:14px}.patients{display:grid;gap:7px}.patient{padding:10px;border:1px solid #dfe6ef;border-radius:10px;cursor:pointer}.notice{margin-top:13px;padding:13px;background:#f5f9fd;border:1px solid #dce7f2;border-radius:13px;font-size:11px;line-height:1.7}.warn{background:#fff8e8;border-color:#f0dfb0}.hide{display:none!important}@media(max-width:800px){.grid,.doctorGrid{grid-template-columns:1fr}.features{grid-template-columns:1fr 1fr}.form,.data{grid-template-columns:1fr 1fr}.opts{grid-template-columns:1fr}.actions{flex-direction:column}}@media(max-width:520px){.features,.form,.data{grid-template-columns:1fr}}
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#102033;font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif}.page{display:none}.page.active{display:block}.wrap{max-width:1100px;margin:auto;padding:20px}.top{position:sticky;top:0;z-index:9;background:#fff;border-bottom:1px solid #dfe6ef;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}.brand{font-weight:900;cursor:pointer}.btn,.ghost{padding:11px 16px;border-radius:11px;border:0;font-weight:800;cursor:pointer}.btn{background:#1769e8;color:#fff}.ghost{background:#eef2f6;color:#24364a;border:1px solid #dce3eb}.card{background:#fff;border:1px solid #dfe6ef;border-radius:20px;padding:24px;box-shadow:0 12px 35px #10203312}.hero{padding:65px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.features{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}.feature{padding:18px;border:1px solid #dfe6ef;border-radius:16px;background:#fff}.muted,.helper{color:#68798e;font-size:12px;line-height:1.7}.form{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:5px}.field input,.field select{width:100%;padding:11px;border:1px solid #d7e0e9;border-radius:10px}.steps{display:flex;gap:6px;margin-bottom:18px;overflow:auto}.step{padding:7px 10px;background:#eef2f6;border-radius:99px;font-size:10px;white-space:nowrap}.activeStep{background:#e8f2ff;color:#1769e8;font-weight:800}.q{border:1px solid #e0e6ed;border-radius:14px;padding:14px;margin:10px 0}.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}.opts label{border:1px solid #dfe5ec;border-radius:9px;padding:9px;font-size:11px}.camera{position:relative;background:#07101d;border-radius:18px;overflow:hidden;aspect-ratio:16/10}.camera video,.camera canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.pill{position:absolute;z-index:2;top:10px;left:10px;background:#07101ddd;color:#fff;padding:7px 10px;border-radius:99px;font-size:10px}.counter{left:auto;right:10px}.record{display:none;position:absolute;right:10px;top:48px;background:#a91936;color:#fff;padding:6px 9px;border-radius:99px;font-size:10px}.record.on{display:block}.side{display:grid;gap:9px}.mini{padding:13px;background:#f8fafc;border:1px solid #dfe6ef;border-radius:14px}.big{font-size:23px;font-weight:900}.bar{height:7px;background:#e5ebf2;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:#1769e8}.actions{display:flex;gap:8px;justify-content:space-between;margin-top:18px}.report{margin-top:15px}.risk{font-size:28px;font-weight:900}.badge{display:inline-block;padding:7px 10px;border-radius:99px;font-size:10px;font-weight:900}.low{background:#e7f8ef;color:#137650}.mod{background:#fff4d5;color:#8a6500}.high{background:#ffebef;color:#a3213b}.data{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}.data>div{padding:13px;border:1px solid #dfe6ef;border-radius:13px}.data b{display:block;font-size:19px;margin-top:4px}.rows .row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #edf0f4;font-size:11px}.doctorGrid{display:grid;grid-template-columns:280px 1fr;gap:14px}.patients{display:grid;gap:7px}.patient{padding:10px;border:1px solid #dfe6ef;border-radius:10px;cursor:pointer}.notice{margin-top:13px;padding:13px;background:#f5f9fd;border:1px solid #dce7f2;border-radius:13px;font-size:11px;line-height:1.7}.warn{background:#fff8e8;border-color:#f0dfb0}.hide{display:none!important}@media(max-width:800px){.grid,.doctorGrid{grid-template-columns:1fr}.features{grid-template-columns:1fr 1fr}.form,.data{grid-template-columns:1fr 1fr}.opts{grid-template-columns:1fr}.actions{flex-direction:column}}@media(max-width:520px){.features,.form,.data{grid-template-columns:1fr}}
 </style></head><body>
 <header class="top"><div class="brand" onclick="go('home')">🦵 KneeAI</div><div><button class="ghost" onclick="doctorLogin()">แพทย์</button> <button class="btn" onclick="go('profile')">เริ่มประเมิน</button></div></header>
 <main id="home" class="page active"><div class="wrap hero"><div class="grid"><div><span class="badge low">AI • REAL-TIME POSE</span><h1>ระบบคัดกรองข้อเข่าด้วย AI</h1><p class="muted">ประเมินอาการร่วมกับการลุก–นั่งจากกล้องจริงแบบเรียลไทม์ นับ 3 ครั้ง และสร้างสรุปความเสี่ยงเบื้องต้นที่อ่านง่าย</p><button class="btn" onclick="go('profile')">เริ่มการประเมิน</button><div class="notice warn"><b>สำคัญ:</b> ผลนี้เป็นการคัดกรองเบื้องต้น ไม่ใช่การวินิจฉัยโรค</div></div><div class="card"><h2>ระบบทำอะไร</h2><p class="muted">① แบบสอบถามอาการ ② กล้อง + MediaPipe Pose ③ นับลุก–นั่งจริง 3 ครั้ง ④ สรุปผล ⑤ ประวัติสำหรับแพทย์ในอุปกรณ์นี้</p></div></div><div class="features"><div class="feature"><b>Pose Tracking</b><p class="muted">ตรวจสะโพก เข่า ข้อเท้า</p></div><div class="feature"><b>3× Sit-to-Stand</b><p class="muted">ลดความเหนื่อยจาก 5 ครั้ง</p></div><div class="feature"><b>Real-time</b><p class="muted">เห็นตัวนับขณะทำ</p></div><div class="feature"><b>Doctor Portal</b><p class="muted">ค้นประวัติที่บันทึกในเครื่อง</p></div></div></div></main>
@@ -11,22 +11,14 @@
 <main id="doctor" class="page"><div class="wrap"><div class="card"><div class="actions" style="margin:0"><div><h2>ระบบแพทย์</h2><p class="helper">ค้นหาประวัติด้วยชื่อหรือรหัสผู้รับการประเมิน</p></div><button class="ghost" onclick="logout()">ออกจากระบบ</button></div><div class="doctorGrid" style="margin-top:15px"><div><input id="search" placeholder="ค้นหา..." oninput="renderPatients()" style="width:100%;padding:10px;border:1px solid #d7e0e9;border-radius:9px"><div id="plist" class="patients" style="margin-top:8px"></div></div><div id="detail" class="card" style="box-shadow:none">เลือกผู้รับการประเมิน</div></div></div></div></main>
 <script>
 const Q=['ปวดเข่าเวลาเดินขึ้นลงบันไดหรือไม่?','เข่าฝืดหรือติดหลังตื่นนอน/นั่งนานหรือไม่?','นั่งยองหรือพับเข่าลำบากหรือไม่?','มีเสียงกรอบแกรบในข้อเข่าหรือไม่?','เข่าหลวมหรือไม่มั่นคงหรือไม่?','มีบวม แดง หรือร้อนที่เข่าหรือไม่?','อาการปวดกระทบกิจวัตรมากแค่ไหน?','เคยบาดเจ็บหรือผ่าตัดเข่าหรือไม่?'];
-const O=[['ไม่มี','เล็กน้อย','มาก'],['ไม่มี','<15 นาที','>15 นาที'],['ปกติ','ตึง/เจ็บ','ทำไม่ได้'],['ไม่มี','บางครั้ง','มีเสียง+เจ็บ'],['ปกติ','บางครั้ง','ชัดเจน'],['ไม่มี','เล็กน้อย','บ่อย'],['ไม่มี','บางกิจกรรม','มาก'],['ไม่มี','เล็กน้อย','หนัก/ผ่าตัด']];
-
-/* ปรับปรุงโครงสร้างสถานะให้รองรับความแม่นยำสูง (Dynamic Threshold) */
+const O=[['ไม่มี','เล็กน้อย','มาก'],['ไม่มี','<15 นาที','>15 นาที'],['ปกติ','ตึง/เจ็บ','ทำไม่ได้'],['ไม่มี','บางครั้ง','มีเสียง+เจ็บ'],['ปกติ','บางครั้ง','ชัดเจน'],['ไม่มี','เล็กน้อย','บ่อย'],['ไม่มี','เล็กน้อย','มาก'],['ไม่มี','เล็กน้อย','หนัก/ผ่าตัด']];
 let S={stream:null,pose:null,raf:0,busy:false,last:0,baseH:null,baseLeg:null,cal:false,good:0,total:0,run:false,count:0,phase:'standing',pf:0,start:0,lastCount:0,trial:[],angles:[],confs:[],frames:0,gframes:0,rec:null,chunks:[],url:null,img:null,name:'',code:'',age:0,q:0};
-
 const $=x=>document.getElementById(x);
 function go(x){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(x).classList.add('active');scrollTo(0,0)}
-
 Q.forEach((q,i)=>{$('qlist').innerHTML+=`<div class=q><b>${i+1}. ${q}</b><div class=opts>${O[i].map((o,j)=>`<label><input type=radio name=q${i} value=${j*2}> ${o}</label>`).join('')}</div></div>`});
-
 function profileNext(){S.name=$('name').value.trim();S.code=$('code').value.trim();S.age=+$('age').value;if(!S.name||!S.code||!S.age||!$('safe').checked||!$('consent').checked){$('perr').textContent='กรุณากรอกข้อมูลและยืนยันความปลอดภัย/ความยินยอม';return}go('questions')}
-
 function qNext(){S.q=0;for(let i=0;i<8;i++){let e=document.querySelector(`input[name=q${i}]:checked`);if(!e){$('qerr').textContent='กรุณาตอบให้ครบทุกข้อ';return}S.q+=+e.value}$('qerr').textContent='';go('cameraPage');refresh()}
-
 async function refresh(){if(!navigator.mediaDevices?.enumerateDevices)return;let ds=await navigator.mediaDevices.enumerateDevices(),cs=ds.filter(x=>x.kind==='videoinput');$('cams').innerHTML=cs.map((x,i)=>`<option value="${x.deviceId}">${x.label||'Camera '+(i+1)}</option>`).join('')}
-
 async function openCam(){
   try{
     if(S.stream)S.stream.getTracks().forEach(t=>t.stop());
@@ -37,7 +29,6 @@ async function openCam(){
     S.pose.onResults(onPose);loop();calibrate()
   }catch(e){alert('เปิดกล้องไม่ได้: อนุญาต Camera และเปิดผ่าน HTTPS หรือ localhost')}
 }
-
 function loop(){
   let f=async t=>{
     if(S.stream&&S.pose&&!S.busy&&t-S.last>40){
@@ -49,13 +40,10 @@ function loop(){
   };
   S.raf=requestAnimationFrame(f)
 }
-
 const V=p=>p?.visibility||0;
 function ang(a,b,c){let ux=a.x-b.x,uy=a.y-b.y,vx=c.x-b.x,vy=c.y-b.y,d=Math.hypot(ux,uy)*Math.hypot(vx,vy);return d?Math.acos(Math.max(-1,Math.min(1,(ux*vx+uy*vy)/d)))*180/Math.PI:null}
 function med(a){a=a.filter(Number.isFinite).sort((a,b)=>a-b);return a.length?a[Math.floor(a.length/2)]:null}
 function side(l){let a={h:l[23],k:l[25],a:l[27],s:l[11]},b={h:l[24],k:l[26],a:l[28],s:l[12]};return V(a.h)+V(a.k)+V(a.a)+V(a.s)>=V(b.h)+V(b.k)+V(b.a)+V(b.s)?a:b}
-
-/* ระบบประมวลผลท่าทางพร้อมคำนวณสัดส่วนขาเฉพาะบุคคล (Dynamic Threshold) */
 function onPose(r){
   S.frames++;let l=r.poseLandmarks;
   if(!l){$('body').textContent='ไม่พบร่างกาย';return}
@@ -70,7 +58,6 @@ function onPose(r){
   if(S.run&&valid){S.angles.push(a);rep(p.h.y,a,legLen)}
   draw(r,valid)
 }
-
 function draw(r,g){
   let c=$('canvas'),v=$('video');c.width=v.videoWidth||960;c.height=v.videoHeight||540;
   let x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);
@@ -78,12 +65,10 @@ function draw(r,g){
   x.strokeStyle=g?'#20c9dd':'#ff5e78';x.lineWidth=4;
   [[11,23],[23,25],[25,27],[12,24],[24,26],[26,28]].forEach(([i,j])=>{let a=r.poseLandmarks[i],b=r.poseLandmarks[j];x.beginPath();x.moveTo(a.x*c.width,a.y*c.height);x.lineTo(b.x*c.width,b.y*c.height);x.stroke()})
 }
-
 function calibrate(){
   S.cal=true;S.good=0;S.total=0;S._h=[];S._l=[];
   $('start').disabled=true;$('msg').textContent='กำลังปรับเทียบสัดส่วนร่างกาย 2 วินาที... (ยืนตรงนิ่งๆ)';
 }
-
 function calStep(v,h,l){
   S.total++;if(v){S.good++;S._h.push(h);S._l.push(l)}
   if(S._h.length>60)S._h.shift();
@@ -97,20 +82,16 @@ function calStep(v,h,l){
     }else{setTimeout(calibrate,800)}
   }
 }
-
 function startTest(){
   if(S.baseH===null)return;
   S.run=true;S.count=0;S.phase='standing';S.pf=0;S.trial=[];S.angles=[];S.start=performance.now();S.lastCount=0;
   $('count').textContent='0 / 3';$('stop').disabled=false;$('start').disabled=true;$('rec').classList.add('on');startRec();timer()
 }
-
-/* ระบบ State Machine และ Debounce สำหรับนับลุก-นั่งแม่นยำสูง */
 function rep(h,a,legLen){
   let delta=(h-S.baseH)/Math.max(0.1,S.baseLeg);
   let down=delta>0.08||a<145;
   let deep=delta>0.18||a<125;
   let up=delta<0.05&&a>150;
-  
   if(S.phase==='standing'){
     if(performance.now()-S.start>500&&down){if(++S.pf>=3){S.phase='down';S.pf=0;$('phase').textContent='กำลังลงนั่ง'}}else S.pf=0
   }else if(S.phase==='down'){
@@ -128,69 +109,50 @@ function rep(h,a,legLen){
     }else S.pf=0
   }
 }
-
 function timer(){if(!S.run)return;$('timer').textContent=((performance.now()-S.start)/1000).toFixed(1);requestAnimationFrame(timer)}
 function startRec(){S.chunks=[];try{if(!S.stream||!MediaRecorder)return;S.rec=new MediaRecorder(S.stream,{mimeType:MediaRecorder.isTypeSupported('video/webm')?'video/webm':''});S.rec.ondataavailable=e=>e.data.size&&S.chunks.push(e.data);S.rec.start(200)}catch(e){S.rec=null}}
 async function stopRec(){return new Promise(r=>{if(!S.rec||S.rec.state==='inactive'){r();return}S.rec.onstop=r;S.rec.stop()})}
 function snap(){let v=$('video'),c=$('canvas'),o=document.createElement('canvas');o.width=v.videoWidth;o.height=v.videoHeight;let x=o.getContext('2d');x.drawImage(v,0,0);x.drawImage(c,0,0,o.width,o.height);S.img=o.toDataURL('image/jpeg',.9)}
 async function finish(){S.run=false;await stopRec();snap();if(S.chunks.length)S.url=URL.createObjectURL(new Blob(S.chunks,{type:'video/webm'}));$('rec').classList.remove('on');$('stop').disabled=true;report()}
 async function stopTest(){if(!S.run)return;S.run=false;await stopRec();snap();if(S.chunks.length)S.url=URL.createObjectURL(new Blob(S.chunks,{type:'video/webm'}));$('rec').classList.remove('on');$('stop').disabled=true;report()}
-
 function flags(){let f=[];for(let i=0;i<8;i++){let e=document.querySelector(`input[name=q${i}]:checked`);if(e&&+e.value>=2)f.push(Q[i])}return f}
-
-/* ระบบสรุปผลวิเคราะห์ความเสี่ยงเชิงลึก (รวมแบบสอบถาม + มุมเข่า + เวลา) */
 function report(){
   let f=flags(),conf=Math.round(.65*(med(S.confs)||0)+.2*(S.gframes/Math.max(1,S.frames))*100+.15*(S.count/3)*100),a=med(S.angles),tot=S.trial.reduce((x,y)=>x+y,0);
   let riskScore=S.q+(S.count<3?6:0)+(a&&a>135?3:0)+(tot>12?3:0);
   let level=riskScore>=10?'high':(riskScore>=5?'mod':'low');
-  
   $('rn').textContent=S.name;$('rc').textContent=S.code;$('ra').textContent=S.age;$('rq').textContent=S.q;$('rtime').textContent=tot.toFixed(2)+' s';$('rang').textContent=a?a.toFixed(0)+'°':'—';$('rconf').textContent=conf+'%';
-  
   let title=level==='high'?'พบความเสี่ยงสูง • ควรพบแพทย์เพื่อตรวจวินิจฉัย':level==='mod'?'พบความเสี่ยงปานกลาง • ควรระมัดระวังและสังเกตอาการ':'ความเสี่ยงเบื้องต้นต่ำ • ข้อเข่ายังทำงานได้ดี';
-  $('rt').textContent=title;
-  $('rx').textContent='การประเมินวิเคราะห์จากแบบสอบถามและสถิติการเคลื่อนไหวจริง';
-  $('rb').className='badge '+level;
-  $('rb').textContent=level==='low'?'ความเสี่ยงต่ำ':level==='mod'?'ความเสี่ยงปานกลาง':'ความเสี่ยงสูง';
-  
+  $('rt').textContent=title;$('rx').textContent='การประเมินวิเคราะห์จากแบบสอบถามและสถิติการเคลื่อนไหวจริง';
+  $('rb').className='badge '+level;$('rb').textContent=level==='low'?'ความเสี่ยงต่ำ':level==='mod'?'ความเสี่ยงปานกลาง':'ความเสี่ยงสูง';
   $('risks').innerHTML=(f.length?f.map(x=>`<div class=row><span>⚠ ${x}</span><b>อาการเด่น</b></div>`).join(''):'<div class=row><span>ไม่พบอาการผิดปกติเด่นจากแบบสอบถาม</span><b>✓</b></div>')+(S.count<3?'<div class=row><span>ทำท่าลุกนั่งไม่ครบ 3 ครั้งตามเกณฑ์</span><b>⚠</b></div>':'<div class=row><span>ความเร็วการลุกนั่ง (รวม 3 ครั้ง: '+tot.toFixed(1)+'s)</span><b>'+(tot>12?'ช้ากว่าปกติ':'ปกติ')+'</b></div>');
   $('trials').innerHTML=S.trial.map((x,i)=>`<div class=row><span>ครั้งที่ ${i+1}</span><b>${x.toFixed(2)} s</b></div>`).join('');
-  
   $('summary').innerHTML=level==='mod'?'<b>สรุปผล:</b> มีสัญญาณเตือนจากคะแนนอาการหรือเวลาเคลื่อนไหว แนะนำให้ลดกิจกรรมที่กระแทกข้อเข่าและปรึกษาแพทย์หากมีอาการปวดต่อเนื่อง':level==='high'?'<b>สรุปผล:</b> ตรวจพบความผิดปกติที่เด่นชัดหรือการทดสอบไม่สมบูรณ์ แนะนำให้พบแพทย์ผู้เชี่ยวชาญด้านกระดูกและข้อเพื่อตรวจร่างกายเชิงลึก':'<b>สรุปผล:</b> ไม่พบสัญญาณความเสี่ยงที่น่ากังวลในรอบการคัดกรองนี้ แนะนำให้รักษาสุขภาพกล้ามเนื้อรอบเข่าอย่างสม่ำเสมอ';
-  
   if(S.img){$('snap').src=S.img;$('snap').classList.remove('hide')}
   if(S.url){$('vid').src=S.url;$('vempty').classList.add('hide')}
   save(level,title,conf,a,tot,f);go('report')
 }
-
-/* บันทึกข้อมูลลง localStorage ในคีย์เดิม (kneeai) */
 function save(level,title,conf,a,tot,f){
   let a0=JSON.parse(localStorage.getItem('kneeai')||'[]'),r={name:S.name,code:S.code,age:S.age,date:new Date().toISOString(),q:S.q,count:S.count,trial:S.trial,confidence:conf,angle:a,total:tot,risk:level,title,flags:f};
   let i=a0.findIndex(x=>x.code===S.code);i>=0?a0[i]=r:a0.unshift(r);
   localStorage.setItem('kneeai',JSON.stringify(a0.slice(0,200)))
 }
-
 function downloadJSON(){
   let d={system:'KneeAI V8 High Accuracy',patient:{name:S.name,code:S.code,age:S.age},questionnaireScore:S.q,sitToStand:{count:S.count,times:S.trial,total:S.trial.reduce((a,b)=>a+b,0)},kneeAngleMedian:med(S.angles),note:'Preliminary high-accuracy AI screening tool.'},
   b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='kneeai-'+S.code+'.json';a.click()
 }
-
 function doctorLogin(){go('login')}
 function login(){if($('did').value==='DOC001'&&$('dp').value==='KneeAI2026'){sessionStorage.d=1;renderPatients();go('doctor')}else $('lerr').textContent='รหัสแพทย์หรือรหัสผ่านไม่ถูกต้อง'}
 function logout(){sessionStorage.removeItem('d');go('home')}
-
 function renderPatients(){
   let q=($('search').value||'').toLowerCase(),a=JSON.parse(localStorage.getItem('kneeai')||'[]').filter(x=>(x.name+x.code).toLowerCase().includes(q));
   $('plist').innerHTML=a.length?a.map((p,i)=>`<div class=patient onclick="detail(${i})"><b>${esc(p.name)}</b><br><small>${esc(p.code)} • ${new Date(p.date).toLocaleString('th-TH')}</small></div>`).join(''):'<div class=helper>ยังไม่มีประวัติการคัดกรอง</div>';
   window.P=a
 }
-
 function detail(i){
   let p=window.P[i];
   $('detail').innerHTML=`<h3>${esc(p.name)}</h3><p class=helper>รหัส ${esc(p.code)} • อายุ ${p.age} ปี</p><div class=data><div><small>ผลประเมิน</small><b>${esc(p.title)}</b></div><div><small>คะแนนอาการ</small><b>${p.q}</b></div><div><small>ลุก–นั่ง</small><b>${p.count}/3 ครั้ง</b></div><div><small>ความแม่นยำ</small><b>${p.confidence}%</b></div></div><div class=notice><b>ประเด็นความเสี่ยง:</b><ul>${(p.flags||[]).map(esc).map(x=>'<li>'+x+'</li>').join('')||'<li>ไม่พบสัญญาณเด่น</li>'}</ul></div>`
 }
-
 function esc(x){return String(x||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;}[m]))}
-
 window.addEventListener('beforeunload',()=>S.stream&&S.stream.getTracks().forEach(t=>t.stop()));
 navigator.mediaDevices?.addEventListener('devicechange',refresh);
 refresh();
