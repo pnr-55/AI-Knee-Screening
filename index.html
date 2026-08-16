@@ -1,159 +1,620 @@
-<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KneeAI V8 — AI Knee Screening</title><script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script><style>
-*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#102033;font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif}.page{display:none}.page.active{display:block}.wrap{max-width:1100px;margin:auto;padding:20px}.top{position:sticky;top:0;z-index:9;background:#fff;border-bottom:1px solid #dfe6ef;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}.brand{font-weight:900;cursor:pointer}.btn,.ghost{padding:11px 16px;border-radius:11px;border:0;font-weight:800;cursor:pointer}.btn{background:#1769e8;color:#fff}.ghost{background:#eef2f6;color:#24364a;border:1px solid #dce3eb}.card{background:#fff;border:1px solid #dfe6ef;border-radius:20px;padding:24px;box-shadow:0 12px 35px #10203312}.hero{padding:65px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.features{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}.feature{padding:18px;border:1px solid #dfe6ef;border-radius:16px;background:#fff}.muted,.helper{color:#68798e;font-size:12px;line-height:1.7}.form{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:5px}.field input,.field select{width:100%;padding:11px;border:1px solid #d7e0e9;border-radius:10px}.steps{display:flex;gap:6px;margin-bottom:18px;overflow:auto}.step{padding:7px 10px;background:#eef2f6;border-radius:99px;font-size:10px;white-space:nowrap}.activeStep{background:#e8f2ff;color:#1769e8;font-weight:800}.q{border:1px solid #e0e6ed;border-radius:14px;padding:14px;margin:10px 0}.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}.opts label{border:1px solid #dfe5ec;border-radius:9px;padding:9px;font-size:11px}.camera{position:relative;background:#07101d;border-radius:18px;overflow:hidden;aspect-ratio:16/10}.camera video,.camera canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.pill{position:absolute;z-index:2;top:10px;left:10px;background:#07101ddd;color:#fff;padding:7px 10px;border-radius:99px;font-size:10px}.counter{left:auto;right:10px}.record{display:none;position:absolute;right:10px;top:48px;background:#a91936;color:#fff;padding:6px 9px;border-radius:99px;font-size:10px}.record.on{display:block}.side{display:grid;gap:9px}.mini{padding:13px;background:#f8fafc;border:1px solid #dfe6ef;border-radius:14px}.big{font-size:23px;font-weight:900}.bar{height:7px;background:#e5ebf2;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:#1769e8}.actions{display:flex;gap:8px;justify-content:space-between;margin-top:18px}.report{margin-top:15px}.risk{font-size:28px;font-weight:900}.badge{display:inline-block;padding:7px 10px;border-radius:99px;font-size:10px;font-weight:900}.low{background:#e7f8ef;color:#137650}.mod{background:#fff4d5;color:#8a6500}.high{background:#ffebef;color:#a3213b}.data{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}.data>div{padding:13px;border:1px solid #dfe6ef;border-radius:13px}.data b{display:block;font-size:19px;margin-top:4px}.rows .row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #edf0f4;font-size:11px}.doctorGrid{display:grid;grid-template-columns:280px 1fr;gap:14px}.patients{display:grid;gap:7px}.patient{padding:10px;border:1px solid #dfe6ef;border-radius:10px;cursor:pointer}.notice{margin-top:13px;padding:13px;background:#f5f9fd;border:1px solid #dce7f2;border-radius:13px;font-size:11px;line-height:1.7}.warn{background:#fff8e8;border-color:#f0dfb0}.hide{display:none!important}@media(max-width:800px){.grid,.doctorGrid{grid-template-columns:1fr}.features{grid-template-columns:1fr 1fr}.form,.data{grid-template-columns:1fr 1fr}.opts{grid-template-columns:1fr}.actions{flex-direction:column}}@media(max-width:520px){.features,.form,.data{grid-template-columns:1fr}}
-</style></head><body>
-<header class="top"><div class="brand" onclick="go('home')">🦵 KneeAI</div><div><button class="ghost" onclick="doctorLogin()">แพทย์</button> <button class="btn" onclick="go('profile')">เริ่มประเมิน</button></div></header>
-<main id="home" class="page active"><div class="wrap hero"><div class="grid"><div><span class="badge low">AI • REAL-TIME POSE</span><h1>ระบบคัดกรองข้อเข่าด้วย AI</h1><p class="muted">ประเมินอาการร่วมกับการลุก–นั่งจากกล้องจริงแบบเรียลไทม์ นับ 3 ครั้ง และสร้างสรุปความเสี่ยงเบื้องต้นที่อ่านง่าย</p><button class="btn" onclick="go('profile')">เริ่มการประเมิน</button><div class="notice warn"><b>สำคัญ:</b> ผลนี้เป็นการคัดกรองเบื้องต้น ไม่ใช่การวินิจฉัยโรค</div></div><div class="card"><h2>ระบบทำอะไร</h2><p class="muted">① แบบสอบถามอาการ ② กล้อง + MediaPipe Pose ③ นับลุก–นั่งจริง 3 ครั้ง ④ สรุปผล ⑤ ประวัติสำหรับแพทย์ในอุปกรณ์นี้</p></div></div><div class="features"><div class="feature"><b>Pose Tracking</b><p class="muted">ตรวจสะโพก เข่า ข้อเท้า</p></div><div class="feature"><b>3× Sit-to-Stand</b><p class="muted">ลดความเหนื่อยจาก 5 ครั้ง</p></div><div class="feature"><b>Real-time</b><p class="muted">เห็นตัวนับขณะทำ</p></div><div class="feature"><b>Doctor Portal</b><p class="muted">ค้นประวัติที่บันทึกในเครื่อง</p></div></div></div></main>
-<main id="profile" class="page"><div class="wrap"><div class="card"><div class="steps"><span class="step activeStep">01 ข้อมูล</span><span class="step">02 อาการ</span><span class="step">03 กล้อง</span><span class="step">04 ผล</span></div><h2>ข้อมูลผู้รับการประเมิน</h2><div class="form"><div class="field"><label>ชื่อ–นามสกุล *</label><input id="name"></div><div class="field"><label>รหัสผู้รับการประเมิน *</label><input id="code" placeholder="KN-0001"></div><div class="field"><label>อายุ *</label><input id="age" type="number" min="1"></div><div class="field"><label>เพศ</label><select id="sex"><option>ไม่ระบุ</option><option>หญิง</option><option>ชาย</option><option>อื่น ๆ</option></select></div></div><div class="notice warn"><label><input id="safe" type="checkbox"> ไม่มีอาการที่ทำให้ลุก–นั่งไม่ปลอดภัย และพร้อมหยุดทันทีหากผิดปกติ</label></div><div class="notice"><label><input id="consent" type="checkbox"> ยินยอมให้ระบบประมวลผลข้อมูลเพื่อการคัดกรองเบื้องต้นบนอุปกรณ์นี้</label></div><div id="perr" class="helper"></div><div class="actions"><button class="ghost" onclick="go('home')">ย้อนกลับ</button><button class="btn" onclick="profileNext()">ถัดไป</button></div></div></div></main>
-<main id="questions" class="page"><div class="wrap"><div class="card"><div class="steps"><span class="step">01</span><span class="step activeStep">02 อาการ</span><span class="step">03</span><span class="step">04</span></div><h2>แบบประเมินอาการ</h2><p class="muted">คะแนนใช้เป็นข้อมูลประกอบเท่านั้น</p><div id="qlist"></div><div id="qerr" class="helper"></div><div class="actions"><button class="ghost" onclick="go('profile')">ย้อนกลับ</button><button class="btn" onclick="qNext()">ไปที่กล้อง</button></div></div></div></main>
-<main id="cameraPage" class="page"><div class="wrap"><div class="card"><div class="steps"><span class="step">01</span><span class="step">02</span><span class="step activeStep">03 กล้อง</span><span class="step">04</span></div><h2>ประเมินการลุก–นั่งแบบเรียลไทม์</h2><p class="muted">วางกล้องด้านข้าง ให้เห็นศีรษะถึงข้อเท้า กดเริ่มเมื่อขึ้นพร้อม</p><div class="grid"><div><div class="camera"><video id="video" autoplay muted playsinline></video><canvas id="canvas"></canvas><span id="camStatus" class="pill">ยังไม่เปิดกล้อง</span><span id="count" class="pill counter">0 / 3</span><span id="rec" class="record">● กำลังบันทึก</span></div><p class="helper">นับเมื่อผ่านลำดับ ยืน → ลงนั่งชัด → ลุกกลับยืน</p></div><div class="side"><div class="mini"><b>กล้อง</b><select id="cams" style="width:100%;padding:9px;margin:7px 0;border:1px solid #d8e0e9;border-radius:9px"></select><button id="open" class="btn" onclick="openCam()">เปิดกล้อง</button></div><div class="mini"><small>POSE QUALITY</small><div id="conf" class="big">—</div><div id="body" class="helper">รอภาพ</div><div class="bar"><i id="bar"></i></div></div><div class="data"><div><small>มุมเข่า</small><b id="angle">—</b></div><div><small>Phase</small><b id="phase">ยืน</b></div><div><small>เวลา</small><b id="timer">0.0</b></div><div><small>Gate</small><b id="gate">WAIT</b></div></div><button id="start" class="btn" disabled onclick="startTest()">กำลังเตรียมกล้อง</button><button id="stop" class="ghost" disabled onclick="stopTest(true)">หยุด</button><div id="msg" class="helper">เปิดกล้องเพื่อเริ่มตรวจตำแหน่ง</div></div></div><div class="notice warn"><b>ความปลอดภัย:</b> ใช้เก้าอี้มั่นคง พื้นไม่ลื่น และมีผู้ดูแลใกล้ ๆ หากเสี่ยงเสียการทรงตัว</div></div></div></main>
-<main id="report" class="page"><div class="wrap"><div class="card"><span class="badge low">PRELIMINARY RESULT</span><h2>สรุปผลการคัดกรองเบื้องต้น</h2><p class="helper"><span id="rn"></span> • รหัส <span id="rc"></span> • อายุ <span id="ra"></span> ปี</p><div class="report card"><span id="rb" class="badge">—</span><div id="rt" class="risk">—</div><p id="rx" class="muted">—</p></div><div class="data"><div><small>คะแนนอาการ</small><b id="rq">—</b></div><div><small>เวลารวม 3 ครั้ง</small><b id="rtime">—</b></div><div><small>มุมเข่าเฉลี่ย</small><b id="rang">—</b></div><div><small>คุณภาพข้อมูล</small><b id="rconf">—</b></div></div><div class="grid report"><div class="card"><h3>เสี่ยงอะไรบ้าง?</h3><div id="risks" class="rows"></div></div><div class="card"><h3>เวลาลุก–นั่ง</h3><div id="trials" class="rows"></div></div></div><div class="grid report"><div class="card"><h3>ภาพหลักฐาน</h3><img id="snap" style="width:100%;border-radius:12px" class="hide"></div><div class="card"><h3>วิดีโอการทดสอบ</h3><video id="vid" controls playsinline style="width:100%;border-radius:12px"></video><p id="vempty" class="helper">ไม่มีวิดีโอจากเบราว์เซอร์นี้</p></div></div><div id="summary" class="notice"></div><div class="notice"><b>หมายเหตุ:</b> ผลนี้เป็นการประเมินเบื้องต้นเท่านั้น ไม่ใช่การวินิจฉัยข้อเข่าเสื่อม ขาโก่ง หรือโรคอื่น การยืนยันต้องตรวจโดยแพทย์/ผู้เชี่ยวชาญ</div><div class="actions"><button class="btn" onclick="window.print()">พิมพ์ / PDF</button><button class="ghost" onclick="downloadJSON()">บันทึก JSON</button><button class="ghost" onclick="go('home')">กลับหน้าแรก</button><button class="btn" onclick="doctorLogin()">ระบบแพทย์</button></div></div></div></main>
-<main id="login" class="page"><div class="wrap"><div class="card" style="max-width:430px;margin:70px auto"><h2>เข้าสู่ระบบแพทย์</h2><p class="muted">สำหรับดูประวัติที่บันทึกในเบราว์เซอร์เครื่องนี้</p><input id="did" placeholder="รหัสแพทย์" style="width:100%;padding:11px;margin:8px 0;border:1px solid #d7e0e9;border-radius:9px"><input id="dp" type="password" placeholder="รหัสผ่าน" style="width:100%;padding:11px;border:1px solid #d7e0e9;border-radius:9px"><div class="notice">บัญชีสำหรับนำเสนอ: <b>DOC001 / KneeAI2026</b></div><div id="lerr" class="helper"></div><div class="actions"><button class="ghost" onclick="go('home')">กลับ</button><button class="btn" onclick="login()">เข้าสู่ระบบ</button></div></div></div></main>
-<main id="doctor" class="page"><div class="wrap"><div class="card"><div class="actions" style="margin:0"><div><h2>ระบบแพทย์</h2><p class="helper">ค้นหาประวัติด้วยชื่อหรือรหัสผู้รับการประเมิน</p></div><button class="ghost" onclick="logout()">ออกจากระบบ</button></div><div class="doctorGrid" style="margin-top:15px"><div><input id="search" placeholder="ค้นหา..." oninput="renderPatients()" style="width:100%;padding:10px;border:1px solid #d7e0e9;border-radius:9px"><div id="plist" class="patients" style="margin-top:8px"></div></div><div id="detail" class="card" style="box-shadow:none">เลือกผู้รับการประเมิน</div></div></div></div></main>
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KneeAI — AI Knee Screening</title>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+<style>
+:root {
+  --bg-color: #f4f8fb;
+  --card-bg: #ffffff;
+  --text-main: #0d1b2a;
+  --text-muted: #5c6b73;
+  --primary: #1b4965;
+  --primary-hover: #112a3d;
+  --accent: #62b6cb;
+  --border-color: #dbe9ee;
+  --shadow: 0 16px 40px rgba(27, 73, 101, 0.08);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg-color);color:var(--text-main);font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif;line-height:1.6}
+.page{display:none}.page.active{display:block}
+.wrap{max-width:1100px;margin:auto;padding:24px}
+.top{position:sticky;top:0;z-index:99;background:rgba(255, 255, 255, 0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-color);padding:16px 32px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:20px;font-weight:900;color:var(--primary);cursor:pointer;letter-spacing:0.5px}
+.btn,.ghost{padding:12px 22px;border-radius:12px;border:0;font-weight:700;cursor:pointer;transition:all 0.2s ease}
+.btn{background:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(27, 73, 101, 0.2)}
+.btn:hover{background:var(--primary-hover);transform:translateY(-1px)}
+.ghost{background:transparent;color:var(--primary);border:1px solid var(--primary)}
+.ghost:hover{background:rgba(27, 73, 101, 0.05)}
+.card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:24px;padding:32px;box-shadow:var(--shadow)}
+.hero{padding:50px 0}
+.grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:30px;align-items:center}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+.feature{padding:20px;border:1px solid var(--border-color);border-radius:18px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,0.02)}
+.muted,.helper{color:var(--text-muted);font-size:13px;line-height:1.7}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--primary)}
+.field input,.field select{width:100%;padding:13px;border:1px solid var(--border-color);border-radius:12px;background:#fcfdff;font-size:14px}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(98, 182, 203, 0.15)}
+.steps{display:flex;gap:8px;margin-bottom:24px;overflow:auto}
+.step{padding:8px 14px;background:#eef4f7;border-radius:99px;font-size:11px;white-space:nowrap;color:var(--text-muted);font-weight:600}
+.activeStep{background:var(--primary);color:#fff;font-weight:700}
+.q{border:1px solid var(--border-color);border-radius:16px;padding:18px;margin:12px 0;background:#fcfdff}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.opts label{border:1px solid var(--border-color);border-radius:10px;padding:10px;font-size:12px;cursor:pointer;background:#fff;transition:all 0.15s}
+.opts label:hover{border-color:var(--accent);background:#f4f9fb}
+.camera{position:relative;background:#0d1b2a;border-radius:20px;overflow:hidden;aspect-ratio:16/10}
+.camera video,.camera canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pill{position:absolute;z-index:2;top:12px;left:12px;background:rgba(13, 27, 42, 0.8);backdrop-filter:blur(4px);color:#fff;padding:8px 14px;border-radius:99px;font-size:11px;font-weight:600}
+.counter{left:auto;right:12px}
+.record{display:none;position:absolute;right:12px;top:52px;background:#c0392b;color:#fff;padding:6px 12px;border-radius:99px;font-size:11px;font-weight:700;animation:pulse 1.5s infinite}
+@keyframes pulse{0%{opacity:1}50%{opacity:0.5}100%{opacity:1}}
+.record.on{display:block}
+.side{display:grid;gap:12px}
+.mini{padding:16px;background:#fcfdff;border:1px solid var(--border-color);border-radius:16px}
+.big{font-size:24px;font-weight:900;color:var(--primary)}
+.bar{height:8px;background:#e5edf2;border-radius:9px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width 0.2s}
+.actions{display:flex;gap:12px;justify-content:space-between;margin-top:24px}
+.report{margin-top:18px}
+.risk{font-size:28px;font-weight:900;color:var(--primary)}
+.badge{display:inline-block;padding:8px 14px;border-radius:99px;font-size:11px;font-weight:800}
+.low{background:#e1f5fe;color:#0288d1}
+.mod{background:#fff8e1;color:#f57f17}
+.high{background:#ffebee;color:#c62828}
+.data{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.data>div{padding:16px;border:1px solid var(--border-color);border-radius:16px;background:#fcfdff}
+.data b{display:block;font-size:20px;margin-top:4px;color:var(--primary)}
+.rows .row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #edf2f6;font-size:13px}
+.doctorGrid{display:grid;grid-template-columns:300px 1fr;gap:20px}
+.patients{display:grid;gap:8px;max-height:500px;overflow-y:auto}
+.patient{padding:14px;border:1px solid var(--border-color);border-radius:12px;cursor:pointer;background:#fcfdff;transition:all 0.2s}
+.patient:hover{border-color:var(--accent);background:#f4f9fb}
+.notice{margin-top:16px;padding:16px;background:#f4f9fb;border:1px solid #dbe9ee;border-radius:16px;font-size:13px;line-height:1.7}
+.warn{background:#fffdf4;border-color:#faedcd}
+.hide{display:none!important}
+@media(max-width:800px){.grid,.doctorGrid{grid-template-columns:1fr}.features{grid-template-columns:1fr 1fr}.form,.data{grid-template-columns:1fr 1fr}.opts{grid-template-columns:1fr}.actions{flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand" onclick="go('home')">KneeAI — AI Knee Screening</div>
+  <div>
+    <button class="ghost" onclick="doctorLogin()">ระบบแพทย์</button> 
+    <button class="btn" onclick="go('profile')">เริ่มประเมิน</button>
+  </div>
+</header>
+
+<main id="home" class="page active">
+  <div class="wrap hero">
+    <div class="grid">
+      <div>
+        <span class="badge low">AI • LUXURY HEALTHTECH</span>
+        <h1 style="font-size:40px;line-height:1.2;margin:16px 0">ระบบคัดกรองข้อเข่าอัจฉริยะด้วย AI</h1>
+        <p class="muted">สัมผัสประสบการณ์ตรวจสุขภาพข้อเข่าระดับพรีเมียม วิเคราะห์ความแม่นยำสูงด้วยเทคโนโลยี Computer Vision ถ่ายภาพยืนตรงและทดสอบความมั่นคงอย่างไร้รอยต่อ</p>
+        <div style="margin-top:24px"><button class="btn" onclick="go('profile')">เริ่มต้นใช้งาน</button></div>
+        <div class="notice warn" style="margin-top:20px"><b>หมายเหตุ:</b> ระบบนี้เป็นการคัดกรองเบื้องต้น ไม่ใช่การวินิจฉัยโรคจากแพทย์โดยตรง</div>
+      </div>
+      <div class="card">
+        <h2>ขั้นตอนการทำงาน</h2>
+        <p class="muted">ระบบออกแบบมาให้ใช้งานง่าย รวดเร็ว และแม่นยำในทุกขั้นตอน:</p>
+        <div class="rows" style="margin-top:12px">
+          <div class="row"><span>1. เข้าสู่ระบบหรือลงทะเบียน</span><b>ข้อมูลส่วนตัว</b></div>
+          <div class="row"><span>2. ทำแบบสอบถามอาการ 8 ข้อ</span><b>ประเมินเบื้องต้น</b></div>
+          <div class="row"><span>3. สแกนหัวเข่า & ถ่ายรูปยืนตรง</span><b>Pose AI</b></div>
+          <div class="row"><span>4. อัดวิดีโอลุก–นั่ง 3 ครั้ง</span><b>ทดสอบความมั่นคง</b></div>
+          <div class="row"><span>5. วิเคราะห์ความเสี่ยงแบบ Real-time</span><b>แม่นยำสูงสุด</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="features">
+      <div class="feature"><b>No Data Locking</b><p class="muted">ประมวลผลสด ไม่มีล็อกค่าใดๆ</p></div>
+      <div class="feature"><b>Smart Summary</b><p class="muted">สรุปผลพร้อมภาพและวิดีโอ</p></div>
+      <div class="feature"><b>Clinic Match</b><p class="muted">แนะนำคลินิกใกล้บ้าน</p></div>
+      <div class="feature"><b>Doctor Portal</b><p class="muted">ระบบค้นหาประวัติคนไข้</p></div>
+    </div>
+  </div>
+</main>
+
+<main id="profile" class="page">
+  <div class="wrap">
+    <div class="card" style="max-width:700px;margin:auto">
+      <div class="steps"><span class="step activeStep">01 ข้อมูลส่วนตัว</span><span class="step">02 แบบสอบถาม</span><span class="step">03 สแกนและกล้อง</span><span class="step">04 สรุปผล</span></div>
+      <h2>ลงทะเบียน / ข้อมูลผู้รับการประเมิน</h2>
+      <p class="muted" style="margin-bottom:20px">กรุณากรอกข้อมูลตามความเป็นจริงเพื่อความแม่นยำสูงสุดในการวิเคราะห์</p>
+      <div class="form">
+        <div class="field"><label>ชื่อ–นามสกุล *</label><input id="name" placeholder="ระบุชื่อ-นามสกุล"></div>
+        <div class="field"><label>รหัสผู้รับการประเมิน *</label><input id="code" placeholder="เช่น KN-0001"></div>
+        <div class="field"><label>อายุ *</label><input id="age" type="number" min="1" placeholder="ระบุอายุ"></div>
+        <div class="field"><label>เพศ</label><select id="sex"><option>ไม่ระบุ</option><option>หญิง</option><option>ชาย</option><option>อื่น ๆ</option></select></div>
+      </div>
+      <div class="notice warn" style="margin-top:20px"><label style="cursor:pointer"><input id="safe" type="checkbox"> รับทราบและยืนยันว่าไม่มีอาการรุนแรงที่ทำให้ขยับไม่ปลอดภัย พร้อมหยุดทันทีหากมีอาการเจ็บ</label></div>
+      <div class="notice"><label style="cursor:pointer"><input id="consent" type="checkbox"> ยินยอมให้ระบบประมวลผลภาพและข้อมูลเพื่อการคัดกรองเบื้องต้น</label></div>
+      <div id="perr" class="helper" style="color:#c0392b;margin-top:8px"></div>
+      <div class="actions"><button class="ghost" onclick="go('home')">ย้อนกลับ</button><button class="btn" onclick="profileNext()">ถัดไป: ทำแบบสอบถาม</button></div>
+    </div>
+  </div>
+</main>
+
+<main id="questions" class="page">
+  <div class="wrap">
+    <div class="card" style="max-width:800px;margin:auto">
+      <div class="steps"><span class="step">01 ข้อมูลส่วนตัว</span><span class="step activeStep">02 แบบสอบถามอาการ</span><span class="step">03 สแกนและกล้อง</span><span class="step">04 สรุปผล</span></div>
+      <h2>แบบประเมินอาการ 8 ข้อ</h2>
+      <p class="muted">เลือกคำตอบที่ตรงกับอาการของคุณในช่วง 7 วันที่ผ่านมา</p>
+      <div id="qlist"></div>
+      <div id="qerr" class="helper" style="color:#c0392b;margin-top:8px"></div>
+      <div class="actions"><button class="ghost" onclick="go('profile')">ย้อนกลับ</button><button class="btn" onclick="qNext()">ไปขั้นตอนสแกนกล้อง</button></div>
+    </div>
+  </div>
+</main>
+
+<main id="cameraPage" class="page">
+  <div class="wrap">
+    <div class="card">
+      <div class="steps"><span class="step">01 ข้อมูลส่วนตัว</span><span class="step">02 แบบสอบถาม</span><span class="step activeStep">03 สแกนและกล้อง AI</span><span class="step">04 สรุปผล</span></div>
+      <h2>เปิดกล้องสแกนหัวเข่า & ทดสอบความมั่นคง</h2>
+      <p class="muted">ถ่ายรูปยืนตรง 1 รูปเพื่อบันทึกท่าทาง จากนั้นทำท่าลุก–นั่ง 3 ครั้ง (Squat) เพื่อเช็คความมั่นคง</p>
+      <div class="grid">
+        <div>
+          <div class="camera">
+            <video id="video" autoplay muted playsinline></video>
+            <canvas id="canvas"></canvas>
+            <span id="camStatus" class="pill">ยังไม่เปิดกล้อง</span>
+            <span id="count" class="pill counter">0 / 3 ครั้ง</span>
+            <span id="rec" class="record">● กำลังบันทึกวิดีโอ</span>
+          </div>
+          <p class="helper" style="margin-top:8px">จัดวางกล้องให้เห็นเต็มตัวตั้งแต่ศีรษะจรดปลายเท้า</p>
+        </div>
+        <div class="side">
+          <div class="mini">
+            <b>ตั้งค่ากล้อง</b>
+            <select id="cams" style="width:100%;padding:10px;margin:8px 0;border:1px solid var(--border-color);border-radius:10px"></select>
+            <button id="open" class="btn" style="width:100%" onclick="openCam()">เปิดกล้องใช้งาน</button>
+          </div>
+          <div class="mini">
+            <small>POSE CONFIDENCE</small>
+            <div id="conf" class="big">—</div>
+            <div id="body" class="helper">สถานะการตรวจจับร่างกาย</div>
+            <div class="bar"><i id="bar"></i></div>
+          </div>
+          <div class="data" style="grid-template-columns:repeat(2,1fr)">
+            <div><small>มุมเข่าปัจจุบัน</small><b id="angle">—</b></div>
+            <div><small>สถานะท่าทาง</small><b id="phase">ยืนตรง</b></div>
+          </div>
+          <button id="start" class="btn" disabled onclick="startTest()">ถ่ายรูปยืนตรง & เริ่มนับลุก-นั่ง</button>
+          <button id="stop" class="ghost" disabled onclick="stopTest(true)">หยุดและดูผลลัพธ์</button>
+          <div id="msg" class="helper" style="color:var(--primary)">กรุณาเปิดกล้องเพื่อเริ่มระบบ AI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<main id="report" class="page">
+  <div class="wrap">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <div>
+          <span class="badge low">AI SCREENING REPORT</span>
+          <h2 style="margin:4px 0 0 0">รายงานผลการคัดกรองข้อเข่า</h2>
+          <p class="helper">ผู้รับการประเมิน: <b id="rn"></b> | รหัส: <b id="rc"></b> | อายุ: <b id="ra"></b> ปี</p>
+        </div>
+        <div><button class="btn" onclick="window.print()">พิมพ์รายงาน / PDF</button></div>
+      </div>
+
+      <div class="card report" style="background:#fcfdff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px">
+        <div>
+          <span id="rb" class="badge">—</span>
+          <div id="rt" class="risk" style="margin-top:8px">—</div>
+          <p id="rx" class="muted" style="margin:4px 0 0 0">—</p>
+        </div>
+        <div style="text-align:right">
+          <small class="muted">ความเชื่อมั่นระบบ AI</small>
+          <div id="rconf" style="font-size:26px;font-weight:900;color:var(--primary)">—</div>
+        </div>
+      </div>
+
+      <div class="data">
+        <div><small>คะแนนแบบสอบถาม</small><b id="rq">—</b></div>
+        <div><small>เวลารวม 3 ครั้ง</small><b id="rtime">—</b></div><div><small>มุมเข่าเฉลี่ย</small><b id="rang">—</b></div>
+        <div><small>จำนวนรอบลุก–นั่ง</small><b id="rcount">—</b></div>
+      </div>
+
+      <div class="grid report">
+        <div class="card">
+          <h3>ประเด็นอาการและข้อสังเกต</h3>
+          <div id="risks" class="rows"></div>
+        </div>
+        <div class="card">
+          <h3>เวลาในการทำแต่ละรอบ</h3>
+          <div id="trials" class="rows"></div>
+        </div>
+      </div>
+
+      <div class="grid report">
+        <div class="card">
+          <h3>รูปถ่ายยืนตรง (Snapshot)</h3>
+          <img id="snap" style="width:100%;border-radius:12px;border:1px solid var(--border-color);margin-top:10px" class="hide">
+          <p id="snotice" class="helper">ไม่มีภาพถ่ายในรอบนี้</p>
+        </div>
+        <div class="card">
+          <h3>วิดีโอบันทึกการทดสอบ</h3>
+          <video id="vid" controls playsinline style="width:100%;border-radius:12px;border:1px solid var(--border-color);margin-top:10px"></video>
+          <p id="vempty" class="helper">ไม่มีวิดีโอจากเบราว์เซอร์นี้</p>
+        </div>
+      </div>
+
+      <div class="card report" style="background:#f4f9fb;border-color:var(--accent)">
+        <h3 style="color:var(--primary)">💡 คำแนะนำเบื้องต้น & คลินิกกายภาพใกล้บ้าน</h3>
+        <p class="muted" id="recommendationText" style="margin-top:8px">ระบบกำลังประมวลผลคำแนะนำที่เหมาะสมกับผลลัพธ์ของคุณ...</p>
+      </div>
+
+      <div class="notice"><b>หมายเหตุ:</b> ผลการประเมินนี้วิเคราะห์จากข้อมูลสด (Real-time) ไม่มีกระบวนการล็อกค่าใดๆ เพื่อให้ได้ผลลัพธ์ที่ตรงตามความเป็นจริงที่สุด ควรปรึกษาแพทย์หรือนักกายภาพบำบัดเพื่อการวินิจฉัยที่แม่นยำ</div>
+
+      <div class="actions">
+        <button class="ghost" onclick="go('home')">กลับสู่หน้าแรก</button>
+        <button class="btn" onclick="doctorLogin()">เข้าสู่ระบบแพทย์เพื่อตรวจสอบประวัติ</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<main id="login" class="page">
+  <div class="wrap">
+    <div class="card" style="max-width:440px;margin:50px auto">
+      <h2>เข้าสู่ระบบแพทย์</h2>
+      <p class="muted">สำหรับบุคลากรทางการแพทย์เพื่อตรวจสอบประวัติคนไข้</p>
+      <div style="margin:20px 0" class="form" style="grid-template-columns:1fr">
+        <div class="field" style="margin-bottom:12px"><label>รหัสแพทย์หรือชื่อแพทย์</label><input id="did" placeholder="เช่น DOC001"></div>
+        <div class="field"><label>รหัสผ่าน</label><input id="dp" type="password" placeholder="รหัสผ่านระบบ"></div>
+      </div>
+      <div class="notice">บัญชีทดสอบระบบ: <b>DOC001 / KneeAI2026</b></div>
+      <div id="lerr" class="helper" style="color:#c0392b;margin-top:8px"></div>
+      <div class="actions"><button class="ghost" onclick="go('home')">กลับ</button><button class="btn" onclick="login()">เข้าสู่ระบบแพทย์</button></div>
+    </div>
+  </div>
+</main>
+
+<main id="doctor" class="page">
+  <div class="wrap">
+    <div class="card">
+      <div class="actions" style="margin:0;align-items:center">
+        <div>
+          <h2>ระบบสารสนเทศแพทย์ (Doctor Portal)</h2>
+          <p class="helper">ค้นหาชื่อหรือรหัสคนไข้เพื่อดูประวัติ อาการ และความเสี่ยงทั้งหมด</p>
+        </div>
+        <button class="ghost" onclick="logout()">ออกจากระบบ</button>
+      </div>
+      <div class="doctorGrid" style="margin-top:20px">
+        <div>
+          <input id="search" placeholder="ค้นหาด้วยชื่อ หรือ รหัสคนไข้..." oninput="renderPatients()" style="width:100%;padding:12px;border:1px solid var(--border-color);border-radius:12px;margin-bottom:12px">
+          <div id="plist" class="patients"></div>
+        </div>
+        <div id="detail" class="card" style="box-shadow:none;background:#fcfdff">
+          <p class="muted" style="text-align:center;padding:40px 0">กรุณาเลือกรายชื่อคนไข้ทางด้านซ้ายเพื่อดูประวัติเชิงลึก</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
 <script>
-const Q=['ปวดเข่าเวลาเดินขึ้นลงบันไดหรือไม่?','เข่าฝืดหรือติดหลังตื่นนอน/นั่งนานหรือไม่?','นั่งยองหรือพับเข่าลำบากหรือไม่?','มีเสียงกรอบแกรบในข้อเข่าหรือไม่?','เข่าหลวมหรือไม่มั่นคงหรือไม่?','มีบวม แดง หรือร้อนที่เข่าหรือไม่?','อาการปวดกระทบกิจวัตรมากแค่ไหน?','เคยบาดเจ็บหรือผ่าตัดเข่าหรือไม่?'];
-const O=[['ไม่มี','เล็กน้อย','มาก'],['ไม่มี','<15 นาที','>15 นาที'],['ปกติ','ตึง/เจ็บ','ทำไม่ได้'],['ไม่มี','บางครั้ง','มีเสียง+เจ็บ'],['ปกติ','บางครั้ง','ชัดเจน'],['ไม่มี','เล็กน้อย','บ่อย'],['ไม่มี','เล็กน้อย','มาก'],['ไม่มี','เล็กน้อย','หนัก/ผ่าตัด']];
+const Q=[
+  'ปวดเข่าเวลาเดินขึ้นลงบันไดหรือไม่?',
+  'เข่าฝืดหรือติดหลังตื่นนอนหรือนั่งนานหรือไม่?',
+  'นั่งยองหรือพับเข่าลำบากหรือไม่?',
+  'มีเสียงกรอบแกรบหรือเสียงดังในข้อเข่าหรือไม่?',
+  'รู้สึกเข่าหลวมหรือไม่มั่นคงขณะเดินหรือไม่?',
+  'มีอาการบวม แดง หรือร้อนบริเวณข้อเข่าหรือไม่?',
+  'อาการปวดเข่าส่งผลกระทบต่อกิจวัตรประจำวันมากแค่ไหน?',
+  'เคยมีประวัติบาดเจ็บรุนแรงที่เข่าหรือเคยผ่าตัดเข่าหรือไม่?'
+];
+const O=[
+  ['ไม่มี','เล็กน้อย','มาก'],
+  ['ไม่มี','<15 นาที','>15 นาที'],
+  ['ปกติ','ตึง/เจ็บ','ทำไม่ได้'],
+  ['ไม่มี','บางครั้ง','มีเสียง+เจ็บ'],
+  ['ปกติ','บางครั้ง','ชัดเจน'],
+  ['ไม่มี','เล็กน้อย','บ่อย'],
+  ['ไม่มี','เล็กน้อย','มาก'],
+  ['ไม่มี','เล็กน้อย','หนัก/ผ่าตัด']
+];
 let S={stream:null,pose:null,raf:0,busy:false,last:0,baseH:null,baseLeg:null,cal:false,good:0,total:0,run:false,count:0,phase:'standing',pf:0,start:0,lastCount:0,trial:[],angles:[],confs:[],frames:0,gframes:0,rec:null,chunks:[],url:null,img:null,name:'',code:'',age:0,q:0};
 const $=x=>document.getElementById(x);
-function go(x){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(x).classList.add('active');scrollTo(0,0)}
-Q.forEach((q,i)=>{$('qlist').innerHTML+=`<div class=q><b>${i+1}. ${q}</b><div class=opts>${O[i].map((o,j)=>`<label><input type=radio name=q${i} value=${j*2}> ${o}</label>`).join('')}</div></div>`});
-function profileNext(){S.name=$('name').value.trim();S.code=$('code').value.trim();S.age=+$('age').value;if(!S.name||!S.code||!S.age||!$('safe').checked||!$('consent').checked){$('perr').textContent='กรุณากรอกข้อมูลและยืนยันความปลอดภัย/ความยินยอม';return}go('questions')}
-function qNext(){S.q=0;for(let i=0;i<8;i++){let e=document.querySelector(`input[name=q${i}]:checked`);if(!e){$('qerr').textContent='กรุณาตอบให้ครบทุกข้อ';return}S.q+=+e.value}$('qerr').textContent='';go('cameraPage');refresh()}
-async function refresh(){if(!navigator.mediaDevices?.enumerateDevices)return;let ds=await navigator.mediaDevices.enumerateDevices(),cs=ds.filter(x=>x.kind==='videoinput');$('cams').innerHTML=cs.map((x,i)=>`<option value="${x.deviceId}">${x.label||'Camera '+(i+1)}</option>`).join('')}
+function go(x){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(x).classList.add('active');window.scrollTo(0,0)}
+
+Q.forEach((q,i)=>{
+  $('qlist.innerHTML','')||($('qlist').innerHTML+=`<div class=q><b>ข้อที่ ${i+1}: ${q}</b><div class=opts>${O[i].map((o,j)=>`<label><input type=radio name=q${i} value=${j*2}> ${o}</label>`).join('')}</div></div>`);
+});
+
+function profileNext(){
+  S.name=$('name').value.trim();
+  S.code=$('code').value.trim();
+  S.age=+$('age').value;
+  if(!S.name||!S.code||!S.age||!$('safe').checked||!$('consent').checked){
+    $('perr').textContent='กรุณากรอกข้อมูลให้ครบถ้วน และกดยืนยันความปลอดภัย/ความยินยอม';
+    return;
+  }
+  $('perr').textContent='';
+  go('questions');
+}
+
+function qNext(){
+  S.q=0;
+  for(let i=0;i<8;i++){
+    let e=document.querySelector(`input[name=q${i}]:checked`);
+    if(!e){$('qerr').textContent='กรุณาตอบแบบประเมินให้ครบทุกข้อ';return;}
+    S.q+=+e.value;
+  }
+  $('qerr').textContent='';
+  go('cameraPage');
+  refreshCams();
+}
+
+async function refreshCams(){
+  if(!navigator.mediaDevices?.enumerateDevices)return;
+  let ds=await navigator.mediaDevices.enumerateDevices(),cs=ds.filter(x=>x.kind==='videoinput');
+  $('cams').innerHTML=cs.map((x,i)=>`<option value="${x.deviceId}">${x.label||'กล้องตัวที่ '+(i+1)}</option>`).join('');
+}
+
 async function openCam(){
   try{
     if(S.stream)S.stream.getTracks().forEach(t=>t.stop());
-    S.stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:960},height:{ideal:540},frameRate:{ideal:30}},audio:false});
-    $('video').srcObject=S.stream;await $('video').play();$('open').disabled=true;$('open').textContent='กล้องพร้อม';await refresh();
+    S.stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1280},height:{ideal:720},frameRate:{ideal:30}},audio:false});
+    $('video').srcObject=S.stream;
+    await $('video').play();
+    $('open').disabled=true;
+    $('open').textContent='กล้องพร้อมใช้งาน';
+    $('camStatus').textContent='เปิดกล้องแล้ว';
+    await refreshCams();
+    
     S.pose=new Pose({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/pose/${f}`});
-    S.pose.setOptions({modelComplexity:1,smoothLandmarks:true,enableSegmentation:false,minDetectionConfidence:.5,minTrackingConfidence:.5});
-    S.pose.onResults(onPose);loop();calibrate()
-  }catch(e){alert('เปิดกล้องไม่ได้: อนุญาต Camera และเปิดผ่าน HTTPS หรือ localhost')}
+    S.pose.setOptions({modelComplexity:1,smoothLandmarks:true,enableSegmentation:false,minDetectionConfidence:0.5,minTrackingConfidence:0.5});
+    S.pose.onResults(onPose);
+    loop();
+    calibrate();
+  }catch(e){
+    alert('ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการใช้งานกล้องในเบราว์เซอร์');
+  }
 }
+
 function loop(){
   let f=async t=>{
-    if(S.stream&&S.pose&&!S.busy&&t-S.last>40){
+    if(S.stream&&S.pose&&!S.busy&&t-S.last>35){
       S.busy=true;S.last=t;
       try{await S.pose.send({image:$('video')})}catch(e){}
-      S.busy=false
+      S.busy=false;
     }
-    S.raf=requestAnimationFrame(f)
+    S.raf=requestAnimationFrame(f);
   };
-  S.raf=requestAnimationFrame(f)
+  S.raf=requestAnimationFrame(f);
 }
+
 const V=p=>p?.visibility||0;
-function ang(a,b,c){let ux=a.x-b.x,uy=a.y-b.y,vx=c.x-b.x,vy=c.y-b.y,d=Math.hypot(ux,uy)*Math.hypot(vx,vy);return d?Math.acos(Math.max(-1,Math.min(1,(ux*vx+uy*vy)/d)))*180/Math.PI:null}
-function med(a){a=a.filter(Number.isFinite).sort((a,b)=>a-b);return a.length?a[Math.floor(a.length/2)]:null}
-function side(l){let a={h:l[23],k:l[25],a:l[27],s:l[11]},b={h:l[24],k:l[26],a:l[28],s:l[12]};return V(a.h)+V(a.k)+V(a.a)+V(a.s)>=V(b.h)+V(b.k)+V(b.a)+V(b.s)?a:b}
+function ang(a,b,c){
+  let ux=a.x-b.x,uy=a.y-b.y,vx=c.x-b.x,vy=c.y-b.y,d=Math.hypot(ux,uy)*Math.hypot(vx,vy);
+  return d?Math.acos(Math.max(-1,Math.min(1,(ux*vx+uy*vy)/d)))*180/Math.PI:null;
+}
+function med(a){a=a.filter(Number.isFinite).sort((x,y)=>x-y);return a.length?a[Math.floor(a.length/2)]:null}
+function side(l){
+  let h1=l[23],k1=l[25],a1=l[27],s1=l[11];
+  let h2=l[24],k2=l[26],a2=l[28],s2=l[12];
+  return (V(h1)+V(k1)+V(a1)+V(s1)>=V(h2)+V(k2)+V(a2)+V(s2))?{h:h1,k:k1,a:a1,s:s1}:{h:h2,k:k2,a:a2,s:s2};
+}
+
 function onPose(r){
-  S.frames++;let l=r.poseLandmarks;
-  if(!l){$('body').textContent='ไม่พบร่างกาย';return}
+  S.frames++;
+  let l=r.poseLandmarks;
+  if(!l){$('body').textContent='ไม่พบโครงสร้างร่างกายในกล้อง';return}
   let p=side(l),c=Math.round(Math.min(V(p.h),V(p.k),V(p.a),V(p.s))*100),a=ang(p.h,p.k,p.a);
   let legLen=Math.hypot(p.h.x-p.a.x,p.h.y-p.a.y);
-  let valid=c>=50&&a!==null&&a>30;
+  let valid=c>=45&&a!==null&&a>30;
   if(c){S.confs.push(c);if(S.confs.length>200)S.confs.shift()}
   $('conf').textContent=c+'%';$('bar').style.width=c+'%';
   if(a!==null)$('angle').textContent=a.toFixed(0)+'°';
   if(valid)S.gframes++;
   if(S.cal)calStep(valid,p.h.y,legLen);
   if(S.run&&valid){S.angles.push(a);rep(p.h.y,a,legLen)}
-  draw(r,valid)
+  draw(r,valid);
 }
+
 function draw(r,g){
-  let c=$('canvas'),v=$('video');c.width=v.videoWidth||960;c.height=v.videoHeight||540;
+  let c=$('canvas'),v=$('video');
+  c.width=v.videoWidth||960;c.height=v.videoHeight||540;
   let x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);
   if(!r?.poseLandmarks)return;
-  x.strokeStyle=g?'#20c9dd':'#ff5e78';x.lineWidth=4;
-  [[11,23],[23,25],[25,27],[12,24],[24,26],[26,28]].forEach(([i,j])=>{let a=r.poseLandmarks[i],b=r.poseLandmarks[j];x.beginPath();x.moveTo(a.x*c.width,a.y*c.height);x.lineTo(b.x*c.width,b.y*c.height);x.stroke()})
+  x.strokeStyle=g?'#62b6cb':'#e74c3c';x.lineWidth=4;
+  [[11,23],[23,25],[25,27],[12,24],[24,26],[26,28]].forEach(([i,j])=>{
+    let a=r.poseLandmarks[i],b=r.poseLandmarks[j];
+    x.beginPath();x.moveTo(a.x*c.width,a.y*c.height);x.lineTo(b.x*c.width,b.y*c.height);x.stroke();
+  });
 }
+
 function calibrate(){
   S.cal=true;S.good=0;S.total=0;S._h=[];S._l=[];
-  $('start').disabled=true;$('msg').textContent='กำลังปรับเทียบสัดส่วนร่างกาย 2 วินาที... (ยืนตรงนิ่งๆ)';
+  $('start').disabled=true;
+  $('msg').textContent='กำลังปรับเทียบสัดส่วนร่างกาย (ยืนตรงนิ่งๆ 2 วินาที)...';
 }
+
 function calStep(v,h,l){
   S.total++;if(v){S.good++;S._h.push(h);S._l.push(l)}
   if(S._h.length>60)S._h.shift();
-  if(performance.now()-S._ct>2200||!S._ct)S._ct=performance.now();
-  if(performance.now()-S._ct>2200){
+  if(!S._ct)S._ct=performance.now();
+  if(performance.now()-S._ct>2000){
     S.cal=false;S._ct=0;
-    if(S.good/Math.max(1,S.total)>.5&&S._h.length>10){
+    if(S.good/Math.max(1,S.total)>0.4&&S._h.length>8){
       S.baseH=med(S._h);S.baseLeg=med(S._l);
-      $('start').disabled=false;$('start').textContent='เริ่มทดสอบ 3 ครั้ง';
-      $('msg').textContent='ปรับเทียบสำเร็จ • ยืนตรงแล้วกดเริ่ม';$('camStatus').textContent='พร้อมทดสอบ';$('gate').textContent='READY'
-    }else{setTimeout(calibrate,800)}
+      $('start').disabled=false;
+      $('msg').textContent='ปรับเทียบสำเร็จ! พร้อมถ่ายรูปยืนตรงและทดสอบ';
+      $('camStatus').textContent='พร้อมบันทึก';
+    }else{setTimeout(calibrate,500)}
   }
 }
+
 function startTest(){
   if(S.baseH===null)return;
+  takeSnapshot();
   S.run=true;S.count=0;S.phase='standing';S.pf=0;S.trial=[];S.angles=[];S.start=performance.now();S.lastCount=0;
-  $('count').textContent='0 / 3';$('stop').disabled=false;$('start').disabled=true;$('rec').classList.add('on');startRec();timer()
+  $('count').textContent='0 / 3 ครั้ง';
+  $('stop').disabled=false;
+  $('start').disabled=true;
+  $('rec').classList.add('on');
+  startRec();
+  timer();
 }
+
+function takeSnapshot(){
+  let v=$('video'),c=$('canvas'),o=document.createElement('canvas');
+  o.width=v.videoWidth||960;o.height=v.videoHeight||540;
+  let x=o.getContext('2d');x.drawImage(v,0,0);x.drawImage(c,0,0,o.width,o.height);
+  S.img=o.toDataURL('image/jpeg',0.9);
+}
+
 function rep(h,a,legLen){
-  let delta=(h-S.baseH)/Math.max(0.1,S.baseLeg);
-  let down=delta>0.08||a<145;
-  let deep=delta>0.18||a<125;
-  let up=delta<0.05&&a>150;
+  let delta=(h-S.baseH)/Math.max(0.1,legLen);
+  let down=delta>0.07||a<145;
+  let deep=delta>0.16||a<125;
+  let up=delta<0.04&&a>150;
   if(S.phase==='standing'){
-    if(performance.now()-S.start>500&&down){if(++S.pf>=3){S.phase='down';S.pf=0;$('phase').textContent='กำลังลงนั่ง'}}else S.pf=0
+    if(performance.now()-S.start>400&&down){if(++S.pf>=2){S.phase='down';S.pf=0;$('phase').textContent='กำลังลงนั่ง'}}else S.pf=0;
   }else if(S.phase==='down'){
-    if(deep){if(++S.pf>=3){S.phase='sitting';S.pf=0;$('phase').textContent='นั่งลงแล้ว'}}else if(!down)S.pf=0
+    if(deep){if(++S.pf>=2){S.phase='sitting';S.pf=0;$('phase').textContent='อยู่ในท่านั่ง'}}else if(!down)S.pf=0;
   }else if(S.phase==='sitting'){
     if(up){
-      if(++S.pf>=3){
+      if(++S.pf>=2){
         S.phase='standing';S.pf=0;
-        if(performance.now()-S.lastCount>800){
+        if(performance.now()-S.lastCount>700){
           let n=performance.now();S.count++;S.trial.push((n-S.start)/1000);S.lastCount=n;
-          $('count').textContent=S.count+' / 3';$('phase').textContent='ยืนตรง';
-          if(S.count>=3)finish()
+          $('count').textContent=S.count+' / 3 ครั้ง';
+          $('phase').textContent='ยืนตรง';
+          if(S.count>=3)finish();
         }
       }
-    }else S.pf=0
+    }else S.pf=0;
   }
 }
-function timer(){if(!S.run)return;$('timer').textContent=((performance.now()-S.start)/1000).toFixed(1);requestAnimationFrame(timer)}
-function startRec(){S.chunks=[];try{if(!S.stream||!MediaRecorder)return;S.rec=new MediaRecorder(S.stream,{mimeType:MediaRecorder.isTypeSupported('video/webm')?'video/webm':''});S.rec.ondataavailable=e=>e.data.size&&S.chunks.push(e.data);S.rec.start(200)}catch(e){S.rec=null}}
-async function stopRec(){return new Promise(r=>{if(!S.rec||S.rec.state==='inactive'){r();return}S.rec.onstop=r;S.rec.stop()})}
-function snap(){let v=$('video'),c=$('canvas'),o=document.createElement('canvas');o.width=v.videoWidth;o.height=v.videoHeight;let x=o.getContext('2d');x.drawImage(v,0,0);x.drawImage(c,0,0,o.width,o.height);S.img=o.toDataURL('image/jpeg',.9)}
-async function finish(){S.run=false;await stopRec();snap();if(S.chunks.length)S.url=URL.createObjectURL(new Blob(S.chunks,{type:'video/webm'}));$('rec').classList.remove('on');$('stop').disabled=true;report()}
-async function stopTest(){if(!S.run)return;S.run=false;await stopRec();snap();if(S.chunks.length)S.url=URL.createObjectURL(new Blob(S.chunks,{type:'video/webm'}));$('rec').classList.remove('on');$('stop').disabled=true;report()}
-function flags(){let f=[];for(let i=0;i<8;i++){let e=document.querySelector(`input[name=q${i}]:checked`);if(e&&+e.value>=2)f.push(Q[i])}return f}
+
+function timer(){
+  if(!S.run)return;
+  requestAnimationFrame(timer);
+}
+
+function startRec(){
+  S.chunks=[];
+  try{
+    if(!S.stream||!MediaRecorder)return;
+    S.rec=new MediaRecorder(S.stream,{mimeType:MediaRecorder.isTypeSupported('video/webm')?'video/webm':''});
+    S.rec.ondataavailable=e=>e.data.size&&S.chunks.push(e.data);
+    S.rec.start(200);
+  }catch(e){S.rec=null;}
+}
+
+async function stopRec(){
+  return new Promise(r=>{
+    if(!S.rec||S.rec.state==='inactive'){r();return}
+    S.rec.onstop=r;
+    S.rec.stop();
+  });
+}
+
+async function finish(){
+  S.run=false;await stopRec();
+  if(S.chunks.length)S.url=URL.createObjectURL(new Blob(S.chunks,{type:'video/webm'}));
+  $('rec').classList.remove('on');$('stop').disabled=true;
+  report();
+}
+
+async function stopTest(){
+  if(!S.run)return;
+  S.run=false;await stopRec();
+  if(S.chunks.length)S.url=URL.createObjectURL(new Blob(S.chunks,{type:'video/webm'}));
+  $('rec').classList.remove('on');$('stop').disabled=true;
+  report();
+}
+
+function flags(){
+  let f=[];
+  for(let i=0;i<8;i++){
+    let e=document.querySelector(`input[name=q${i}]:checked`);
+    if(e&&+e.value>=2)f.push(Q[i]);
+  }
+  return f;
+}
+
 function report(){
-  let f=flags(),conf=Math.round(.65*(med(S.confs)||0)+.2*(S.gframes/Math.max(1,S.frames))*100+.15*(S.count/3)*100),a=med(S.angles),tot=S.trial.reduce((x,y)=>x+y,0);
+  let f=flags(),conf=Math.round(0.6*(med(S.confs)||0)+0.25*(S.gframes/Math.max(1,S.frames))*100+0.15*(S.count/3)*100);
+  let a=med(S.angles),tot=S.trial.reduce((x,y)=>x+y,0);
   let riskScore=S.q+(S.count<3?6:0)+(a&&a>135?3:0)+(tot>12?3:0);
   let level=riskScore>=10?'high':(riskScore>=5?'mod':'low');
-  $('rn').textContent=S.name;$('rc').textContent=S.code;$('ra').textContent=S.age;$('rq').textContent=S.q;$('rtime').textContent=tot.toFixed(2)+' s';$('rang').textContent=a?a.toFixed(0)+'°':'—';$('rconf').textContent=conf+'%';
-  let title=level==='high'?'พบความเสี่ยงสูง • ควรพบแพทย์เพื่อตรวจวินิจฉัย':level==='mod'?'พบความเสี่ยงปานกลาง • ควรระมัดระวังและสังเกตอาการ':'ความเสี่ยงเบื้องต้นต่ำ • ข้อเข่ายังทำงานได้ดี';
-  $('rt').textContent=title;$('rx').textContent='การประเมินวิเคราะห์จากแบบสอบถามและสถิติการเคลื่อนไหวจริง';
-  $('rb').className='badge '+level;$('rb').textContent=level==='low'?'ความเสี่ยงต่ำ':level==='mod'?'ความเสี่ยงปานกลาง':'ความเสี่ยงสูง';
-  $('risks').innerHTML=(f.length?f.map(x=>`<div class=row><span>⚠ ${x}</span><b>อาการเด่น</b></div>`).join(''):'<div class=row><span>ไม่พบอาการผิดปกติเด่นจากแบบสอบถาม</span><b>✓</b></div>')+(S.count<3?'<div class=row><span>ทำท่าลุกนั่งไม่ครบ 3 ครั้งตามเกณฑ์</span><b>⚠</b></div>':'<div class=row><span>ความเร็วการลุกนั่ง (รวม 3 ครั้ง: '+tot.toFixed(1)+'s)</span><b>'+(tot>12?'ช้ากว่าปกติ':'ปกติ')+'</b></div>');
-  $('trials').innerHTML=S.trial.map((x,i)=>`<div class=row><span>ครั้งที่ ${i+1}</span><b>${x.toFixed(2)} s</b></div>`).join('');
-  $('summary').innerHTML=level==='mod'?'<b>สรุปผล:</b> มีสัญญาณเตือนจากคะแนนอาการหรือเวลาเคลื่อนไหว แนะนำให้ลดกิจกรรมที่กระแทกข้อเข่าและปรึกษาแพทย์หากมีอาการปวดต่อเนื่อง':level==='high'?'<b>สรุปผล:</b> ตรวจพบความผิดปกติที่เด่นชัดหรือการทดสอบไม่สมบูรณ์ แนะนำให้พบแพทย์ผู้เชี่ยวชาญด้านกระดูกและข้อเพื่อตรวจร่างกายเชิงลึก':'<b>สรุปผล:</b> ไม่พบสัญญาณความเสี่ยงที่น่ากังวลในรอบการคัดกรองนี้ แนะนำให้รักษาสุขภาพกล้ามเนื้อรอบเข่าอย่างสม่ำเสมอ';
-  if(S.img){$('snap').src=S.img;$('snap').classList.remove('hide')}
+  
+  $('rn').textContent=S.name;$('rc').textContent=S.code;$('ra').textContent=S.age;
+  $('rq').textContent=S.q+' คะแนน';$('rtime').textContent=tot.toFixed(2)+' วินาที';
+  $('rang').textContent=a?a.toFixed(0)+'°':'—';$('rcount').textContent=S.count+'/3 ครั้ง';
+  $('rconf').textContent=conf+'%';
+
+  let title=level==='high'?'ความเสี่ยงสูง • แนะนำพบแพทย์ผู้เชี่ยวชาญ':level==='mod'?'ความเสี่ยงปานกลาง • ควรระมัดระวังและสังเกตอาการ':'ความเสี่ยงต่ำ • ข้อเข่ายังทำงานได้ดี';
+  $('rt').textContent=title;
+  $('rx').textContent='ประมวลผลวิเคราะห์เรียลไทม์ไม่มีการล็อกค่า ตัวเลขแสดงตามผลลัพธ์จริง';
+  $('rb').className='badge '+level;
+  $('rb').textContent=level==='low'?'ความเสี่ยงต่ำ':level==='mod'?'ความเสี่ยงปานกลาง':'ความเสี่ยงสูง';
+
+  $('risks').innerHTML=(f.length?f.map(x=>`<div class=row><span>⚠ ${x}</span><b>มีอาการเด่น</b></div>`).join(''):'<div class=row><span>ไม่พบอาการผิดปกติรุนแรงจากแบบสอบถาม</span><b>✓ ปกติ</b></div>')+
+    (S.count<3?'<div class=row><span>ทำท่าลุกนั่งไม่ครบ 3 ครั้งตามเกณฑ์</span><b>⚠ ไม่ครบ</b></div>':'<div class=row><span>ความเร็วการลุกนั่ง (รวม 3 ครั้ง: '+tot.toFixed(1)+'s)</span><b>'+(tot>12?'ช้ากว่าเกณฑ์':'ปกติ')+'</b></div>');
+
+  $('trials').innerHTML=S.trial.map((x,i)=>`<div class=row><span>รอบที่ ${i+1}</span><b>${x.toFixed(2)} วินาที</b></div>`).join('')||'<div class=helper>ไม่มีข้อมูลรอบการทดสอบ</div>';
+
+  if(S.img){$('snap').src=S.img;$('snap').classList.remove('hide');$('snotice').classList.add('hide')}
   if(S.url){$('vid').src=S.url;$('vempty').classList.add('hide')}
-  save(level,title,conf,a,tot,f);go('report')
+
+  let recText='แนะนำให้ออกกำลังกายเสริมสร้างกล้ามเนื้อรอบข้อเข่าแบบ Low-impact เช่น การปั่นจักรยานอากาศหรือว่ายน้ำ หลีกเลี่ยงการนั่งยองและยกของหนัก ';
+  if(level==='high'){
+    recText+='เนื่องจากพบความเสี่ยงค่อนข้างสูง แนะนำให้เข้าพบแพทย์ออร์โธปิดิกส์ หรือคลินิกกายภาพบำบัดใกล้บ้าน เช่น คลินิกกายภาพบำบัดในจังหวัดลพบุรีหรือใกล้เคียงเพื่อตรวจวินิจฉัยเชิงลึก';
+  }else if(level==='mod'){
+    recText+='ควรสังเกตอาการปวดอย่างใกล้ชิด หากมีอาการปวดบวมเพิ่มเติม สามารถปรึกษานักกายภาพบำบัดเพื่อรับคำแนะนำท่าบริหารที่เหมาะสม';
+  }else{
+    recText+='รักษาระดับกิจกรรมทางกายอย่างสม่ำเสมอ ควบคุมน้ำหนักให้อยู่ในเกณฑ์มาตรฐานเพื่อสุขภาพข้อเข่าที่ยั่งยืน';
+  }
+  $('recommendationText').textContent=recText;
+
+  saveRecord(level,title,conf,a,tot,f);
+  go('report');
 }
-function save(level,title,conf,a,tot,f){
-  let a0=JSON.parse(localStorage.getItem('kneeai')||'[]'),r={name:S.name,code:S.code,age:S.age,date:new Date().toISOString(),q:S.q,count:S.count,trial:S.trial,confidence:conf,angle:a,total:tot,risk:level,title,flags:f};
-  let i=a0.findIndex(x=>x.code===S.code);i>=0?a0[i]=r:a0.unshift(r);
-  localStorage.setItem('kneeai',JSON.stringify(a0.slice(0,200)))
+
+function saveRecord(level,title,conf,a,tot,f){
+  let a0=JSON.parse(localStorage.getItem('kneeai_luxury')||'[]');
+  let r={name:S.name,code:S.code,age:S.age,date:new Date().toISOString(),q:S.q,count:S.count,trial:S.trial,confidence:conf,angle:a,total:tot,risk:level,title,flags:f};
+  let idx=a0.findIndex(x=>x.code===S.code);
+  idx>=0?a0[idx]=r:a0.unshift(r);
+  localStorage.setItem('kneeai_luxury',JSON.stringify(a0.slice(0,100)));
 }
-function downloadJSON(){
-  let d={system:'KneeAI V8 High Accuracy',patient:{name:S.name,code:S.code,age:S.age},questionnaireScore:S.q,sitToStand:{count:S.count,times:S.trial,total:S.trial.reduce((a,b)=>a+b,0)},kneeAngleMedian:med(S.angles),note:'Preliminary high-accuracy AI screening tool.'},
-  b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='kneeai-'+S.code+'.json';a.click()
-}
+
 function doctorLogin(){go('login')}
-function login(){if($('did').value==='DOC001'&&$('dp').value==='KneeAI2026'){sessionStorage.d=1;renderPatients();go('doctor')}else $('lerr').textContent='รหัสแพทย์หรือรหัสผ่านไม่ถูกต้อง'}
+function login(){
+  if($('did').value==='DOC001'&&$('dp').value==='KneeAI2026'){
+    sessionStorage.d=1;renderPatients();go('doctor');
+  }else{
+    $('lerr').textContent='รหัสแพทย์หรือรหัสผ่านไม่ถูกต้อง (ใช้ DOC001 / KneeAI2026)';
+  }
+}
 function logout(){sessionStorage.removeItem('d');go('home')}
+
 function renderPatients(){
-  let q=($('search').value||'').toLowerCase(),a=JSON.parse(localStorage.getItem('kneeai')||'[]').filter(x=>(x.name+x.code).toLowerCase().includes(q));
-  $('plist').innerHTML=a.length?a.map((p,i)=>`<div class=patient onclick="detail(${i})"><b>${esc(p.name)}</b><br><small>${esc(p.code)} • ${new Date(p.date).toLocaleString('th-TH')}</small></div>`).join(''):'<div class=helper>ยังไม่มีประวัติการคัดกรอง</div>';
-  window.P=a
+  let q=($('search').value||'').toLowerCase();
+  let a0=JSON.parse(localStorage.getItem('kneeai_luxury')||'[]').filter(x=>(x.name+x.code).toLowerCase().includes(q));
+  $('plist').innerHTML=a0.length?a0.map((p,i)=>`<div class=patient onclick="showDetail(${i})"><b>${esc(p.name)}</b><br><small class=muted>${esc(p.code)} • ${new Date(p.date).toLocaleString('th-TH')}</small></div>`).join(''):'<div class=helper style="text-align:center;padding:20px">ไม่พบประวัติในระบบ</div>';
+  window.P=a0;
 }
-function detail(i){
+
+function showDetail(i){
   let p=window.P[i];
-  $('detail').innerHTML=`<h3>${esc(p.name)}</h3><p class=helper>รหัส ${esc(p.code)} • อายุ ${p.age} ปี</p><div class=data><div><small>ผลประเมิน</small><b>${esc(p.title)}</b></div><div><small>คะแนนอาการ</small><b>${p.q}</b></div><div><small>ลุก–นั่ง</small><b>${p.count}/3 ครั้ง</b></div><div><small>ความแม่นยำ</small><b>${p.confidence}%</b></div></div><div class=notice><b>ประเด็นความเสี่ยง:</b><ul>${(p.flags||[]).map(esc).map(x=>'<li>'+x+'</li>').join('')||'<li>ไม่พบสัญญาณเด่น</li>'}</ul></div>`
+  $('detail').innerHTML=`<h3>${esc(p.name)}</h3><p class=helper>รหัสคนไข้: ${esc(p.code)} | อายุ: ${p.age} ปี</p><div class=data style="grid-template-columns:repeat(2,1fr)"><div><small>ผลประเมิน</small><b>${esc(p.title)}</b></div><div><small>คะแนนอาการ</small><b>${p.q} คะแนน</b></div><div><small>ลุก–นั่ง</small><b>${p.count}/3 ครั้ง</b></div><div><small>ความเชื่อมั่น AI</small><b>${p.confidence}%</b></div></div><div class=notice style="margin-top:16px"><b>ข้อสังเกตและประเด็นความเสี่ยง:</b><ul>${(p.flags||[]).map(esc).map(x=>'<li>'+x+'</li>').join('')||'<li>ไม่พบอาการผิดปกติเด่น</li>'}</ul></div>`;
 }
+
 function esc(x){return String(x||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;}[m]))}
 window.addEventListener('beforeunload',()=>S.stream&&S.stream.getTracks().forEach(t=>t.stop()));
-navigator.mediaDevices?.addEventListener('devicechange',refresh);
-refresh();
-</script></body></html>
+</script>
+</body>
+</html>
