@@ -3,1131 +3,1504 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#08152f">
 
-<title>KneeAI V10.2 — Futuristic Medical AI</title>
+<title>AI Knee Screening | Mathematical Motion Analysis</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- MediaPipe -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap');
+:root{
+    --bg:#020811;
+    --bg2:#061522;
+    --blue:#1688ff;
+    --cyan:#16ddff;
+    --cyan2:#8ef5ff;
+    --green:#35efad;
+    --yellow:#ffd45c;
+    --red:#ff5577;
+    --white:#f4fbff;
+    --text:#d8e9f2;
+    --muted:#7891a4;
+    --line:rgba(80,210,255,.14);
+    --glass:rgba(5,23,38,.78);
+    --radius:20px;
+}
 
 *{
-  box-sizing:border-box;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
 html{
-  scroll-behavior:smooth;
+    scroll-behavior:smooth;
 }
 
 body{
-  margin:0;
-  font-family:"Prompt",Arial,sans-serif;
-  background:#f4f7fb;
-  color:#172033;
+    min-height:100vh;
+    font-family:"Prompt",sans-serif;
+    color:var(--white);
+    background:
+        radial-gradient(circle at 75% 15%,rgba(0,140,255,.16),transparent 32%),
+        radial-gradient(circle at 15% 80%,rgba(0,220,255,.08),transparent 30%),
+        linear-gradient(135deg,#020811,#031522 50%,#020a12);
+    overflow-x:hidden;
 }
 
-button,
-input,
-select{
-  font-family:inherit;
+button,input{
+    font-family:inherit;
 }
 
 button{
-  cursor:pointer;
+    cursor:pointer;
 }
 
-button:disabled{
-  opacity:.45;
-  cursor:not-allowed;
+.background{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:-10;
 }
 
-.top-warning{
-  background:#fff7df;
-  color:#755900;
-  border-bottom:1px solid #eedb96;
-  padding:8px 15px;
-  text-align:center;
-  font-size:12px;
+.grid{
+    position:absolute;
+    width:150%;
+    height:150%;
+    left:-25%;
+    top:-20%;
+    background-image:
+        linear-gradient(rgba(35,190,255,.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(35,190,255,.045) 1px,transparent 1px);
+    background-size:45px 45px;
+    transform:
+        perspective(700px)
+        rotateX(62deg)
+        translateY(120px);
+    animation:gridMove 18s linear infinite;
 }
 
-header{
-  background:#fff;
-  border-bottom:1px solid #e7edf4;
-  position:sticky;
-  top:0;
-  z-index:100;
+@keyframes gridMove{
+    from{background-position:0 0,0 0}
+    to{background-position:45px 45px,45px 45px}
 }
 
-.nav{
-  max-width:1200px;
-  margin:auto;
-  padding:13px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
+.glow{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(100px);
+    opacity:.18;
 }
 
-.logo{
-  display:flex;
-  align-items:center;
-  gap:11px;
-  cursor:pointer;
+.glow1{
+    width:500px;
+    height:500px;
+    top:-220px;
+    right:-180px;
+    background:#008cff;
 }
 
-.logo-icon{
-  width:44px;
-  height:44px;
-  border-radius:13px;
-  background:linear-gradient(135deg,#081a3a,#1765bf);
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:22px;
-  font-weight:800;
-  box-shadow:0 7px 18px rgba(20,80,160,.2);
+.glow2{
+    width:400px;
+    height:400px;
+    bottom:-200px;
+    left:-150px;
+    background:#00e5ff;
 }
 
-.logo-title{
-  font-weight:800;
-  font-size:21px;
-  color:#09204b;
+.particles{
+    position:absolute;
+    inset:0;
 }
 
-.logo-sub{
-  color:#8b97a9;
-  font-size:9px;
+.particle{
+    position:absolute;
+    width:3px;
+    height:3px;
+    border-radius:50%;
+    background:var(--cyan);
+    box-shadow:0 0 12px var(--cyan);
+    animation:particle 8s linear infinite;
 }
 
-.nav-right{
-  display:flex;
-  align-items:center;
-  gap:10px;
+@keyframes particle{
+    0%{transform:translateY(30px);opacity:0}
+    20%{opacity:.7}
+    80%{opacity:.7}
+    100%{transform:translateY(-150px);opacity:0}
 }
 
-.lang-select{
-  width:auto;
-  min-width:120px;
-  padding:10px 12px;
-  background:#f6f8fb;
+/* ================= HEADER ================= */
+
+.header{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    height:76px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 5%;
+    background:rgba(2,10,18,.76);
+    border-bottom:1px solid var(--line);
+    backdrop-filter:blur(20px);
+    z-index:1000;
 }
 
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:30px 20px 60px;
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
 }
+
+.brand-icon{
+    width:42px;
+    height:42px;
+    display:grid;
+    place-items:center;
+    border-radius:12px;
+    font-size:20px;
+    font-weight:800;
+    background:linear-gradient(135deg,#086dff,#12dfff);
+    box-shadow:0 0 25px rgba(19,223,255,.3);
+}
+
+.brand-title{
+    font-size:14px;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+.brand-sub{
+    margin-top:2px;
+    font-size:8px;
+    color:#668094;
+    letter-spacing:2px;
+}
+
+.system-status{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#6e8799;
+    font-family:"Space Mono",monospace;
+    font-size:9px;
+    letter-spacing:1px;
+}
+
+.status-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 10px var(--green);
+    animation:pulse 1.8s infinite;
+}
+
+@keyframes pulse{
+    50%{
+        transform:scale(1.5);
+        opacity:.5;
+    }
+}
+
+/* ================= GENERAL ================= */
 
 .page{
-  display:none;
+    display:none;
+    min-height:100vh;
+    padding-top:76px;
 }
 
 .page.active{
-  display:block;
+    display:block;
+    animation:pageIn .45s ease;
 }
 
-.card{
-  background:#fff;
-  border:1px solid #e4eaf2;
-  border-radius:24px;
-  box-shadow:0 12px 35px rgba(15,23,42,.055);
+@keyframes pageIn{
+    from{
+        opacity:0;
+        transform:translateY(12px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.container{
+    width:min(1180px,92%);
+    margin:auto;
 }
 
 .btn{
-  border:0;
-  border-radius:13px;
-  padding:12px 20px;
-  font-weight:700;
-  transition:.2s;
+    min-height:48px;
+    padding:0 22px;
+    border-radius:12px;
+    border:1px solid transparent;
+    font-size:12px;
+    font-weight:700;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    transition:.25s;
 }
 
 .btn:hover{
-  transform:translateY(-1px);
+    transform:translateY(-3px);
 }
 
 .btn-primary{
-  background:#0c2d61;
-  color:#fff;
+    color:white;
+    background:linear-gradient(135deg,#086dff,#10cfe4);
+    box-shadow:0 15px 40px rgba(0,150,255,.2);
 }
 
 .btn-primary:hover{
-  background:#123c7d;
+    box-shadow:0 20px 50px rgba(0,180,255,.35);
 }
 
-.btn-gold{
-  background:linear-gradient(135deg,#d79b25,#f5cd61);
-  color:#172033;
+.btn-secondary{
+    color:#a5bac9;
+    background:rgba(6,25,40,.65);
+    border-color:rgba(100,210,255,.15);
 }
 
-.btn-light{
-  background:#edf2f8;
-  color:#243753;
+.btn-secondary:hover{
+    color:white;
+    border-color:rgba(100,220,255,.4);
 }
 
-.btn-danger{
-  background:#fee2e2;
-  color:#991b1b;
+.page-heading{
+    font-size:42px;
+    font-weight:800;
 }
 
-.btn-success{
-  background:#dcfce7;
-  color:#166534;
+.page-heading span{
+    color:var(--cyan);
 }
 
-.badge{
-  display:inline-flex;
-  align-items:center;
-  padding:7px 12px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:800;
+.page-description{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:13px;
 }
 
-.blue-badge{
-  background:#eaf3ff;
-  color:#165ba7;
-}
-
-.green-badge{
-  background:#eafaf0;
-  color:#16723b;
-}
-
-.steps{
-  background:#fff;
-  border-bottom:1px solid #e6edf4;
-}
-
-.steps-inner{
-  max-width:1050px;
-  margin:auto;
-  padding:13px 20px;
-  display:flex;
-  align-items:center;
-}
-
-.step{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  white-space:nowrap;
-  color:#6c788b;
-  font-size:12px;
-}
-
-.step-dot{
-  width:30px;
-  height:30px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:11px;
-  font-weight:800;
-  background:#e8edf4;
-  color:#6b7788;
-}
-
-.step-dot.active{
-  background:#103c79;
-  color:#fff;
-}
-
-.step-dot.done{
-  background:#16a34a;
-  color:#fff;
-}
-
-.step-line{
-  height:1px;
-  background:#dce4ee;
-  flex:1;
-  margin:0 14px;
-}
-
-/* HOME */
-
-.hero{
-  display:grid;
-  grid-template-columns:1.08fr .92fr;
-  gap:45px;
-  align-items:center;
-  padding:45px 0;
-}
-
-.hero h1{
-  font-size:48px;
-  line-height:1.2;
-  margin:17px 0;
-  color:#0b1c39;
-}
-
-.hero h1 span{
-  color:#1764c0;
-}
-
-.hero p{
-  color:#647186;
-  line-height:2;
-  font-size:15px;
-  max-width:650px;
-}
-
-.hero-box{
-  min-height:430px;
-  padding:38px;
-  border-radius:31px;
-  color:#fff;
-  background:
-    radial-gradient(circle at 80% 15%,rgba(45,120,220,.4),transparent 30%),
-    linear-gradient(145deg,#06152f,#12457f);
-  box-shadow:0 25px 50px rgba(7,31,70,.2);
-}
-
-.hero-box-title{
-  color:#9dbde9;
-  font-size:11px;
-  letter-spacing:.15em;
-}
-
-.hero-big{
-  font-size:42px;
-  line-height:1.1;
-  font-weight:800;
-  margin-top:15px;
-}
-
-.hero-big span{
-  color:#f3c74d;
-}
-
-.hero-list{
-  margin-top:28px;
-  line-height:2.2;
-  color:#d5e1f3;
-  font-size:13px;
-}
-
-/* FORMS */
-
-.form-card{
-  max-width:850px;
-  margin:auto;
-  padding:30px;
-}
-
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-  margin-top:25px;
-}
-
-.full{
-  grid-column:1/-1;
-}
-
-label{
-  display:block;
-  margin-bottom:7px;
-  font-size:12px;
-  font-weight:700;
-  color:#536176;
-}
-
-input,
-select{
-  width:100%;
-  padding:13px 14px;
-  border:1px solid #d9e2ed;
-  border-radius:12px;
-  outline:none;
-  background:#f9fbfd;
-  color:#172033;
-}
-
-input:focus,
-select:focus{
-  border-color:#2875d0;
-  background:#fff;
-  box-shadow:0 0 0 3px rgba(40,117,208,.08);
-}
-
-.bmi-box{
-  padding:18px;
-  background:#eef7ff;
-  border:1px solid #cee4ff;
-  border-radius:17px;
-}
-
-.bmi-caption{
-  color:#56718f;
-  font-size:12px;
-}
-
-.bmi-value{
-  margin-top:4px;
-  color:#0b4b96;
-  font-size:31px;
-  font-weight:800;
-}
-
-/* QUESTIONS */
-
-.question{
-  margin-top:15px;
-  padding:18px;
-  border:1px solid #e3e9f1;
-  border-radius:17px;
-}
-
-.question-title{
-  font-size:13px;
-  font-weight:700;
-  line-height:1.7;
-}
-
-.options{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:9px;
-  margin-top:13px;
-}
-
-.option{
-  border:1px solid #dbe3ed;
-  border-radius:11px;
-  padding:10px;
-  text-align:center;
-  font-size:11px;
-  cursor:pointer;
-  background:#fff;
-  transition:.15s;
-}
-
-.option:hover{
-  border-color:#5b8fcf;
-}
-
-.option.selected{
-  background:#0e3c79;
-  color:#fff;
-  border-color:#0e3c79;
-}
-
-/* CAMERA */
-
-.camera-layout{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) 280px;
-  gap:16px;
-}
-
-.camera-box{
-  background:#020617;
-  position:relative;
-  overflow:hidden;
-  border-radius:22px;
-  min-height:540px;
-}
-
-#video{
-  width:100%;
-  height:100%;
-  min-height:540px;
-  display:block;
-  object-fit:cover;
-}
-
-#overlay{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-}
-
-.guide{
-  position:absolute;
-  inset:7%;
-  border:2px dashed rgba(255,255,255,.35);
-  border-radius:20px;
-  pointer-events:none;
-}
-
-.guide-label{
-  position:absolute;
-  left:50%;
-  top:15px;
-  transform:translateX(-50%);
-  padding:7px 14px;
-  border-radius:999px;
-  background:rgba(0,0,0,.67);
-  color:#fff;
-  font-size:11px;
-  white-space:nowrap;
-}
-
-.camera-tip{
-  position:absolute;
-  bottom:15px;
-  left:15px;
-  right:15px;
-  padding:10px 13px;
-  border-radius:12px;
-  background:rgba(0,0,0,.55);
-  color:#fff;
-  font-size:11px;
-  line-height:1.6;
-}
-
-.ai-panel{
-  padding:20px;
-  border-radius:22px;
-  background:#091832;
-  color:#fff;
-}
-
-.ai-small{
-  color:#8fa9d2;
-  font-size:10px;
-  letter-spacing:.1em;
-}
-
-.ai-panel h3{
-  margin:6px 0 15px;
-}
-
-.angle-card{
-  padding:15px;
-  border-radius:15px;
-  background:rgba(255,255,255,.075);
-  margin-top:12px;
-}
+/* ================= HOME ================= */
 
-.angle-label{
-  color:#b8c7dd;
-  font-size:11px;
+.home{
+    width:min(1450px,92%);
+    min-height:calc(100vh - 76px);
+    margin:auto;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(500px,.9fr);
+    align-items:center;
+    gap:50px;
+    padding:50px 0;
 }
 
-.angle{
-  color:#f5c951;
-  font-size:29px;
-  font-weight:800;
-  margin-top:3px;
+.eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 14px;
+    border:1px solid rgba(28,222,255,.2);
+    border-radius:50px;
+    color:#83ecff;
+    background:rgba(5,70,100,.14);
+    font-size:9px;
+    letter-spacing:2px;
 }
 
-.camera-status{
-  margin-top:15px;
-  padding:12px;
-  border-radius:13px;
-  background:rgba(255,255,255,.07);
-  color:#cbd7e8;
-  font-size:11px;
-  line-height:1.7;
+.eyebrow:before{
+    content:"";
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--cyan);
+    box-shadow:0 0 10px var(--cyan);
 }
 
-.camera-controls{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:18px;
+.hero-title{
+    margin-top:25px;
+    font-size:clamp(50px,6.3vw,92px);
+    line-height:.92;
+    letter-spacing:-5px;
+    font-weight:800;
 }
 
-/* RESULT */
-
-.result-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:20px;
-}
-
-.result-image{
-  overflow:hidden;
-  border-radius:18px;
-  background:#000;
-}
-
-#resultCanvas{
-  width:100%;
-  display:block;
-}
-
-.legend{
-  margin-top:8px;
-  color:#718096;
-  font-size:10px;
+.hero-title .blue{
+    display:block;
+    background:linear-gradient(90deg,#1688ff,#18ddff,#b4faff);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
 }
 
-.stat-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
+.hero-title .outline{
+    display:block;
+    color:transparent;
+    -webkit-text-stroke:1px rgba(150,230,255,.38);
 }
 
-.stat{
-  padding:17px;
-  background:#f7f9fc;
-  border:1px solid #e4eaf1;
-  border-radius:17px;
+.hero-description{
+    max-width:650px;
+    margin-top:25px;
+    color:#8da4b5;
+    font-size:14px;
+    line-height:1.9;
 }
 
-.stat-label{
-  color:#6c7789;
-  font-size:11px;
+.math-strip{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:24px;
 }
 
-.stat-value{
-  color:#0b326b;
-  font-size:27px;
-  font-weight:800;
-  margin-top:4px;
+.math-chip{
+    padding:8px 11px;
+    color:#9befff;
+    background:rgba(4,26,43,.75);
+    border:1px solid rgba(53,210,255,.12);
+    border-radius:8px;
+    font-family:"Space Mono",monospace;
+    font-size:9px;
 }
 
-.result-box{
-  margin-top:15px;
-  padding:18px;
-  border-radius:17px;
+.hero-actions{
+    display:flex;
+    gap:12px;
+    margin-top:30px;
 }
 
-.good{
-  background:#ecfdf3;
-  border:1px solid #bbf7d0;
-  color:#166534;
+.mini-data{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    max-width:580px;
+    margin-top:38px;
+    border:1px solid var(--line);
+    border-radius:15px;
+    overflow:hidden;
+    background:rgba(4,19,31,.58);
 }
 
-.warn{
-  background:#fff7ed;
-  border:1px solid #fed7aa;
-  color:#9a3412;
+.mini-card{
+    padding:15px;
+    border-right:1px solid var(--line);
 }
 
-.neutral{
-  background:#eef6ff;
-  border:1px solid #cde3ff;
-  color:#164e8c;
+.mini-card:last-child{
+    border-right:none;
 }
 
-/* DOCTOR */
-
-.login{
-  max-width:450px;
-  margin:35px auto;
-  padding:30px;
-}
-
-.doctor-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
+.mini-label{
+    color:#587184;
+    font-size:8px;
+    letter-spacing:1px;
 }
 
-.search-box{
-  display:flex;
-  gap:10px;
-  margin-top:20px;
+.mini-value{
+    margin-top:4px;
+    color:#dffaff;
+    font-family:"Space Mono",monospace;
+    font-size:16px;
+    font-weight:700;
 }
 
-.patient-result{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  padding:18px;
-  margin-top:13px;
-  border:1px solid #e2e8f0;
-  border-radius:17px;
-  background:#fff;
+.mini-value span{
+    color:#17dcff;
+    font-size:9px;
 }
 
-.patient-result-name{
-  font-weight:700;
-}
-
-.patient-result-meta{
-  color:#718096;
-  font-size:11px;
-  margin-top:4px;
-}
+/* ================= KNEE VISUAL ================= */
 
-.patient-detail{
-  margin-top:20px;
-  padding:20px;
-  background:#f7f9fc;
-  border-radius:18px;
+.hero-visual{
+    position:relative;
+    height:650px;
+    display:grid;
+    place-items:center;
 }
 
-.detail-row{
-  display:flex;
-  justify-content:space-between;
-  gap:15px;
-  padding:10px 0;
-  border-bottom:1px solid #e0e7ef;
-  font-size:12px;
+.visual-core{
+    position:relative;
+    width:520px;
+    height:520px;
+    display:grid;
+    place-items:center;
 }
 
-.detail-row:last-child{
-  border-bottom:0;
+.orbit{
+    position:absolute;
+    border-radius:50%;
+    border:1px solid rgba(25,220,255,.13);
 }
 
-.patient-image{
-  width:100%;
-  max-width:650px;
-  border-radius:16px;
-  display:block;
-  margin-top:10px;
+.orbit1{
+    width:510px;
+    height:510px;
+    animation:spin 30s linear infinite;
 }
-
-/* LOADING */
 
-.loading{
-  padding:75px 30px;
-  text-align:center;
+.orbit2{
+    width:400px;
+    height:400px;
+    border-style:dashed;
+    animation:spinReverse 20s linear infinite;
 }
 
-.spinner{
-  width:55px;
-  height:55px;
-  border:5px solid #dce5f0;
-  border-top-color:#113e7c;
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-  margin:auto;
+.orbit3{
+    width:300px;
+    height:300px;
+    animation:spin 14s linear infinite;
 }
 
 @keyframes spin{
-  to{
-    transform:rotate(360deg);
-  }
+    to{transform:rotate(360deg)}
 }
 
-.hidden{
-  display:none!important;
+@keyframes spinReverse{
+    to{transform:rotate(-360deg)}
 }
 
-.small-note{
-  color:#748095;
-  font-size:11px;
-  line-height:1.7;
+.orbit-dot{
+    position:absolute;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--cyan);
+    box-shadow:0 0 15px var(--cyan);
 }
 
-footer{
-  text-align:center;
-  padding:30px 20px;
-  color:#8a95a7;
-  font-size:10px;
+.dot1{
+    top:45px;
+    left:50%;
 }
 
-/* PRINT */
-
-@media print{
-
-  header,
-  .top-warning,
-  .steps,
-  .btn,
-  footer{
-    display:none!important;
-  }
-
-  body{
-    background:#fff;
-  }
-
-  .container{
-    padding:0;
-    max-width:none;
-  }
-
-  .page{
-    display:none!important;
-  }
-
-  #result{
-    display:block!important;
-  }
-
-  .card{
-    box-shadow:none;
-  }
+.dot2{
+    right:20px;
+    top:50%;
 }
 
-/* RESPONSIVE */
-
-@media(max-width:900px){
-
-  .hero{
-    grid-template-columns:1fr;
-  }
-
-  .camera-layout{
-    grid-template-columns:1fr;
-  }
-
-  .result-grid{
-    grid-template-columns:1fr;
-  }
-
+.dot3{
+    bottom:40px;
+    left:30%;
 }
 
-@media(max-width:650px){
+.knee-model{
+    position:relative;
+    width:290px;
+    height:480px;
+    animation:float 4s ease-in-out infinite;
+}
 
-  .nav{
-    padding:10px 12px;
-  }
+@keyframes float{
+    50%{transform:translateY(-8px)}
+}
 
-  .logo-sub{
-    display:none;
-  }
+.bone{
+    position:absolute;
+    height:10px;
+    border-radius:999px;
+    transform-origin:left center;
+    background:linear-gradient(90deg,#e4fcff,#17dfff);
+    box-shadow:0 0 15px rgba(25,220,255,.75);
+}
 
-  .nav-right{
-    flex-wrap:wrap;
-    justify-content:flex-end;
-  }
-
-  .lang-select{
-    min-width:90px;
+.bone-hip{
     width:90px;
-  }
+    left:105px;
+    top:65px;
+}
 
-  .hero{
-    padding:25px 0;
-  }
+.bone-thigh{
+    width:205px;
+    left:145px;
+    top:70px;
+    transform:rotate(76deg);
+    animation:thigh 4s ease-in-out infinite;
+}
 
-  .hero h1{
-    font-size:35px;
-  }
+.bone-shin{
+    width:190px;
+    left:92px;
+    top:250px;
+    transform:rotate(112deg);
+    animation:shin 4s ease-in-out infinite;
+}
 
-  .hero-big{
-    font-size:34px;
-  }
+@keyframes thigh{
+    50%{transform:rotate(91deg)}
+}
 
-  .form-grid{
-    grid-template-columns:1fr;
-  }
+@keyframes shin{
+    50%{transform:rotate(129deg)}
+}
 
-  .options{
+.joint{
+    position:absolute;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:#efffff;
+    border:3px solid #16dcff;
+    box-shadow:0 0 15px #16dcff,0 0 45px rgba(16,220,255,.45);
+    z-index:5;
+}
+
+.joint-hip{
+    left:96px;
+    top:56px;
+}
+
+.joint-knee{
+    left:63px;
+    top:236px;
+}
+
+.joint-ankle{
+    left:175px;
+    top:425px;
+}
+
+.scan-line{
+    position:absolute;
+    width:390px;
+    height:2px;
+    background:linear-gradient(90deg,transparent,#16e0ff,transparent);
+    box-shadow:0 0 12px #16e0ff;
+    animation:scan 3.2s ease-in-out infinite;
+}
+
+@keyframes scan{
+    0%,100%{
+        transform:translateY(-190px);
+        opacity:0;
+    }
+    20%{opacity:1}
+    75%{
+        transform:translateY(190px);
+        opacity:1;
+    }
+}
+
+.angle-display{
+    position:absolute;
+    width:105px;
+    height:105px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:rgba(2,16,28,.9);
+    border:1px solid rgba(30,220,255,.35);
+    box-shadow:0 0 45px rgba(0,180,255,.15);
+    font-family:"Space Mono",monospace;
+    font-size:19px;
+    font-weight:700;
+    z-index:10;
+}
+
+.angle-display:before{
+    content:"";
+    position:absolute;
+    inset:-7px;
+    border-radius:50%;
+    border:1px dashed rgba(30,220,255,.25);
+    animation:spin 8s linear infinite;
+}
+
+/* ================= INFORMATION ================= */
+
+.information{
+    width:min(1050px,92%);
+    margin:auto;
+    padding:100px 0 70px;
+}
+
+.progress{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:30px;
+    margin-bottom:25px;
+}
+
+.progress-step{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:#587083;
+    font-size:9px;
+}
+
+.progress-step.active{
+    color:#a8f7ff;
+}
+
+.progress-number{
+    width:28px;
+    height:28px;
+    display:grid;
+    place-items:center;
+    border-radius:50%;
+    background:rgba(8,35,53,.8);
+    border:1px solid var(--line);
+    font-family:"Space Mono",monospace;
+}
+
+.progress-step.active .progress-number{
+    background:linear-gradient(135deg,#087cff,#13dfff);
+    color:white;
+    border-color:transparent;
+}
+
+.progress-line{
+    width:45px;
+    height:1px;
+    background:var(--line);
+}
+
+.form-card{
+    position:relative;
+    padding:32px;
+    border:1px solid var(--line);
+    border-radius:20px;
+    background:linear-gradient(145deg,rgba(8,29,47,.85),rgba(3,16,27,.78));
+    backdrop-filter:blur(20px);
+    box-shadow:0 30px 80px rgba(0,0,0,.22);
+}
+
+.form-title{
+    font-size:19px;
+    font-weight:700;
+}
+
+.form-subtitle{
+    margin-top:4px;
+    color:#647d90;
+    font-size:10px;
+}
+
+.form-grid{
+    display:grid;
     grid-template-columns:1fr 1fr;
-  }
+    gap:18px;
+    margin-top:25px;
+}
 
-  .step span{
-    display:none;
-  }
+.field label{
+    display:block;
+    margin-bottom:7px;
+    color:#7890a2;
+    font-size:10px;
+}
 
-  .step-line{
-    margin:0 7px;
-  }
+.field input{
+    width:100%;
+    height:47px;
+    padding:0 14px;
+    color:white;
+    background:rgba(2,14,24,.85);
+    border:1px solid rgba(90,190,230,.12);
+    border-radius:10px;
+    outline:none;
+}
 
-  .camera-box,
-  #video{
-    min-height:430px;
-  }
+.field input:focus{
+    border-color:rgba(30,220,255,.55);
+    box-shadow:0 0 0 3px rgba(20,210,255,.06);
+}
 
-  .search-box{
+.bmi-box{
+    grid-column:1 / -1;
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:15px;
+    margin-top:5px;
+    padding:18px;
+    border:1px solid rgba(30,220,255,.15);
+    border-radius:15px;
+    background:linear-gradient(135deg,rgba(0,130,255,.08),rgba(0,220,255,.03));
+}
+
+.bmi-main{
+    display:flex;
     flex-direction:column;
-  }
+    justify-content:center;
+}
 
-  .patient-result{
-    align-items:flex-start;
+.bmi-label{
+    color:#648094;
+    font-size:9px;
+    letter-spacing:1px;
+}
+
+.bmi-value{
+    margin-top:5px;
+    color:var(--cyan2);
+    font-family:"Space Mono",monospace;
+    font-size:30px;
+    font-weight:700;
+}
+
+.bmi-status{
+    display:flex;
+    align-items:center;
+    color:var(--green);
+    font-size:13px;
+    font-weight:700;
+}
+
+.bmi-formula{
+    color:#648094;
+    font-family:"Space Mono",monospace;
+    font-size:9px;
+    line-height:1.7;
+    display:flex;
+    align-items:center;
+}
+
+.form-footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    margin-top:28px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+}
+
+.notice{
+    color:#5f7789;
+    font-size:9px;
+    line-height:1.7;
+    max-width:560px;
+}
+
+/* ================= CAMERA ================= */
+
+.camera-page{
+    width:min(1250px,92%);
+    margin:auto;
+    padding:80px 0;
+}
+
+.camera-layout{
+    display:grid;
+    grid-template-columns:1.4fr .6fr;
+    gap:22px;
+    margin-top:30px;
+}
+
+.camera-panel{
+    position:relative;
+    min-height:600px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    border-radius:22px;
+    background:#020c15;
+    box-shadow:0 30px 80px rgba(0,0,0,.3);
+}
+
+#videoElement{
+    width:100%;
+    height:100%;
+    min-height:600px;
+    display:block;
+    object-fit:cover;
+    transform:scaleX(-1);
+}
+
+#poseCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    transform:scaleX(-1);
+}
+
+.camera-placeholder{
+    position:absolute;
+    inset:0;
+    display:flex;
     flex-direction:column;
-  }
-
+    align-items:center;
+    justify-content:center;
+    background:radial-gradient(circle,rgba(0,180,255,.1),transparent 50%);
+    z-index:10;
 }
 
-/* ==========================================================
-   KNEEAI V10.2 — FUTURISTIC MEDICAL AI UI OVERRIDES
-   Visual layer only: keeps V10.1 logic/functionality intact.
-========================================================== */
-:root{
-  --ink:#071a35;
-  --ink2:#0b2b55;
-  --blue:#1677ff;
-  --cyan:#18d7e8;
-  --ice:#eef8ff;
-  --line:rgba(96,145,190,.20);
-  --glass:rgba(255,255,255,.78);
-  --shadow:0 22px 70px rgba(4,28,62,.10);
+.camera-icon{
+    width:100px;
+    height:100px;
+    display:grid;
+    place-items:center;
+    border:1px solid rgba(30,220,255,.3);
+    border-radius:50%;
+    font-size:45px;
+    box-shadow:0 0 60px rgba(0,200,255,.15);
 }
-body{
-  background:
-    radial-gradient(circle at 8% 8%,rgba(24,215,232,.11),transparent 25%),
-    radial-gradient(circle at 92% 12%,rgba(22,119,255,.10),transparent 27%),
-    linear-gradient(180deg,#f7fbff 0%,#eef5fb 52%,#f8fbff 100%);
-}
-body:before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.35;
-  background-image:linear-gradient(rgba(22,119,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(22,119,255,.035) 1px,transparent 1px);
-  background-size:36px 36px;
-  mask-image:linear-gradient(to bottom,black,transparent 80%);
-}
-.top-warning{
-  background:linear-gradient(90deg,#061a38,#0b3569 55%,#061a38);
-  color:#dff8ff;border:0;letter-spacing:.02em;
-  box-shadow:0 4px 20px rgba(3,24,53,.12);
-}
-header{
-  background:rgba(255,255,255,.76);
-  border-bottom:1px solid rgba(113,153,190,.18);
-  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-  box-shadow:0 10px 35px rgba(5,31,62,.06);
-}
-.nav{max-width:1280px;padding:15px 22px}
-.logo{gap:12px}
-.logo-icon{
-  width:46px;height:46px;border-radius:15px;
-  background:linear-gradient(145deg,#061a38 5%,#1263bf 55%,#16cbdc 100%);
-  box-shadow:0 10px 30px rgba(12,91,175,.28),inset 0 1px 0 rgba(255,255,255,.35);
-  position:relative;overflow:hidden;
-}
-.logo-icon:after{content:"";position:absolute;width:18px;height:18px;border:1px solid rgba(255,255,255,.55);border-radius:50%;right:-4px;top:-4px}
-.logo-title{color:#061a38;font-size:22px;letter-spacing:-.02em}
-.logo-sub{color:#6e849f;letter-spacing:.08em}
-.lang-select{border:1px solid rgba(65,119,168,.18);box-shadow:0 5px 18px rgba(8,47,88,.05);background:rgba(248,252,255,.9)}
-.container{max-width:1280px;padding:36px 22px 70px}
-.steps{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border-color:rgba(100,145,185,.14)}
-.steps-inner{max-width:1080px;padding:15px 22px}
-.step{font-weight:600}
-.step-dot{box-shadow:inset 0 0 0 1px rgba(91,132,172,.12)}
-.step-dot.active{background:linear-gradient(135deg,#0b2b55,#1688ff);box-shadow:0 7px 20px rgba(22,119,255,.25)}
-.step-dot.done{background:linear-gradient(135deg,#0e9f65,#22c982);box-shadow:0 7px 20px rgba(22,159,101,.2)}
-.card{background:rgba(255,255,255,.82);border:1px solid rgba(95,143,185,.17);box-shadow:var(--shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.btn{border-radius:14px;position:relative;overflow:hidden;box-shadow:0 8px 22px rgba(8,43,82,.08)}
-.btn:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.24) 50%,transparent 75%);transform:translateX(-120%);transition:.5s}
-.btn:hover:after{transform:translateX(120%)}
-.btn-primary{background:linear-gradient(135deg,#071d3c,#0e4c98 58%,#159bd0);box-shadow:0 12px 28px rgba(13,78,150,.25)}
-.btn-primary:hover{background:linear-gradient(135deg,#09264c,#1160b7 58%,#18b6d8);transform:translateY(-2px)}
-.btn-light{background:rgba(238,245,252,.95);border:1px solid rgba(87,128,165,.14)}
-.badge{box-shadow:0 5px 16px rgba(19,92,159,.07);letter-spacing:.06em}
-.blue-badge{background:linear-gradient(135deg,#eaf6ff,#dff9ff);color:#0867a6;border:1px solid rgba(25,159,218,.12)}
-.hero{gap:55px;padding:58px 0 48px;position:relative}
-.hero:before{content:"";position:absolute;width:280px;height:280px;border-radius:50%;background:rgba(24,215,232,.08);filter:blur(10px);right:37%;top:12%;pointer-events:none}
-.hero h1{font-size:clamp(40px,5vw,64px);letter-spacing:-.045em;line-height:1.12;color:#061a38;text-shadow:0 3px 30px rgba(14,62,116,.07)}
-.hero h1 span{background:linear-gradient(100deg,#0b58ad,#1689ff 55%,#10b9c9);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{font-size:15px;color:#627995;line-height:2.05}
-.hero .btn-primary{padding:14px 25px;font-size:14px}
-.hero-box{
-  min-height:455px;padding:42px;border-radius:34px;
-  background:radial-gradient(circle at 78% 16%,rgba(24,215,232,.34),transparent 25%),radial-gradient(circle at 15% 85%,rgba(35,110,255,.24),transparent 30%),linear-gradient(145deg,#04152e,#082b55 55%,#075b85);
-  box-shadow:0 35px 90px rgba(4,35,72,.24),inset 0 1px 0 rgba(255,255,255,.13);
-  border:1px solid rgba(137,225,255,.14);position:relative;overflow:hidden;
-}
-.hero-box:before,.hero-box:after{content:"";position:absolute;border:1px solid rgba(93,226,255,.16);border-radius:50%;pointer-events:none}
-.hero-box:before{width:290px;height:290px;right:-100px;top:-120px}
-.hero-box:after{width:180px;height:180px;left:-90px;bottom:-90px}
-.hero-box-title{color:#8bdff1;letter-spacing:.18em}
-.hero-big{font-size:clamp(38px,4vw,54px);letter-spacing:-.04em;text-shadow:0 10px 30px rgba(0,0,0,.18)}
-.hero-big span{color:#65e8f2;text-shadow:0 0 25px rgba(91,235,245,.3)}
-.hero-list{color:#d5eaf5}
-.form-card{max-width:900px;padding:34px}
-.form-card h2,.card h2{color:#071a35;letter-spacing:-.025em}
-input,select{border:1px solid rgba(95,139,177,.22);background:rgba(247,251,255,.92);box-shadow:inset 0 1px 2px rgba(9,46,81,.025);transition:.2s}
-input:focus,select:focus{border-color:#21a9d1;box-shadow:0 0 0 4px rgba(24,190,222,.10),0 7px 22px rgba(22,119,255,.06)}
-.bmi-box{background:linear-gradient(135deg,#edf9ff,#eafcff);border-color:rgba(27,177,211,.18);box-shadow:0 12px 30px rgba(19,116,160,.06)}
-.question{background:rgba(255,255,255,.6);border-color:rgba(98,140,177,.16);transition:.2s}
-.question:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(5,40,77,.06)}
-.option{background:rgba(255,255,255,.86);border-color:rgba(94,139,179,.18)}
-.option.selected{background:linear-gradient(135deg,#082754,#0d65ba 65%,#13a8c4);border-color:transparent;box-shadow:0 8px 20px rgba(12,87,166,.2)}
-.camera-layout{gap:20px}
-.camera-box{border:1px solid rgba(70,184,218,.2);box-shadow:0 30px 70px rgba(2,22,48,.25)}
-.camera-box:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(9,27,50,.05),transparent 50%,rgba(2,15,30,.35))}
-.guide{inset:6%;border:1px solid rgba(89,232,244,.65);box-shadow:0 0 0 1px rgba(255,255,255,.08),inset 0 0 40px rgba(16,190,220,.05)}
-.guide:before{content:"";position:absolute;inset:-1px;background:linear-gradient(90deg,#23e1ee 14%,transparent 14%,transparent 86%,#23e1ee 86%),linear-gradient(#23e1ee 14%,transparent 14%,transparent 86%,#23e1ee 86%);background-size:24px 1px,1px 24px;background-repeat:no-repeat;background-position:top left,bottom right;opacity:.8}
-.guide-label{background:rgba(4,23,44,.78);border:1px solid rgba(96,228,240,.35);box-shadow:0 8px 25px rgba(0,0,0,.2)}
-.camera-tip{background:rgba(3,20,39,.72);border:1px solid rgba(126,218,235,.15);backdrop-filter:blur(8px)}
-.ai-panel{background:radial-gradient(circle at 85% 0%,rgba(20,151,196,.22),transparent 35%),linear-gradient(160deg,#04152d,#082b51 70%,#063c59);border:1px solid rgba(98,219,239,.13);box-shadow:0 25px 60px rgba(3,29,59,.18)}
-.ai-panel h3{letter-spacing:-.02em}
-.angle-card{background:rgba(255,255,255,.075);border:1px solid rgba(125,223,238,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
-.angle{color:#66eaf0;text-shadow:0 0 22px rgba(102,234,240,.22)}
-.camera-status{border:1px solid rgba(125,223,238,.1)}
-.result-grid{gap:24px}
-.result-image{border:1px solid rgba(70,129,179,.16);box-shadow:0 25px 55px rgba(7,34,66,.12)}
-.stat{background:linear-gradient(145deg,rgba(250,253,255,.95),rgba(238,247,253,.85));border-color:rgba(91,140,181,.16);box-shadow:0 10px 25px rgba(11,50,90,.04)}
-.stat-value{background:linear-gradient(100deg,#07336b,#0874c7);-webkit-background-clip:text;background-clip:text;color:transparent}
-.result-box{box-shadow:0 10px 28px rgba(7,40,75,.05)}
-.login{padding:34px;border:1px solid rgba(78,136,184,.18);box-shadow:0 30px 75px rgba(7,35,69,.12)}
-.doctor-head{padding-bottom:15px;border-bottom:1px solid rgba(91,139,179,.15)}
-.patient-result{background:rgba(255,255,255,.8);border-color:rgba(86,136,179,.16);box-shadow:0 10px 25px rgba(5,40,75,.04);transition:.2s}
-.patient-result:hover{transform:translateY(-2px);box-shadow:0 18px 35px rgba(5,40,75,.08);border-color:rgba(22,143,210,.25)}
-.patient-detail{background:linear-gradient(145deg,#f6fbff,#eef7fc);border:1px solid rgba(81,139,181,.13)}
-footer{color:#7d93aa;letter-spacing:.03em}
-@media(max-width:900px){.hero{gap:30px}.hero-box{min-height:400px}}
-@media(max-width:650px){.container{padding-left:14px;padding-right:14px}.hero h1{font-size:38px}.hero-box{padding:28px;border-radius:26px}.form-card{padding:24px}}
 
+.camera-placeholder h3{
+    margin-top:25px;
+    font-size:20px;
+}
+
+.camera-placeholder p{
+    margin-top:7px;
+    color:var(--muted);
+    font-size:11px;
+}
+
+.camera-side{
+    padding:24px;
+    border:1px solid var(--line);
+    border-radius:22px;
+    background:var(--glass);
+    height:max-content;
+}
+
+.metric{
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+}
+
+.metric:last-child{
+    border-bottom:none;
+}
+
+.metric-label{
+    color:#638095;
+    font-size:9px;
+}
+
+.metric-value{
+    margin-top:5px;
+    color:#dffaff;
+    font-family:"Space Mono",monospace;
+    font-size:22px;
+    font-weight:700;
+}
+
+.step-button{
+    width:100%;
+    margin-top:20px;
+}
+
+.pose-guide{
+    position:absolute;
+    left:20px;
+    top:20px;
+    padding:10px 14px;
+    border-radius:10px;
+    background:rgba(2,12,22,.78);
+    border:1px solid rgba(30,220,255,.25);
+    color:#9cefff;
+    font-family:"Space Mono",monospace;
+    font-size:9px;
+    z-index:20;
+}
+
+.camera-bottom{
+    position:absolute;
+    bottom:20px;
+    left:20px;
+    right:20px;
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    z-index:20;
+}
+
+.camera-live{
+    padding:8px 12px;
+    border-radius:8px;
+    background:rgba(2,10,18,.8);
+    border:1px solid rgba(50,240,173,.2);
+    color:var(--green);
+    font-family:"Space Mono",monospace;
+    font-size:9px;
+}
+
+/* ================= ANALYSIS ================= */
+
+.analysis-page{
+    width:min(1250px,92%);
+    margin:auto;
+    padding:90px 0;
+}
+
+.analysis-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    margin-top:30px;
+}
+
+.analysis-card{
+    padding:25px;
+    border:1px solid var(--line);
+    border-radius:18px;
+    background:var(--glass);
+}
+
+.analysis-card h3{
+    font-size:12px;
+    color:#7591a4;
+    letter-spacing:1px;
+}
+
+.analysis-number{
+    margin-top:12px;
+    font-family:"Space Mono",monospace;
+    font-size:32px;
+    color:var(--cyan2);
+}
+
+.bar{
+    width:100%;
+    height:7px;
+    margin-top:15px;
+    overflow:hidden;
+    border-radius:99px;
+    background:#0a2435;
+}
+
+.bar span{
+    display:block;
+    width:0%;
+    height:100%;
+    border-radius:99px;
+    background:linear-gradient(90deg,#087cff,#16ddff);
+    transition:width .6s ease;
+}
+
+.math-dashboard{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-top:22px;
+}
+
+.math-card{
+    padding:25px;
+    border:1px solid var(--line);
+    border-radius:18px;
+    background:rgba(3,18,30,.82);
+}
+
+.math-card h3{
+    color:#80eaff;
+    font-size:13px;
+}
+
+.formula{
+    margin-top:15px;
+    padding:15px;
+    border-radius:12px;
+    background:#020c15;
+    border:1px solid rgba(50,210,255,.12);
+    color:#c8f8ff;
+    font-family:"Space Mono",monospace;
+    font-size:11px;
+    line-height:1.8;
+}
+
+.math-values{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-top:15px;
+}
+
+.math-value{
+    padding:14px;
+    border-radius:12px;
+    background:rgba(8,35,53,.65);
+}
+
+.math-value small{
+    display:block;
+    color:#627b8d;
+    font-size:8px;
+}
+
+.math-value strong{
+    display:block;
+    margin-top:5px;
+    color:#dffaff;
+    font-family:"Space Mono",monospace;
+    font-size:18px;
+}
+
+/* EXTRA MATHEMATICAL CARDS */
+
+.advanced-math{
+    margin-top:22px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.advanced-card{
+    padding:20px;
+    border:1px solid rgba(30,220,255,.12);
+    border-radius:16px;
+    background:rgba(3,18,30,.7);
+}
+
+.advanced-card .small-title{
+    color:#5f7d90;
+    font-size:8px;
+    letter-spacing:1px;
+}
+
+.advanced-card .big-value{
+    margin-top:8px;
+    color:#bdf8ff;
+    font-family:"Space Mono",monospace;
+    font-size:21px;
+    font-weight:700;
+}
+
+.advanced-card .sub{
+    margin-top:7px;
+    color:#526d80;
+    font-size:8px;
+}
+
+.score-panel{
+    margin-top:22px;
+    padding:28px;
+    border:1px solid rgba(30,220,255,.16);
+    border-radius:20px;
+    background:
+        linear-gradient(135deg,rgba(0,120,255,.08),rgba(0,220,255,.03));
+}
+
+.score-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.score-header h3{
+    font-size:14px;
+    color:#8cefff;
+}
+
+.score-number{
+    color:var(--green);
+    font-family:"Space Mono",monospace;
+    font-size:35px;
+    font-weight:700;
+}
+
+.score-track{
+    height:12px;
+    margin-top:18px;
+    overflow:hidden;
+    border-radius:99px;
+    background:#071b29;
+}
+
+.score-track span{
+    display:block;
+    width:0%;
+    height:100%;
+    border-radius:99px;
+    background:linear-gradient(90deg,#087cff,#16ddff,#35efad);
+    transition:1s;
+}
+
+.score-components{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:18px;
+}
+
+.score-component{
+    padding:12px;
+    border-radius:10px;
+    background:rgba(2,15,25,.6);
+}
+
+.score-component small{
+    display:block;
+    color:#5e7789;
+    font-size:8px;
+}
+
+.score-component strong{
+    display:block;
+    margin-top:4px;
+    font-family:"Space Mono",monospace;
+    color:#dffaff;
+}
+
+/* ================= RESULT ================= */
+
+.result-page{
+    width:min(1100px,92%);
+    margin:auto;
+    padding:90px 0;
+}
+
+.result-card{
+    margin-top:30px;
+    padding:35px;
+    border:1px solid var(--line);
+    border-radius:22px;
+    background:var(--glass);
+    text-align:center;
+}
+
+.result-score{
+    font-family:"Space Mono",monospace;
+    font-size:70px;
+    color:var(--green);
+}
+
+.result-title{
+    margin-top:5px;
+    font-size:25px;
+    font-weight:800;
+}
+
+.result-warning{
+    margin-top:20px;
+    padding:15px;
+    border-radius:12px;
+    background:rgba(255,180,50,.06);
+    border:1px solid rgba(255,200,80,.12);
+    color:#b6a878;
+    font-size:10px;
+    line-height:1.8;
+}
+
+.result-summary{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin-top:25px;
+}
+
+.summary-box{
+    padding:15px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:rgba(2,15,25,.6);
+}
+
+.summary-box small{
+    color:#60798b;
+    font-size:8px;
+}
+
+.summary-box strong{
+    display:block;
+    margin-top:5px;
+    font-family:"Space Mono",monospace;
+    color:#b9f7ff;
+}
+
+.result-extra{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-top:12px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1050px){
+
+    .home{
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+
+    .hero-description{
+        margin-left:auto;
+        margin-right:auto;
+    }
+
+    .math-strip,
+    .hero-actions{
+        justify-content:center;
+    }
+
+    .mini-data{
+        margin-left:auto;
+        margin-right:auto;
+    }
+
+    .camera-layout{
+        grid-template-columns:1fr;
+    }
+
+    .advanced-math{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:700px){
+
+    .header{
+        padding:0 20px;
+    }
+
+    .system-status{
+        display:none;
+    }
+
+    .hero-title{
+        font-size:50px;
+    }
+
+    .hero-actions{
+        flex-direction:column;
+    }
+
+    .btn{
+        width:100%;
+    }
+
+    .mini-data{
+        grid-template-columns:1fr;
+    }
+
+    .mini-card{
+        border-right:none;
+        border-bottom:1px solid var(--line);
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .bmi-box{
+        grid-template-columns:1fr;
+    }
+
+    .form-footer{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .analysis-grid,
+    .math-dashboard,
+    .result-summary,
+    .result-extra{
+        grid-template-columns:1fr;
+    }
+
+    .advanced-math{
+        grid-template-columns:1fr;
+    }
+
+    .score-components{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .hero-visual{
+        transform:scale(.68);
+        height:500px;
+    }
+
+    .camera-panel{
+        min-height:450px;
+    }
+
+    #videoElement{
+        min-height:450px;
+    }
+
+    #poseCanvas{
+        min-height:450px;
+    }
+}
 </style>
 </head>
 
 <body>
 
-<div class="top-warning" data-i18n="warning">
-⚠️ KneeAI เป็นระบบคัดกรองเบื้องต้น ไม่ใช่เครื่องมือวินิจฉัยโรค
+<div class="background">
+    <div class="grid"></div>
+    <div class="glow glow1"></div>
+    <div class="glow glow2"></div>
+    <div class="particles" id="particles"></div>
 </div>
 
-<header>
+<header class="header">
 
-<div class="nav">
+    <div class="brand">
+        <div class="brand-icon">K</div>
 
-<div class="logo" onclick="go('home')">
+        <div>
+            <div class="brand-title">
+                AI KNEE SCREENING
+            </div>
 
-<div class="logo-icon">K</div>
+            <div class="brand-sub">
+                MEDICAL MATHEMATICAL MOTION ANALYSIS
+            </div>
+        </div>
+    </div>
 
-<div>
-<div class="logo-title">KneeAI</div>
-<div class="logo-sub">
-AI KNEE SCREENING & RISK ASSESSMENT
-</div>
-</div>
-
-</div>
-
-<div class="nav-right">
-
-<select id="languageSelect"
-class="lang-select"
-onchange="changeLanguage(this.value)">
-
-<option value="th">🇹🇭 ไทย</option>
-<option value="en">🇬🇧 English</option>
-<option value="zh">🇨🇳 中文</option>
-<option value="ja">🇯🇵 日本語</option>
-<option value="ko">🇰🇷 한국어</option>
-
-</select>
-
-<button
-class="btn btn-primary"
-onclick="go('doctor')"
-data-i18n="doctorPortal">
-
-👨‍⚕️ Doctor Portal
-
-</button>
-
-</div>
-
-</div>
+    <div class="system-status">
+        <span class="status-dot"></span>
+        SYSTEM READY
+        <span>•</span>
+        AI ENGINE ONLINE
+    </div>
 
 </header>
 
 
-<!-- STEPS -->
+<!-- =========================================================
+HOME
+========================================================= -->
 
-<div class="steps">
+<section id="homePage" class="page active">
 
-<div class="steps-inner">
-
-<div class="step">
-<div id="s1" class="step-dot active">1</div>
-<span data-i18n="stepProfile">ข้อมูล</span>
-</div>
-
-<div class="step-line"></div>
-
-<div class="step">
-<div id="s2" class="step-dot">2</div>
-<span data-i18n="stepSymptoms">อาการ</span>
-</div>
-
-<div class="step-line"></div>
-
-<div class="step">
-<div id="s3" class="step-dot">3</div>
-<span data-i18n="stepCamera">กล้อง AI</span>
-</div>
-
-<div class="step-line"></div>
-
-<div class="step">
-<div id="s4" class="step-dot">4</div>
-<span data-i18n="stepResult">ผลลัพธ์</span>
-</div>
-
-</div>
-
-</div>
-
-
-<main class="container">
-
-
-<!-- =====================================================
-     HOME
-====================================================== -->
-
-<section id="home" class="page active">
-
-<div class="hero">
+<div class="home">
 
 <div>
 
-<span class="badge blue-badge" data-i18n="computerVision">
-AI COMPUTER VISION
-</span>
+<div class="eyebrow">
+    AI-ASSISTED BIOMECHANICS
+</div>
 
-<h1>
-<span data-i18n="heroTitle1">
-ระบบคัดกรองข้อเข่า
-</span>
-<br>
-<span data-i18n="heroTitle2">
-ด้วย AI จากภาพท่ายืน
-</span>
+<h1 class="hero-title">
+    KNEE
+    <span class="blue">MOTION</span>
+    <span class="outline">ANALYSIS</span>
 </h1>
 
-<p data-i18n="heroDescription">
-KneeAI วิเคราะห์ข้อมูลพื้นฐาน อาการเบื้องต้น
-และภาพท่ายืน โดยใช้ AI Pose Estimation
-เพื่อตรวจจับตำแหน่งสะโพก เข่า และข้อเท้า
-และคำนวณมุมของข้อเข่า
+<p class="hero-description">
+    ระบบต้นแบบสำหรับการคัดกรองสุขภาพข้อเข่าเบื้องต้น
+    โดยผสาน Artificial Intelligence, Computer Vision
+    และ Mathematical Analysis เพื่อวิเคราะห์รูปแบบ
+    การเคลื่อนไหวของข้อเข่าอย่างเป็นระบบ
 </p>
 
-<button
-class="btn btn-primary"
-onclick="go('profile')"
-data-i18n="startAssessment">
+<div class="math-strip">
 
-🚀 เริ่มการประเมิน
+<div class="math-chip">
+θ = cos⁻¹((u·v)/|u||v|)
+</div>
 
+<div class="math-chip">
+v(t) = Δθ/Δt
+</div>
+
+<div class="math-chip">
+a(t) = Δv/Δt
+</div>
+
+<div class="math-chip">
+ROM = θmax − θmin
+</div>
+
+<div class="math-chip">
+σ = √Σ(x−μ)²/n
+</div>
+
+<div class="math-chip">
+SI = 100 − Δθ/θmax×100
+</div>
+
+<div class="math-chip">
+BMI = m/h²
+</div>
+
+</div>
+
+<div class="hero-actions">
+
+<button id="startBtn" class="btn btn-primary">
+เริ่มการประเมิน
+<span>→</span>
+</button>
+
+<button id="mathBtn" class="btn btn-secondary">
+ดู Mathematical Model
 </button>
 
 </div>
 
+<div class="mini-data">
 
-<div class="hero-box">
-
-<div class="hero-box-title">
-KNEEAI V10.1
+<div class="mini-card">
+<div class="mini-label">KNEE ANGLE</div>
+<div class="mini-value" id="homeAngle">
+168.4<span>°</span>
+</div>
 </div>
 
-<div class="hero-big">
-STANDING<br>
-<span>ANALYSIS</span>
+<div class="mini-card">
+<div class="mini-label">AI CONFIDENCE</div>
+<div class="mini-value">
+96.2<span>%</span>
+</div>
 </div>
 
-<div class="hero-list">
-
-<div data-i18n="heroFeature1">
-✓ ข้อมูลพื้นฐานและ BMI
+<div class="mini-card">
+<div class="mini-label">MOTION FRAME</div>
+<div class="mini-value" id="homeFrame">
+0248
+</div>
 </div>
 
-<div data-i18n="heroFeature2">
-✓ แบบสอบถามอาการ
 </div>
 
-<div data-i18n="heroFeature3">
-✓ AI Pose Landmark
 </div>
 
-<div data-i18n="heroFeature4">
-✓ มุมเข่าซ้ายและขวา
+
+<div class="hero-visual">
+
+<div class="visual-core">
+
+<div class="orbit orbit1">
+<div class="orbit-dot dot1"></div>
 </div>
 
-<div data-i18n="heroFeature5">
-✓ Doctor Portal
+<div class="orbit orbit2">
+<div class="orbit-dot dot2"></div>
+</div>
+
+<div class="orbit orbit3">
+<div class="orbit-dot dot3"></div>
+</div>
+
+<div class="scan-line"></div>
+
+<div class="knee-model">
+
+<div class="bone bone-hip"></div>
+<div class="bone bone-thigh"></div>
+<div class="bone bone-shin"></div>
+
+<div class="joint joint-hip"></div>
+<div class="joint joint-knee"></div>
+<div class="joint joint-ankle"></div>
+
+</div>
+
+<div class="angle-display">
+<span id="heroAngle">168.4°</span>
 </div>
 
 </div>
@@ -1139,166 +1512,141 @@ STANDING<br>
 </section>
 
 
-<!-- =====================================================
-     PROFILE
-====================================================== -->
+<!-- =========================================================
+PATIENT INFORMATION
+========================================================= -->
 
-<section id="profile" class="page">
+<section id="infoPage" class="page">
 
-<div class="form-card card">
+<div class="information">
 
-<span class="badge blue-badge">
-STEP 01
-</span>
+<button id="backHomeBtn" class="btn btn-secondary">
+← กลับหน้าแรก
+</button>
 
-<h2 data-i18n="profileTitle">
-ข้อมูลผู้รับการประเมิน
+<h2 class="page-heading" style="margin-top:25px">
+PATIENT <span>INFORMATION</span>
 </h2>
 
-<p
-class="small-note"
-data-i18n="profileSubtitle">
-
-กรอกข้อมูลพื้นฐานสำหรับการประเมิน
-
+<p class="page-description">
+กรุณากรอกข้อมูลเบื้องต้นก่อนเข้าสู่ระบบวิเคราะห์การเคลื่อนไหว
 </p>
 
+<div class="progress">
+
+<div class="progress-step active">
+<div class="progress-number">01</div>
+ข้อมูล
+</div>
+
+<div class="progress-line"></div>
+
+<div class="progress-step">
+<div class="progress-number">02</div>
+AI Camera
+</div>
+
+<div class="progress-line"></div>
+
+<div class="progress-step">
+<div class="progress-number">03</div>
+Analysis
+</div>
+
+<div class="progress-line"></div>
+
+<div class="progress-step">
+<div class="progress-number">04</div>
+Result
+</div>
+
+</div>
+
+<div class="form-card">
+
+<div class="form-title">
+ข้อมูลผู้เข้ารับการคัดกรอง
+</div>
+
+<div class="form-subtitle">
+PATIENT PROFILE / BASIC PARAMETERS
+</div>
 
 <div class="form-grid">
 
-<div class="full">
+<div class="field">
+<label>ชื่อ</label>
+<input id="firstName" type="text" placeholder="กรอกชื่อ">
+</div>
 
-<label data-i18n="nameLabel">
-ชื่อ–นามสกุล
-</label>
+<div class="field">
+<label>นามสกุล</label>
+<input id="lastName" type="text" placeholder="กรอกนามสกุล">
+</div>
 
-<input
-id="patientName"
-placeholder="เช่น Alex Johnson"
-data-i18n-placeholder="namePlaceholder">
+<div class="field">
+<label>อายุ</label>
+<input id="age" type="number" min="1" max="120" placeholder="ปี">
+</div>
+
+<div class="field">
+<label>น้ำหนัก</label>
+<input id="weight" type="number" min="1" step="0.1" placeholder="กิโลกรัม">
+</div>
+
+<div class="field">
+<label>ส่วนสูง</label>
+<input id="height" type="number" min="50" step="0.1" placeholder="เซนติเมตร">
+</div>
+
+<div class="field">
+<label>โรงพยาบาลสำหรับส่งต่อ</label>
+<input id="hospital" type="text" placeholder="ชื่อโรงพยาบาล">
+</div>
+
+<div class="bmi-box">
+
+<div class="bmi-main">
+
+<div class="bmi-label">
+BODY MASS INDEX
+</div>
+
+<div id="bmiValue" class="bmi-value">
+--.-
+</div>
 
 </div>
 
-
-<div>
-
-<label data-i18n="ageLabel">
-อายุ (ปี)
-</label>
-
-<input
-id="age"
-type="number"
-min="1"
-max="120">
-
+<div id="bmiStatus" class="bmi-status">
+กรุณากรอกน้ำหนักและส่วนสูง
 </div>
 
-
-<div>
-
-<label data-i18n="genderLabel">
-เพศ
-</label>
-
-<select id="gender">
-
-<option value=""
-data-i18n="selectGender">
-เลือกเพศ
-</option>
-
-<option value="male"
-data-i18n="male">
-ชาย
-</option>
-
-<option value="female"
-data-i18n="female">
-หญิง
-</option>
-
-<option value="other"
-data-i18n="other">
-อื่น ๆ
-</option>
-
-</select>
-
-</div>
-
-
-<div>
-
-<label data-i18n="weightLabel">
-น้ำหนัก (กิโลกรัม)
-</label>
-
-<input
-id="weight"
-type="number"
-min="1"
-step="0.1"
-oninput="calculateBMI()">
-
-</div>
-
-
-<div>
-
-<label data-i18n="heightLabel">
-ส่วนสูง (เซนติเมตร)
-</label>
-
-<input
-id="height"
-type="number"
-min="50"
-max="250"
-step="0.1"
-oninput="calculateBMI()">
-
-</div>
-
-
-<div class="full bmi-box">
-
-<div class="bmi-caption">
-BMI
-</div>
-
-<div id="bmi"
-class="bmi-value">
-—
+<div class="bmi-formula">
+BMI = น้ำหนัก(kg) ÷ [ส่วนสูง(m)]²
 </div>
 
 </div>
 
 </div>
 
+<div class="form-footer">
 
-<div style="
-display:flex;
-justify-content:space-between;
-margin-top:25px">
+<div class="notice">
 
-<button
-class="btn btn-light"
-onclick="go('home')"
-data-i18n="back">
+⚠ ระบบนี้เป็นระบบต้นแบบสำหรับ
+<b>การคัดกรองเบื้องต้น</b> เท่านั้น
+ผลลัพธ์ไม่ถือเป็นการวินิจฉัยโรค
+และไม่สามารถใช้แทนการตรวจโดยแพทย์ได้
 
-← กลับ
+</div>
 
+<button id="continueBtn" class="btn btn-primary">
+ดำเนินการต่อ
+<span>→</span>
 </button>
 
-<button
-class="btn btn-primary"
-onclick="nextSymptoms()"
-data-i18n="next">
-
-ถัดไป →
-
-</button>
+</div>
 
 </div>
 
@@ -1307,399 +1655,64 @@ data-i18n="next">
 </section>
 
 
-<!-- =====================================================
-     SYMPTOMS
-====================================================== -->
+<!-- =========================================================
+CAMERA
+========================================================= -->
 
-<section id="symptoms" class="page">
+<section id="cameraPage" class="page">
 
-<div class="form-card card">
+<div class="camera-page">
 
-<span class="badge blue-badge">
-STEP 02
-</span>
-
-<h2 data-i18n="symptomsTitle">
-แบบสอบถามอาการเบื้องต้น
-</h2>
-
-<p
-class="small-note"
-data-i18n="symptomsSubtitle">
-
-โปรดเลือกคำตอบที่ตรงกับอาการของคุณมากที่สุด
-
-</p>
-
-<div id="questions"></div>
-
-
-<div style="
-display:flex;
-justify-content:space-between;
-margin-top:25px">
-
-<button
-class="btn btn-light"
-onclick="go('profile')"
-data-i18n="back">
-
-← กลับ
-
+<button id="cameraBackBtn" class="btn btn-secondary">
+← กลับข้อมูลผู้รับการประเมิน
 </button>
 
-<button
-class="btn btn-primary"
-onclick="nextCamera()"
-data-i18n="next">
-
-ถัดไป →
-
-</button>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     CAMERA
-====================================================== -->
-
-<section id="camera" class="page">
-
-<div class="card" style="padding:20px">
-
-<span class="badge blue-badge">
-STEP 03
-</span>
-
-<h2 data-i18n="cameraTitle">
-AI Standing Camera
+<h2 class="page-heading" style="margin-top:25px">
+AI <span>CAMERA</span>
 </h2>
 
-<p
-class="small-note"
-data-i18n="cameraSubtitle">
-
-จัดกล้องให้เห็นตั้งแต่สะโพกลงไปจนถึงเท้าทั้งสองข้าง
-
+<p class="page-description">
+MediaPipe Pose ตรวจจับ Hip • Knee • Ankle และสร้างข้อมูลสำหรับ Mathematical Time-Series Analysis
 </p>
-
 
 <div class="camera-layout">
 
+<div class="camera-panel" id="cameraPanel">
 
-<div class="camera-box">
+<div class="camera-placeholder" id="cameraPlaceholder">
 
-<video
-id="video"
-autoplay
-playsinline
-muted>
-</video>
-
-<canvas id="overlay"></canvas>
-
-<div class="guide"></div>
-
-<div
-class="guide-label"
-data-i18n="cameraGuide">
-
-สะโพก → เข่า → ข้อเท้า → เท้า
-
-</div>
-
-<div
-class="camera-tip"
-data-i18n="cameraTip">
-
-ยืนตรง ไม่ไขว้ขา และวางเท้าทั้งสองข้างให้มองเห็นชัดเจน
-
-</div>
-
-</div>
-
-
-<div class="ai-panel">
-
-<div class="ai-small">
-LIVE AI ANALYSIS
+<div class="camera-icon">
+◉
 </div>
 
 <h3>
-KNEE ANGLE
+AI Pose Detection
 </h3>
 
-
-<div class="angle-card">
-
-<div
-class="angle-label"
-data-i18n="leftKnee">
-
-เข่าซ้าย
-</div>
-
-<div
-id="leftLive"
-class="angle">
-—
-</div>
-
-</div>
-
-
-<div class="angle-card">
-
-<div
-class="angle-label"
-data-i18n="rightKnee">
-
-เข่าขวา
-</div>
-
-<div
-id="rightLive"
-class="angle">
-—
-</div>
-
-</div>
-
-
-<div class="angle-card">
-
-<div
-class="angle-label"
-data-i18n="quality">
-
-คุณภาพการตรวจจับ
-</div>
-
-<div
-id="qualityLive"
-class="angle">
-—
-</div>
-
-</div>
-
-
-<div
-id="cameraStatus"
-class="camera-status"
-data-i18n="cameraOpening">
-
-กำลังเตรียมกล้อง...
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="camera-controls">
-
-<button
-class="btn btn-light"
-onclick="stopCamera();go('symptoms')"
-data-i18n="back">
-
-← กลับ
-
-</button>
-
-<button
-id="switchBtn"
-class="btn btn-light"
-onclick="switchCamera()"
-data-i18n="switchCamera">
-
-🔄 สลับกล้อง
-
-</button>
-
-<button
-id="captureBtn"
-class="btn btn-gold"
-onclick="capturePhoto()"
-disabled
-data-i18n="capture">
-
-📷 ถ่ายภาพ
-
-</button>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     ANALYSIS
-====================================================== -->
-
-<section id="analysis" class="page">
-
-<div class="card loading">
-
-<div class="spinner"></div>
-
-<h2 data-i18n="analysisTitle">
-AI กำลังวิเคราะห์ภาพ
-</h2>
-
-<p
-id="analysisText"
-class="small-note"
-data-i18n="analysisText">
-
-กำลังตรวจจับตำแหน่งสะโพก เข่า และข้อเท้า...
-
+<p>
+ยืนให้เห็นร่างกายด้านข้างเต็มตัว
 </p>
 
-</div>
-
-</section>
-
-
-<!-- =====================================================
-     RESULT
-====================================================== -->
-
-<section id="result" class="page">
-
-<div style="
-display:flex;
-justify-content:space-between;
-align-items:flex-start;
-gap:15px;
-margin-bottom:20px">
-
-<div>
-
-<span class="badge green-badge">
-AI ANALYSIS COMPLETE
-</span>
-
-<h2 data-i18n="resultTitle">
-ผลการประเมิน
-</h2>
-
-<div
-id="resultPatient"
-class="small-note">
-</div>
-
-</div>
-
-<button
+<button id="cameraStartBtn"
 class="btn btn-primary"
-onclick="window.print()"
-data-i18n="print">
-
-🖨️ พิมพ์รายงาน
-
+style="margin-top:25px">
+เริ่มกล้อง
 </button>
 
 </div>
 
-
-<div class="result-grid">
-
-
-<div class="card" style="padding:18px">
-
-<h3 data-i18n="aiImage">
-ภาพที่ AI วิเคราะห์
-</h3>
-
-<div class="result-image">
-
-<canvas id="resultCanvas"></canvas>
-
+<div class="pose-guide" id="poseGuide">
+WAITING FOR CAMERA
 </div>
 
-<div class="legend" data-i18n="legend">
-🟡 จุด AI • 🟢 แนวกระดูกขา • ตัวเลข = มุม
+<div class="camera-bottom">
+
+<div class="camera-live" id="cameraLive">
+● CAMERA OFFLINE
 </div>
 
-</div>
-
-
-<div>
-
-<div class="stat-grid">
-
-<div class="stat">
-
-<div
-class="stat-label"
-data-i18n="leftAngle">
-มุมเข่าซ้าย
-</div>
-
-<div
-id="leftResult"
-class="stat-value">
-—
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div
-class="stat-label"
-data-i18n="rightAngle">
-มุมเข่าขวา
-</div>
-
-<div
-id="rightResult"
-class="stat-value">
-—
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div
-class="stat-label"
-data-i18n="angleDifference">
-ส่วนต่างมุม
-</div>
-
-<div
-id="differenceResult"
-class="stat-value">
-—
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div
-class="stat-label">
-BMI
-</div>
-
-<div
-id="bmiResult"
-class="stat-value">
-—
+<div class="camera-live">
+HIP • KNEE • ANKLE
 </div>
 
 </div>
@@ -1707,256 +1720,473 @@ class="stat-value">
 </div>
 
 
-<div
-id="overallBox"
-class="result-box">
+<div class="camera-side">
 
-<strong id="overallTitle">
-—
-</strong>
-
-<div
-id="overallDetail"
-style="
-font-size:12px;
-margin-top:7px;
-line-height:1.8">
+<div class="metric">
+<div class="metric-label">PATIENT</div>
+<div id="cameraPatient" class="metric-value">—</div>
 </div>
 
+<div class="metric">
+<div class="metric-label">BMI</div>
+<div id="cameraBMI" class="metric-value">—</div>
 </div>
 
-
-<div class="card" style="
-padding:18px;
-margin-top:15px">
-
-<h3 data-i18n="additionalInfo">
-ข้อมูลเพิ่มเติม
-</h3>
-
-
-<div class="detail-row">
-
-<span data-i18n="symptomScore">
-คะแนนอาการ
-</span>
-
-<strong id="symptomScore">
-—
-</strong>
-
+<div class="metric">
+<div class="metric-label">KNEE ANGLE θ</div>
+<div id="cameraAngle" class="metric-value">— °</div>
 </div>
 
-
-<div class="detail-row">
-
-<span data-i18n="imageQuality">
-คุณภาพภาพ
-</span>
-
-<strong id="qualityResult">
-—
-</strong>
-
+<div class="metric">
+<div class="metric-label">ANGULAR VELOCITY</div>
+<div id="cameraVelocity" class="metric-value">— °/s</div>
 </div>
 
-
-<div class="detail-row">
-
-<span data-i18n="hipDetected">
-ตรวจพบสะโพก
-</span>
-
-<strong>✓</strong>
-
+<div class="metric">
+<div class="metric-label">AI CONFIDENCE</div>
+<div id="cameraConfidence" class="metric-value">— %</div>
 </div>
 
-
-<div class="detail-row">
-
-<span data-i18n="kneeDetected">
-ตรวจพบเข่า
-</span>
-
-<strong>✓</strong>
-
+<div class="metric">
+<div class="metric-label">DETECTION POINTS</div>
+<div id="detectionPoints" class="metric-value">0 / 3</div>
 </div>
 
-
-<div class="detail-row">
-
-<span data-i18n="ankleDetected">
-ตรวจพบข้อเท้า
-</span>
-
-<strong>✓</strong>
-
+<div class="metric">
+<div class="metric-label">FRAME COUNT</div>
+<div id="cameraFrame" class="metric-value">0000</div>
 </div>
 
-
+<div class="metric">
+<div class="metric-label">STATUS</div>
+<div id="cameraStatus"
+class="metric-value"
+style="color:var(--yellow)">
+READY
+</div>
 </div>
 
-</div>
-
-</div>
-
-
-<div style="
-text-align:center;
-margin-top:25px">
-
-<button
-class="btn btn-light"
-onclick="restart()"
-data-i18n="newAssessment">
-
-🔄 ประเมินใหม่
-
+<button id="analysisBtn"
+class="btn btn-primary step-button">
+เริ่ม Mathematical Analysis →
 </button>
+
+</div>
+
+</div>
 
 </div>
 
 </section>
 
 
-<!-- =====================================================
-     DOCTOR
-====================================================== -->
+<!-- =========================================================
+MATHEMATICAL ANALYSIS
+========================================================= -->
 
-<section id="doctor" class="page">
+<section id="analysisPage" class="page">
 
+<div class="analysis-page">
 
-<div
-id="doctorLogin"
-class="login card">
+<button id="analysisBackBtn" class="btn btn-secondary">
+← กลับหน้า AI Camera
+</button>
 
-<div style="text-align:center">
-
-<div class="logo-icon" style="margin:auto">
-K
-</div>
-
-<h2 data-i18n="doctorPortal">
-Doctor Portal
+<h2 class="page-heading" style="margin-top:25px">
+MATHEMATICAL <span>ANALYSIS</span>
 </h2>
 
-<p
-class="small-note"
-data-i18n="doctorLoginText">
-
-กรุณาเข้าสู่ระบบก่อนเข้าถึงข้อมูลผู้รับการประเมิน
-
+<p class="page-description">
+เปลี่ยนพิกัดจาก AI Pose Detection ให้เป็นตัวแปรทางคณิตศาสตร์
 </p>
 
+
+<!-- TOP METRICS -->
+
+<div class="analysis-grid">
+
+<div class="analysis-card">
+
+<h3>KNEE ANGLE θ</h3>
+
+<div id="analysisAngle"
+class="analysis-number">
+—°
+</div>
+
+<div class="bar">
+<span id="angleBar"></span>
+</div>
+
 </div>
 
 
-<div style="margin-top:20px">
+<div class="analysis-card">
 
-<label data-i18n="doctorId">
-รหัสแพทย์
-</label>
+<h3>SYMMETRY INDEX</h3>
 
-<input
-id="doctorUser"
-placeholder="Doctor ID">
+<div id="symmetryValue"
+class="analysis-number">
+—%
+</div>
 
+<div class="bar">
+<span id="symmetryBar"></span>
+</div>
 
-<label
-style="margin-top:15px"
-data-i18n="password">
-
-รหัสผ่าน
-</label>
-
-<input
-id="doctorPass"
-type="password"
-placeholder="Password">
+</div>
 
 
-<button
-class="btn btn-primary"
-style="width:100%;margin-top:20px"
-onclick="doctorLogin()"
-data-i18n="login">
+<div class="analysis-card">
 
-🔐 เข้าสู่ระบบ
+<h3>AI CONFIDENCE</h3>
 
+<div id="confidenceValue"
+class="analysis-number">
+—%
+</div>
+
+<div class="bar">
+<span id="confidenceBar"></span>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- MAIN MATH -->
+
+<div class="math-dashboard">
+
+
+<div class="math-card">
+
+<h3>📐 01 — KNEE ANGLE</h3>
+
+<div class="formula">
+θ = cos⁻¹((u · v) / |u||v|)
+<br><br>
+u = Hip − Knee
+<br>
+v = Ankle − Knee
+<br><br>
+ใช้ Dot Product + Euclidean Norm
+</div>
+
+<div class="math-values">
+
+<div class="math-value">
+<small>ANGLE θ</small>
+<strong id="mathAngle">—</strong>
+</div>
+
+<div class="math-value">
+<small>REFERENCE</small>
+<strong>180°</strong>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="math-card">
+
+<h3>⚖️ 02 — SYMMETRY INDEX</h3>
+
+<div class="formula">
+Δθ = |θL − θR|
+<br><br>
+SI = 100 − (Δθ / θmax × 100)
+<br><br>
+SI → 100% = สมมาตรมาก
+</div>
+
+<div class="math-values">
+
+<div class="math-value">
+<small>ANGLE DIFFERENCE</small>
+<strong id="deltaAngle">—</strong>
+</div>
+
+<div class="math-value">
+<small>SYMMETRY</small>
+<strong id="mathSymmetry">—</strong>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="math-card">
+
+<h3>📈 03 — ANGULAR VELOCITY</h3>
+
+<div class="formula">
+ω(t) = dθ/dt
+<br><br>
+Approximation:
+<br>
+ω ≈ Δθ / Δt
+<br><br>
+หน่วย = degrees / second
+</div>
+
+<div class="math-values">
+
+<div class="math-value">
+<small>VELOCITY</small>
+<strong id="mathVelocity">—</strong>
+</div>
+
+<div class="math-value">
+<small>FRAME</small>
+<strong id="mathFrame">—</strong>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="math-card">
+
+<h3>⚡ 04 — ANGULAR ACCELERATION</h3>
+
+<div class="formula">
+α(t) = d²θ/dt²
+<br><br>
+Approximation:
+<br>
+α ≈ Δω / Δt
+<br><br>
+หน่วย = degrees / s²
+</div>
+
+<div class="math-values">
+
+<div class="math-value">
+<small>ACCELERATION</small>
+<strong id="mathAcceleration">—</strong>
+</div>
+
+<div class="math-value">
+<small>Δt</small>
+<strong id="mathDeltaTime">—</strong>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="math-card">
+
+<h3>📏 05 — RANGE OF MOTION</h3>
+
+<div class="formula">
+ROM = θmax − θmin
+<br><br>
+วัดช่วงการเคลื่อนไหว
+<br>
+จากข้อมูลหลาย Frame
+</div>
+
+<div class="math-values">
+
+<div class="math-value">
+<small>ROM</small>
+<strong id="mathROM">—</strong>
+</div>
+
+<div class="math-value">
+<small>MIN → MAX</small>
+<strong id="mathMinMax">—</strong>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="math-card">
+
+<h3>📊 06 — STANDARD DEVIATION</h3>
+
+<div class="formula">
+μ = Σx / n
+<br><br>
+σ = √[Σ(x−μ)² / n]
+<br><br>
+วัดความแปรปรวนของการเคลื่อนไหว
+</div>
+
+<div class="math-values">
+
+<div class="math-value">
+<small>MEAN</small>
+<strong id="mathMean">—</strong>
+</div>
+
+<div class="math-value">
+<small>SD</small>
+<strong id="mathSD">—</strong>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="math-card">
+
+<h3>⚖️ 07 — BMI</h3>
+
+<div class="formula">
+BMI = m / h²
+<br><br>
+m = body mass (kg)
+<br>
+h = height (m)
+</div>
+
+<div class="math-values">
+
+<div class="math-value">
+<small>BMI</small>
+<strong id="analysisBMI">—</strong>
+</div>
+
+<div class="math-value">
+<small>BODY MASS</small>
+<strong id="analysisWeight">— kg</strong>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="math-card">
+
+<h3>🤖 08 — AI CONFIDENCE</h3>
+
+<div class="formula">
+C = (Cₕ + Cₖ + Cₐ) / 3
+<br><br>
+Cₕ = Hip visibility
+<br>
+Cₖ = Knee visibility
+<br>
+Cₐ = Ankle visibility
+</div>
+
+<div class="math-values">
+
+<div class="math-value">
+<small>CONFIDENCE</small>
+<strong id="mathConfidence">—</strong>
+</div>
+
+<div class="math-value">
+<small>POINTS</small>
+<strong id="mathPoints">—</strong>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ADVANCED DATA -->
+
+<div class="advanced-math">
+
+<div class="advanced-card">
+<div class="small-title">SAMPLE SIZE</div>
+<div id="sampleCount" class="big-value">0</div>
+<div class="sub">number of valid frames</div>
+</div>
+
+<div class="advanced-card">
+<div class="small-title">TIME WINDOW</div>
+<div id="timeWindow" class="big-value">0.0 s</div>
+<div class="sub">motion observation</div>
+</div>
+
+<div class="advanced-card">
+<div class="small-title">MAX VELOCITY</div>
+<div id="maxVelocity" class="big-value">—</div>
+<div class="sub">peak angular velocity</div>
+</div>
+
+<div class="advanced-card">
+<div class="small-title">MAX ACCELERATION</div>
+<div id="maxAcceleration" class="big-value">—</div>
+<div class="sub">peak angular acceleration</div>
+</div>
+
+</div>
+
+
+<!-- COMPOSITE SCORE -->
+
+<div class="score-panel">
+
+<div class="score-header">
+
+<h3>
+🧠 COMPOSITE MATHEMATICAL SCREENING SCORE
+</h3>
+
+<div id="compositeScore"
+class="score-number">
+—%
+</div>
+
+</div>
+
+<div class="score-track">
+<span id="compositeBar"></span>
+</div>
+
+<div class="score-components">
+
+<div class="score-component">
+<small>ANGLE SCORE</small>
+<strong id="scoreAngle">—</strong>
+</div>
+
+<div class="score-component">
+<small>SYMMETRY SCORE</small>
+<strong id="scoreSymmetry">—</strong>
+</div>
+
+<div class="score-component">
+<small>ROM SCORE</small>
+<strong id="scoreROM">—</strong>
+</div>
+
+<div class="score-component">
+<small>AI SCORE</small>
+<strong id="scoreAI">—</strong>
+</div>
+
+</div>
+
+</div>
+
+
+<div style="text-align:center;margin-top:35px">
+
+<button id="resultBtn"
+class="btn btn-primary">
+ประมวลผลผลลัพธ์ →
 </button>
-
-
-<div
-id="loginError"
-style="
-color:#b91c1c;
-font-size:12px;
-text-align:center;
-margin-top:10px">
-</div>
-
-</div>
-
-</div>
-
-
-<div
-id="doctorDashboard"
-class="hidden">
-
-<div class="card" style="padding:25px">
-
-<div class="doctor-head">
-
-<div>
-
-<span class="badge blue-badge">
-SECURE DOCTOR PORTAL
-</span>
-
-<h2 data-i18n="patientDashboard">
-Patient Dashboard
-</h2>
-
-</div>
-
-<button
-class="btn btn-danger"
-onclick="doctorLogout()"
-data-i18n="logout">
-
-ออกจากระบบ
-
-</button>
-
-</div>
-
-
-<div class="search-box">
-
-<input
-id="searchPatient"
-placeholder="ค้นหาด้วยชื่อ..."
-data-i18n-placeholder="searchPlaceholder">
-
-<button
-class="btn btn-primary"
-onclick="searchPatients()"
-data-i18n="search">
-
-🔎 ค้นหา
-
-</button>
-
-</div>
-
-
-<div id="searchResults"></div>
-
-<div
-id="patientDetail"
-class="patient-detail hidden">
-</div>
 
 </div>
 
@@ -1964,2612 +2194,1952 @@ class="patient-detail hidden">
 
 </section>
 
-</main>
+
+<!-- =========================================================
+RESULT
+========================================================= -->
+
+<section id="resultPage" class="page">
+
+<div class="result-page">
+
+<button id="resultBackBtn" class="btn btn-secondary">
+← กลับ Mathematical Analysis
+</button>
+
+<div class="result-card">
+
+<div class="bmi-label">
+AI-ASSISTED PRELIMINARY SCREENING
+</div>
+
+<div id="resultScore"
+class="result-score">
+—%
+</div>
+
+<div id="resultTitle"
+class="result-title">
+กำลังประมวลผล
+</div>
 
 
-<footer>
-KneeAI V10.2 • Futuristic Medical AI Screening Prototype
-</footer>
+<div class="result-summary">
+
+<div class="summary-box">
+<small>BMI</small>
+<strong id="resultBMI">—</strong>
+</div>
+
+<div class="summary-box">
+<small>KNEE ANGLE</small>
+<strong id="resultAngle">—</strong>
+</div>
+
+<div class="summary-box">
+<small>SYMMETRY</small>
+<strong id="resultSymmetry">—</strong>
+</div>
+
+<div class="summary-box">
+<small>AI CONFIDENCE</small>
+<strong id="resultConfidence">—</strong>
+</div>
+
+</div>
+
+
+<div class="result-extra">
+
+<div class="summary-box">
+<small>ROM</small>
+<strong id="resultROM">—</strong>
+</div>
+
+<div class="summary-box">
+<small>VELOCITY</small>
+<strong id="resultVelocity">—</strong>
+</div>
+
+<div class="summary-box">
+<small>ACCELERATION</small>
+<strong id="resultAcceleration">—</strong>
+</div>
+
+</div>
+
+
+<div class="result-warning">
+
+⚠ ผลนี้เป็นเพียงผลการคัดกรองเบื้องต้นจาก
+<b>AI Pose Detection + Mathematical Motion Analysis</b>
+ไม่ใช่การวินิจฉัยโรค
+
+<br><br>
+
+หากมีอาการปวด บวม ข้อฝืด
+หรือความผิดปกติในการเดิน
+ควรเข้ารับการประเมินจากบุคลากรทางการแพทย์
+
+</div>
+
+
+<button id="restartBtn"
+class="btn btn-primary"
+style="margin-top:25px">
+เริ่มการประเมินใหม่
+</button>
+
+</div>
+
+</div>
+
+</section>
 
 
 <script>
 
-/* ==========================================================
-   KNEEAI V10.1
-========================================================== */
+document.addEventListener("DOMContentLoaded",function(){
 
-const state = {
+/* =========================================================
+PAGE NAVIGATION
+========================================================= */
 
-  language:"th",
+function showPage(pageId){
 
-  patient:{},
+    document.querySelectorAll(".page").forEach(page=>{
+        page.classList.remove("active");
+    });
 
-  symptoms:[],
+    const target=document.getElementById(pageId);
 
-  bmi:null,
-
-  cameraMode:"user",
-
-  stream:null,
-
-  running:false,
-
-  pose:null,
-
-  poseBusy:false,
-
-  captured:null,
-
-  landmarks:null,
-
-  result:null
-
-};
-
-
-/* ==========================================================
-   TRANSLATIONS
-========================================================== */
-
-const I18N = {
-
-th:{
-
-warning:"⚠️ KneeAI เป็นระบบคัดกรองเบื้องต้น ไม่ใช่เครื่องมือวินิจฉัยโรค",
-
-doctorPortal:"👨‍⚕️ Doctor Portal",
-
-stepProfile:"ข้อมูล",
-stepSymptoms:"อาการ",
-stepCamera:"กล้อง AI",
-stepResult:"ผลลัพธ์",
-
-computerVision:"AI COMPUTER VISION",
-
-heroTitle1:"ระบบคัดกรองข้อเข่า",
-heroTitle2:"ด้วย AI จากภาพท่ายืน",
-
-heroDescription:
-"KneeAI วิเคราะห์ข้อมูลพื้นฐาน อาการเบื้องต้น และภาพท่ายืน โดยใช้ AI Pose Estimation เพื่อตรวจจับตำแหน่งสะโพก เข่า และข้อเท้า และคำนวณมุมของข้อเข่า",
-
-startAssessment:"🚀 เริ่มการประเมิน",
-
-heroFeature1:"✓ ข้อมูลพื้นฐานและ BMI",
-heroFeature2:"✓ แบบสอบถามอาการ",
-heroFeature3:"✓ AI Pose Landmark",
-heroFeature4:"✓ มุมเข่าซ้ายและขวา",
-heroFeature5:"✓ Doctor Portal",
-
-profileTitle:"ข้อมูลผู้รับการประเมิน",
-profileSubtitle:"กรอกข้อมูลพื้นฐานสำหรับการประเมิน",
-
-nameLabel:"ชื่อ–นามสกุล",
-namePlaceholder:"เช่น Alex Johnson",
-
-ageLabel:"อายุ (ปี)",
-genderLabel:"เพศ",
-selectGender:"เลือกเพศ",
-male:"ชาย",
-female:"หญิง",
-other:"อื่น ๆ",
-
-weightLabel:"น้ำหนัก (กิโลกรัม)",
-heightLabel:"ส่วนสูง (เซนติเมตร)",
-
-back:"← กลับ",
-next:"ถัดไป →",
-
-symptomsTitle:"แบบสอบถามอาการเบื้องต้น",
-symptomsSubtitle:"โปรดเลือกคำตอบที่ตรงกับอาการของคุณมากที่สุด",
-
-never:"ไม่เลย",
-mild:"เล็กน้อย",
-moderate:"ปานกลาง",
-severe:"มาก",
-
-cameraTitle:"AI Standing Camera",
-cameraSubtitle:"จัดกล้องให้เห็นตั้งแต่สะโพกลงไปจนถึงเท้าทั้งสองข้าง",
-
-cameraGuide:"สะโพก → เข่า → ข้อเท้า → เท้า",
-cameraTip:"ยืนตรง ไม่ไขว้ขา และวางเท้าทั้งสองข้างให้มองเห็นชัดเจน",
-
-leftKnee:"เข่าซ้าย",
-rightKnee:"เข่าขวา",
-quality:"คุณภาพการตรวจจับ",
-
-cameraOpening:"กำลังเตรียมกล้อง...",
-cameraReady:"กล้องพร้อม — จัดท่าให้เห็นขาทั้งสองข้าง",
-cameraRear:"กล้องหลังพร้อม — จัดท่าให้เห็นขาทั้งสองข้าง",
-cameraFront:"กล้องหน้าพร้อม — จัดท่าให้เห็นขาทั้งสองข้าง",
-
-switchCamera:"🔄 สลับกล้อง",
-capture:"📷 ถ่ายภาพ",
-
-analysisTitle:"AI กำลังวิเคราะห์ภาพ",
-analysisText:"กำลังตรวจจับตำแหน่งสะโพก เข่า และข้อเท้า...",
-
-resultTitle:"ผลการประเมิน",
-print:"🖨️ พิมพ์รายงาน",
-aiImage:"ภาพที่ AI วิเคราะห์",
-legend:"🟡 จุด AI • 🟢 แนวกระดูกขา • ตัวเลข = มุม",
-
-angleDifference:"ส่วนต่างมุม",
-additionalInfo:"ข้อมูลเพิ่มเติม",
-symptomScore:"คะแนนอาการ",
-imageQuality:"คุณภาพภาพ",
-hipDetected:"ตรวจพบสะโพก",
-kneeDetected:"ตรวจพบเข่า",
-ankleDetected:"ตรวจพบข้อเท้า",
-
-newAssessment:"🔄 ประเมินใหม่",
-
-doctorLoginText:"กรุณาเข้าสู่ระบบก่อนเข้าถึงข้อมูลผู้รับการประเมิน",
-doctorId:"รหัสแพทย์",
-password:"รหัสผ่าน",
-login:"🔐 เข้าสู่ระบบ",
-logout:"ออกจากระบบ",
-
-patientDashboard:"Patient Dashboard",
-searchPlaceholder:"ค้นหาด้วยชื่อ...",
-search:"🔎 ค้นหา",
-
-noPatient:"ไม่พบข้อมูลผู้รับการประเมิน",
-viewData:"ดูข้อมูล",
-
-notEnough:"กรุณากรอกข้อมูลให้ครบ",
-answerAll:"กรุณาตอบแบบสอบถามให้ครบทุกข้อ",
-cameraPermission:"เปิดกล้องไม่ได้ กรุณาอนุญาตการใช้งานกล้อง",
-
-detecting:"ตรวจพบสะโพก เข่า และข้อเท้า",
-adjustBody:"กรุณาปรับตำแหน่งร่างกาย",
-
-noBody:"AI ไม่สามารถตรวจจับขาทั้งสองข้างได้ กรุณาถ่ายภาพใหม่ให้เห็นสะโพกถึงเท้าชัดเจน",
-
-goodTitle:"🟢 ไม่พบความแตกต่างเด่นชัดจากข้อมูลภาพ",
-goodDetail:"จากภาพที่วิเคราะห์ ไม่พบความแตกต่างของมุมเข่าซ้ายและขวาที่เด่นชัด ผลนี้เป็นการคัดกรองเบื้องต้น",
-
-warnTitle:"🟠 พบปัจจัยที่ควรตรวจเพิ่มเติม",
-warnDetail:"ระบบพบความแตกต่างของข้อมูลภาพหรือมีคะแนนอาการสูง ควรนำผลไปประเมินร่วมกับอาการและการตรวจโดยบุคลากรทางการแพทย์"
-
-},
-
-en:{
-
-warning:"⚠️ KneeAI is a screening tool and is not a medical diagnosis.",
-
-doctorPortal:"👨‍⚕️ Doctor Portal",
-
-stepProfile:"Profile",
-stepSymptoms:"Symptoms",
-stepCamera:"AI Camera",
-stepResult:"Results",
-
-computerVision:"AI COMPUTER VISION",
-
-heroTitle1:"AI Knee Screening",
-heroTitle2:"From Standing Images",
-
-heroDescription:
-"KneeAI analyzes basic information, symptoms and standing images using AI Pose Estimation to detect the hip, knee and ankle landmarks and calculate knee angles.",
-
-startAssessment:"🚀 Start Assessment",
-
-heroFeature1:"✓ Basic information & BMI",
-heroFeature2:"✓ Symptom questionnaire",
-heroFeature3:"✓ AI Pose Landmark",
-heroFeature4:"✓ Left & right knee angles",
-heroFeature5:"✓ Doctor Portal",
-
-profileTitle:"Assessment Information",
-profileSubtitle:"Enter basic information for the assessment.",
-
-nameLabel:"Full Name",
-namePlaceholder:"e.g. Alex Johnson",
-
-ageLabel:"Age (years)",
-genderLabel:"Gender",
-selectGender:"Select gender",
-male:"Male",
-female:"Female",
-other:"Other",
-
-weightLabel:"Weight (kg)",
-heightLabel:"Height (cm)",
-
-back:"← Back",
-next:"Next →",
-
-symptomsTitle:"Initial Symptom Questionnaire",
-symptomsSubtitle:"Choose the answer that best describes your symptoms.",
-
-never:"None",
-mild:"Mild",
-moderate:"Moderate",
-severe:"Severe",
-
-cameraTitle:"AI Standing Camera",
-cameraSubtitle:"Position the camera so that both legs are visible from the hips to the feet.",
-
-cameraGuide:"Hip → Knee → Ankle → Foot",
-cameraTip:"Stand straight, do not cross your legs, and keep both feet clearly visible.",
-
-leftKnee:"Left Knee",
-rightKnee:"Right Knee",
-quality:"Detection Quality",
-
-cameraOpening:"Preparing camera...",
-cameraReady:"Camera ready — position your body clearly.",
-cameraRear:"Rear camera ready — position your body clearly.",
-cameraFront:"Front camera ready — position your body clearly.",
-
-switchCamera:"🔄 Switch Camera",
-capture:"📷 Capture",
-
-analysisTitle:"AI Analyzing Image",
-analysisText:"Detecting hip, knee and ankle landmarks...",
-
-resultTitle:"Assessment Results",
-print:"🖨️ Print Report",
-aiImage:"AI Analysis Image",
-legend:"🟡 AI landmarks • 🟢 Leg alignment • Number = angle",
-
-angleDifference:"Angle Difference",
-additionalInfo:"Additional Information",
-symptomScore:"Symptom Score",
-imageQuality:"Image Quality",
-hipDetected:"Hip detected",
-kneeDetected:"Knee detected",
-ankleDetected:"Ankle detected",
-
-newAssessment:"🔄 New Assessment",
-
-doctorLoginText:"Please sign in before accessing assessment records.",
-doctorId:"Doctor ID",
-password:"Password",
-login:"🔐 Sign In",
-logout:"Log Out",
-
-patientDashboard:"Patient Dashboard",
-searchPlaceholder:"Search by name...",
-search:"🔎 Search",
-
-noPatient:"No assessment records found.",
-viewData:"View Data",
-
-notEnough:"Please complete all required information.",
-answerAll:"Please answer all questions.",
-cameraPermission:"Unable to access the camera. Please allow camera access.",
-
-detecting:"Hip, knee and ankle detected.",
-adjustBody:"Please adjust your position.",
-
-noBody:"AI could not detect both legs. Please take another image with the hips through feet clearly visible.",
-
-goodTitle:"🟢 No prominent difference detected",
-goodDetail:"No prominent difference between the left and right knee angles was detected in this image. This is a preliminary screening result.",
-
-warnTitle:"🟠 Further assessment recommended",
-warnDetail:"The system detected a notable image difference or a higher symptom score. Consider further assessment by a healthcare professional."
-
-},
-
-zh:{
-
-warning:"⚠️ KneeAI 是筛查工具，不能替代医学诊断。",
-doctorPortal:"👨‍⚕️ 医生入口",
-
-stepProfile:"资料",
-stepSymptoms:"症状",
-stepCamera:"AI 相机",
-stepResult:"结果",
-
-computerVision:"AI 计算机视觉",
-
-heroTitle1:"AI 膝关节筛查",
-heroTitle2:"基于站立姿势图像",
-
-heroDescription:"KneeAI 分析基本资料、症状和站立图像，使用 AI 姿态估计检测髋部、膝盖和脚踝位置，并计算膝关节角度。",
-
-startAssessment:"🚀 开始评估",
-
-heroFeature1:"✓ 基本资料和 BMI",
-heroFeature2:"✓ 症状问卷",
-heroFeature3:"✓ AI 姿态关键点",
-heroFeature4:"✓ 左右膝角度",
-heroFeature5:"✓ 医生入口",
-
-profileTitle:"评估资料",
-profileSubtitle:"请输入评估所需的基本资料。",
-
-nameLabel:"姓名",
-namePlaceholder:"例如 Alex Johnson",
-ageLabel:"年龄",
-genderLabel:"性别",
-selectGender:"选择性别",
-male:"男",
-female:"女",
-other:"其他",
-weightLabel:"体重 (kg)",
-heightLabel:"身高 (cm)",
-
-back:"← 返回",
-next:"下一步 →",
-
-symptomsTitle:"初步症状问卷",
-symptomsSubtitle:"请选择最符合您情况的答案。",
-never:"没有",
-mild:"轻微",
-moderate:"中等",
-severe:"严重",
-
-cameraTitle:"AI 站立相机",
-cameraSubtitle:"调整相机，使双腿从髋部到脚部都清晰可见。",
-cameraGuide:"髋部 → 膝盖 → 脚踝 → 脚",
-cameraTip:"保持直立，不要交叉双腿，并确保双脚清晰可见。",
-leftKnee:"左膝",
-rightKnee:"右膝",
-quality:"检测质量",
-
-cameraOpening:"正在准备相机...",
-cameraReady:"相机已准备好 — 请调整姿势。",
-cameraRear:"后置相机已准备好 — 请调整姿势。",
-cameraFront:"前置相机已准备好 — 请调整姿势。",
-
-switchCamera:"🔄 切换相机",
-capture:"📷 拍照",
-
-analysisTitle:"AI 正在分析图像",
-analysisText:"正在检测髋部、膝盖和脚踝关键点...",
-
-resultTitle:"评估结果",
-print:"🖨️ 打印报告",
-aiImage:"AI 分析图像",
-legend:"🟡 AI 关键点 • 🟢 腿部线条 • 数字 = 角度",
-
-angleDifference:"角度差",
-additionalInfo:"其他信息",
-symptomScore:"症状评分",
-imageQuality:"图像质量",
-hipDetected:"检测到髋部",
-kneeDetected:"检测到膝盖",
-ankleDetected:"检测到脚踝",
-
-newAssessment:"🔄 新评估",
-
-doctorLoginText:"请登录后访问评估记录。",
-doctorId:"医生账号",
-password:"密码",
-login:"🔐 登录",
-logout:"退出登录",
-
-patientDashboard:"患者管理",
-searchPlaceholder:"按姓名搜索...",
-search:"🔎 搜索",
-
-noPatient:"没有找到评估记录。",
-viewData:"查看资料",
-
-notEnough:"请完成所有必填资料。",
-answerAll:"请回答所有问题。",
-cameraPermission:"无法访问相机，请允许使用相机。",
-
-detecting:"已检测到髋部、膝盖和脚踝。",
-adjustBody:"请调整身体位置。",
-
-noBody:"AI 无法检测到双腿，请重新拍摄并确保髋部至脚部清晰可见。",
-
-goodTitle:"🟢 未发现明显差异",
-goodDetail:"在本次图像中未发现左右膝角度的明显差异。这只是初步筛查结果。",
-
-warnTitle:"🟠 建议进一步评估",
-warnDetail:"系统发现图像存在明显差异或症状评分较高，建议由医疗专业人员进一步评估。"
-
-},
-
-ja:{
-
-warning:"⚠️ KneeAI はスクリーニングツールであり、医学的診断ではありません。",
-doctorPortal:"👨‍⚕️ 医師ポータル",
-
-stepProfile:"情報",
-stepSymptoms:"症状",
-stepCamera:"AIカメラ",
-stepResult:"結果",
-
-computerVision:"AI COMPUTER VISION",
-
-heroTitle1:"AI 膝関節スクリーニング",
-heroTitle2:"立位画像による分析",
-
-heroDescription:"KneeAI は基本情報、症状、立位画像を分析し、AI姿勢推定によって股関節・膝・足首を検出し、膝の角度を計算します。",
-
-startAssessment:"🚀 評価を開始",
-
-heroFeature1:"✓ 基本情報とBMI",
-heroFeature2:"✓ 症状アンケート",
-heroFeature3:"✓ AI姿勢ランドマーク",
-heroFeature4:"✓ 左右の膝角度",
-heroFeature5:"✓ 医師ポータル",
-
-profileTitle:"評価情報",
-profileSubtitle:"評価に必要な基本情報を入力してください。",
-
-nameLabel:"氏名",
-namePlaceholder:"例：Alex Johnson",
-ageLabel:"年齢",
-genderLabel:"性別",
-selectGender:"性別を選択",
-male:"男性",
-female:"女性",
-other:"その他",
-weightLabel:"体重 (kg)",
-heightLabel:"身長 (cm)",
-
-back:"← 戻る",
-next:"次へ →",
-
-symptomsTitle:"初期症状アンケート",
-symptomsSubtitle:"最も当てはまる回答を選択してください。",
-never:"なし",
-mild:"軽度",
-moderate:"中程度",
-severe:"強い",
-
-cameraTitle:"AI 立位カメラ",
-cameraSubtitle:"股関節から足まで両脚が見えるようにカメラを調整してください。",
-cameraGuide:"股関節 → 膝 → 足首 → 足",
-cameraTip:"まっすぐ立ち、脚を交差させず、両足がはっきり見えるようにしてください。",
-leftKnee:"左膝",
-rightKnee:"右膝",
-quality:"検出品質",
-
-cameraOpening:"カメラを準備しています...",
-cameraReady:"カメラ準備完了 — 姿勢を調整してください。",
-cameraRear:"背面カメラ準備完了 — 姿勢を調整してください。",
-cameraFront:"前面カメラ準備完了 — 姿勢を調整してください。",
-
-switchCamera:"🔄 カメラ切替",
-capture:"📷 撮影",
-
-analysisTitle:"AI が画像を分析しています",
-analysisText:"股関節・膝・足首のランドマークを検出しています...",
-
-resultTitle:"評価結果",
-print:"🖨️ レポート印刷",
-aiImage:"AI 分析画像",
-legend:"🟡 AIランドマーク • 🟢 脚のライン • 数字 = 角度",
-
-angleDifference:"角度差",
-additionalInfo:"追加情報",
-symptomScore:"症状スコア",
-imageQuality:"画像品質",
-hipDetected:"股関節を検出",
-kneeDetected:"膝を検出",
-ankleDetected:"足首を検出",
-
-newAssessment:"🔄 新しい評価",
-
-doctorLoginText:"評価記録にアクセスするにはログインしてください。",
-doctorId:"医師ID",
-password:"パスワード",
-login:"🔐 ログイン",
-logout:"ログアウト",
-
-patientDashboard:"患者ダッシュボード",
-searchPlaceholder:"氏名で検索...",
-search:"🔎 検索",
-
-noPatient:"評価記録が見つかりません。",
-viewData:"詳細を見る",
-
-notEnough:"必要な情報をすべて入力してください。",
-answerAll:"すべての質問に回答してください。",
-cameraPermission:"カメラにアクセスできません。カメラの使用を許可してください。",
-
-detecting:"股関節・膝・足首を検出しました。",
-adjustBody:"姿勢を調整してください。",
-
-noBody:"AI が両脚を検出できませんでした。股関節から足まで見えるように再撮影してください。",
-
-goodTitle:"🟢 明らかな左右差は検出されませんでした",
-goodDetail:"この画像では左右の膝角度に明らかな差は検出されませんでした。これは初期スクリーニング結果です。",
-
-warnTitle:"🟠 追加評価を推奨します",
-warnDetail:"画像上の差または症状スコアの上昇が検出されました。医療専門家による追加評価を検討してください。"
-
-},
-
-ko:{
-
-warning:"⚠️ KneeAI는 선별검사 도구이며 의학적 진단을 대신하지 않습니다.",
-doctorPortal:"👨‍⚕️ 의료진 포털",
-
-stepProfile:"정보",
-stepSymptoms:"증상",
-stepCamera:"AI 카메라",
-stepResult:"결과",
-
-computerVision:"AI COMPUTER VISION",
-
-heroTitle1:"AI 무릎 관절 선별검사",
-heroTitle2:"서 있는 자세 이미지 분석",
-
-heroDescription:"KneeAI는 기본 정보, 증상 및 서 있는 자세 이미지를 분석하고 AI 자세 추정을 통해 엉덩이, 무릎, 발목 위치를 감지하여 무릎 각도를 계산합니다.",
-
-startAssessment:"🚀 평가 시작",
-
-heroFeature1:"✓ 기본 정보 및 BMI",
-heroFeature2:"✓ 증상 설문",
-heroFeature3:"✓ AI 자세 랜드마크",
-heroFeature4:"✓ 좌우 무릎 각도",
-heroFeature5:"✓ 의료진 포털",
-
-profileTitle:"평가 정보",
-profileSubtitle:"평가에 필요한 기본 정보를 입력하세요.",
-
-nameLabel:"이름",
-namePlaceholder:"예: Alex Johnson",
-ageLabel:"나이",
-genderLabel:"성별",
-selectGender:"성별 선택",
-male:"남성",
-female:"여성",
-other:"기타",
-weightLabel:"체중 (kg)",
-heightLabel:"키 (cm)",
-
-back:"← 뒤로",
-next:"다음 →",
-
-symptomsTitle:"초기 증상 설문",
-symptomsSubtitle:"현재 상태에 가장 가까운 답변을 선택하세요.",
-never:"없음",
-mild:"약함",
-moderate:"중간",
-severe:"심함",
-
-cameraTitle:"AI 서 있는 자세 카메라",
-cameraSubtitle:"엉덩이부터 발까지 양쪽 다리가 보이도록 카메라를 조정하세요.",
-cameraGuide:"엉덩이 → 무릎 → 발목 → 발",
-cameraTip:"똑바로 서고 다리를 교차하지 않으며 양발이 선명하게 보이도록 하세요.",
-leftKnee:"왼쪽 무릎",
-rightKnee:"오른쪽 무릎",
-quality:"감지 품질",
-
-cameraOpening:"카메라 준비 중...",
-cameraReady:"카메라 준비 완료 — 자세를 조정하세요.",
-cameraRear:"후면 카메라 준비 완료 — 자세를 조정하세요.",
-cameraFront:"전면 카메라 준비 완료 — 자세를 조정하세요.",
-
-switchCamera:"🔄 카메라 전환",
-capture:"📷 촬영",
-
-analysisTitle:"AI 이미지 분석 중",
-analysisText:"엉덩이, 무릎 및 발목 랜드마크를 감지하고 있습니다...",
-
-resultTitle:"평가 결과",
-print:"🖨️ 보고서 인쇄",
-aiImage:"AI 분석 이미지",
-legend:"🟡 AI 랜드마크 • 🟢 다리 선 • 숫자 = 각도",
-
-angleDifference:"각도 차이",
-additionalInfo:"추가 정보",
-symptomScore:"증상 점수",
-imageQuality:"이미지 품질",
-hipDetected:"엉덩이 감지",
-kneeDetected:"무릎 감지",
-ankleDetected:"발목 감지",
-
-newAssessment:"🔄 새 평가",
-
-doctorLoginText:"평가 기록에 접근하려면 로그인하세요.",
-doctorId:"의료진 ID",
-password:"비밀번호",
-login:"🔐 로그인",
-logout:"로그아웃",
-
-patientDashboard:"환자 대시보드",
-searchPlaceholder:"이름으로 검색...",
-search:"🔎 검색",
-
-noPatient:"평가 기록을 찾을 수 없습니다.",
-viewData:"정보 보기",
-
-notEnough:"필수 정보를 모두 입력하세요.",
-answerAll:"모든 질문에 답변하세요.",
-cameraPermission:"카메라에 접근할 수 없습니다. 카메라 사용을 허용하세요.",
-
-detecting:"엉덩이, 무릎 및 발목을 감지했습니다.",
-adjustBody:"자세를 조정하세요.",
-
-noBody:"AI가 양쪽 다리를 감지하지 못했습니다. 엉덩이부터 발까지 선명하게 보이도록 다시 촬영하세요.",
-
-goodTitle:"🟢 뚜렷한 차이가 감지되지 않았습니다",
-goodDetail:"이 이미지에서는 좌우 무릎 각도의 뚜렷한 차이가 감지되지 않았습니다. 이는 초기 선별검사 결과입니다.",
-
-warnTitle:"🟠 추가 평가를 권장합니다",
-warnDetail:"이미지 차이 또는 높은 증상 점수가 감지되었습니다. 의료 전문가의 추가 평가를 권장합니다."
-
-}
-
-};
-
-
-/* ==========================================================
-   QUESTIONS
-========================================================== */
-
-const QUESTIONS={
-
-th:[
-"무ีอาการปวดบริเวณข้อเข่าหรือไม่?",
-"มีอาการเข่าฝืดหรือตึง โดยเฉพาะหลังตื่นนอนหรือไม่?",
-"มีอาการปวดหรือไม่สบายเมื่อเดินหรือยืนเป็นเวลานานหรือไม่?",
-"มีอาการปวดเมื่อขึ้นหรือลงบันไดหรือไม่?",
-"เคยมีอาการเข่าบวม หรือรู้สึกว่าข้อเข่าบวมผิดปกติหรือไม่?",
-"มีเสียงดังกรอบแกรบหรือเสียงในข้อเข่าขณะเคลื่อนไหวหรือไม่?",
-"รู้สึกว่าข้อเข่าไม่มั่นคงหรือเหมือนจะทรุดหรือไม่?",
-"อาการข้อเข่าส่งผลต่อการใช้ชีวิตประจำวันหรือไม่?"
-],
-
-en:[
-"Do you have pain around your knee?",
-"Do you experience knee stiffness, especially after waking up?",
-"Do you experience pain or discomfort when walking or standing for a long time?",
-"Do you have pain when going up or down stairs?",
-"Have you experienced knee swelling or unusual swelling around the knee?",
-"Do you hear clicking, cracking or other sounds from your knee during movement?",
-"Does your knee feel unstable or as if it may give way?",
-"Do your knee symptoms affect your daily activities?"
-],
-
-zh:[
-"您是否有膝关节疼痛？",
-"您是否有膝关节僵硬，尤其是起床后？",
-"长时间行走或站立时是否感到疼痛或不适？",
-"上下楼梯时是否疼痛？",
-"膝关节是否出现过肿胀或异常肿胀？",
-"活动膝关节时是否听到咔嗒声或其他声音？",
-"膝关节是否感觉不稳定或像要失去支撑？",
-"膝关节症状是否影响日常生活？"
-],
-
-ja:[
-"膝の周囲に痛みがありますか？",
-"特に起床後に膝のこわばりがありますか？",
-"長時間歩いたり立ったりすると痛みや不快感がありますか？",
-"階段の上り下りで痛みがありますか？",
-"膝の腫れや異常な腫れを経験したことがありますか？",
-"膝を動かしたときにクリック音やその他の音がしますか？",
-"膝が不安定、または膝折れしそうに感じますか？",
-"膝の症状が日常生活に影響していますか？"
-],
-
-ko:[
-"무릎 주변에 통증이 있습니까?",
-"특히 아침에 일어난 후 무릎이 뻣뻣하거나 굳는 느낌이 있습니까?",
-"오랫동안 걷거나 서 있을 때 통증이나 불편함이 있습니까?",
-"계단을 오르내릴 때 통증이 있습니까?",
-"무릎이 붓거나 비정상적으로 부은 적이 있습니까?",
-"무릎을 움직일 때 딱딱거리거나 다른 소리가 납니까?",
-"무릎이 불안정하거나 꺾일 것 같은 느낌이 있습니까?",
-"무릎 증상이 일상생활에 영향을 줍니까?"
-]
-
-};
-
-
-/* ==========================================================
-   LANGUAGE
-========================================================== */
-
-function t(key){
-
-  return I18N[state.language][key] ??
-         I18N.en[key] ??
-         key;
-
-}
-
-
-function changeLanguage(lang){
-
-  state.language=lang;
-
-  localStorage.setItem(
-    "kneeai_language",
-    lang
-  );
-
-  document.documentElement.lang=lang;
-
-  applyTranslations();
-
-  renderQuestions();
-
-}
-
-
-function applyTranslations(){
-
-  document.querySelectorAll("[data-i18n]")
-  .forEach(el=>{
-
-    const key=el.dataset.i18n;
-
-    if(I18N[state.language][key]!==undefined){
-
-      el.textContent=t(key);
-
+    if(!target){
+        console.error("ไม่พบหน้า:",pageId);
+        return;
     }
 
-  });
-
-
-  document.querySelectorAll("[data-i18n-placeholder]")
-  .forEach(el=>{
-
-    const key=el.dataset.i18nPlaceholder;
-
-    el.placeholder=t(key);
-
-  });
-
-}
-
-
-function initLanguage(){
-
-  const saved=
-    localStorage.getItem("kneeai_language");
-
-  if(saved && I18N[saved])
-    state.language=saved;
-
-  document.getElementById("languageSelect")
-    .value=state.language;
-
-  applyTranslations();
-
-}
-
-
-/* ==========================================================
-   PAGE NAVIGATION
-========================================================== */
-
-function go(id){
-
-  document.querySelectorAll(".page")
-    .forEach(x=>x.classList.remove("active"));
-
-  const target=document.getElementById(id);
-
-  if(target)
     target.classList.add("active");
 
-  updateSteps(id);
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
 }
 
 
-function updateSteps(id){
+/* =========================================================
+ELEMENTS
+========================================================= */
 
-  let n=1;
-
-  if(id==="symptoms")
-    n=2;
-
-  if(id==="camera" || id==="analysis")
-    n=3;
-
-  if(id==="result")
-    n=4;
-
-  for(let i=1;i<=4;i++){
-
-    const e=document.getElementById("s"+i);
-
-    e.className="step-dot";
-
-    if(i<n){
-
-      e.classList.add("done");
-      e.textContent="✓";
-
-    }else if(i===n){
-
-      e.classList.add("active");
-      e.textContent=i;
-
-    }else{
-
-      e.textContent=i;
-
-    }
-
-  }
-
-}
+const startBtn=document.getElementById("startBtn");
+const backHomeBtn=document.getElementById("backHomeBtn");
+const continueBtn=document.getElementById("continueBtn");
+const cameraBackBtn=document.getElementById("cameraBackBtn");
+const analysisBtn=document.getElementById("analysisBtn");
+const analysisBackBtn=document.getElementById("analysisBackBtn");
+const resultBtn=document.getElementById("resultBtn");
+const resultBackBtn=document.getElementById("resultBackBtn");
+const restartBtn=document.getElementById("restartBtn");
 
 
-/* ==========================================================
-   BMI
-========================================================== */
+/* =========================================================
+NAVIGATION
+========================================================= */
+
+startBtn?.addEventListener("click",()=>{
+    showPage("infoPage");
+});
+
+backHomeBtn?.addEventListener("click",()=>{
+    showPage("homePage");
+});
+
+cameraBackBtn?.addEventListener("click",()=>{
+    showPage("infoPage");
+});
+
+analysisBackBtn?.addEventListener("click",()=>{
+    showPage("cameraPage");
+});
+
+resultBackBtn?.addEventListener("click",()=>{
+    showPage("analysisPage");
+});
+
+
+/* =========================================================
+BMI
+========================================================= */
+
+const weightInput=document.getElementById("weight");
+const heightInput=document.getElementById("height");
 
 function calculateBMI(){
 
-  const weight=parseFloat(
-    document.getElementById("weight").value
-  );
+    const weight=parseFloat(weightInput?.value);
+    const heightCm=parseFloat(heightInput?.value);
 
-  const height=parseFloat(
-    document.getElementById("height").value
-  );
+    const bmiValue=document.getElementById("bmiValue");
+    const bmiStatus=document.getElementById("bmiStatus");
 
-  if(!weight || !height){
+    if(!weight || !heightCm || weight<=0 || heightCm<=0){
 
-    state.bmi=null;
+        bmiValue.textContent="--.-";
 
-    document.getElementById("bmi")
-      .textContent="—";
+        bmiStatus.textContent=
+        "กรุณากรอกน้ำหนักและส่วนสูง";
 
-    return;
-  }
+        bmiStatus.style.color="var(--muted)";
 
-  const h=height/100;
-
-  const bmi=weight/(h*h);
-
-  state.bmi=bmi;
-
-  document.getElementById("bmi")
-    .textContent=bmi.toFixed(1);
-
-}
-
-
-/* ==========================================================
-   PROFILE
-========================================================== */
-
-function nextSymptoms(){
-
-  const name=
-    document.getElementById("patientName")
-    .value.trim();
-
-  const age=
-    document.getElementById("age").value;
-
-  const gender=
-    document.getElementById("gender").value;
-
-  const weight=
-    document.getElementById("weight").value;
-
-  const height=
-    document.getElementById("height").value;
-
-  if(
-    !name ||
-    !age ||
-    !gender ||
-    !weight ||
-    !height
-  ){
-
-    alert(t("notEnough"));
-
-    return;
-  }
-
-  calculateBMI();
-
-  state.patient={
-
-    name:name,
-
-    age:age,
-
-    gender:gender,
-
-    weight:weight,
-
-    height:height,
-
-    bmi:state.bmi
-
-  };
-
-  renderQuestions();
-
-  go("symptoms");
-
-}
-
-
-/* ==========================================================
-   QUESTIONS
-========================================================== */
-
-function renderQuestions(){
-
-  const box=
-    document.getElementById("questions");
-
-  if(!box)
-    return;
-
-  const qs=
-    QUESTIONS[state.language] ||
-    QUESTIONS.en;
-
-  const labels=[
-    t("never"),
-    t("mild"),
-    t("moderate"),
-    t("severe")
-  ];
-
-  box.innerHTML="";
-
-  qs.forEach((q,i)=>{
-
-    const div=document.createElement("div");
-
-    div.className="question";
-
-    div.innerHTML=`
-
-      <div class="question-title">
-      ${i+1}. ${escapeHTML(q)}
-      </div>
-
-      <div class="options">
-
-      ${labels.map((label,j)=>`
-
-        <div
-        class="option ${state.symptoms[i]===j?"selected":""}"
-        data-q="${i}"
-        data-v="${j}"
-        onclick="selectOption(${i},${j},this)">
-
-        ${escapeHTML(label)}
-
-        </div>
-
-      `).join("")}
-
-      </div>
-
-    `;
-
-    box.appendChild(div);
-
-  });
-
-}
-
-
-function selectOption(q,v,el){
-
-  document.querySelectorAll(
-    `.option[data-q="${q}"]`
-  ).forEach(x=>
-    x.classList.remove("selected")
-  );
-
-  el.classList.add("selected");
-
-  state.symptoms[q]=v;
-
-}
-
-
-function nextCamera(){
-
-  if(state.symptoms.length!==QUESTIONS.en.length ||
-     state.symptoms.some(v=>v===undefined)){
-
-    alert(t("answerAll"));
-
-    return;
-  }
-
-  openCamera();
-
-}
-
-
-/* ==========================================================
-   MEDIAPIPE
-========================================================== */
-
-async function initPose(){
-
-  if(state.pose)
-    return;
-
-  state.pose=new Pose({
-
-    locateFile:file=>
-      `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
-
-  });
-
-  state.pose.setOptions({
-
-    modelComplexity:2,
-
-    smoothLandmarks:true,
-
-    enableSegmentation:false,
-
-    minDetectionConfidence:.55,
-
-    minTrackingConfidence:.55
-
-  });
-
-  state.pose.onResults(results=>{
-
-    if(state.running){
-
-      liveResults(results);
-
-    }else{
-
-      photoResults(results);
-
+        return null;
     }
 
-  });
+    const heightM=heightCm/100;
 
-}
+    const bmi=weight/(heightM*heightM);
 
+    bmiValue.textContent=bmi.toFixed(1);
 
-/* ==========================================================
-   CAMERA
-========================================================== */
-
-async function openCamera(){
-
-  go("camera");
-
-  await initPose();
-
-  await startCamera();
-
-}
-
-
-async function startCamera(){
-
-  stopCamera(false);
-
-  const video=
-    document.getElementById("video");
-
-  const capture=
-    document.getElementById("captureBtn");
-
-  const switchBtn=
-    document.getElementById("switchBtn");
-
-  const status=
-    document.getElementById("cameraStatus");
-
-  capture.disabled=true;
-  switchBtn.disabled=true;
-
-  status.textContent=t("cameraOpening");
-
-  try{
-
-    state.stream=
-      await navigator.mediaDevices.getUserMedia({
-
-        video:{
-          facingMode:{
-            ideal:state.cameraMode
-          },
-
-          width:{
-            ideal:1280
-          },
-
-          height:{
-            ideal:720
-          }
-
-        },
-
-        audio:false
-
-      });
-
-    video.srcObject=state.stream;
-
-    await video.play();
-
-    state.running=true;
-
-    capture.disabled=false;
-    switchBtn.disabled=false;
-
-    status.textContent=
-      state.cameraMode==="environment"
-      ?t("cameraRear")
-      :t("cameraFront");
-
-    poseLoop();
-
-  }catch(error){
-
-    console.error(error);
-
-    status.textContent=
-      t("cameraPermission");
-
-  }
-
-}
-
-
-async function poseLoop(){
-
-  if(!state.running)
-    return;
-
-  const video=
-    document.getElementById("video");
-
-  if(
-    video.readyState>=2 &&
-    !state.poseBusy
-  ){
-
-    state.poseBusy=true;
-
-    try{
-
-      await state.pose.send({
-        image:video
-      });
-
-    }catch(error){
-
-      console.warn(error);
-
-    }
-
-    state.poseBusy=false;
-
-  }
-
-  requestAnimationFrame(poseLoop);
-
-}
-
-
-async function switchCamera(){
-
-  state.cameraMode=
-    state.cameraMode==="user"
-    ?"environment"
-    :"user";
-
-  await startCamera();
-
-}
-
-
-function stopCamera(){
-
-  state.running=false;
-
-  if(state.stream){
-
-    state.stream
-      .getTracks()
-      .forEach(track=>track.stop());
-
-    state.stream=null;
-
-  }
-
-  const video=
-    document.getElementById("video");
-
-  if(video)
-    video.srcObject=null;
-
-}
-
-
-/* ==========================================================
-   GEOMETRY
-========================================================== */
-
-function valid(point){
-
-  return point &&
-    (point.visibility ?? 1)>=.4;
-
-}
-
-
-function angle(a,b,c){
-
-  const abx=a.x-b.x;
-  const aby=a.y-b.y;
-
-  const cbx=c.x-b.x;
-  const cby=c.y-b.y;
-
-  const dot=
-    abx*cbx+
-    aby*cby;
-
-  const mag1=
-    Math.sqrt(
-      abx*abx+
-      aby*aby
-    );
-
-  const mag2=
-    Math.sqrt(
-      cbx*cbx+
-      cby*cby
-    );
-
-  if(!mag1 || !mag2)
-    return null;
-
-  let cos=
-    dot/(mag1*mag2);
-
-  cos=
-    Math.max(
-      -1,
-      Math.min(1,cos)
-    );
-
-  return Math.acos(cos)*180/Math.PI;
-
-}
-
-
-/* ==========================================================
-   LIVE RESULTS
-========================================================== */
-
-function liveResults(results){
-
-  const canvas=
-    document.getElementById("overlay");
-
-  const video=
-    document.getElementById("video");
-
-  canvas.width=video.videoWidth;
-  canvas.height=video.videoHeight;
-
-  const ctx=
-    canvas.getContext("2d");
-
-  ctx.clearRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-
-  if(!results.poseLandmarks){
-
-    updateLive(
-      null,
-      null,
-      0,
-      t("adjustBody")
-    );
-
-    return;
-  }
-
-  const lm=
-    results.poseLandmarks;
-
-  const Lh=lm[23];
-  const Lk=lm[25];
-  const La=lm[27];
-
-  const Rh=lm[24];
-  const Rk=lm[26];
-  const Ra=lm[28];
-
-  const points=[
-    Lh,Lk,La,
-    Rh,Rk,Ra
-  ];
-
-  const detected=
-    points.filter(valid).length;
-
-  const quality=
-    Math.round(
-      points.reduce(
-        (sum,p)=>
-          sum+(p.visibility||0),
-        0
-      )/
-      points.length*
-      100
-    );
-
-  const left=
-    valid(Lh)&&
-    valid(Lk)&&
-    valid(La)
-    ?angle(Lh,Lk,La)
-    :null;
-
-  const right=
-    valid(Rh)&&
-    valid(Rk)&&
-    valid(Ra)
-    ?angle(Rh,Rk,Ra)
-    :null;
-
-  drawSkeleton(
-    ctx,
-    lm
-  );
-
-  updateLive(
-    left,
-    right,
-    quality,
-    detected===6
-    ?t("detecting")
-    :t("adjustBody")
-  );
-
-}
-
-
-function drawSkeleton(ctx,lm){
-
-  const W=ctx.canvas.width;
-  const H=ctx.canvas.height;
-
-  const point=i=>({
-
-    x:lm[i].x*W,
-    y:lm[i].y*H
-
-  });
-
-  const lines=[
-
-    [23,25],
-    [25,27],
-
-    [24,26],
-    [26,28],
-
-    [23,24],
-    [27,28],
-
-    [27,31],
-    [28,32]
-
-  ];
-
-  ctx.strokeStyle="#22c55e";
-
-  ctx.lineWidth=
-    Math.max(4,W/220);
-
-  lines.forEach(([a,b])=>{
-
-    if(
-      !valid(lm[a])||
-      !valid(lm[b])
-    )
-      return;
-
-    const A=point(a);
-    const B=point(b);
-
-    ctx.beginPath();
-
-    ctx.moveTo(A.x,A.y);
-
-    ctx.lineTo(B.x,B.y);
-
-    ctx.stroke();
-
-  });
-
-
-  [
-    23,24,
-    25,26,
-    27,28,
-    31,32
-
-  ].forEach(i=>{
-
-    if(!valid(lm[i]))
-      return;
-
-    const P=point(i);
-
-    ctx.beginPath();
-
-    ctx.arc(
-      P.x,
-      P.y,
-      Math.max(7,W/115),
-      0,
-      Math.PI*2
-    );
-
-    ctx.fillStyle="#facc15";
-
-    ctx.fill();
-
-    ctx.lineWidth=3;
-
-    ctx.strokeStyle="#0f172a";
-
-    ctx.stroke();
-
-  });
-
-}
-
-
-function updateLive(
-  left,
-  right,
-  quality,
-  status
-){
-
-  document.getElementById("leftLive")
-    .textContent=
-      left!==null
-      ?left.toFixed(1)+"°"
-      :"—";
-
-  document.getElementById("rightLive")
-    .textContent=
-      right!==null
-      ?right.toFixed(1)+"°"
-      :"—";
-
-  document.getElementById("qualityLive")
-    .textContent=
-      quality+"%";
-
-  document.getElementById("cameraStatus")
-    .textContent=status;
-
-}
-
-
-/* ==========================================================
-   CAPTURE PHOTO
-========================================================== */
-
-async function capturePhoto(){
-
-  const video=
-    document.getElementById("video");
-
-  if(!video.videoWidth){
-
-    alert(t("cameraPermission"));
-
-    return;
-  }
-
-  const canvas=
-    document.createElement("canvas");
-
-  canvas.width=
-    video.videoWidth;
-
-  canvas.height=
-    video.videoHeight;
-
-  const ctx=
-    canvas.getContext("2d");
-
-
-  /*
-    Front camera preview is commonly mirrored.
-    Store a visually natural image.
-  */
-
-  if(state.cameraMode==="user"){
-
-    ctx.save();
-
-    ctx.translate(
-      canvas.width,
-      0
-    );
-
-    ctx.scale(-1,1);
-
-    ctx.drawImage(
-      video,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
-
-    ctx.restore();
-
-  }else{
-
-    ctx.drawImage(
-      video,
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
-
-  }
-
-
-  state.captured=canvas;
-
-  stopCamera();
-
-  go("analysis");
-
-  document.getElementById("analysisText")
-    .textContent=t("analysisText");
-
-  await state.pose.send({
-    image:canvas
-  });
-
-}
-
-
-/* ==========================================================
-   PHOTO RESULTS
-========================================================== */
-
-function photoResults(results){
-
-  if(
-    !document
-      .getElementById("analysis")
-      .classList
-      .contains("active")
-  )
-    return;
-
-  if(!results.poseLandmarks){
-
-    document.getElementById("analysisText")
-      .textContent=t("noBody");
-
-    setTimeout(()=>{
-
-      alert(t("noBody"));
-
-      openCamera();
-
-    },800);
-
-    return;
-
-  }
-
-  processPhoto(
-    results.poseLandmarks
-  );
-
-}
-
-
-/* ==========================================================
-   PROCESS PHOTO
-========================================================== */
-
-function processPhoto(lm){
-
-  const Lh=lm[23];
-  const Lk=lm[25];
-  const La=lm[27];
-
-  const Rh=lm[24];
-  const Rk=lm[26];
-  const Ra=lm[28];
-
-  if(
-    !valid(Lh)||
-    !valid(Lk)||
-    !valid(La)||
-    !valid(Rh)||
-    !valid(Rk)||
-    !valid(Ra)
-  ){
-
-    document.getElementById("analysisText")
-      .textContent=t("noBody");
-
-    setTimeout(()=>{
-      openCamera();
-    },1000);
-
-    return;
-
-  }
-
-  const left=
-    angle(
-      Lh,
-      Lk,
-      La
-    );
-
-  const right=
-    angle(
-      Rh,
-      Rk,
-      Ra
-    );
-
-  const diff=
-    Math.abs(left-right);
-
-  const points=[
-    Lh,Lk,La,
-    Rh,Rk,Ra
-  ];
-
-  const quality=
-    Math.round(
-      points.reduce(
-        (sum,p)=>
-          sum+(p.visibility||0),
-        0
-      )/
-      points.length*
-      100
-    );
-
-  const symptomScore=
-    state.symptoms
-      .reduce(
-        (sum,value)=>
-          sum+Number(value),
-        0
-      );
-
-  /*
-    Prototype screening rule.
-    It is intentionally presented as screening,
-    not medical diagnosis.
-  */
-
-  let status="good";
-
-  if(
-    diff>10 ||
-    symptomScore>=14
-  ){
-
-    status="warning";
-
-  }
-
-  state.landmarks=lm;
-
-  state.result={
-
-    left:left,
-
-    right:right,
-
-    diff:diff,
-
-    quality:quality,
-
-    symptomScore:symptomScore,
-
-    status:status
-
-  };
-
-  drawResult();
-
-  savePatient();
-
-  showResult();
-
-}
-
-
-/* ==========================================================
-   RESULT DRAW
-========================================================== */
-
-function drawResult(){
-
-  const source=
-    state.captured;
-
-  const canvas=
-    document.getElementById("resultCanvas");
-
-  canvas.width=
-    source.width;
-
-  canvas.height=
-    source.height;
-
-  const ctx=
-    canvas.getContext("2d");
-
-  ctx.drawImage(
-    source,
-    0,
-    0
-  );
-
-  const lm=
-    state.landmarks;
-
-  const W=
-    canvas.width;
-
-  const H=
-    canvas.height;
-
-
-  function p(i){
-
-    let x=lm[i].x;
+    let status="";
+    let color="";
 
     /*
-      The stored front-camera image is mirrored.
-      Mirror landmark x to match it.
+      เกณฑ์ตัวอย่างสำหรับการแสดงผลในระบบต้นแบบ
+      ไม่ใช่เกณฑ์วินิจฉัยทางการแพทย์
     */
 
-    if(state.cameraMode==="user")
-      x=1-x;
+    if(bmi<18.5){
+        status="ต่ำกว่าเกณฑ์";
+        color="var(--yellow)";
+    }
+    else if(bmi<23){
+        status="อยู่ในเกณฑ์";
+        color="var(--green)";
+    }
+    else if(bmi<25){
+        status="เริ่มสูง";
+        color="var(--yellow)";
+    }
+    else if(bmi<30){
+        status="สูง";
+        color="var(--yellow)";
+    }
+    else{
+        status="สูงมาก";
+        color="var(--red)";
+    }
 
-    return {
+    bmiStatus.textContent=status;
+    bmiStatus.style.color=color;
 
-      x:x*W,
+    return bmi;
+}
 
-      y:lm[i].y*H
+weightInput?.addEventListener("input",calculateBMI);
+heightInput?.addEventListener("input",calculateBMI);
+
+
+/* =========================================================
+PATIENT DATA
+========================================================= */
+
+continueBtn?.addEventListener("click",()=>{
+
+    const firstName=document.getElementById("firstName").value.trim();
+    const lastName=document.getElementById("lastName").value.trim();
+    const age=document.getElementById("age").value;
+    const weight=document.getElementById("weight").value;
+    const height=document.getElementById("height").value;
+    const hospital=document.getElementById("hospital").value.trim();
+
+    const bmi=calculateBMI();
+
+    if(
+        !firstName ||
+        !lastName ||
+        !age ||
+        !weight ||
+        !height ||
+        !hospital
+    ){
+
+        alert("กรุณากรอกข้อมูลให้ครบทุกช่องก่อนดำเนินการต่อ");
+        return;
+    }
+
+    if(!bmi){
+
+        alert("กรุณาตรวจสอบน้ำหนักและส่วนสูง");
+        return;
+    }
+
+    const patient={
+
+        firstName:firstName,
+        lastName:lastName,
+
+        age:Number(age),
+
+        weight:Number(weight),
+
+        height:Number(height),
+
+        bmi:Number(bmi.toFixed(1)),
+
+        hospital:hospital,
+
+        timestamp:new Date().toISOString()
 
     };
 
-  }
-
-
-  const lines=[
-
-    [23,25],
-    [25,27],
-
-    [24,26],
-    [26,28],
-
-    [23,24],
-    [27,28],
-
-    [27,31],
-    [28,32]
-
-  ];
-
-  ctx.strokeStyle="#22c55e";
-
-  ctx.lineWidth=
-    Math.max(5,W/210);
-
-
-  lines.forEach(([a,b])=>{
-
-    if(
-      !valid(lm[a])||
-      !valid(lm[b])
-    )
-      return;
-
-    const A=p(a);
-    const B=p(b);
-
-    ctx.beginPath();
-
-    ctx.moveTo(A.x,A.y);
-
-    ctx.lineTo(B.x,B.y);
-
-    ctx.stroke();
-
-  });
-
-
-  [
-    23,24,
-    25,26,
-    27,28,
-    31,32
-
-  ].forEach(i=>{
-
-    if(!valid(lm[i]))
-      return;
-
-    const P=p(i);
-
-    ctx.beginPath();
-
-    ctx.arc(
-      P.x,
-      P.y,
-      Math.max(8,W/110),
-      0,
-      Math.PI*2
-    );
-
-    ctx.fillStyle="#facc15";
-
-    ctx.fill();
-
-    ctx.lineWidth=3;
-
-    ctx.strokeStyle="#0f172a";
-
-    ctx.stroke();
-
-  });
-
-
-  label(
-    ctx,
-    p(25),
-    state.result.left.toFixed(1)+"°"
-  );
-
-  label(
-    ctx,
-    p(26),
-    state.result.right.toFixed(1)+"°"
-  );
-
-}
-
-
-function label(
-  ctx,
-  point,
-  text
-){
-
-  ctx.font="bold 20px Arial";
-
-  const width=
-    ctx.measureText(text).width+20;
-
-  const height=38;
-
-  let x=point.x+15;
-
-  let y=point.y-height-10;
-
-  if(
-    x+width>
-    ctx.canvas.width
-  ){
-
-    x=point.x-width-15;
-
-  }
-
-  if(y<0)
-    y=point.y+15;
-
-
-  ctx.fillStyle=
-    "rgba(7,20,43,.92)";
-
-  ctx.beginPath();
-
-  ctx.roundRect(
-    x,
-    y,
-    width,
-    height,
-    10
-  );
-
-  ctx.fill();
-
-  ctx.fillStyle="#facc15";
-
-  ctx.fillText(
-    text,
-    x+10,
-    y+26
-  );
-
-}
-
-
-/* ==========================================================
-   SHOW RESULT
-========================================================== */
-
-function showResult(){
-
-  const p=
-    state.patient;
-
-  const r=
-    state.result;
-
-  document.getElementById("resultPatient")
-    .textContent=
-      `${p.name} • ${p.age} • ${translateGender(p.gender)}`;
-
-  document.getElementById("leftResult")
-    .textContent=
-      r.left.toFixed(1)+"°";
-
-  document.getElementById("rightResult")
-    .textContent=
-      r.right.toFixed(1)+"°";
-
-  document.getElementById("differenceResult")
-    .textContent=
-      r.diff.toFixed(1)+"°";
-
-  document.getElementById("bmiResult")
-    .textContent=
-      Number(p.bmi).toFixed(1);
-
-  document.getElementById("symptomScore")
-    .textContent=
-      `${r.symptomScore} / ${QUESTIONS.en.length*3}`;
-
-  document.getElementById("qualityResult")
-    .textContent=
-      r.quality+"%";
-
-
-  const box=
-    document.getElementById("overallBox");
-
-  const title=
-    document.getElementById("overallTitle");
-
-  const detail=
-    document.getElementById("overallDetail");
-
-
-  box.className="result-box";
-
-
-  if(r.status==="good"){
-
-    box.classList.add("good");
-
-    title.textContent=
-      t("goodTitle");
-
-    detail.textContent=
-      t("goodDetail");
-
-  }else{
-
-    box.classList.add("warn");
-
-    title.textContent=
-      t("warnTitle");
-
-    detail.textContent=
-      t("warnDetail");
-
-  }
-
-
-  go("result");
-
-}
-
-
-/* ==========================================================
-   GENDER
-========================================================== */
-
-function translateGender(gender){
-
-  const map={
-
-    male:"male",
-    female:"female",
-    other:"other"
-
-  };
-
-  return t(
-    map[gender] ||
-    "other"
-  );
-
-}
-
-
-/* ==========================================================
-   PATIENT STORAGE
-========================================================== */
-
-function savePatient(){
-
-  const records=
-    JSON.parse(
-      localStorage.getItem(
-        "kneeai_records"
-      ) || "[]"
-    );
-
-
-  const record={
-
-    /*
-      Name is the only patient search field
-      in this prototype.
-    */
-
-    name:state.patient.name,
-
-    age:state.patient.age,
-
-    gender:state.patient.gender,
-
-    weight:state.patient.weight,
-
-    height:state.patient.height,
-
-    bmi:state.patient.bmi,
-
-    symptoms:state.symptoms,
-
-    symptomScore:
-      state.result.symptomScore,
-
-    leftAngle:
-      state.result.left,
-
-    rightAngle:
-      state.result.right,
-
-    angleDifference:
-      state.result.diff,
-
-    quality:
-      state.result.quality,
-
-    status:
-      state.result.status,
-
-    date:
-      new Date().toISOString(),
-
-    image:
-      state.captured.toDataURL(
-        "image/jpeg",
-        .85
-      )
-
-  };
-
-
-  /*
-    For the prototype, replace an existing
-    record for the same name.
-  */
-
-  const index=
-    records.findIndex(
-      x=>
-        x.name.toLowerCase()===
-        record.name.toLowerCase()
-    );
-
-
-  if(index>=0)
-    records[index]=record;
-  else
-    records.push(record);
-
-
-  localStorage.setItem(
-    "kneeai_records",
-    JSON.stringify(records)
-  );
-
-}
-
-
-/* ==========================================================
-   DOCTOR LOGIN
-========================================================== */
-
-function doctorLogin(){
-
-  const username=
-    document.getElementById("doctorUser")
-      .value;
-
-  const password=
-    document.getElementById("doctorPass")
-      .value;
-
-
-  if(
-    username==="doctor" &&
-    password==="kneeai2026"
-  ){
-
     sessionStorage.setItem(
-      "kneeai_doctor",
-      "true"
+        "kneePatient",
+        JSON.stringify(patient)
     );
 
-    document.getElementById("doctorLogin")
-      .classList.add("hidden");
+    loadPatient();
 
-    document.getElementById("doctorDashboard")
-      .classList.remove("hidden");
+    showPage("cameraPage");
 
-    document.getElementById("loginError")
-      .textContent="";
+});
 
-  }else{
 
-    document.getElementById("loginError")
-      .textContent=
-        state.language==="th"
-        ?"รหัสแพทย์หรือรหัสผ่านไม่ถูกต้อง"
-        :"Invalid doctor ID or password.";
+/* =========================================================
+LOAD PATIENT
+========================================================= */
 
-  }
+function loadPatient(){
 
+    const raw=sessionStorage.getItem("kneePatient");
+
+    if(!raw)return;
+
+    try{
+
+        const patient=JSON.parse(raw);
+
+        const name=
+        patient.firstName+" "+patient.lastName;
+
+        document.getElementById("cameraPatient").textContent=name;
+
+        document.getElementById("cameraBMI").textContent=
+        patient.bmi;
+
+        document.getElementById("analysisBMI").textContent=
+        patient.bmi;
+
+        document.getElementById("analysisWeight").textContent=
+        patient.weight+" kg";
+
+        document.getElementById("resultBMI").textContent=
+        patient.bmi;
+
+    }catch(error){
+
+        console.error("Patient data error:",error);
+
+    }
 }
 
 
-function doctorLogout(){
+/* =========================================================
+AI CAMERA + MATHEMATICAL DATA
+========================================================= */
 
-  sessionStorage.removeItem(
-    "kneeai_doctor"
-  );
+let videoElement=null;
+let canvasElement=null;
+let canvasCtx=null;
+let pose=null;
+let camera=null;
 
-  document.getElementById("doctorLogin")
-    .classList.remove("hidden");
+let currentAngle=168.4;
 
-  document.getElementById("doctorDashboard")
-    .classList.add("hidden");
+let frameCounter=0;
 
-}
+let previousAngle=null;
+let previousVelocity=null;
+let previousTimestamp=null;
 
+let currentVelocity=0;
+let currentAcceleration=0;
 
-/* ==========================================================
-   DOCTOR SEARCH
-========================================================== */
+let currentConfidence=0;
 
-function searchPatients(){
+let angleHistory=[];
+let velocityHistory=[];
+let accelerationHistory=[];
+let confidenceHistory=[];
+let timestampHistory=[];
 
-  /*
-    Never expose records until login.
-  */
-
-  if(
-    sessionStorage.getItem(
-      "kneeai_doctor"
-    )!=="true"
-  ){
-
-    go("doctor");
-
-    return;
-
-  }
+const cameraStartBtn=
+document.getElementById("cameraStartBtn");
 
 
-  const query=
-    document.getElementById("searchPatient")
-      .value
-      .trim()
-      .toLowerCase();
+/* =========================================================
+MATHEMATICAL FUNCTIONS
+========================================================= */
 
+/*
+    Euclidean Distance
 
-  const records=
-    JSON.parse(
-      localStorage.getItem(
-        "kneeai_records"
-      ) || "[]"
+    d = √[(x₂-x₁)² + (y₂-y₁)²]
+*/
+
+function distance(A,B){
+
+    if(!A || !B)return null;
+
+    return Math.sqrt(
+        Math.pow(A.x-B.x,2)+
+        Math.pow(A.y-B.y,2)
     );
+}
 
 
-  const found=
-    records.filter(
-      r=>
-        r.name
-          .toLowerCase()
-          .includes(query)
+/*
+    Knee Angle
+
+    θ = cos⁻¹((u·v)/|u||v|)
+*/
+
+function calculateAngle(A,B,C){
+
+    if(!A || !B || !C)return null;
+
+    const BA={
+        x:A.x-B.x,
+        y:A.y-B.y
+    };
+
+    const BC={
+        x:C.x-B.x,
+        y:C.y-B.y
+    };
+
+    const dot=
+        BA.x*BC.x+
+        BA.y*BC.y;
+
+    const magBA=
+        Math.sqrt(
+            BA.x**2+
+            BA.y**2
+        );
+
+    const magBC=
+        Math.sqrt(
+            BC.x**2+
+            BC.y**2
+        );
+
+    if(!magBA || !magBC)return null;
+
+    let value=
+        dot/(magBA*magBC);
+
+    value=Math.max(-1,Math.min(1,value));
+
+    return Math.acos(value)*180/Math.PI;
+}
+
+
+/*
+    Mean
+
+    μ = Σx/n
+*/
+
+function mean(array){
+
+    if(!array.length)return 0;
+
+    return array.reduce(
+        (sum,value)=>sum+value,
+        0
+    )/array.length;
+}
+
+
+/*
+    Standard Deviation
+
+    σ = √[Σ(x-μ)²/n]
+*/
+
+function standardDeviation(array){
+
+    if(!array.length)return 0;
+
+    const avg=mean(array);
+
+    const variance=
+        array.reduce(
+            (sum,value)=>{
+                return sum+
+                    Math.pow(value-avg,2);
+            },
+            0
+        )/array.length;
+
+    return Math.sqrt(variance);
+}
+
+
+/*
+    Linear interpolation / clamp
+*/
+
+function clamp(value,min,max){
+
+    return Math.max(
+        min,
+        Math.min(max,value)
     );
-
-
-  const box=
-    document.getElementById(
-      "searchResults"
-    );
-
-  document.getElementById(
-    "patientDetail"
-  ).classList.add("hidden");
-
-
-  if(!found.length){
-
-    box.innerHTML=`
-
-      <div style="
-        margin-top:15px;
-        padding:20px;
-        border-radius:15px;
-        background:#fff7ed;
-        color:#9a3412;
-        font-size:12px">
-
-        ${t("noPatient")}
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  box.innerHTML=
-    found
-      .map(
-        (r,index)=>`
-
-        <div class="patient-result">
-
-          <div>
-
-            <div class="patient-result-name">
-              ${escapeHTML(r.name)}
-            </div>
-
-            <div class="patient-result-meta">
-
-              ${escapeHTML(r.age)}
-              •
-              ${escapeHTML(
-                translateGender(r.gender)
-              )}
-
-            </div>
-
-          </div>
-
-          <button
-          class="btn btn-primary"
-          onclick="viewPatient(${index})">
-
-          ${t("viewData")}
-
-          </button>
-
-        </div>
-
-        `
-      )
-      .join("");
-
-
-  /*
-    Keep the found result set in session memory
-    for the selected patient.
-  */
-
-  window._doctorSearchResults=
-    found;
-
 }
 
 
-/* ==========================================================
-   VIEW PATIENT
-========================================================== */
+/* =========================================================
+UPDATE POSE METRICS
+========================================================= */
 
-function viewPatient(index){
+function updatePoseMetrics(results){
 
-  if(
-    sessionStorage.getItem(
-      "kneeai_doctor"
-    )!=="true"
-  )
-    return;
+    if(!results.poseLandmarks){
 
+        document.getElementById("detectionPoints").textContent=
+        "0 / 3";
 
-  const found=
-    window._doctorSearchResults || [];
+        document.getElementById("cameraConfidence").textContent=
+        "0 %";
 
-  const r=
-    found[index];
+        currentConfidence=0;
 
-  if(!r)
-    return;
+        return;
+    }
 
-
-  const detail=
-    document.getElementById(
-      "patientDetail"
-    );
-
-  detail.classList.remove(
-    "hidden"
-  );
-
-
-  const statusText=
-    r.status==="good"
-    ?t("goodTitle")
-    :t("warnTitle");
-
-
-  detail.innerHTML=`
-
-    <h3>
-      👤 ${escapeHTML(r.name)}
-    </h3>
-
-    <div class="detail-row">
-      <span>${t("ageLabel")}</span>
-      <strong>${escapeHTML(r.age)}</strong>
-    </div>
-
-    <div class="detail-row">
-      <span>${t("genderLabel")}</span>
-      <strong>
-        ${escapeHTML(
-          translateGender(r.gender)
-        )}
-      </strong>
-    </div>
-
-    <div class="detail-row">
-      <span>${t("weightLabel")}</span>
-      <strong>
-        ${escapeHTML(r.weight)} kg
-      </strong>
-    </div>
-
-    <div class="detail-row">
-      <span>${t("heightLabel")}</span>
-      <strong>
-        ${escapeHTML(r.height)} cm
-      </strong>
-    </div>
-
-    <div class="detail-row">
-      <span>BMI</span>
-      <strong>
-        ${Number(r.bmi).toFixed(1)}
-      </strong>
-    </div>
-
-    <div class="detail-row">
-      <span>${t("leftAngle")}</span>
-      <strong>
-        ${Number(r.leftAngle).toFixed(1)}°
-      </strong>
-    </div>
-
-    <div class="detail-row">
-      <span>${t("rightAngle")}</span>
-      <strong>
-        ${Number(r.rightAngle).toFixed(1)}°
-      </strong>
-    </div>
-
-    <div class="detail-row">
-      <span>${t("angleDifference")}</span>
-      <strong>
-        ${Number(r.angleDifference).toFixed(1)}°
-      </strong>
-    </div>
-
-    <div class="detail-row">
-      <span>${t("symptomScore")}</span>
-      <strong>
-        ${r.symptomScore}/${QUESTIONS.en.length*3}
-      </strong>
-    </div>
-
-    <div class="detail-row">
-      <span>${t("imageQuality")}</span>
-      <strong>
-        ${r.quality}%
-      </strong>
-    </div>
-
-    <div class="detail-row">
-      <span>Result</span>
-      <strong>${statusText}</strong>
-    </div>
-
-    <div style="margin-top:20px">
-
-      <h4>
-        ${t("aiImage")}
-      </h4>
-
-      <img
-      src="${r.image}"
-      class="patient-image">
-
-    </div>
-
-  `;
-
-
-  detail.scrollIntoView({
-    behavior:"smooth",
-    block:"start"
-  });
-
-}
-
-
-/* ==========================================================
-   ESCAPE HTML
-========================================================== */
-
-function escapeHTML(value){
-
-  return String(value)
-
-    .replaceAll("&","&amp;")
-
-    .replaceAll("<","&lt;")
-
-    .replaceAll(">","&gt;")
-
-    .replaceAll('"',"&quot;")
-
-    .replaceAll("'","&#039;");
-
-}
-
-
-/* ==========================================================
-   RESTART
-========================================================== */
-
-function restart(){
-
-  stopCamera();
-
-  state.patient={};
-
-  state.symptoms=[];
-
-  state.bmi=null;
-
-  state.captured=null;
-
-  state.landmarks=null;
-
-  state.result=null;
-
-
-  document.getElementById(
-    "patientName"
-  ).value="";
-
-  document.getElementById(
-    "age"
-  ).value="";
-
-  document.getElementById(
-    "gender"
-  ).value="";
-
-  document.getElementById(
-    "weight"
-  ).value="";
-
-  document.getElementById(
-    "height"
-  ).value="";
-
-  document.getElementById(
-    "bmi"
-  ).textContent="—";
-
-
-  renderQuestions();
-
-  go("home");
-
-}
-
-
-/* ==========================================================
-   INITIALIZE
-========================================================== */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  ()=>{
-
-    initLanguage();
-
-    renderQuestions();
+    const landmarks=results.poseLandmarks;
 
     /*
-      If doctor session still exists,
-      restore dashboard when opening portal.
+        MediaPipe Pose indices
+
+        23 = left hip
+        24 = right hip
+
+        25 = left knee
+        26 = right knee
+
+        27 = left ankle
+        28 = right ankle
     */
 
-    if(
-      sessionStorage.getItem(
-        "kneeai_doctor"
-      )==="true"
-    ){
+    const hipLeft=landmarks[23];
+    const hipRight=landmarks[24];
 
-      document.getElementById(
-        "doctorLogin"
-      ).classList.add("hidden");
+    const kneeLeft=landmarks[25];
+    const kneeRight=landmarks[26];
 
-      document.getElementById(
-        "doctorDashboard"
-      ).classList.remove("hidden");
+    const ankleLeft=landmarks[27];
+    const ankleRight=landmarks[28];
+
+
+    /*
+        เลือกด้านที่มี visibility สูงกว่า
+    */
+
+    const candidates=[
+
+        {
+            hip:hipLeft,
+            knee:kneeLeft,
+            ankle:ankleLeft,
+            side:"LEFT"
+        },
+
+        {
+            hip:hipRight,
+            knee:kneeRight,
+            ankle:ankleRight,
+            side:"RIGHT"
+        }
+
+    ];
+
+
+    let best=null;
+    let bestConfidence=0;
+
+    candidates.forEach(item=>{
+
+        const h=item.hip?.visibility || 0;
+        const k=item.knee?.visibility || 0;
+        const a=item.ankle?.visibility || 0;
+
+        const confidence=(h+k+a)/3;
+
+        if(
+            confidence>bestConfidence &&
+            confidence>.35
+        ){
+
+            best=item;
+            bestConfidence=confidence;
+        }
+
+    });
+
+
+    /*
+        AI Confidence
+    */
+
+    currentConfidence=
+        clamp(bestConfidence*100,0,100);
+
+
+    document.getElementById("cameraConfidence").textContent=
+        currentConfidence.toFixed(1)+" %";
+
+
+    document.getElementById("mathConfidence").textContent=
+        currentConfidence.toFixed(1)+" %";
+
+
+    confidenceHistory.push(
+        currentConfidence
+    );
+
+
+    /*
+        Detection Points
+    */
+
+    if(!best){
+
+        document.getElementById("detectionPoints").textContent=
+        "0 / 3";
+
+        return;
+    }
+
+
+    const visiblePoints=[
+        best.hip,
+        best.knee,
+        best.ankle
+    ].filter(
+        p=>p && p.visibility>.45
+    ).length;
+
+
+    document.getElementById("detectionPoints").textContent=
+        visiblePoints+" / 3";
+
+
+    /*
+        Calculate Knee Angle
+    */
+
+    if(visiblePoints===3){
+
+        const angle=
+            calculateAngle(
+                best.hip,
+                best.knee,
+                best.ankle
+            );
+
+        if(angle!==null){
+
+            currentAngle=angle;
+
+            /*
+                Timestamp
+            */
+
+            const now=
+                performance.now()/1000;
+
+            /*
+                Angular Velocity
+
+                ω ≈ Δθ / Δt
+            */
+
+            if(
+                previousAngle!==null &&
+                previousTimestamp!==null
+            ){
+
+                const dt=
+                    now-previousTimestamp;
+
+                if(dt>0.001 && dt<1){
+
+                    currentVelocity=
+                        (angle-previousAngle)/dt;
+
+                    velocityHistory.push(
+                        currentVelocity
+                    );
+
+                    /*
+                        Angular Acceleration
+
+                        α ≈ Δω / Δt
+                    */
+
+                    if(previousVelocity!==null){
+
+                        currentAcceleration=
+                            (currentVelocity-
+                             previousVelocity)/dt;
+
+                        accelerationHistory.push(
+                            currentAcceleration
+                        );
+
+                    }
+
+                }
+
+            }
+
+
+            previousAngle=angle;
+            previousVelocity=currentVelocity;
+            previousTimestamp=now;
+
+
+            /*
+                Store Time Series
+            */
+
+            angleHistory.push(angle);
+
+            timestampHistory.push(now);
+
+
+            /*
+                จำกัด memory
+                ป้องกันข้อมูลเยอะเกิน
+            */
+
+            if(angleHistory.length>1000){
+
+                angleHistory.shift();
+            }
+
+            if(velocityHistory.length>1000){
+
+                velocityHistory.shift();
+            }
+
+            if(accelerationHistory.length>1000){
+
+                accelerationHistory.shift();
+            }
+
+            if(confidenceHistory.length>1000){
+
+                confidenceHistory.shift();
+            }
+
+            if(timestampHistory.length>1000){
+
+                timestampHistory.shift();
+            }
+
+
+            /*
+                Update UI
+            */
+
+            document.getElementById("cameraAngle").textContent=
+                angle.toFixed(1)+" °";
+
+            document.getElementById("cameraVelocity").textContent=
+                Math.abs(currentVelocity).toFixed(1)+" °/s";
+
+
+            document.getElementById("poseGuide").textContent=
+                "POSE LOCKED • AI TRACKING";
+
+
+            document.getElementById("cameraStatus").textContent=
+                "AI TRACKING";
+
+
+            document.getElementById("cameraStatus").style.color=
+                "var(--green)";
+
+        }
+
+    }else{
+
+        document.getElementById("poseGuide").textContent=
+            "MOVE INTO FRAME";
 
     }
 
-  }
+}
+
+
+/* =========================================================
+POSE DRAW
+========================================================= */
+
+function onPoseResults(results){
+
+    if(!canvasCtx)return;
+
+    canvasCtx.clearRect(
+        0,
+        0,
+        canvasElement.width,
+        canvasElement.height
+    );
+
+
+    if(results.poseLandmarks){
+
+        drawConnectors(
+            canvasCtx,
+            results.poseLandmarks,
+            POSE_CONNECTIONS,
+            {
+                color:"#16ddff",
+                lineWidth:4
+            }
+        );
+
+        drawLandmarks(
+            canvasCtx,
+            results.poseLandmarks,
+            {
+                color:"#ffffff",
+                fillColor:"#1688ff",
+                lineWidth:2,
+                radius:5
+            }
+        );
+
+    }
+
+    updatePoseMetrics(results);
+}
+
+
+/* =========================================================
+START CAMERA
+========================================================= */
+
+async function startCamera(){
+
+    if(
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+    ){
+
+        alert(
+            "Browser นี้ไม่รองรับการใช้งานกล้อง"
+        );
+
+        return;
+    }
+
+
+    /*
+        Reset motion arrays
+    */
+
+    frameCounter=0;
+
+    previousAngle=null;
+    previousVelocity=null;
+    previousTimestamp=null;
+
+    currentVelocity=0;
+    currentAcceleration=0;
+
+    angleHistory=[];
+    velocityHistory=[];
+    accelerationHistory=[];
+    confidenceHistory=[];
+    timestampHistory=[];
+
+
+    try{
+
+        videoElement=
+            document.createElement("video");
+
+        videoElement.id="videoElement";
+
+        videoElement.autoplay=true;
+        videoElement.playsInline=true;
+
+        canvasElement=
+            document.createElement("canvas");
+
+        canvasElement.id="poseCanvas";
+
+
+        const panel=
+            document.getElementById("cameraPanel");
+
+
+        const placeholder=
+            document.getElementById("cameraPlaceholder");
+
+
+        placeholder.style.display="none";
+
+
+        /*
+            Remove old camera
+            if user starts again
+        */
+
+        const oldVideo=
+            panel.querySelector("#videoElement");
+
+        const oldCanvas=
+            panel.querySelector("#poseCanvas");
+
+        if(oldVideo)oldVideo.remove();
+        if(oldCanvas)oldCanvas.remove();
+
+
+        panel.appendChild(videoElement);
+        panel.appendChild(canvasElement);
+
+
+        canvasCtx=
+            canvasElement.getContext("2d");
+
+
+        /*
+            MediaPipe Pose
+        */
+
+        pose=new Pose({
+
+            locateFile:(file)=>{
+
+                return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+
+            }
+
+        });
+
+
+        pose.setOptions({
+
+            modelComplexity:1,
+
+            smoothLandmarks:true,
+
+            enableSegmentation:false,
+
+            smoothSegmentation:false,
+
+            minDetectionConfidence:.55,
+
+            minTrackingConfidence:.55
+
+        });
+
+
+        pose.onResults(onPoseResults);
+
+
+        /*
+            MediaPipe Camera
+        */
+
+        camera=new Camera(
+
+            videoElement,
+
+            {
+
+                onFrame:async()=>{
+
+                    canvasElement.width=
+                        videoElement.videoWidth ||
+                        640;
+
+                    canvasElement.height=
+                        videoElement.videoHeight ||
+                        480;
+
+
+                    frameCounter++;
+
+
+                    document.getElementById(
+                        "cameraFrame"
+                    ).textContent=
+                        String(frameCounter)
+                        .padStart(4,"0");
+
+
+                    await pose.send({
+                        image:videoElement
+                    });
+
+                },
+
+                width:640,
+
+                height:480
+
+            }
+
+        );
+
+
+        await camera.start();
+
+
+        document.getElementById("cameraLive").textContent=
+            "● CAMERA ONLINE";
+
+        document.getElementById("cameraLive").style.color=
+            "var(--green)";
+
+
+        document.getElementById("cameraStatus").textContent=
+            "AI ONLINE";
+
+        document.getElementById("cameraStatus").style.color=
+            "var(--green)";
+
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการเข้าถึงกล้อง"
+        );
+
+
+        document.getElementById("cameraStatus").textContent=
+            "CAMERA ERROR";
+
+        document.getElementById("cameraStatus").style.color=
+            "var(--red)";
+
+    }
+
+}
+
+
+cameraStartBtn?.addEventListener(
+    "click",
+    startCamera
 );
 
 
-window.addEventListener(
-  "beforeunload",
-  ()=>{
-    stopCamera();
-  }
-);
+/* =========================================================
+CALCULATE MATHEMATICAL ANALYSIS
+========================================================= */
 
+function calculateAnalysis(){
+
+    /*
+        ถ้าไม่มีข้อมูลจากกล้อง
+        ใช้ข้อมูลเริ่มต้นสำหรับ demo
+    */
+
+    const angles=
+        angleHistory.length
+        ? angleHistory
+        : [currentAngle];
+
+
+    const velocities=
+        velocityHistory.length
+        ? velocityHistory
+        : [0];
+
+
+    const accelerations=
+        accelerationHistory.length
+        ? accelerationHistory
+        : [0];
+
+
+    const avgAngle=
+        mean(angles);
+
+
+    const minAngle=
+        Math.min(...angles);
+
+
+    const maxAngle=
+        Math.max(...angles);
+
+
+    /*
+        ROM
+
+        ROM = θmax - θmin
+    */
+
+    const rom=
+        maxAngle-minAngle;
+
+
+    /*
+        Standard Deviation
+    */
+
+    const sd=
+        standardDeviation(angles);
+
+
+    /*
+        Velocity
+    */
+
+    const avgVelocity=
+        mean(
+            velocities.map(v=>Math.abs(v))
+        );
+
+
+    const maxVelocity=
+        Math.max(
+            ...velocities.map(
+                v=>Math.abs(v)
+            )
+        );
+
+
+    /*
+        Acceleration
+    */
+
+    const avgAcceleration=
+        mean(
+            accelerations.map(
+                a=>Math.abs(a)
+            )
+        );
+
+
+    const maxAcceleration=
+        Math.max(
+            ...accelerations.map(
+                a=>Math.abs(a)
+            )
+        );
+
+
+    /*
+        AI Confidence
+    */
+
+    const aiConfidence=
+        confidenceHistory.length
+        ? mean(confidenceHistory)
+        : 0;
+
+
+    /*
+        Symmetry
+
+        เนื่องจากการเลือกด้านที่ดีที่สุดในกล้อง
+        ระบบ prototype ใช้ deviation
+        จาก reference angle เป็นตัวแทน
+
+        หากมีข้อมูลซ้าย/ขวาในอนาคต
+        สามารถเปลี่ยนเป็น |θL-θR| ได้โดยตรง
+    */
+
+    const referenceAngle=168.4;
+
+    const deltaAngle=
+        Math.abs(
+            avgAngle-referenceAngle
+        );
+
+
+    const symmetry=
+        clamp(
+            100-
+            (deltaAngle/180*100),
+            0,
+            100
+        );
+
+
+    /*
+        ANGLE SCORE
+
+        ใกล้ reference → score สูง
+    */
+
+    const angleScore=
+        clamp(
+            100-
+            Math.abs(
+                avgAngle-referenceAngle
+            )*2,
+            0,
+            100
+        );
+
+
+    /*
+        ROM SCORE
+
+        เป็นคะแนนเชิงต้นแบบ
+        ไม่ใช่เกณฑ์วินิจฉัย
+    */
+
+    const romScore=
+        clamp(
+            100-
+            Math.abs(
+                rom-30
+            )*1.5,
+            0,
+            100
+        );
+
+
+    /*
+        Composite Score
+
+        35% Angle
+        30% Symmetry
+        20% ROM
+        15% AI Confidence
+    */
+
+    const composite=
+        (
+            angleScore*.35+
+            symmetry*.30+
+            romScore*.20+
+            aiConfidence*.15
+        );
+
+
+    return{
+
+        avgAngle,
+        minAngle,
+        maxAngle,
+        rom,
+
+        sd,
+
+        avgVelocity,
+        maxVelocity,
+
+        avgAcceleration,
+        maxAcceleration,
+
+        aiConfidence,
+
+        deltaAngle,
+        symmetry,
+
+        angleScore,
+        romScore,
+
+        composite
+
+    };
+
+}
+
+
+/* =========================================================
+DISPLAY ANALYSIS
+========================================================= */
+
+analysisBtn?.addEventListener(
+"click",
+()=>{
+
+    const data=
+        calculateAnalysis();
+
+
+    /*
+        Basic metrics
+    */
+
+    document.getElementById(
+        "analysisAngle"
+    ).textContent=
+        data.avgAngle.toFixed(1)+"°";
+
+
+    document.getElementById(
+        "mathAngle"
+    ).textContent=
+        data.avgAngle.toFixed(1)+"°";
+
+
+    document.getElementById(
+        "angleBar"
+    ).style.width=
+        clamp(
+            data.avgAngle/1.8,
+            0,
+            100
+        )+"%";
+
+
+    /*
+        Symmetry
+    */
+
+    document.getElementById(
+        "symmetryValue"
+    ).textContent=
+        data.symmetry.toFixed(1)+"%";
+
+
+    document.getElementById(
+        "mathSymmetry"
+    ).textContent=
+        data.symmetry.toFixed(1)+"%";
+
+
+    document.getElementById(
+        "symmetryBar"
+    ).style.width=
+        data.symmetry+"%";
+
+
+    document.getElementById(
+        "deltaAngle"
+    ).textContent=
+        data.deltaAngle.toFixed(1)+"°";
+
+
+    /*
+        Confidence
+    */
+
+    document.getElementById(
+        "confidenceValue"
+    ).textContent=
+        data.aiConfidence.toFixed(1)+"%";
+
+
+    document.getElementById(
+        "mathConfidence"
+    ).textContent=
+        data.aiConfidence.toFixed(1)+"%";
+
+
+    document.getElementById(
+        "confidenceBar"
+    ).style.width=
+        data.aiConfidence+"%";
+
+
+    /*
+        Velocity
+    */
+
+    document.getElementById(
+        "mathVelocity"
+    ).textContent=
+        data.avgVelocity.toFixed(2)+"°/s";
+
+
+    /*
+        Acceleration
+    */
+
+    document.getElementById(
+        "mathAcceleration"
+    ).textContent=
+        data.avgAcceleration.toFixed(2)+"°/s²";
+
+
+    /*
+        Delta time
+    */
+
+    let totalTime=0;
+
+    if(timestampHistory.length>=2){
+
+        totalTime=
+            timestampHistory[
+                timestampHistory.length-1
+            ]-
+            timestampHistory[0];
+
+    }
+
+
+    document.getElementById(
+        "mathDeltaTime"
+    ).textContent=
+        totalTime.toFixed(2)+" s";
+
+
+    /*
+        ROM
+    */
+
+    document.getElementById(
+        "mathROM"
+    ).textContent=
+        data.rom.toFixed(2)+"°";
+
+
+    document.getElementById(
+        "mathMinMax"
+    ).textContent=
+        data.minAngle.toFixed(1)+
+        " → "+
+        data.maxAngle.toFixed(1)+"°";
+
+
+    /*
+        Mean / SD
+    */
+
+    document.getElementById(
+        "mathMean"
+    ).textContent=
+        data.avgAngle.toFixed(2)+"°";
+
+
+    document.getElementById(
+        "mathSD"
+    ).textContent=
+        data.sd.toFixed(2)+"°";
+
+
+    /*
+        Frame
+    */
+
+    document.getElementById(
+        "mathFrame"
+    ).textContent=
+        String(frameCounter)
+        .padStart(4,"0");
+
+
+    document.getElementById(
+        "mathPoints"
+    ).textContent=
+        "3 / 3";
+
+
+    /*
+        Advanced
+    */
+
+    document.getElementById(
+        "sampleCount"
+    ).textContent=
+        anglesLength();
+
+
+    document.getElementById(
+        "timeWindow"
+    ).textContent=
+        totalTime.toFixed(2)+" s";
+
+
+    document.getElementById(
+        "maxVelocity"
+    ).textContent=
+        data.maxVelocity.toFixed(2)+"°/s";
+
+
+    document.getElementById(
+        "maxAcceleration"
+    ).textContent=
+        data.maxAcceleration.toFixed(2)+"°/s²";
+
+
+    /*
+        Composite
+    */
+
+    document.getElementById(
+        "compositeScore"
+    ).textContent=
+        data.composite.toFixed(1)+"%";
+
+
+    document.getElementById(
+        "compositeBar"
+    ).style.width=
+        data.composite+"%";
+
+
+    document.getElementById(
+        "scoreAngle"
+    ).textContent=
+        data.angleScore.toFixed(1)+"%";
+
+
+    document.getElementById(
+        "scoreSymmetry"
+    ).textContent=
+        data.symmetry.toFixed(1)+"%";
+
+
+    document.getElementById(
+        "scoreROM"
+    ).textContent=
+        data.romScore.toFixed(1)+"%";
+
+
+    document.getElementById(
+        "scoreAI"
+    ).textContent=
+        data.aiConfidence.toFixed(1)+"%";
+
+
+    /*
+        Save latest analysis
+    */
+
+    sessionStorage.setItem(
+        "kneeAnalysis",
+        JSON.stringify(data)
+    );
+
+
+    showPage("analysisPage");
+
+});
+
+
+function anglesLength(){
+
+    return angleHistory.length || 1;
+
+}
+
+
+/* =========================================================
+RESULT
+========================================================= */
+
+resultBtn?.addEventListener(
+"click",
+()=>{
+
+    const raw=
+        sessionStorage.getItem(
+            "kneeAnalysis"
+        );
+
+
+    const data=
+        raw
+        ? JSON.parse(raw)
+        : calculateAnalysis();
+
+
+    /*
+        Score
+    */
+
+    document.getElementById(
+        "resultScore"
+    ).textContent=
+        data.composite.toFixed(1)+"%";
+
+
+    /*
+        Angle
+    */
+
+    document.getElementById(
+        "resultAngle"
+    ).textContent=
+        data.avgAngle.toFixed(1)+"°";
+
+
+    /*
+        Symmetry
+    */
+
+    document.getElementById(
+        "resultSymmetry"
+    ).textContent=
+        data.symmetry.toFixed(1)+"%";
+
+
+    /*
+        Confidence
+    */
+
+    document.getElementById(
+        "resultConfidence"
+    ).textContent=
+        data.aiConfidence.toFixed(1)+"%";
+
+
+    /*
+        ROM
+    */
+
+    document.getElementById(
+        "resultROM"
+    ).textContent=
+        data.rom.toFixed(1)+"°";
+
+
+    /*
+        Velocity
+    */
+
+    document.getElementById(
+        "resultVelocity"
+    ).textContent=
+        data.avgVelocity.toFixed(1)+"°/s";
+
+
+    /*
+        Acceleration
+    */
+
+    document.getElementById(
+        "resultAcceleration"
+    ).textContent=
+        data.avgAcceleration.toFixed(1)+"°/s²";
+
+
+    /*
+        Result interpretation
+    */
+
+    const title=
+        document.getElementById(
+            "resultTitle"
+        );
+
+    const score=
+        document.getElementById(
+            "resultScore"
+        );
+
+
+    if(data.composite>=85){
+
+        title.textContent=
+        "รูปแบบการเคลื่อนไหวอยู่ในระดับดีจากการคัดกรองเบื้องต้น";
+
+        score.style.color=
+            "var(--green)";
+
+    }
+    else if(data.composite>=70){
+
+        title.textContent=
+        "พบค่าความแตกต่างบางส่วน ควรติดตามการเคลื่อนไหว";
+
+        score.style.color=
+            "var(--yellow)";
+
+    }
+    else{
+
+        title.textContent=
+        "พบค่าที่ควรประเมินเพิ่มเติมโดยบุคลากรทางการแพทย์";
+
+        score.style.color=
+            "var(--red)";
+
+    }
+
+
+    showPage("resultPage");
+
+});
+
+
+/* =========================================================
+RESTART
+========================================================= */
+
+restartBtn?.addEventListener(
+"click",
+()=>{
+
+    if(camera){
+
+        try{
+            camera.stop();
+        }
+        catch(e){
+            console.warn(e);
+        }
+
+    }
+
+
+    /*
+        Reset data
+    */
+
+    sessionStorage.removeItem(
+        "kneePatient"
+    );
+
+    sessionStorage.removeItem(
+        "kneeAnalysis"
+    );
+
+
+    angleHistory=[];
+    velocityHistory=[];
+    accelerationHistory=[];
+    confidenceHistory=[];
+    timestampHistory=[];
+
+
+    previousAngle=null;
+    previousVelocity=null;
+    previousTimestamp=null;
+
+
+    currentVelocity=0;
+    currentAcceleration=0;
+
+    frameCounter=0;
+
+
+    /*
+        Reset form
+    */
+
+    [
+        "firstName",
+        "lastName",
+        "age",
+        "weight",
+        "height",
+        "hospital"
+    ].forEach(id=>{
+
+        const element=
+            document.getElementById(id);
+
+        if(element){
+
+            element.value="";
+
+        }
+
+    });
+
+
+    document.getElementById(
+        "bmiValue"
+    ).textContent=
+        "--.-";
+
+
+    document.getElementById(
+        "bmiStatus"
+    ).textContent=
+        "กรุณากรอกน้ำหนักและส่วนสูง";
+
+
+    document.getElementById(
+        "bmiStatus"
+    ).style.color=
+        "var(--muted)";
+
+
+    /*
+        Remove video
+    */
+
+    const oldVideo=
+        document.getElementById(
+            "videoElement"
+        );
+
+    const oldCanvas=
+        document.getElementById(
+            "poseCanvas"
+        );
+
+
+    oldVideo?.remove();
+    oldCanvas?.remove();
+
+
+    document.getElementById(
+        "cameraPlaceholder"
+    ).style.display=
+        "flex";
+
+
+    document.getElementById(
+        "cameraLive"
+    ).textContent=
+        "● CAMERA OFFLINE";
+
+
+    document.getElementById(
+        "cameraStatus"
+    ).textContent=
+        "READY";
+
+
+    document.getElementById(
+        "cameraStatus"
+    ).style.color=
+        "var(--yellow)";
+
+
+    document.getElementById(
+        "cameraFrame"
+    ).textContent=
+        "0000";
+
+
+    showPage("infoPage");
+
+});
+
+
+/* =========================================================
+MATH BUTTON
+========================================================= */
+
+document.getElementById(
+    "mathBtn"
+)?.addEventListener(
+"click",
+()=>{
+
+    document
+        .querySelector(".math-strip")
+        .scrollIntoView({
+            behavior:"smooth",
+            block:"center"
+        });
+
+});
+
+
+/* =========================================================
+PARTICLES
+========================================================= */
+
+const particleContainer=
+    document.getElementById(
+        "particles"
+    );
+
+
+for(let i=0;i<45;i++){
+
+    const particle=
+        document.createElement("span");
+
+    particle.className=
+        "particle";
+
+    particle.style.left=
+        Math.random()*100+"%";
+
+    particle.style.top=
+        Math.random()*100+"%";
+
+    particle.style.animationDuration=
+        (5+Math.random()*8)+"s";
+
+    particle.style.animationDelay=
+        (-Math.random()*8)+"s";
+
+    particleContainer.appendChild(
+        particle
+    );
+
+}
+
+
+/* =========================================================
+HOME LIVE DEMO
+========================================================= */
+
+let frame=248;
+
+function motionDemo(){
+
+    const time=
+        performance.now()/1000;
+
+
+    const angle=
+        164+
+        Math.sin(time*1.4)*6;
+
+
+    document.getElementById(
+        "heroAngle"
+    ).textContent=
+        angle.toFixed(1)+"°";
+
+
+    document.getElementById(
+        "homeAngle"
+    ).innerHTML=
+        angle.toFixed(1)+
+        "<span>°</span>";
+
+
+    frame++;
+
+
+    if(frame>9999){
+        frame=0;
+    }
+
+
+    document.getElementById(
+        "homeFrame"
+    ).textContent=
+        String(frame)
+        .padStart(4,"0");
+
+
+    requestAnimationFrame(
+        motionDemo
+    );
+
+}
+
+motionDemo();
+
+
+/* =========================================================
+INITIALIZE
+========================================================= */
+
+calculateBMI();
+
+loadPatient();
+
+});
 </script>
 
 </body>
