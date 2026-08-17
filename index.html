@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -1881,6 +1886,202 @@ input[type=file]{
         left: 67%;
         top: 63%;
     }
+
+}
+/* =========================================================
+   AI POSE CAMERA
+========================================================= */
+
+.camera-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #050b12;
+}
+
+
+/* VIDEO */
+
+#videoElement {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    z-index: 1;
+
+    background: #050b12;
+}
+
+
+/* AI CANVAS */
+
+#poseCanvas {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 5;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   AI STATUS
+========================================================= */
+
+.ai-pose-status {
+
+    position: absolute;
+
+    top: 15px;
+    left: 15px;
+
+    z-index: 10;
+
+    padding: 8px 14px;
+
+    border-radius: 8px;
+
+    background: rgba(0,0,0,.75);
+
+    border: 1px solid rgba(22,221,255,.5);
+
+    color: #16ddff;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+}
+
+
+/* =========================================================
+   GUIDE
+========================================================= */
+
+.pose-guide {
+
+    position: absolute;
+
+    bottom: 15px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 10;
+
+    padding: 7px 13px;
+
+    background: rgba(0,0,0,.65);
+
+    border: 1px solid rgba(22,221,255,.4);
+
+    border-radius: 7px;
+
+    color: #16ddff;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+}
+
+
+/* =========================================================
+   LANDMARK PANEL
+========================================================= */
+
+.landmark-panel {
+
+    margin-top: 18px;
+
+    padding: 16px;
+
+    border-radius: 14px;
+
+    background: rgba(22,221,255,.04);
+
+    border: 1px solid rgba(22,221,255,.2);
+
+}
+
+
+.landmark-title {
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+    margin-bottom: 12px;
+
+}
+
+
+.landmark-row {
+
+    display: grid;
+
+    grid-template-columns: 14px 1fr auto;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px 0;
+
+    font-size: 12px;
+
+}
+
+
+.landmark-dot {
+
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+
+    box-shadow: 0 0 10px currentColor;
+
+}
+
+
+.landmark-dot.hip {
+    background: #ff4fd8;
+    color: #ff4fd8;
+}
+
+.landmark-dot.knee {
+    background: #16ddff;
+    color: #16ddff;
+}
+
+.landmark-dot.ankle {
+    background: #ffe66d;
+    color: #ffe66d;
+}
+
+
+.landmark-row strong {
+
+    font-size: 10px;
+
+    color: #16ddff;
 
 }
 </style>
@@ -8128,47 +8329,120 @@ showPage = function(pageId){
 
 
 /* =========================================================
-   MEDIA PIPE POSE
+   REAL-TIME MEDIAPIPE POSE
 ========================================================= */
 
-try{
+let pose = null;
 
-    pose =
-        new Pose({
-            locateFile:(
-                file
-            ) =>
-                `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+let poseReady = false;
+
+let poseDetected = false;
+
+
+/* =========================================================
+   INITIALIZE MEDIAPIPE
+========================================================= */
+
+function initializePose() {
+
+    try {
+
+        pose = new Pose({
+
+            locateFile: function(file) {
+
+                return
+                    `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+
+            }
+
         });
 
 
-    pose.setOptions({
+        pose.setOptions({
 
-        modelComplexity:1,
+            modelComplexity: 1,
 
-        smoothLandmarks:true,
+            smoothLandmarks: true,
 
-        enableSegmentation:false,
+            enableSegmentation: false,
 
-        smoothSegmentation:true,
+            smoothSegmentation: false,
 
-        minDetectionConfidence:.5,
+            minDetectionConfidence: 0.5,
 
-        minTrackingConfidence:.5
+            minTrackingConfidence: 0.5
 
-    });
+        });
 
 
-    pose.onResults(
-        onPoseResults
-    );
+        pose.onResults(
+            onPoseResults
+        );
 
-}catch(error){
 
-    console.log(
-        "MediaPipe initialization:",
-        error
-    );
+        poseReady = true;
+
+
+        console.log(
+            "MediaPipe Pose Ready"
+        );
+
+
+    } catch(error) {
+
+        console.error(
+            "MediaPipe error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   PROCESS CAMERA FRAME
+========================================================= */
+
+async function processCameraFrame() {
+
+    if (
+        !pose ||
+        !cameraRunning
+    ) {
+        return;
+    }
+
+
+    const video =
+        document.getElementById(
+            "videoElement"
+        );
+
+
+    if (
+        !video ||
+        video.readyState < 2
+    ) {
+        return;
+    }
+
+
+    try {
+
+        await pose.send({
+            image: video
+        });
+
+    } catch(error) {
+
+        console.error(
+            "Pose frame error:",
+            error
+        );
+
+    }
 
 }
 
@@ -8177,12 +8451,7 @@ try{
    POSE RESULT
 ========================================================= */
 
-function onPoseResults(results){
-
-    const canvas =
-        document.getElementById(
-            "poseCanvas"
-        );
+function onPoseResults(results) {
 
     const video =
         document.getElementById(
@@ -8190,13 +8459,27 @@ function onPoseResults(results){
         );
 
 
-    if(!canvas || !video)
+    const canvas =
+        document.getElementById(
+            "poseCanvas"
+        );
+
+
+    if (
+        !video ||
+        !canvas
+    ) {
         return;
+    }
 
 
     const ctx =
         canvas.getContext("2d");
 
+
+    /*
+       Canvas ต้องมีขนาดเท่ากับ video จริง
+    */
 
     canvas.width =
         video.videoWidth ||
@@ -8215,30 +8498,524 @@ function onPoseResults(results){
     );
 
 
-    if(
-        results.poseLandmarks &&
-        typeof drawConnectors !== "undefined"
-    ){
+    /* =========================================
+       ไม่มีคนในกล้อง
+    ========================================= */
 
-        drawConnectors(
-            ctx,
-            results.poseLandmarks,
-            POSE_CONNECTIONS,
-            {
-                color:"#16ddff",
-                lineWidth:3
-            }
+    if (
+        !results.poseLandmarks
+    ) {
+
+        poseDetected = false;
+
+
+        setPoseStatus(
+            "● SEARCHING"
         );
 
 
-        drawLandmarks(
+        updateLandmarkStatus(
+            false
+        );
+
+
+        return;
+
+    }
+
+
+    poseDetected = true;
+
+
+    setPoseStatus(
+        "● AI TRACKING"
+    );
+
+
+    /*
+       วาด skeleton
+    */
+
+    if (
+        typeof drawConnectors !== "undefined"
+    ) {
+
+        drawConnectors(
+
             ctx,
+
             results.poseLandmarks,
+
+            POSE_CONNECTIONS,
+
             {
-                color:"#ffffff",
-                lineWidth:1,
-                radius:4
+
+                color: "#16ddff",
+
+                lineWidth: 4
+
             }
+
+        );
+
+    }
+
+
+    /*
+       วาด landmark ทุกจุด
+    */
+
+    if (
+        typeof drawLandmarks !== "undefined"
+    ) {
+
+        drawLandmarks(
+
+            ctx,
+
+            results.poseLandmarks,
+
+            {
+
+                color: "#ffffff",
+
+                fillColor: "#16ddff",
+
+                lineWidth: 2,
+
+                radius: 5
+
+            }
+
+        );
+
+    }
+
+
+    /*
+       ไฮไลต์เฉพาะ
+       สะโพก / เข่า / ข้อเท้า
+    */
+
+    drawImportantLandmarks(
+        ctx,
+        results.poseLandmarks
+    );
+
+
+    updateLandmarkStatus(
+        true
+    );
+
+}
+
+
+/* =========================================================
+   DRAW HIP / KNEE / ANKLE
+========================================================= */
+
+function drawImportantLandmarks(
+    ctx,
+    landmarks
+) {
+
+    /*
+       MediaPipe Pose indexes
+
+       LEFT HIP    = 23
+       RIGHT HIP   = 24
+
+       LEFT KNEE   = 25
+       RIGHT KNEE  = 26
+
+       LEFT ANKLE  = 27
+       RIGHT ANKLE = 28
+    */
+
+
+    const importantPoints = [
+
+        {
+            index: 23,
+            label: "L HIP",
+            color: "#ff4fd8"
+        },
+
+        {
+            index: 24,
+            label: "R HIP",
+            color: "#ff4fd8"
+        },
+
+        {
+            index: 25,
+            label: "L KNEE",
+            color: "#16ddff"
+        },
+
+        {
+            index: 26,
+            label: "R KNEE",
+            color: "#16ddff"
+        },
+
+        {
+            index: 27,
+            label: "L ANKLE",
+            color: "#ffe66d"
+        },
+
+        {
+            index: 28,
+            label: "R ANKLE",
+            color: "#ffe66d"
+        }
+
+    ];
+
+
+    importantPoints.forEach(
+        point => {
+
+            const p =
+                landmarks[
+                    point.index
+                ];
+
+
+            if (
+                !p ||
+                p.visibility < 0.5
+            ) {
+                return;
+            }
+
+
+            const x =
+                p.x *
+                ctx.canvas.width;
+
+
+            const y =
+                p.y *
+                ctx.canvas.height;
+
+
+            /*
+               Glow
+            */
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x,
+                y,
+                12,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                point.color;
+
+            ctx.shadowColor =
+                point.color;
+
+            ctx.shadowBlur = 18;
+
+            ctx.fill();
+
+
+            /*
+               จุดกลาง
+            */
+
+            ctx.shadowBlur = 0;
+
+            ctx.beginPath();
+
+            ctx.arc(
+                x,
+                y,
+                5,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fillStyle =
+                "#ffffff";
+
+            ctx.fill();
+
+
+            /*
+               Label
+            */
+
+            ctx.font =
+                "bold 13px Arial";
+
+            ctx.fillStyle =
+                point.color;
+
+            ctx.fillText(
+                point.label,
+                x + 15,
+                y - 10
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function setPoseStatus(
+    status
+) {
+
+    const poseStatus =
+        document.getElementById(
+            "poseStatus"
+        );
+
+
+    const aiStatus =
+        document.getElementById(
+            "aiPoseStatus"
+        );
+
+
+    if (poseStatus) {
+
+        poseStatus.textContent =
+            status
+                .replace("● ", "");
+
+    }
+
+
+    if (aiStatus) {
+
+        aiStatus.textContent =
+            status;
+
+    }
+
+}
+
+
+/* =========================================================
+   LANDMARK STATUS
+========================================================= */
+
+function updateLandmarkStatus(
+    detected
+) {
+
+    const hip =
+        document.getElementById(
+            "hipStatus"
+        );
+
+
+    const knee =
+        document.getElementById(
+            "kneeStatus"
+        );
+
+
+    const ankle =
+        document.getElementById(
+            "ankleStatus"
+        );
+
+
+    if (!detected) {
+
+        if (hip) hip.textContent = "--";
+
+        if (knee) knee.textContent = "--";
+
+        if (ankle) ankle.textContent = "--";
+
+        return;
+
+    }
+
+
+    if (hip)
+        hip.textContent = "DETECTED";
+
+
+    if (knee)
+        knee.textContent = "DETECTED";
+
+
+    if (ankle)
+        ankle.textContent = "DETECTED";
+
+}
+
+
+/* =========================================================
+   START POSE LOOP
+========================================================= */
+
+let poseAnimationFrame = null;
+
+
+function startPoseLoop() {
+
+    if (!cameraRunning)
+        return;
+
+
+    processCameraFrame();
+
+
+    poseAnimationFrame =
+        requestAnimationFrame(
+            startPoseLoop
+        );
+
+}
+
+
+/* =========================================================
+   STOP POSE LOOP
+========================================================= */
+
+function stopPoseLoop() {
+
+    if (
+        poseAnimationFrame
+    ) {
+
+        cancelAnimationFrame(
+            poseAnimationFrame
+        );
+
+        poseAnimationFrame =
+            null;
+
+    }
+
+}
+
+
+/* =========================================================
+   START CAMERA
+========================================================= */
+
+async function startCamera() {
+
+    try {
+
+        stopCamera();
+
+
+        const video =
+            document.getElementById(
+                "videoElement"
+            );
+
+
+        currentStream =
+            await navigator
+                .mediaDevices
+                .getUserMedia({
+
+                    video: {
+
+                        facingMode: {
+                            ideal:
+                                currentFacingMode
+                        },
+
+                        width: {
+                            ideal: 1280
+                        },
+
+                        height: {
+                            ideal: 720
+                        }
+
+                    },
+
+                    audio: false
+
+                });
+
+
+        video.srcObject =
+            currentStream;
+
+
+        await video.play();
+
+
+        cameraRunning = true;
+
+
+        document
+            .getElementById(
+                "cameraPlaceholder"
+            )
+            .classList.add(
+                "hidden"
+            );
+
+
+        document
+            .getElementById(
+                "cameraStatus"
+            )
+            .textContent =
+            "ONLINE";
+
+
+        document
+            .getElementById(
+                "cameraMode"
+            )
+            .textContent =
+
+            currentFacingMode === "user"
+                ? "FRONT"
+                : "BACK";
+
+
+        setPoseStatus(
+            "● SEARCHING"
+        );
+
+
+        /*
+           เริ่ม AI Tracking
+        */
+
+        startPoseLoop();
+
+
+        showToast(
+            "เปิดกล้องแล้ว กำลังค้นหาร่างกาย..."
+        );
+
+
+    } catch(error) {
+
+        console.error(
+            error
+        );
+
+
+        showToast(
+            "ไม่สามารถเปิดกล้องได้ กรุณาอนุญาต Camera"
         );
 
     }
@@ -8247,46 +9024,64 @@ function onPoseResults(results){
 
 
 /* =========================================================
-   AUTO START CAMERA WHEN ENTER CAMERA PAGE
+   STOP CAMERA
 ========================================================= */
 
-const cameraPageObserver =
-    new MutationObserver(()=>{
+function stopCamera() {
 
-        const cameraPage =
-            document.getElementById(
-                "cameraPage"
+    stopPoseLoop();
+
+
+    if (currentStream) {
+
+        currentStream
+            .getTracks()
+            .forEach(
+                track => {
+                    track.stop();
+                }
             );
 
-        if(
-            cameraPage &&
-            cameraPage.classList.contains(
-                "active"
-            ) &&
-            !cameraRunning
-        ){
 
-            /*
-               ไม่เปิดกล้องอัตโนมัติทันที
-               เพื่อให้ browser ขอ permission
-               เมื่อผู้ใช้กดปุ่มเท่านั้น
-            */
+        currentStream = null;
 
-        }
-
-    });
+    }
 
 
-cameraPageObserver.observe(
-    document.body,
-    {
-        subtree:true,
-        attributes:true,
-        attributeFilter:["class"]
+    cameraRunning = false;
+
+}
+
+
+/* =========================================================
+   SWITCH CAMERA
+========================================================= */
+
+async function switchCamera() {
+
+    currentFacingMode =
+        currentFacingMode === "user"
+            ? "environment"
+            : "user";
+
+
+    await startCamera();
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+window.addEventListener(
+    "load",
+    function() {
+
+        initializePose();
+
     }
 );
-
-</script>
 
 </body>
 </html>
