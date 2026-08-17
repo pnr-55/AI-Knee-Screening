@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#08152f">
 
-<title>KneeAI V10.1 — AI Knee Screening</title>
+<title>KneeAI V10.2 — Futuristic Medical AI</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
 
@@ -838,6 +838,126 @@ footer{
   }
 
 }
+
+/* ==========================================================
+   KNEEAI V10.2 — FUTURISTIC MEDICAL AI UI OVERRIDES
+   Visual layer only: keeps V10.1 logic/functionality intact.
+========================================================== */
+:root{
+  --ink:#071a35;
+  --ink2:#0b2b55;
+  --blue:#1677ff;
+  --cyan:#18d7e8;
+  --ice:#eef8ff;
+  --line:rgba(96,145,190,.20);
+  --glass:rgba(255,255,255,.78);
+  --shadow:0 22px 70px rgba(4,28,62,.10);
+}
+body{
+  background:
+    radial-gradient(circle at 8% 8%,rgba(24,215,232,.11),transparent 25%),
+    radial-gradient(circle at 92% 12%,rgba(22,119,255,.10),transparent 27%),
+    linear-gradient(180deg,#f7fbff 0%,#eef5fb 52%,#f8fbff 100%);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.35;
+  background-image:linear-gradient(rgba(22,119,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(22,119,255,.035) 1px,transparent 1px);
+  background-size:36px 36px;
+  mask-image:linear-gradient(to bottom,black,transparent 80%);
+}
+.top-warning{
+  background:linear-gradient(90deg,#061a38,#0b3569 55%,#061a38);
+  color:#dff8ff;border:0;letter-spacing:.02em;
+  box-shadow:0 4px 20px rgba(3,24,53,.12);
+}
+header{
+  background:rgba(255,255,255,.76);
+  border-bottom:1px solid rgba(113,153,190,.18);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:0 10px 35px rgba(5,31,62,.06);
+}
+.nav{max-width:1280px;padding:15px 22px}
+.logo{gap:12px}
+.logo-icon{
+  width:46px;height:46px;border-radius:15px;
+  background:linear-gradient(145deg,#061a38 5%,#1263bf 55%,#16cbdc 100%);
+  box-shadow:0 10px 30px rgba(12,91,175,.28),inset 0 1px 0 rgba(255,255,255,.35);
+  position:relative;overflow:hidden;
+}
+.logo-icon:after{content:"";position:absolute;width:18px;height:18px;border:1px solid rgba(255,255,255,.55);border-radius:50%;right:-4px;top:-4px}
+.logo-title{color:#061a38;font-size:22px;letter-spacing:-.02em}
+.logo-sub{color:#6e849f;letter-spacing:.08em}
+.lang-select{border:1px solid rgba(65,119,168,.18);box-shadow:0 5px 18px rgba(8,47,88,.05);background:rgba(248,252,255,.9)}
+.container{max-width:1280px;padding:36px 22px 70px}
+.steps{background:rgba(255,255,255,.65);backdrop-filter:blur(12px);border-color:rgba(100,145,185,.14)}
+.steps-inner{max-width:1080px;padding:15px 22px}
+.step{font-weight:600}
+.step-dot{box-shadow:inset 0 0 0 1px rgba(91,132,172,.12)}
+.step-dot.active{background:linear-gradient(135deg,#0b2b55,#1688ff);box-shadow:0 7px 20px rgba(22,119,255,.25)}
+.step-dot.done{background:linear-gradient(135deg,#0e9f65,#22c982);box-shadow:0 7px 20px rgba(22,159,101,.2)}
+.card{background:rgba(255,255,255,.82);border:1px solid rgba(95,143,185,.17);box-shadow:var(--shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.btn{border-radius:14px;position:relative;overflow:hidden;box-shadow:0 8px 22px rgba(8,43,82,.08)}
+.btn:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.24) 50%,transparent 75%);transform:translateX(-120%);transition:.5s}
+.btn:hover:after{transform:translateX(120%)}
+.btn-primary{background:linear-gradient(135deg,#071d3c,#0e4c98 58%,#159bd0);box-shadow:0 12px 28px rgba(13,78,150,.25)}
+.btn-primary:hover{background:linear-gradient(135deg,#09264c,#1160b7 58%,#18b6d8);transform:translateY(-2px)}
+.btn-light{background:rgba(238,245,252,.95);border:1px solid rgba(87,128,165,.14)}
+.badge{box-shadow:0 5px 16px rgba(19,92,159,.07);letter-spacing:.06em}
+.blue-badge{background:linear-gradient(135deg,#eaf6ff,#dff9ff);color:#0867a6;border:1px solid rgba(25,159,218,.12)}
+.hero{gap:55px;padding:58px 0 48px;position:relative}
+.hero:before{content:"";position:absolute;width:280px;height:280px;border-radius:50%;background:rgba(24,215,232,.08);filter:blur(10px);right:37%;top:12%;pointer-events:none}
+.hero h1{font-size:clamp(40px,5vw,64px);letter-spacing:-.045em;line-height:1.12;color:#061a38;text-shadow:0 3px 30px rgba(14,62,116,.07)}
+.hero h1 span{background:linear-gradient(100deg,#0b58ad,#1689ff 55%,#10b9c9);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:15px;color:#627995;line-height:2.05}
+.hero .btn-primary{padding:14px 25px;font-size:14px}
+.hero-box{
+  min-height:455px;padding:42px;border-radius:34px;
+  background:radial-gradient(circle at 78% 16%,rgba(24,215,232,.34),transparent 25%),radial-gradient(circle at 15% 85%,rgba(35,110,255,.24),transparent 30%),linear-gradient(145deg,#04152e,#082b55 55%,#075b85);
+  box-shadow:0 35px 90px rgba(4,35,72,.24),inset 0 1px 0 rgba(255,255,255,.13);
+  border:1px solid rgba(137,225,255,.14);position:relative;overflow:hidden;
+}
+.hero-box:before,.hero-box:after{content:"";position:absolute;border:1px solid rgba(93,226,255,.16);border-radius:50%;pointer-events:none}
+.hero-box:before{width:290px;height:290px;right:-100px;top:-120px}
+.hero-box:after{width:180px;height:180px;left:-90px;bottom:-90px}
+.hero-box-title{color:#8bdff1;letter-spacing:.18em}
+.hero-big{font-size:clamp(38px,4vw,54px);letter-spacing:-.04em;text-shadow:0 10px 30px rgba(0,0,0,.18)}
+.hero-big span{color:#65e8f2;text-shadow:0 0 25px rgba(91,235,245,.3)}
+.hero-list{color:#d5eaf5}
+.form-card{max-width:900px;padding:34px}
+.form-card h2,.card h2{color:#071a35;letter-spacing:-.025em}
+input,select{border:1px solid rgba(95,139,177,.22);background:rgba(247,251,255,.92);box-shadow:inset 0 1px 2px rgba(9,46,81,.025);transition:.2s}
+input:focus,select:focus{border-color:#21a9d1;box-shadow:0 0 0 4px rgba(24,190,222,.10),0 7px 22px rgba(22,119,255,.06)}
+.bmi-box{background:linear-gradient(135deg,#edf9ff,#eafcff);border-color:rgba(27,177,211,.18);box-shadow:0 12px 30px rgba(19,116,160,.06)}
+.question{background:rgba(255,255,255,.6);border-color:rgba(98,140,177,.16);transition:.2s}
+.question:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(5,40,77,.06)}
+.option{background:rgba(255,255,255,.86);border-color:rgba(94,139,179,.18)}
+.option.selected{background:linear-gradient(135deg,#082754,#0d65ba 65%,#13a8c4);border-color:transparent;box-shadow:0 8px 20px rgba(12,87,166,.2)}
+.camera-layout{gap:20px}
+.camera-box{border:1px solid rgba(70,184,218,.2);box-shadow:0 30px 70px rgba(2,22,48,.25)}
+.camera-box:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(9,27,50,.05),transparent 50%,rgba(2,15,30,.35))}
+.guide{inset:6%;border:1px solid rgba(89,232,244,.65);box-shadow:0 0 0 1px rgba(255,255,255,.08),inset 0 0 40px rgba(16,190,220,.05)}
+.guide:before{content:"";position:absolute;inset:-1px;background:linear-gradient(90deg,#23e1ee 14%,transparent 14%,transparent 86%,#23e1ee 86%),linear-gradient(#23e1ee 14%,transparent 14%,transparent 86%,#23e1ee 86%);background-size:24px 1px,1px 24px;background-repeat:no-repeat;background-position:top left,bottom right;opacity:.8}
+.guide-label{background:rgba(4,23,44,.78);border:1px solid rgba(96,228,240,.35);box-shadow:0 8px 25px rgba(0,0,0,.2)}
+.camera-tip{background:rgba(3,20,39,.72);border:1px solid rgba(126,218,235,.15);backdrop-filter:blur(8px)}
+.ai-panel{background:radial-gradient(circle at 85% 0%,rgba(20,151,196,.22),transparent 35%),linear-gradient(160deg,#04152d,#082b51 70%,#063c59);border:1px solid rgba(98,219,239,.13);box-shadow:0 25px 60px rgba(3,29,59,.18)}
+.ai-panel h3{letter-spacing:-.02em}
+.angle-card{background:rgba(255,255,255,.075);border:1px solid rgba(125,223,238,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.angle{color:#66eaf0;text-shadow:0 0 22px rgba(102,234,240,.22)}
+.camera-status{border:1px solid rgba(125,223,238,.1)}
+.result-grid{gap:24px}
+.result-image{border:1px solid rgba(70,129,179,.16);box-shadow:0 25px 55px rgba(7,34,66,.12)}
+.stat{background:linear-gradient(145deg,rgba(250,253,255,.95),rgba(238,247,253,.85));border-color:rgba(91,140,181,.16);box-shadow:0 10px 25px rgba(11,50,90,.04)}
+.stat-value{background:linear-gradient(100deg,#07336b,#0874c7);-webkit-background-clip:text;background-clip:text;color:transparent}
+.result-box{box-shadow:0 10px 28px rgba(7,40,75,.05)}
+.login{padding:34px;border:1px solid rgba(78,136,184,.18);box-shadow:0 30px 75px rgba(7,35,69,.12)}
+.doctor-head{padding-bottom:15px;border-bottom:1px solid rgba(91,139,179,.15)}
+.patient-result{background:rgba(255,255,255,.8);border-color:rgba(86,136,179,.16);box-shadow:0 10px 25px rgba(5,40,75,.04);transition:.2s}
+.patient-result:hover{transform:translateY(-2px);box-shadow:0 18px 35px rgba(5,40,75,.08);border-color:rgba(22,143,210,.25)}
+.patient-detail{background:linear-gradient(145deg,#f6fbff,#eef7fc);border:1px solid rgba(81,139,181,.13)}
+footer{color:#7d93aa;letter-spacing:.03em}
+@media(max-width:900px){.hero{gap:30px}.hero-box{min-height:400px}}
+@media(max-width:650px){.container{padding-left:14px;padding-right:14px}.hero h1{font-size:38px}.hero-box{padding:28px;border-radius:26px}.form-card{padding:24px}}
+
 </style>
 </head>
 
@@ -1775,21 +1895,6 @@ text-align:center;
 margin-top:10px">
 </div>
 
-
-<div style="
-margin-top:20px;
-padding:12px;
-background:#fff7ed;
-border-radius:12px;
-font-size:11px;
-color:#9a3412">
-
-Demo<br>
-Doctor ID: <b>doctor</b><br>
-Password: <b>kneeai2026</b>
-
-</div>
-
 </div>
 
 </div>
@@ -1863,7 +1968,7 @@ class="patient-detail hidden">
 
 
 <footer>
-KneeAI V10.1 • AI-based Knee Screening Prototype
+KneeAI V10.2 • Futuristic Medical AI Screening Prototype
 </footer>
 
 
