@@ -1,325 +1,577 @@
-```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08152f">
 
-<title>KneeAI V10 — AI Standing Posture Screening</title>
+<title>KneeAI V10 — AI Knee Screening</title>
 
-<script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap');
 
-*{
-    box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
-    margin:0;
-    font-family:'Prompt',sans-serif;
-    background:#f5f7fb;
-    color:#172033;
+  margin:0;
+  font-family:"Prompt",sans-serif;
+  background:#f4f7fb;
+  color:#172033;
 }
 
-.gradient{
-    background:linear-gradient(135deg,#0b1736,#164e9b);
+button,input,select{font-family:inherit}
+
+button{cursor:pointer}
+
+.top-warning{
+  background:#fff7df;
+  color:#795b00;
+  padding:8px 15px;
+  text-align:center;
+  font-size:12px;
+  border-bottom:1px solid #f0df9c;
 }
 
-.gold{
-    background:linear-gradient(135deg,#d89a24,#f7c95d);
+header{
+  background:#fff;
+  border-bottom:1px solid #e8edf4;
+  position:sticky;
+  top:0;
+  z-index:50;
 }
+
+.nav{
+  max-width:1200px;
+  margin:auto;
+  padding:14px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logo-icon{
+  width:45px;
+  height:45px;
+  border-radius:13px;
+  background:linear-gradient(135deg,#09204b,#1662bd);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:800;
+}
+
+.logo-title{
+  font-size:21px;
+  font-weight:800;
+  color:#09204b;
+}
+
+.logo-sub{
+  font-size:10px;
+  color:#8b97a9;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:30px 20px;
+}
+
+.page{display:none}
+.page.active{display:block}
 
 .card{
-    background:#fff;
-    border:1px solid #e8edf5;
-    border-radius:24px;
-    box-shadow:0 12px 40px rgba(15,23,42,.06);
+  background:#fff;
+  border:1px solid #e5ebf3;
+  border-radius:24px;
+  box-shadow:0 12px 35px rgba(15,23,42,.06);
 }
 
 .btn{
-    border:0;
-    border-radius:14px;
-    padding:13px 22px;
-    font-family:inherit;
-    font-weight:600;
-    cursor:pointer;
-    transition:.2s;
+  border:0;
+  border-radius:13px;
+  padding:12px 20px;
+  font-weight:700;
+  transition:.2s;
 }
 
-.btn:hover{
-    transform:translateY(-1px);
-}
-
-.btn:disabled{
-    opacity:.45;
-    cursor:not-allowed;
-    transform:none;
-}
+.btn:hover{transform:translateY(-1px)}
 
 .btn-primary{
-    background:#102a56;
-    color:#fff;
+  background:#0c2b5d;
+  color:#fff;
 }
 
 .btn-gold{
-    background:linear-gradient(135deg,#d89a24,#f5c451);
-    color:#172033;
+  background:linear-gradient(135deg,#d79a24,#f4c95d);
+  color:#172033;
 }
 
 .btn-light{
-    background:#eef3fa;
-    color:#24334f;
+  background:#edf2f8;
+  color:#233653;
 }
 
-.page{
-    display:none;
+.btn-danger{
+  background:#fee2e2;
+  color:#991b1b;
 }
 
-.page.active{
-    display:block;
+.btn:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.hero{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:40px;
+  align-items:center;
+  padding:45px 0;
+}
+
+.hero h1{
+  font-size:48px;
+  line-height:1.2;
+  margin:18px 0;
+}
+
+.hero h1 span{color:#1764c0}
+
+.hero p{
+  color:#5f6c80;
+  line-height:2;
+}
+
+.hero-box{
+  background:linear-gradient(145deg,#071630,#123f7d);
+  color:white;
+  border-radius:30px;
+  padding:35px;
 }
 
 .badge{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    padding:7px 12px;
-    border-radius:999px;
-    font-size:12px;
-    font-weight:600;
+  display:inline-flex;
+  padding:7px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
 }
 
-input,
-select{
-    width:100%;
-    padding:13px 14px;
-    border:1px solid #dce3ed;
-    border-radius:13px;
-    background:#f9fbfd;
-    outline:none;
-    font-family:inherit;
+.blue-badge{
+  background:#eaf3ff;
+  color:#1757a1;
 }
 
-input:focus,
-select:focus{
-    border-color:#2563eb;
-    background:#fff;
+.steps{
+  background:#fff;
+  border-bottom:1px solid #e7edf5;
 }
 
-.small{
-    font-size:12px;
-    color:#64748b;
+.steps-inner{
+  max-width:1000px;
+  margin:auto;
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
 }
 
 .step{
-    display:flex;
-    align-items:center;
-    gap:9px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  white-space:nowrap;
 }
 
-.step-number{
-    width:31px;
-    height:31px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:700;
-    font-size:12px;
+.step-dot{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  font-weight:800;
+  background:#e8edf5;
+  color:#69768a;
 }
 
-.step-active{
-    background:#123b78;
-    color:#fff;
+.step-dot.active{
+  background:#103b79;
+  color:#fff;
 }
 
-.step-done{
-    background:#16a34a;
-    color:#fff;
+.step-dot.done{
+  background:#16a34a;
+  color:#fff;
 }
 
-.step-idle{
-    background:#e8edf5;
-    color:#64748b;
+.step-line{
+  height:1px;
+  background:#dfe6ef;
+  flex:1;
+  margin:0 15px;
 }
 
-/* CAMERA */
+.form-card{
+  max-width:800px;
+  margin:auto;
+  padding:30px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-top:25px;
+}
+
+.full{grid-column:1/-1}
+
+label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  color:#526176;
+  margin-bottom:7px;
+}
+
+input,select{
+  width:100%;
+  padding:13px 14px;
+  border:1px solid #dbe3ee;
+  border-radius:12px;
+  outline:none;
+  background:#f9fbfd;
+}
+
+input:focus,select:focus{
+  border-color:#2874d0;
+  background:#fff;
+}
+
+.bmi-box{
+  background:#eef7ff;
+  border:1px solid #cfe5ff;
+  padding:18px;
+  border-radius:17px;
+}
+
+.bmi-value{
+  font-size:30px;
+  font-weight:800;
+  color:#0d4c98;
+}
+
+.question{
+  padding:18px;
+  border:1px solid #e5ebf2;
+  border-radius:17px;
+  margin-top:15px;
+}
+
+.question-title{
+  font-weight:700;
+  line-height:1.7;
+}
+
+.options{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:12px;
+}
+
+.option{
+  border:1px solid #dbe3ed;
+  padding:10px;
+  border-radius:10px;
+  text-align:center;
+  font-size:12px;
+  cursor:pointer;
+  background:#fff;
+}
+
+.option.selected{
+  background:#0e3b79;
+  color:#fff;
+  border-color:#0e3b79;
+}
 
 .camera-layout{
-    display:grid;
-    grid-template-columns:minmax(0,1fr) 250px;
-    gap:16px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 270px;
+  gap:16px;
 }
 
 .camera-box{
-    position:relative;
-    background:#020617;
-    border-radius:20px;
-    overflow:hidden;
-    min-height:450px;
+  background:#020617;
+  position:relative;
+  overflow:hidden;
+  border-radius:22px;
+  min-height:500px;
 }
 
-#cameraVideo{
-    width:100%;
-    height:auto;
-    min-height:450px;
-    object-fit:cover;
-    display:block;
-    background:#000;
+#video{
+  width:100%;
+  height:100%;
+  min-height:500px;
+  object-fit:cover;
+  display:block;
 }
 
-#cameraOverlay{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    pointer-events:none;
+#overlay{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
 }
 
-.camera-guide{
-    position:absolute;
-    inset:6%;
-    border:2px dashed rgba(255,255,255,.38);
-    border-radius:18px;
-    pointer-events:none;
+.guide{
+  position:absolute;
+  inset:6%;
+  border:2px dashed rgba(255,255,255,.35);
+  border-radius:20px;
+  pointer-events:none;
 }
 
-.guide-text{
-    position:absolute;
-    top:12px;
-    left:50%;
-    transform:translateX(-50%);
-    background:rgba(0,0,0,.65);
-    color:#fff;
-    padding:7px 14px;
-    border-radius:999px;
-    font-size:12px;
-    white-space:nowrap;
-    z-index:3;
+.guide-label{
+  position:absolute;
+  top:15px;
+  left:50%;
+  transform:translateX(-50%);
+  color:#fff;
+  background:rgba(0,0,0,.65);
+  padding:7px 13px;
+  border-radius:999px;
+  font-size:11px;
+  white-space:nowrap;
 }
-
-/* SIDE PANEL */
 
 .ai-panel{
-    background:#0b1736;
-    color:#fff;
-    border-radius:20px;
-    padding:20px;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
+  background:#091832;
+  color:white;
+  border-radius:22px;
+  padding:20px;
 }
 
-.ai-title{
-    font-size:12px;
-    color:#9fb9e9;
-    letter-spacing:.08em;
+.ai-small{
+  color:#8fa9d2;
+  font-size:11px;
+  letter-spacing:.08em;
 }
 
 .angle-card{
-    margin-top:14px;
-    padding:16px;
-    border-radius:17px;
-    background:rgba(255,255,255,.07);
-    border:1px solid rgba(255,255,255,.10);
+  margin-top:14px;
+  padding:15px;
+  border-radius:15px;
+  background:rgba(255,255,255,.07);
 }
 
 .angle-label{
-    font-size:12px;
-    color:#aebbd0;
+  color:#b6c4da;
+  font-size:12px;
 }
 
-.angle-value{
-    font-size:30px;
-    line-height:1.1;
-    font-weight:800;
-    color:#f8cc5a;
-    margin-top:5px;
+.angle{
+  color:#f6c951;
+  font-size:30px;
+  font-weight:800;
+  margin-top:3px;
 }
 
-.panel-status{
-    margin-top:16px;
-    padding:13px;
-    border-radius:14px;
-    background:rgba(255,255,255,.06);
-    font-size:12px;
-    line-height:1.7;
+.camera-status{
+  margin-top:15px;
+  background:rgba(255,255,255,.07);
+  padding:12px;
+  border-radius:13px;
+  color:#c9d5e8;
+  font-size:12px;
+  line-height:1.7;
 }
 
-/* RESULT */
+.camera-controls{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+  margin-top:18px;
+}
 
-.result-image-wrap{
-    position:relative;
-    background:#000;
-    border-radius:18px;
-    overflow:hidden;
+.result-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+.result-image{
+  background:#000;
+  border-radius:18px;
+  overflow:hidden;
 }
 
 #resultCanvas{
-    width:100%;
-    height:auto;
-    display:block;
+  width:100%;
+  display:block;
+}
+
+.stat-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
 }
 
 .stat{
-    background:#f7f9fc;
-    border:1px solid #e7ecf3;
-    border-radius:17px;
-    padding:17px;
+  background:#f7f9fc;
+  border:1px solid #e5ebf2;
+  border-radius:17px;
+  padding:17px;
+}
+
+.stat-label{
+  color:#69768a;
+  font-size:12px;
 }
 
 .stat-value{
-    font-size:27px;
-    font-weight:800;
-    color:#0f2f65;
+  color:#0b326b;
+  font-size:28px;
+  font-weight:800;
+  margin-top:4px;
 }
 
-.result-good{
-    background:#ecfdf5;
-    border-color:#bbf7d0;
-    color:#166534;
+.result-box{
+  margin-top:15px;
+  padding:18px;
+  border-radius:17px;
 }
 
-.result-warn{
-    background:#fff7ed;
-    border-color:#fed7aa;
-    color:#9a3412;
+.good{
+  background:#ecfdf3;
+  border:1px solid #bbf7d0;
+  color:#166534;
+}
+
+.warn{
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#9a3412;
+}
+
+.login{
+  max-width:450px;
+  margin:30px auto;
+  padding:30px;
+}
+
+.search-box{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+
+.patient-result{
+  padding:18px;
+  margin-top:15px;
+  border:1px solid #e4eaf2;
+  border-radius:17px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.patient-detail{
+  margin-top:20px;
+  padding:20px;
+  border-radius:18px;
+  background:#f7f9fc;
+}
+
+.detail-row{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid #e2e8f0;
+  font-size:13px;
+}
+
+.detail-row:last-child{border:0}
+
+.hidden{display:none!important}
+
+.loading{
+  text-align:center;
+  padding:70px;
+}
+
+.spinner{
+  width:55px;
+  height:55px;
+  border:5px solid #dbe5f2;
+  border-top-color:#123e7c;
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+  margin:auto;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
 }
 
 @media(max-width:850px){
 
-    .camera-layout{
-        grid-template-columns:1fr;
-    }
+  .hero{
+    grid-template-columns:1fr;
+  }
 
-    .ai-panel{
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        gap:12px;
-    }
+  .hero h1{
+    font-size:37px;
+  }
 
-    .ai-panel > div:first-child{
-        grid-column:1/-1;
-    }
+  .camera-layout{
+    grid-template-columns:1fr;
+  }
+
+  .result-grid{
+    grid-template-columns:1fr;
+  }
 
 }
 
-@media(max-width:620px){
+@media(max-width:600px){
 
-    #cameraVideo{
-        min-height:400px;
-    }
+  .form-grid{
+    grid-template-columns:1fr;
+  }
 
-    .camera-box{
-        min-height:400px;
-    }
+  .options{
+    grid-template-columns:1fr 1fr;
+  }
 
-    .ai-panel{
-        grid-template-columns:1fr;
-    }
+  .step span{
+    display:none;
+  }
+
+  .step-line{
+    margin:0 7px;
+  }
+
+  .camera-box,
+  #video{
+    min-height:420px;
+  }
 
 }
 </style>
@@ -327,161 +579,111 @@ select:focus{
 
 <body>
 
-<!-- WARNING -->
-
-<div class="bg-amber-50 border-b border-amber-200 text-amber-900 text-center text-xs md:text-sm px-4 py-2">
-⚠️ ระบบนี้เป็นการคัดกรองเบื้องต้นจากภาพ ไม่ใช่การวินิจฉัยโรคโดยแพทย์
+<div class="top-warning">
+⚠️ KneeAI เป็นระบบคัดกรองเบื้องต้น ไม่ใช่เครื่องมือวินิจฉัยโรค
 </div>
 
+<header>
+<div class="nav">
 
-<!-- HEADER -->
-
-<header class="bg-white border-b border-slate-100 sticky top-0 z-50">
-
-<div class="max-w-7xl mx-auto px-5 py-4 flex justify-between items-center">
-
-<div class="flex items-center gap-3 cursor-pointer" onclick="showPage('home')">
-
-<div class="gradient text-white w-11 h-11 rounded-xl flex items-center justify-center font-bold text-xl">
-K
-</div>
-
+<div class="logo" onclick="go('home')" style="cursor:pointer">
+<div class="logo-icon">K</div>
 <div>
-<div class="font-bold text-xl text-blue-950">
-KneeAI
-</div>
-
-<div class="text-[11px] text-slate-400">
-AI Standing Posture Screening
+<div class="logo-title">KneeAI</div>
+<div class="logo-sub">AI Knee Screening & Risk Assessment</div>
 </div>
 </div>
 
-</div>
-
-<button class="btn btn-primary text-sm"
-onclick="showPage('doctor')">
+<button class="btn btn-primary" onclick="go('doctor')">
 👨‍⚕️ Doctor Portal
 </button>
 
 </div>
-
 </header>
 
-
-<!-- STEP BAR -->
-
-<div class="bg-white border-b border-slate-100">
-
-<div class="max-w-5xl mx-auto px-5 py-4">
-
-<div class="flex justify-between gap-2">
+<div class="steps">
+<div class="steps-inner">
 
 <div class="step">
-<div id="step1Dot" class="step-number step-active">1</div>
-<span class="hidden sm:block text-xs font-semibold">ข้อมูล</span>
+<div id="s1" class="step-dot active">1</div>
+<span>ข้อมูล</span>
 </div>
 
-<div class="flex-1 border-t self-center"></div>
+<div class="step-line"></div>
 
 <div class="step">
-<div id="step2Dot" class="step-number step-idle">2</div>
-<span class="hidden sm:block text-xs font-semibold">ท่ายืน</span>
+<div id="s2" class="step-dot">2</div>
+<span>อาการ</span>
 </div>
 
-<div class="flex-1 border-t self-center"></div>
+<div class="step-line"></div>
 
 <div class="step">
-<div id="step3Dot" class="step-number step-idle">3</div>
-<span class="hidden sm:block text-xs font-semibold">ถ่ายภาพ</span>
+<div id="s3" class="step-dot">3</div>
+<span>กล้อง AI</span>
 </div>
 
-<div class="flex-1 border-t self-center"></div>
+<div class="step-line"></div>
 
 <div class="step">
-<div id="step4Dot" class="step-number step-idle">4</div>
-<span class="hidden sm:block text-xs font-semibold">ผล AI</span>
+<div id="s4" class="step-dot">4</div>
+<span>ผลลัพธ์</span>
 </div>
 
 </div>
-
-</div>
-
 </div>
 
 
-<main class="max-w-7xl mx-auto px-5 py-8">
+<main class="container">
 
 
 <!-- HOME -->
 
 <section id="home" class="page active">
 
-<div class="grid lg:grid-cols-2 gap-10 items-center py-8">
+<div class="hero">
 
 <div>
 
-<span class="badge bg-blue-50 text-blue-700 border border-blue-100">
-✨ AI Computer Vision
+<span class="badge blue-badge">
+AI COMPUTER VISION
 </span>
 
-<h1 class="text-4xl md:text-5xl font-bold leading-tight mt-5 text-slate-900">
-
-วิเคราะห์แนวขา<br>
-
-<span class="text-blue-600">
-และมุมข้อเข่า
-</span>
-
-<br>
-
-จากภาพท่ายืน
-
+<h1>
+ระบบคัดกรองข้อเข่า<br>
+<span>ด้วย AI จากภาพท่ายืน</span>
 </h1>
 
-<p class="text-slate-600 leading-8 mt-5 max-w-xl">
-
-KneeAI ใช้กล้องและ AI Pose Estimation
-เพื่อตรวจจับตำแหน่งสะโพก เข่า และข้อเท้า
-จากภาพท่ายืน แล้วคำนวณมุมและแนวแกนของขา
-เพื่อใช้ในการคัดกรองเบื้องต้น
-
+<p>
+KneeAI วิเคราะห์ข้อมูลพื้นฐาน อาการเบื้องต้น
+และภาพท่ายืน เพื่อช่วยประเมินความเสี่ยงของปัญหาข้อเข่า
+โดยใช้ AI Pose Estimation ตรวจจับตำแหน่งสะโพก
+เข่า และข้อเท้า
 </p>
 
-<button class="btn btn-primary mt-7 px-8 py-4"
-onclick="showPage('profile')">
-
+<button class="btn btn-primary" onclick="go('profile')">
 🚀 เริ่มการประเมิน
-
 </button>
 
 </div>
 
+<div class="hero-box">
 
-<div class="gradient rounded-[30px] p-8 text-white shadow-2xl">
-
-<div class="text-blue-200 text-sm">
-AI COMPUTER VISION
+<div style="color:#9dbbe6;font-size:12px">
+KNEEAI V10
 </div>
 
-<div class="text-4xl font-bold mt-5">
-
-STANDING
-<br>
-
-<span class="text-amber-400">
-ANALYSIS
-</span>
-
+<div style="font-size:38px;font-weight:800;margin-top:15px">
+STANDING<br>
+<span style="color:#f4c650">ANALYSIS</span>
 </div>
 
-<div class="mt-8 space-y-4 text-sm text-blue-100">
-
-<div>✓ วิเคราะห์ภาพท่ายืน</div>
-<div>✓ ตรวจจับสะโพก–เข่า–ข้อเท้า</div>
-<div>✓ คำนวณมุมเข่าซ้ายและขวา</div>
-<div>✓ แสดงจุดและเส้น AI บนภาพ</div>
-<div>✓ รองรับกล้องหน้าและกล้องหลัง</div>
-
+<div style="margin-top:25px;line-height:2;color:#d1def1;font-size:14px">
+✓ แบบสอบถามอาการ<br>
+✓ น้ำหนัก / ส่วนสูง / BMI<br>
+✓ AI Pose Landmark<br>
+✓ มุมเข่าซ้ายและขวา<br>
+✓ Doctor Login & Patient Search
 </div>
 
 </div>
@@ -495,106 +697,81 @@ ANALYSIS
 
 <section id="profile" class="page">
 
-<div class="max-w-2xl mx-auto card p-7 md:p-9">
+<div class="form-card card">
 
-<h2 class="text-2xl font-bold">
-1. ข้อมูลผู้รับการประเมิน
-</h2>
+<h2>1. ข้อมูลผู้รับการประเมิน</h2>
 
-<p class="small mt-2">
-ข้อมูลใช้ประกอบการสร้างรายงาน
+<p style="color:#718096;font-size:13px">
+กรอกข้อมูลพื้นฐานเพื่อใช้ประกอบการประเมิน
 </p>
 
+<div class="form-grid">
 
-<div class="grid md:grid-cols-2 gap-5 mt-7">
-
-<div class="md:col-span-2">
-
-<label class="small font-semibold">
-ชื่อ–นามสกุล
-</label>
-
-<input id="name"
-placeholder="กรอกชื่อ–นามสกุล">
-
+<div class="full">
+<label>ชื่อ–นามสกุล</label>
+<input id="patientName" placeholder="เช่น พัชรวรรณ เหล็กลึก">
 </div>
 
-
 <div>
-
-<label class="small font-semibold">
-อายุ
-</label>
-
-<input id="age"
-type="number"
-min="1"
-max="120"
-placeholder="ปี">
-
+<label>รหัสผู้รับการประเมิน</label>
+<input id="patientId" placeholder="KN-2026-0001">
 </div>
 
+<div>
+<label>อายุ (ปี)</label>
+<input id="age" type="number" min="1" max="120">
+</div>
 
 <div>
-
-<label class="small font-semibold">
-เพศ
-</label>
-
+<label>เพศ</label>
 <select id="gender">
-
-<option value="">
-เลือก
-</option>
-
-<option>
-ชาย
-</option>
-
-<option>
-หญิง
-</option>
-
-<option>
-อื่น ๆ
-</option>
-
+<option value="">เลือกเพศ</option>
+<option>ชาย</option>
+<option>หญิง</option>
+<option>อื่น ๆ</option>
 </select>
+</div>
 
+<div>
+<label>น้ำหนัก (กิโลกรัม)</label>
+<input id="weight" type="number" min="1" step="0.1"
+oninput="calculateBMI()">
+</div>
+
+<div>
+<label>ส่วนสูง (เซนติเมตร)</label>
+<input id="height" type="number" min="50" max="250" step="0.1"
+oninput="calculateBMI()">
+</div>
+
+<div class="full bmi-box">
+
+<div style="font-size:12px;color:#54708f">
+BMI คำนวณอัตโนมัติ
+</div>
+
+<div id="bmi" class="bmi-value">—</div>
+
+<div id="bmiText" style="font-size:12px;color:#54708f">
+กรอกน้ำหนักและส่วนสูง
 </div>
 
 </div>
 
-
-<div class="mt-7 p-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm text-blue-900">
-
-<strong>
-ข้อควรทราบ
-</strong>
-
-<br>
-
-การประเมินจากภาพเป็นเพียงการคัดกรองเบื้องต้น
-ไม่สามารถใช้แทนการตรวจโดยแพทย์ได้
-
 </div>
 
+<div style="margin-top:20px;padding:15px;background:#f8fafc;border-radius:15px;font-size:12px;color:#667085">
+BMI เป็นข้อมูลประกอบการคัดกรอง ไม่ใช้เป็นตัววินิจฉัยโรคข้อเข่าโดยตรง
+</div>
 
-<div class="flex justify-between mt-7">
+<div style="display:flex;justify-content:space-between;margin-top:25px">
 
-<button class="btn btn-light"
-onclick="showPage('home')">
-
-ย้อนกลับ
-
+<button class="btn btn-light" onclick="go('home')">
+← กลับ
 </button>
 
-
-<button class="btn btn-primary"
-onclick="goPosture()">
-
+<button class="btn btn-primary" onclick="nextSymptoms()">
 ถัดไป →
-
 </button>
 
 </div>
@@ -604,126 +781,28 @@ onclick="goPosture()">
 </section>
 
 
-<!-- POSTURE -->
+<!-- SYMPTOMS -->
 
-<section id="posture" class="page">
+<section id="symptoms" class="page">
 
-<div class="max-w-3xl mx-auto card p-7 md:p-9">
+<div class="form-card card">
 
-<h2 class="text-2xl font-bold">
-2. จัดท่ายืนก่อนถ่ายภาพ
-</h2>
+<h2>2. แบบสอบถามอาการเบื้องต้น</h2>
 
-<p class="small mt-2">
-จัดท่าให้ AI ตรวจจับข้อต่อได้ชัดที่สุด
+<p style="color:#718096;font-size:13px">
+ตอบตามอาการที่เกิดขึ้นในช่วงที่ผ่านมา
 </p>
 
+<div id="questions"></div>
 
-<div class="grid md:grid-cols-2 gap-4 mt-7">
+<div style="display:flex;justify-content:space-between;margin-top:25px">
 
-
-<div class="p-5 bg-blue-50 rounded-2xl border border-blue-100">
-
-<div class="text-2xl">
-🧍
-</div>
-
-<div class="font-bold mt-3">
-ยืนตรง
-</div>
-
-<div class="small mt-1">
-ศีรษะ ลำตัว และสะโพกอยู่ในท่าปกติ
-</div>
-
-</div>
-
-
-<div class="p-5 bg-blue-50 rounded-2xl border border-blue-100">
-
-<div class="text-2xl">
-👣
-</div>
-
-<div class="font-bold mt-3">
-เห็นขาทั้งสองข้าง
-</div>
-
-<div class="small mt-1">
-ต้องเห็นตั้งแต่สะโพกถึงเท้าชัดเจน
-</div>
-
-</div>
-
-
-<div class="p-5 bg-blue-50 rounded-2xl border border-blue-100">
-
-<div class="text-2xl">
-📐
-</div>
-
-<div class="font-bold mt-3">
-หันตรงเข้ากล้อง
-</div>
-
-<div class="small mt-1">
-ไม่บิดตัวและไม่เอียงไปด้านใดด้านหนึ่ง
-</div>
-
-</div>
-
-
-<div class="p-5 bg-blue-50 rounded-2xl border border-blue-100">
-
-<div class="text-2xl">
-↔️
-</div>
-
-<div class="font-bold mt-3">
-ไม่ไขว้ขา
-</div>
-
-<div class="small mt-1">
-วางเท้าตามธรรมชาติและไม่บังกัน
-</div>
-
-</div>
-
-</div>
-
-
-<div class="mt-7 p-5 bg-slate-900 text-white rounded-2xl">
-
-<div class="font-bold">
-📷 การจัดกล้อง
-</div>
-
-<div class="text-sm text-slate-300 mt-2 leading-7">
-
-วางกล้องให้อยู่ตรงกลางด้านหน้า
-ถอยกล้องจนเห็นร่างกายครบ
-โดยเฉพาะตั้งแต่สะโพกถึงเท้า
-
-</div>
-
-</div>
-
-
-<div class="flex justify-between mt-7">
-
-<button class="btn btn-light"
-onclick="showPage('profile')">
-
-ย้อนกลับ
-
+<button class="btn btn-light" onclick="go('profile')">
+← กลับ
 </button>
 
-
-<button class="btn btn-primary"
-onclick="openCamera()">
-
-เปิดกล้อง →
-
+<button class="btn btn-primary" onclick="nextCamera()">
+ถัดไป →
 </button>
 
 </div>
@@ -737,124 +816,84 @@ onclick="openCamera()">
 
 <section id="camera" class="page">
 
-<div class="max-w-6xl mx-auto">
+<div class="card" style="padding:20px">
 
+<div style="margin-bottom:18px">
 
-<div class="card overflow-hidden">
+<span class="badge blue-badge">STEP 03</span>
 
-
-<div class="gradient text-white p-6">
-
-<div class="flex flex-col md:flex-row justify-between gap-4 md:items-center">
-
-<div>
-
-<div class="text-blue-200 text-xs">
-STEP 03
-</div>
-
-<h2 class="text-2xl font-bold mt-1">
+<h2 style="margin:8px 0">
 AI Standing Camera
 </h2>
 
-</div>
-
-
-<div class="flex gap-2">
-
-<span id="cameraStatus"
-class="badge bg-amber-400/20 text-amber-200 border border-amber-300/30">
-กำลังเปิดกล้อง
-</span>
+<p style="font-size:13px;color:#6b778b">
+ยืนให้เห็นตั้งแต่สะโพกลงไปจนถึงเท้าทั้งสองข้าง
+</p>
 
 </div>
-
-</div>
-
-</div>
-
-
-<div class="p-5">
-
 
 <div class="camera-layout">
 
-
-<!-- CAMERA AREA -->
-
 <div class="camera-box">
 
-<video id="cameraVideo"
+<video id="video"
 autoplay
 playsinline
-muted>
-</video>
+muted></video>
 
-<canvas id="cameraOverlay">
-</canvas>
+<canvas id="overlay"></canvas>
 
-<div class="camera-guide">
-</div>
+<div class="guide"></div>
 
-<div class="guide-text">
-จัดให้เห็นสะโพกถึงเท้าทั้งสองข้าง
+<div class="guide-label">
+จัดให้เห็นสะโพก → เข่า → ข้อเท้า → เท้า
 </div>
 
 </div>
-
-
-<!-- AI SIDE PANEL -->
 
 <div class="ai-panel">
 
-
 <div>
 
-<div class="ai-title">
+<div class="ai-small">
 LIVE AI ANALYSIS
 </div>
 
-<div class="font-bold text-lg mt-1">
-Knee Angle
-</div>
-
+<h3 style="margin-top:5px">
+KNEE ANGLE
+</h3>
 
 <div class="angle-card">
 
 <div class="angle-label">
-🦵 เข่าซ้าย
+เข่าซ้าย
 </div>
 
-<div id="liveLeftAngle"
-class="angle-value">
+<div id="leftLive" class="angle">
 —
 </div>
 
 </div>
 
-
 <div class="angle-card">
 
 <div class="angle-label">
-🦵 เข่าขวา
+เข่าขวา
 </div>
 
-<div id="liveRightAngle"
-class="angle-value">
+<div id="rightLive" class="angle">
 —
 </div>
 
 </div>
 
-
 <div class="angle-card">
 
 <div class="angle-label">
-📊 คุณภาพการตรวจจับ
+คุณภาพการตรวจจับ
 </div>
 
-<div id="liveQuality"
-class="angle-value text-2xl">
+<div id="qualityLive" class="angle">
 —
 </div>
 
@@ -862,62 +901,32 @@ class="angle-value text-2xl">
 
 </div>
 
-
-<div class="panel-status"
-id="poseStatus">
-
-กำลังค้นหาตำแหน่งร่างกาย...
-
+<div id="cameraStatus" class="camera-status">
+กำลังเตรียมกล้อง...
 </div>
 
 </div>
 
 </div>
 
+<div class="camera-controls">
 
-<!-- CONTROLS -->
-
-<div class="flex flex-wrap justify-center gap-3 mt-5">
-
-
-<button class="btn btn-light"
-onclick="stopCamera();showPage('posture')">
-
-ย้อนกลับ
-
+<button class="btn btn-light" onclick="stopCamera();go('symptoms')">
+← กลับ
 </button>
 
-
-<button id="switchCameraBtn"
+<button id="switchBtn"
 class="btn btn-light"
-onclick="switchCamera()"
-disabled>
-
+onclick="switchCamera()">
 🔄 สลับกล้อง
-
 </button>
-
 
 <button id="captureBtn"
-class="btn btn-gold px-8"
+class="btn btn-gold"
 onclick="capturePhoto()"
 disabled>
-
 📷 ถ่ายภาพ
-
 </button>
-
-</div>
-
-
-<div class="text-center small mt-4">
-
-แนะนำให้ใช้กล้องที่มองเห็นร่างกายตั้งแต่สะโพกถึงเท้า
-และให้แสงสว่างเพียงพอ
-
-</div>
-
-</div>
 
 </div>
 
@@ -930,38 +939,15 @@ disabled>
 
 <section id="analysis" class="page">
 
-<div class="max-w-4xl mx-auto card p-8 text-center">
+<div class="card loading">
 
-<div class="gradient text-white rounded-3xl p-8">
+<div class="spinner"></div>
 
-<div class="text-blue-200 text-sm">
-KNEEAI COMPUTER VISION
-</div>
+<h2>AI กำลังวิเคราะห์ภาพ</h2>
 
-<div id="analysisTitle"
-class="text-3xl font-bold mt-3">
-
-กำลังวิเคราะห์ภาพ
-
-</div>
-
-
-<div class="mt-8">
-
-<div class="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto">
-</div>
-
-</div>
-
-
-<p id="analysisText"
-class="text-blue-100 text-sm mt-6">
-
-กำลังตรวจจับจุดสะโพก เข่า และข้อเท้า...
-
+<p id="analysisText" style="color:#718096">
+กำลังตรวจจับตำแหน่งสะโพก เข่า และข้อเท้า...
 </p>
-
-</div>
 
 </div>
 
@@ -972,218 +958,108 @@ class="text-blue-100 text-sm mt-6">
 
 <section id="result" class="page">
 
-<div class="max-w-6xl mx-auto">
-
-
-<div class="flex flex-col md:flex-row justify-between gap-4 items-start mb-6">
+<div style="display:flex;justify-content:space-between;gap:15px;align-items:start;margin-bottom:20px">
 
 <div>
 
-<div class="badge bg-blue-50 text-blue-700">
-✓ วิเคราะห์จากภาพที่ถ่ายจริง
-</div>
+<span class="badge blue-badge">
+AI ANALYSIS COMPLETE
+</span>
 
-<h2 class="text-3xl font-bold mt-3">
-ผลการประเมินจาก AI
-</h2>
+<h2>ผลการประเมิน</h2>
 
-<p id="resultPatient"
-class="small mt-1">
-</p>
+<div id="resultPatient" style="font-size:13px;color:#718096"></div>
 
 </div>
 
-
-<button class="btn btn-primary"
-onclick="printReport()">
-
+<button class="btn btn-primary" onclick="window.print()">
 🖨️ พิมพ์รายงาน
-
 </button>
 
 </div>
 
+<div class="result-grid">
 
-<div class="grid lg:grid-cols-2 gap-6">
+<div class="card" style="padding:18px">
 
+<h3>ภาพที่ AI วิเคราะห์</h3>
 
-<!-- IMAGE -->
-
-<div class="card p-5">
-
-<div class="font-bold mb-4">
-ภาพที่ AI วิเคราะห์
+<div class="result-image">
+<canvas id="resultCanvas"></canvas>
 </div>
 
-
-<div class="result-image-wrap">
-
-<canvas id="resultCanvas">
-</canvas>
-
-</div>
-
-
-<div class="small mt-3">
-จุดสีเหลือง = landmark ที่ AI ตรวจพบ
-เส้นสีเขียว = แนวขา
+<div style="font-size:11px;color:#718096;margin-top:8px">
+🟡 จุด AI &nbsp; 🟢 แนวกระดูกขา &nbsp; ตัวเลข = มุมที่คำนวณได้
 </div>
 
 </div>
 
+<div>
 
-<!-- DATA -->
-
-<div class="space-y-5">
-
-
-<div class="grid grid-cols-2 gap-4">
-
+<div class="stat-grid">
 
 <div class="stat">
-
-<div class="small">
-มุมเข่าซ้าย
+<div class="stat-label">มุมเข่าซ้าย</div>
+<div id="leftResult" class="stat-value">—</div>
 </div>
-
-<div id="leftAngle"
-class="stat-value">
-—
-</div>
-
-<div class="small">
-องศา
-</div>
-
-</div>
-
 
 <div class="stat">
-
-<div class="small">
-มุมเข่าขวา
+<div class="stat-label">มุมเข่าขวา</div>
+<div id="rightResult" class="stat-value">—</div>
 </div>
-
-<div id="rightAngle"
-class="stat-value">
-—
-</div>
-
-<div class="small">
-องศา
-</div>
-
-</div>
-
 
 <div class="stat">
-
-<div class="small">
-ความสมมาตร
+<div class="stat-label">ส่วนต่างมุม</div>
+<div id="differenceResult" class="stat-value">—</div>
 </div>
-
-<div id="symmetry"
-class="stat-value text-2xl">
-—
-</div>
-
-</div>
-
 
 <div class="stat">
-
-<div class="small">
-คุณภาพภาพ
-</div>
-
-<div id="quality"
-class="stat-value text-2xl">
-—
+<div class="stat-label">BMI</div>
+<div id="bmiResult" class="stat-value">—</div>
 </div>
 
 </div>
 
-</div>
+<div id="overallBox" class="result-box">
 
+<strong id="overallTitle">—</strong>
 
-<div id="overallBox"
-class="p-5 rounded-2xl border">
-
-<div class="small">
-ผลการคัดกรองเบื้องต้น
-</div>
-
-<div id="overall"
-class="text-xl font-bold mt-1">
-—
-</div>
-
-<p id="overallDetail"
-class="small mt-2">
-</p>
+<div id="overallDetail" style="font-size:12px;margin-top:7px;line-height:1.8"></div>
 
 </div>
 
+<div class="card" style="padding:18px;margin-top:15px">
 
-<div class="card p-5">
+<h3>ข้อมูลประกอบ</h3>
 
-<div class="font-bold">
-📊 รายละเอียดการวิเคราะห์
+<div class="detail-row">
+<span>อาการจากแบบสอบถาม</span>
+<strong id="symptomScore">—</strong>
 </div>
 
-
-<div class="space-y-3 mt-4 text-sm">
-
-
-<div class="flex justify-between border-b pb-3">
-
-<span>
-ตรวจพบสะโพก
-</span>
-
-<strong id="hipStatus">
-—
-</strong>
-
+<div class="detail-row">
+<span>คุณภาพภาพ</span>
+<strong id="qualityResult">—</strong>
 </div>
 
-
-<div class="flex justify-between border-b pb-3">
-
-<span>
-ตรวจพบเข่า
-</span>
-
-<strong id="kneeStatus">
-—
-</strong>
-
+<div class="detail-row">
+<span>ตรวจพบสะโพก</span>
+<strong>✓</strong>
 </div>
 
-
-<div class="flex justify-between border-b pb-3">
-
-<span>
-ตรวจพบข้อเท้า
-</span>
-
-<strong id="ankleStatus">
-—
-</strong>
-
+<div class="detail-row">
+<span>ตรวจพบเข่า</span>
+<strong>✓</strong>
 </div>
 
+<div class="detail-row">
+<span>ตรวจพบข้อเท้า</span>
+<strong>✓</strong>
+</div>
 
-<div class="flex justify-between">
-
-<span>
-ส่วนต่างมุมซ้าย–ขวา
-</span>
-
-<strong id="angleDiff">
-—
-</strong>
-
+<div class="detail-row">
+<span>รหัสผู้รับการประเมิน</span>
+<strong id="resultId">—</strong>
 </div>
 
 </div>
@@ -1192,140 +1068,103 @@ class="small mt-2">
 
 </div>
 
-</div>
+<div style="text-align:center;margin-top:25px">
 
-
-<div class="flex justify-center gap-3 mt-7">
-
-<button class="btn btn-light"
-onclick="restart()">
-
+<button class="btn btn-light" onclick="restart()">
 🔄 ประเมินใหม่
-
 </button>
-
-
-<button class="btn btn-primary"
-onclick="showPage('doctor')">
-
-👨‍⚕️ Doctor Portal
-
-</button>
-
-</div>
 
 </div>
 
 </section>
 
 
-<!-- DOCTOR -->
+<!-- DOCTOR LOGIN -->
 
 <section id="doctor" class="page">
 
-<div class="max-w-6xl mx-auto">
+<div id="doctorLogin" class="login card">
 
-<div class="gradient text-white rounded-3xl p-7">
+<div style="text-align:center">
 
-<div class="text-blue-200 text-xs">
-HOSPITAL PORTAL
+<div class="logo-icon" style="margin:auto">
+K
 </div>
 
-<h2 class="text-3xl font-bold mt-2">
-Doctor Dashboard
-</h2>
+<h2>Doctor Portal</h2>
 
-<p class="text-blue-100 text-sm mt-2">
-ข้อมูลการประเมินล่าสุดจากระบบ KneeAI
+<p style="font-size:12px;color:#718096">
+กรุณาเข้าสู่ระบบก่อนเข้าถึงข้อมูลผู้รับการประเมิน
 </p>
 
 </div>
 
+<div style="margin-top:20px">
 
-<div class="grid md:grid-cols-4 gap-4 mt-6">
+<label>รหัสแพทย์</label>
+<input id="doctorUser" placeholder="Doctor ID">
 
+<label style="margin-top:15px">
+รหัสผ่าน
+</label>
+<input id="doctorPass" type="password" placeholder="Password">
 
-<div class="stat">
-
-<div class="small">
-ผู้รับการประเมิน
-</div>
-
-<div id="doctorName"
-class="font-bold text-lg mt-2">
-—
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="small">
-มุมซ้าย
-</div>
-
-<div id="doctorLeft"
-class="stat-value">
-—
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="small">
-มุมขวา
-</div>
-
-<div id="doctorRight"
-class="stat-value">
-—
-</div>
-
-</div>
-
-
-<div class="stat">
-
-<div class="small">
-สถานะ
-</div>
-
-<div id="doctorStatus"
-class="font-bold text-lg mt-2">
-ยังไม่มีข้อมูล
-</div>
-
-</div>
-
-</div>
-
-
-<div class="card p-7 mt-6">
-
-<h3 class="font-bold text-lg">
-ข้อเสนอแนะสำหรับแพทย์
-</h3>
-
-<p class="small leading-7 mt-3">
-
-ผลจากระบบเป็นข้อมูลช่วยคัดกรองเบื้องต้น
-ควรพิจารณาร่วมกับประวัติ อาการ การตรวจร่างกาย
-และการตรวจทางการแพทย์อื่น ๆ ก่อนการวินิจฉัย
-
-</p>
-
-</div>
-
-
-<button class="btn btn-light mt-6"
-onclick="showPage('home')">
-
-← กลับหน้าแรก
-
+<button class="btn btn-primary"
+style="width:100%;margin-top:20px"
+onclick="doctorLogin()">
+🔐 เข้าสู่ระบบ
 </button>
+
+<div id="loginError"
+style="color:#b91c1c;font-size:12px;text-align:center;margin-top:10px">
+</div>
+
+<div style="margin-top:20px;padding:12px;background:#fff7ed;border-radius:12px;font-size:11px;color:#9a3412">
+Prototype Demo<br>
+Doctor ID: <b>doctor</b><br>
+Password: <b>kneeai2026</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div id="doctorDashboard" class="hidden">
+
+<div class="card" style="padding:25px">
+
+<div style="display:flex;justify-content:space-between;align-items:center;gap:15px">
+
+<div>
+<span class="badge blue-badge">
+SECURE DOCTOR PORTAL
+</span>
+<h2>Patient Dashboard</h2>
+</div>
+
+<button class="btn btn-danger" onclick="doctorLogout()">
+ออกจากระบบ
+</button>
+
+</div>
+
+<div class="search-box">
+
+<input id="searchPatient"
+placeholder="ค้นหาด้วยรหัส เช่น KN-2026-0001 หรือชื่อ">
+
+<button class="btn btn-primary" onclick="searchPatients()">
+🔎 ค้นหา
+</button>
+
+</div>
+
+<div id="searchResults"></div>
+
+<div id="patientDetail" class="patient-detail hidden"></div>
+
+</div>
 
 </div>
 
@@ -1338,107 +1177,171 @@ onclick="showPage('home')">
 
 /* =========================================================
    KNEEAI V10
-   PHOTO + LIVE POSE + CAMERA SWITCH
 ========================================================= */
 
+const state = {
 
-const state={
+  patient:{},
 
-    patient:{
-        name:"",
-        age:"",
-        gender:""
-    },
+  symptoms:[],
 
-    stream:null,
+  bmi:null,
 
-    pose:null,
+  cameraMode:"user",
 
-    cameraMode:"user",
+  stream:null,
 
-    cameraRunning:false,
+  running:false,
 
-    liveLandmarks:null,
+  pose:null,
 
-    capturedImage:null,
+  captured:null,
 
-    result:{
-        leftAngle:null,
-        rightAngle:null,
-        angleDifference:null,
-        symmetry:null,
-        quality:null,
-        status:null
-    }
+  landmarks:null,
+
+  result:null
 
 };
+
+
+/* =========================================================
+   QUESTIONS
+========================================================= */
+
+const QUESTIONS = [
+
+ "มีอาการปวดบริเวณข้อเข่าหรือไม่?",
+
+ "มีอาการเข่าฝืดหรือตึง โดยเฉพาะหลังตื่นนอนหรือไม่?",
+
+ "มีอาการปวดหรือไม่สบายเมื่อเดินหรือยืนเป็นเวลานานหรือไม่?",
+
+ "มีอาการปวดเมื่อขึ้นหรือลงบันไดหรือไม่?",
+
+ "เคยมีอาการเข่าบวม หรือรู้สึกว่าข้อเข่าบวมผิดปกติหรือไม่?",
+
+ "มีเสียงดังกรอบแกรบหรือเสียงในข้อเข่าขณะเคลื่อนไหวหรือไม่?",
+
+ "รู้สึกว่าข้อเข่าไม่มั่นคงหรือเหมือนจะทรุดหรือไม่?",
+
+ "อาการข้อเข่าส่งผลต่อการใช้ชีวิตประจำวันหรือไม่?"
+
+];
+
+const OPTIONS=[
+ "ไม่เลย",
+ "เล็กน้อย",
+ "ปานกลาง",
+ "มาก"
+];
 
 
 /* =========================================================
    PAGE
 ========================================================= */
 
-function showPage(id){
+function go(id){
 
-    document.querySelectorAll(".page")
-    .forEach(p=>{
-        p.classList.remove("active");
-    });
+  document.querySelectorAll(".page")
+  .forEach(x=>x.classList.remove("active"));
 
-    document.getElementById(id)
-    .classList.add("active");
+  document.getElementById(id)
+  .classList.add("active");
 
-    updateSteps(id);
+  updateSteps(id);
 
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 
 }
 
 
 function updateSteps(id){
 
-    const map={
-        profile:1,
-        posture:2,
-        camera:3,
-        analysis:3,
-        result:4
-    };
+  let n=1;
 
-    const current=map[id]||1;
+  if(id==="symptoms") n=2;
+  if(id==="camera") n=3;
+  if(id==="analysis") n=3;
+  if(id==="result") n=4;
 
-    for(let i=1;i<=4;i++){
+  for(let i=1;i<=4;i++){
 
-        const el=document.getElementById(
-            "step"+i+"Dot"
-        );
+    const e=document.getElementById("s"+i);
 
-        el.className="step-number";
+    e.className="step-dot";
 
-        if(i<current){
-
-            el.classList.add("step-done");
-
-            el.textContent="✓";
-
-        }else if(i===current){
-
-            el.classList.add("step-active");
-
-            el.textContent=i;
-
-        }else{
-
-            el.classList.add("step-idle");
-
-            el.textContent=i;
-
-        }
-
+    if(i<n){
+      e.classList.add("done");
+      e.textContent="✓";
     }
+    else if(i===n){
+      e.classList.add("active");
+      e.textContent=i;
+    }
+    else{
+      e.textContent=i;
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   BMI
+========================================================= */
+
+function calculateBMI(){
+
+  const weight=parseFloat(
+    document.getElementById("weight").value
+  );
+
+  const height=parseFloat(
+    document.getElementById("height").value
+  );
+
+  if(!weight || !height){
+    state.bmi=null;
+
+    document.getElementById("bmi").textContent="—";
+    document.getElementById("bmiText").textContent=
+      "กรอกน้ำหนักและส่วนสูง";
+
+    return;
+  }
+
+  const h=height/100;
+
+  const bmi=weight/(h*h);
+
+  state.bmi=bmi;
+
+  document.getElementById("bmi")
+  .textContent=bmi.toFixed(1);
+
+  let text="";
+
+  if(bmi<18.5)
+    text="อยู่ในช่วงน้ำหนักน้อย";
+
+  else if(bmi<23)
+    text="อยู่ในช่วงปกติ";
+
+  else if(bmi<25)
+    text="เริ่มมีน้ำหนักเกิน";
+
+  else if(bmi<30)
+    text="น้ำหนักเกิน";
+
+  else
+    text="อ้วน";
+
+  document.getElementById("bmiText")
+  .textContent=text;
 
 }
 
@@ -1447,780 +1350,467 @@ function updateSteps(id){
    PROFILE
 ========================================================= */
 
-function goPosture(){
+function nextSymptoms(){
 
-    const name=
-        document.getElementById("name")
-        .value.trim();
+  const name=document.getElementById("patientName").value.trim();
+  const id=document.getElementById("patientId").value.trim();
+  const age=document.getElementById("age").value;
+  const gender=document.getElementById("gender").value;
+  const weight=document.getElementById("weight").value;
+  const height=document.getElementById("height").value;
 
-    const age=
-        document.getElementById("age")
-        .value;
+  if(!name || !id || !age || !gender || !weight || !height){
 
-    const gender=
-        document.getElementById("gender")
-        .value;
+    alert("กรุณากรอกข้อมูลให้ครบ");
 
-    if(!name){
+    return;
+  }
 
-        alert("กรุณากรอกชื่อ–นามสกุล");
+  calculateBMI();
 
-        return;
-    }
+  state.patient={
+    name,
+    id,
+    age,
+    gender,
+    weight,
+    height,
+    bmi:state.bmi
+  };
 
-    if(!age){
+  renderQuestions();
 
-        alert("กรุณากรอกอายุ");
-
-        return;
-    }
-
-    if(!gender){
-
-        alert("กรุณาเลือกเพศ");
-
-        return;
-    }
-
-    state.patient={
-        name,
-        age,
-        gender
-    };
-
-    showPage("posture");
+  go("symptoms");
 
 }
 
 
 /* =========================================================
-   INIT MEDIAPIPE
+   QUESTIONS
+========================================================= */
+
+function renderQuestions(){
+
+  const box=document.getElementById("questions");
+
+  box.innerHTML="";
+
+  QUESTIONS.forEach((q,i)=>{
+
+    const div=document.createElement("div");
+
+    div.className="question";
+
+    div.innerHTML=`
+
+      <div class="question-title">
+      ${i+1}. ${q}
+      </div>
+
+      <div class="options">
+
+        ${OPTIONS.map((o,j)=>`
+
+          <div
+          class="option"
+          data-q="${i}"
+          data-v="${j}"
+          onclick="selectOption(${i},${j},this)">
+          ${o}
+          </div>
+
+        `).join("")}
+
+      </div>
+
+    `;
+
+    box.appendChild(div);
+
+  });
+
+}
+
+
+function selectOption(q,v,el){
+
+  document.querySelectorAll(
+    `.option[data-q="${q}"]`
+  ).forEach(x=>x.classList.remove("selected"));
+
+  el.classList.add("selected");
+
+  state.symptoms[q]=v;
+
+}
+
+
+function nextCamera(){
+
+  if(state.symptoms.length<QUESTIONS.length){
+
+    alert("กรุณาตอบแบบสอบถามให้ครบทุกข้อ");
+
+    return;
+  }
+
+  openCamera();
+
+}
+
+
+/* =========================================================
+   MEDIAPIPE
 ========================================================= */
 
 async function initPose(){
 
-    if(state.pose){
-        return;
-    }
+  if(state.pose) return;
 
-    state.pose=new Pose({
+  state.pose=new Pose({
 
-        locateFile:(file)=>
-            `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+    locateFile:file =>
+      `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
 
-    });
+  });
 
+  state.pose.setOptions({
 
-    state.pose.setOptions({
+    modelComplexity:2,
 
-        modelComplexity:2,
+    smoothLandmarks:true,
 
-        smoothLandmarks:true,
+    enableSegmentation:false,
 
-        enableSegmentation:false,
+    minDetectionConfidence:.55,
 
-        smoothSegmentation:false,
+    minTrackingConfidence:.55
 
-        minDetectionConfidence:.55,
+  });
 
-        minTrackingConfidence:.55
+  state.pose.onResults(results=>{
 
-    });
+    if(state.running)
+      liveResults(results);
 
+    else
+      photoResults(results);
 
-    state.pose.onResults(
-        handleLivePose
-    );
+  });
 
 }
 
 
 /* =========================================================
-   OPEN CAMERA
+   CAMERA
 ========================================================= */
 
 async function openCamera(){
 
-    showPage("camera");
+  go("camera");
 
-    await initPose();
+  await initPose();
 
-    await startCamera();
+  await startCamera();
 
 }
 
-
-/* =========================================================
-   START CAMERA
-========================================================= */
 
 async function startCamera(){
 
-    stopCamera(false);
+  stopCamera(false);
 
-    const video=
-        document.getElementById("cameraVideo");
+  const video=document.getElementById("video");
 
-    const overlay=
-        document.getElementById("cameraOverlay");
+  const status=document.getElementById("cameraStatus");
 
-    const status=
-        document.getElementById("cameraStatus");
+  const capture=document.getElementById("captureBtn");
 
-    const message=
-        document.getElementById("poseStatus");
+  const switchBtn=document.getElementById("switchBtn");
 
-    const capture=
-        document.getElementById("captureBtn");
+  capture.disabled=true;
+  switchBtn.disabled=true;
 
-    const switchBtn=
-        document.getElementById("switchCameraBtn");
+  status.textContent="กำลังเปิดกล้อง...";
 
+  try{
+
+    state.stream=await navigator.mediaDevices.getUserMedia({
+
+      video:{
+        facingMode:{ideal:state.cameraMode},
+        width:{ideal:1280},
+        height:{ideal:720}
+      },
+
+      audio:false
+
+    });
+
+    video.srcObject=state.stream;
+
+    await video.play();
+
+    state.running=true;
+
+    capture.disabled=false;
+    switchBtn.disabled=false;
 
     status.textContent=
-        "กำลังเปิดกล้อง";
+      state.cameraMode==="environment"
+      ?"กล้องหลังพร้อม — จัดท่าให้เห็นขาทั้งสองข้าง"
+      :"กล้องหน้าพร้อม — จัดท่าให้เห็นขาทั้งสองข้าง";
+
+    poseLoop();
+
+  }
+  catch(err){
+
+    console.error(err);
+
+    status.textContent=
+      "เปิดกล้องไม่ได้ กรุณาอนุญาต Camera";
+
+  }
+
+}
 
 
-    capture.disabled=true;
+async function poseLoop(){
 
-    switchBtn.disabled=true;
+  const video=document.getElementById("video");
 
+  if(!state.running) return;
+
+  if(
+    video.readyState>=2 &&
+    !state.poseBusy
+  ){
+
+    state.poseBusy=true;
 
     try{
-
-        state.stream=
-            await navigator.mediaDevices
-            .getUserMedia({
-
-                video:{
-                    facingMode:{
-                        ideal:state.cameraMode
-                    },
-
-                    width:{
-                        ideal:1280
-                    },
-
-                    height:{
-                        ideal:720
-                    }
-                },
-
-                audio:false
-
-            });
-
-
-        video.srcObject=
-            state.stream;
-
-        await video.play();
-
-
-        /*
-           Overlay size
-        */
-
-        resizeOverlay();
-
-
-        state.cameraRunning=true;
-
-
-        status.textContent=
-            state.cameraMode==="environment"
-            ?"กล้องหลังพร้อม"
-            :"กล้องหน้าพร้อม";
-
-
-        status.className=
-            "badge bg-emerald-400/20 text-emerald-200 border border-emerald-300/30";
-
-
-        message.textContent=
-            "กำลังค้นหาสะโพก เข่า และข้อเท้า...";
-
-
-        capture.disabled=false;
-
-        switchBtn.disabled=false;
-
-
-        startPoseLoop();
-
-
-    }catch(error){
-
-        console.error(error);
-
-        status.textContent=
-            "เปิดกล้องไม่สำเร็จ";
-
-        message.textContent=
-            "ไม่สามารถเปิดกล้องได้ กรุณาอนุญาต Camera ใน Browser";
-
-
-        capture.disabled=true;
-
-        switchBtn.disabled=true;
-
+      await state.pose.send({image:video});
     }
+    catch(e){
+      console.warn(e);
+    }
+
+    state.poseBusy=false;
+
+  }
+
+  requestAnimationFrame(poseLoop);
 
 }
 
-
-/* =========================================================
-   CAMERA LOOP
-========================================================= */
-
-let poseBusy=false;
-
-
-async function startPoseLoop(){
-
-    const video=
-        document.getElementById("cameraVideo");
-
-
-    async function loop(){
-
-        if(!state.cameraRunning){
-            return;
-        }
-
-
-        if(
-            video.readyState>=2 &&
-            !poseBusy
-        ){
-
-            poseBusy=true;
-
-            try{
-
-                await state.pose.send({
-                    image:video
-                });
-
-            }catch(error){
-
-                console.warn(
-                    "Pose frame error",
-                    error
-                );
-
-            }
-
-            poseBusy=false;
-
-        }
-
-
-        requestAnimationFrame(loop);
-
-    }
-
-
-    requestAnimationFrame(loop);
-
-}
-
-
-/* =========================================================
-   SWITCH CAMERA
-========================================================= */
 
 async function switchCamera(){
 
-    if(!state.cameraRunning){
-        return;
-    }
+  state.cameraMode=
+    state.cameraMode==="user"
+    ?"environment"
+    :"user";
 
-    state.cameraMode=
-        state.cameraMode==="user"
-        ?"environment"
-        :"user";
+  await startCamera();
 
-
-    const status=
-        document.getElementById(
-            "cameraStatus"
-        );
-
-    status.textContent=
-        "กำลังสลับกล้อง...";
+}
 
 
-    await startCamera();
+function stopCamera(){
+
+  state.running=false;
+
+  if(state.stream){
+
+    state.stream.getTracks()
+    .forEach(track=>track.stop());
+
+    state.stream=null;
+
+  }
+
+  const video=document.getElementById("video");
+
+  if(video)
+    video.srcObject=null;
 
 }
 
 
 /* =========================================================
-   STOP CAMERA
+   LANDMARK
 ========================================================= */
 
-function stopCamera(updateUI=true){
+function valid(p){
 
-    state.cameraRunning=false;
-
-    if(state.stream){
-
-        state.stream
-        .getTracks()
-        .forEach(track=>{
-            track.stop();
-        });
-
-        state.stream=null;
-
-    }
+  return p &&
+    (p.visibility ?? 1) >= .4;
+}
 
 
-    if(updateUI){
+function angle(a,b,c){
 
-        const video=
-            document.getElementById(
-                "cameraVideo"
-            );
+  const abx=a.x-b.x;
+  const aby=a.y-b.y;
 
-        if(video){
-            video.srcObject=null;
-        }
+  const cbx=c.x-b.x;
+  const cby=c.y-b.y;
 
-    }
+  const dot=abx*cbx+aby*cby;
+
+  const mag1=Math.sqrt(abx*abx+aby*aby);
+  const mag2=Math.sqrt(cbx*cbx+cby*cby);
+
+  if(!mag1 || !mag2) return null;
+
+  let cos=dot/(mag1*mag2);
+
+  cos=Math.max(-1,Math.min(1,cos));
+
+  return Math.acos(cos)*180/Math.PI;
 
 }
 
 
 /* =========================================================
-   RESIZE OVERLAY
+   LIVE
 ========================================================= */
 
-function resizeOverlay(){
+function liveResults(results){
 
-    const video=
-        document.getElementById(
-            "cameraVideo"
-        );
+  const canvas=document.getElementById("overlay");
+  const video=document.getElementById("video");
 
-    const canvas=
-        document.getElementById(
-            "cameraOverlay"
-        );
+  canvas.width=video.videoWidth;
+  canvas.height=video.videoHeight;
 
+  const ctx=canvas.getContext("2d");
 
-    if(
-        !video.videoWidth ||
-        !video.videoHeight
-    ){
-        return;
-    }
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
+  if(!results.poseLandmarks){
 
-    canvas.width=
-        video.videoWidth;
+    updateLive(null,null,0,"ยังไม่พบร่างกาย");
 
-    canvas.height=
-        video.videoHeight;
+    return;
+  }
 
-}
+  const lm=results.poseLandmarks;
 
+  const Lh=lm[23];
+  const Lk=lm[25];
+  const La=lm[27];
 
-/* =========================================================
-   LANDMARK HELPERS
-========================================================= */
+  const Rh=lm[24];
+  const Rk=lm[26];
+  const Ra=lm[28];
 
-function visible(p){
+  const req=[Lh,Lk,La,Rh,Rk,Ra];
 
-    return p &&
-        typeof p.x==="number" &&
-        typeof p.y==="number" &&
-        (p.visibility??1)>=.40;
+  const detected=req.filter(valid).length;
 
-}
+  const quality=Math.round(
+    req.reduce((s,p)=>s+(p.visibility||0),0)
+    /req.length*100
+  );
 
+  const left=
+    valid(Lh)&&valid(Lk)&&valid(La)
+    ?angle(Lh,Lk,La):null;
 
-function calculateAngle(a,b,c){
+  const right=
+    valid(Rh)&&valid(Rk)&&valid(Ra)
+    ?angle(Rh,Rk,Ra):null;
 
-    const ab={
-        x:a.x-b.x,
-        y:a.y-b.y
-    };
+  drawSkeleton(ctx,lm);
 
-    const cb={
-        x:c.x-b.x,
-        y:c.y-b.y
-    };
-
-
-    const dot=
-        ab.x*cb.x+
-        ab.y*cb.y;
-
-
-    const mag1=
-        Math.sqrt(
-            ab.x*ab.x+
-            ab.y*ab.y
-        );
-
-
-    const mag2=
-        Math.sqrt(
-            cb.x*cb.x+
-            cb.y*cb.y
-        );
-
-
-    if(!mag1||!mag2){
-        return null;
-    }
-
-
-    let cos=
-        dot/(mag1*mag2);
-
-
-    cos=
-        Math.max(
-            -1,
-            Math.min(1,cos)
-        );
-
-
-    return Math.acos(cos)
-        *180/Math.PI;
-
-}
-
-
-/* =========================================================
-   LIVE POSE
-========================================================= */
-
-function handleLivePose(results){
-
-    if(!state.cameraRunning){
-        return;
-    }
-
-
-    const canvas=
-        document.getElementById(
-            "cameraOverlay"
-        );
-
-    const video=
-        document.getElementById(
-            "cameraVideo"
-        );
-
-    const ctx=
-        canvas.getContext("2d");
-
-
-    resizeOverlay();
-
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    if(!results.poseLandmarks){
-
-        state.liveLandmarks=null;
-
-        updateLivePanel(
-            null,
-            null,
-            0,
-            "ยังไม่พบร่างกาย"
-        );
-
-        return;
-    }
-
-
-    state.liveLandmarks=
-        results.poseLandmarks;
-
-
-    const lm=
-        results.poseLandmarks;
-
-
-    const leftHip=lm[23];
-    const leftKnee=lm[25];
-    const leftAnkle=lm[27];
-
-    const rightHip=lm[24];
-    const rightKnee=lm[26];
-    const rightAnkle=lm[28];
-
-
-    const required=[
-        leftHip,
-        leftKnee,
-        leftAnkle,
-        rightHip,
-        rightKnee,
-        rightAnkle
-    ];
-
-
-    const detected=
-        required.filter(
-            visible
-        ).length;
-
-
-    const quality=
-        Math.round(
-            detected/
-            required.length*
-            100
-        );
-
-
-    let leftAngle=null;
-    let rightAngle=null;
-
-
-    if(
-        visible(leftHip)&&
-        visible(leftKnee)&&
-        visible(leftAnkle)
-    ){
-
-        leftAngle=
-            calculateAngle(
-                leftHip,
-                leftKnee,
-                leftAnkle
-            );
-
-    }
-
-
-    if(
-        visible(rightHip)&&
-        visible(rightKnee)&&
-        visible(rightAnkle)
-    ){
-
-        rightAngle=
-            calculateAngle(
-                rightHip,
-                rightKnee,
-                rightAnkle
-            );
-
-    }
-
-
-    drawLiveSkeleton(
-        ctx,
-        lm
-    );
-
-
-    updateLivePanel(
-        leftAngle,
-        rightAngle,
-        quality,
-        detected===required.length
-        ?"ตรวจพบขาทั้งสองข้าง"
-        :"กำลังค้นหาจุดข้อต่อ..."
-    );
-
-}
-
-
-/* =========================================================
-   DRAW LIVE SKELETON
-========================================================= */
-
-function drawLiveSkeleton(
-    ctx,
-    lm
-){
-
-    /*
-       กล้องหน้าเป็น mirror ใน CSS-like
-       ดังนั้นใช้ x ปกติของ video
-       และวาด overlay ตาม coordinate ของ video
-    */
-
-
-    function p(index){
-
-        return {
-            x:lm[index].x*ctx.canvas.width,
-            y:lm[index].y*ctx.canvas.height
-        };
-
-    }
-
-
-    const connections=[
-
-        [23,25],
-        [25,27],
-
-        [24,26],
-        [26,28],
-
-        [27,31],
-        [28,32],
-
-        [23,24],
-
-        [27,28]
-
-    ];
-
-
-    ctx.lineWidth=
-        Math.max(
-            4,
-            ctx.canvas.width/220
-        );
-
-    ctx.strokeStyle=
-        "#22c55e";
-
-
-    connections.forEach(pair=>{
-
-        if(
-            !visible(lm[pair[0]])||
-            !visible(lm[pair[1]])
-        ){
-            return;
-        }
-
-
-        const a=p(pair[0]);
-        const b=p(pair[1]);
-
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            a.x,
-            a.y
-        );
-
-        ctx.lineTo(
-            b.x,
-            b.y
-        );
-
-        ctx.stroke();
-
-    });
-
-
-    /*
-       Only hip → knee → ankle → foot
-    */
-
-    const joints=[
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        31,
-        32
-    ];
-
-
-    joints.forEach(index=>{
-
-        if(!visible(lm[index])){
-            return;
-        }
-
-
-        const point=p(index);
-
-
-        ctx.beginPath();
-
-        ctx.arc(
-            point.x,
-            point.y,
-            Math.max(
-                7,
-                ctx.canvas.width/115
-            ),
-            0,
-            Math.PI*2
-        );
-
-
-        ctx.fillStyle=
-            "#facc15";
-
-        ctx.fill();
-
-
-        ctx.lineWidth=3;
-
-        ctx.strokeStyle=
-            "#0f172a";
-
-        ctx.stroke();
-
-    });
-
-}
-
-
-/* =========================================================
-   LIVE PANEL
-========================================================= */
-
-function updateLivePanel(
+  updateLive(
     left,
     right,
     quality,
-    status
-){
+    detected===6
+    ?"ตรวจพบสะโพก เข่า และข้อเท้า"
+    :"กรุณาปรับตำแหน่งร่างกาย"
+  );
 
-    document.getElementById(
-        "liveLeftAngle"
-    ).textContent=
-        left!==null
-        ?left.toFixed(1)+"°"
-        :"—";
+}
 
 
-    document.getElementById(
-        "liveRightAngle"
-    ).textContent=
-        right!==null
-        ?right.toFixed(1)+"°"
-        :"—";
+function drawSkeleton(ctx,lm){
+
+  const W=ctx.canvas.width;
+  const H=ctx.canvas.height;
+
+  const point=i=>({
+    x:lm[i].x*W,
+    y:lm[i].y*H
+  });
+
+  const lines=[
+    [23,25],[25,27],
+    [24,26],[26,28],
+    [23,24],[27,28],
+    [27,31],[28,32]
+  ];
+
+  ctx.strokeStyle="#22c55e";
+  ctx.lineWidth=Math.max(4,W/220);
+
+  lines.forEach(([a,b])=>{
+
+    if(!valid(lm[a])||!valid(lm[b])) return;
+
+    const p1=point(a);
+    const p2=point(b);
+
+    ctx.beginPath();
+    ctx.moveTo(p1.x,p1.y);
+    ctx.lineTo(p2.x,p2.y);
+    ctx.stroke();
+
+  });
+
+  [23,24,25,26,27,28,31,32].forEach(i=>{
+
+    if(!valid(lm[i])) return;
+
+    const p=point(i);
+
+    ctx.beginPath();
+    ctx.arc(
+      p.x,
+      p.y,
+      Math.max(7,W/115),
+      0,
+      Math.PI*2
+    );
+
+    ctx.fillStyle="#facc15";
+    ctx.fill();
+
+    ctx.lineWidth=3;
+    ctx.strokeStyle="#0f172a";
+    ctx.stroke();
+
+  });
+
+}
 
 
-    document.getElementById(
-        "liveQuality"
-    ).textContent=
-        quality+"%";
+function updateLive(l,r,q,text){
 
+  document.getElementById("leftLive")
+  .textContent=l!==null?l.toFixed(1)+"°":"—";
 
-    document.getElementById(
-        "poseStatus"
-    ).textContent=
-        status;
+  document.getElementById("rightLive")
+  .textContent=r!==null?r.toFixed(1)+"°":"—";
+
+  document.getElementById("qualityLive")
+  .textContent=q+"%";
+
+  document.getElementById("cameraStatus")
+  .textContent=text;
 
 }
 
@@ -2231,155 +1821,62 @@ function updateLivePanel(
 
 async function capturePhoto(){
 
-    const video=
-        document.getElementById(
-            "cameraVideo"
-        );
+  const video=document.getElementById("video");
 
+  if(!video.videoWidth){
+    alert("ยังไม่พบภาพจากกล้อง");
+    return;
+  }
 
-    if(
-        !video.videoWidth||
-        !video.videoHeight
-    ){
+  const canvas=document.createElement("canvas");
 
-        alert(
-            "ยังไม่พบภาพจากกล้อง"
-        );
+  canvas.width=video.videoWidth;
+  canvas.height=video.videoHeight;
 
-        return;
-    }
+  const ctx=canvas.getContext("2d");
 
+  if(state.cameraMode==="user"){
 
-    /*
-       Create exact image
-    */
+    ctx.save();
 
-    const canvas=
-        document.createElement(
-            "canvas"
-        );
+    ctx.translate(canvas.width,0);
+    ctx.scale(-1,1);
 
+    ctx.drawImage(
+      video,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
 
-    canvas.width=
-        video.videoWidth;
+    ctx.restore();
 
-    canvas.height=
-        video.videoHeight;
+  }else{
 
+    ctx.drawImage(
+      video,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
 
-    const ctx=
-        canvas.getContext("2d");
+  }
 
+  state.captured=canvas;
 
-    /*
-       Keep image orientation consistent
-    */
+  stopCamera();
 
-    if(
-        state.cameraMode==="user"
-    ){
+  go("analysis");
 
-        ctx.save();
+  document.getElementById("analysisText")
+  .textContent=
+    "AI กำลังตรวจจับจุดสะโพก เข่า และข้อเท้า...";
 
-        ctx.translate(
-            canvas.width,
-            0
-        );
-
-        ctx.scale(-1,1);
-
-        ctx.drawImage(
-            video,
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-        ctx.restore();
-
-    }else{
-
-        ctx.drawImage(
-            video,
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-    }
-
-
-    state.capturedImage=
-        canvas;
-
-
-    stopCamera();
-
-
-    showPage("analysis");
-
-
-    await analyzeCapturedImage();
-
-}
-
-
-/* =========================================================
-   CAPTURE ANALYSIS
-========================================================= */
-
-async function analyzeCapturedImage(){
-
-    document.getElementById(
-        "analysisTitle"
-    ).textContent=
-        "กำลังวิเคราะห์ภาพ";
-
-
-    document.getElementById(
-        "analysisText"
-    ).textContent=
-        "AI กำลังตรวจจับสะโพก เข่า ข้อเท้า และเท้า...";
-
-
-    try{
-
-        await initPose();
-
-
-        await state.pose.send({
-            image:state.capturedImage
-        });
-
-
-    }catch(error){
-
-        console.error(error);
-
-
-        document.getElementById(
-            "analysisTitle"
-        ).textContent=
-            "วิเคราะห์ไม่สำเร็จ";
-
-
-        document.getElementById(
-            "analysisText"
-        ).textContent=
-            "เกิดข้อผิดพลาดในการประมวลผลภาพ";
-
-
-        setTimeout(()=>{
-
-            showPage("camera");
-
-            openCamera();
-
-        },1600);
-
-    }
+  await state.pose.send({
+    image:canvas
+  });
 
 }
 
@@ -2388,744 +1885,628 @@ async function analyzeCapturedImage(){
    PHOTO RESULT
 ========================================================= */
 
-function handlePhotoResult(
-    results
-){
+function photoResults(results){
 
-    if(
-        !document
-        .getElementById("analysis")
-        .classList
-        .contains("active")
-    ){
-
-        handleLivePose(results);
-
-        return;
-
-    }
-
+  if(document.getElementById("analysis").classList.contains("active")){
 
     if(!results.poseLandmarks){
 
-        failAnalysis(
-            "ไม่พบโครงสร้างร่างกาย",
-            "กรุณาถ่ายภาพใหม่โดยให้เห็นสะโพกถึงเท้าชัดเจน"
+      document.getElementById("analysisText")
+      .textContent=
+        "ไม่พบตำแหน่งร่างกาย กรุณาถ่ายภาพใหม่";
+
+      setTimeout(()=>{
+        alert(
+          "AI ไม่สามารถตรวจจับขาทั้งสองข้างได้\nกรุณาถ่ายภาพใหม่ให้เห็นสะโพกถึงเท้าชัดเจน"
         );
 
-        return;
+        openCamera();
 
+      },700);
+
+      return;
     }
 
+    processPhoto(results.poseLandmarks);
 
-    const lm=
-        results.poseLandmarks;
-
-
-    const leftHip=lm[23];
-    const leftKnee=lm[25];
-    const leftAnkle=lm[27];
-
-    const rightHip=lm[24];
-    const rightKnee=lm[26];
-    const rightAnkle=lm[28];
-
-
-    const required=[
-        leftHip,
-        leftKnee,
-        leftAnkle,
-        rightHip,
-        rightKnee,
-        rightAnkle
-    ];
-
-
-    if(
-        !required.every(visible)
-    ){
-
-        failAnalysis(
-            "ตรวจพบข้อต่อไม่ครบ",
-            "กรุณาถ่ายภาพใหม่ให้เห็นขาทั้งสองข้างชัดเจน"
-        );
-
-        return;
-
-    }
-
-
-    const leftAngle=
-        calculateAngle(
-            leftHip,
-            leftKnee,
-            leftAnkle
-        );
-
-
-    const rightAngle=
-        calculateAngle(
-            rightHip,
-            rightKnee,
-            rightAnkle
-        );
-
-
-    const difference=
-        Math.abs(
-            leftAngle-rightAngle
-        );
-
-
-    const quality=
-        Math.round(
-            required.reduce(
-                (sum,p)=>
-                    sum+(p.visibility??0),
-                0
-            )/
-            required.length*
-            100
-        );
-
-
-    let symmetry="ดี";
-
-    if(difference>8){
-        symmetry="ควรตรวจเพิ่มเติม";
-    }
-
-
-    let status=
-        "ไม่พบความแตกต่างเด่นชัดจากภาพ";
-
-
-    /*
-       Prototype screening only
-    */
-
-    if(
-        difference>10||
-        leftAngle<155||
-        rightAngle<155
-    ){
-
-        status=
-            "พบลักษณะที่ควรตรวจเพิ่มเติม";
-
-    }
-
-
-    state.landmarks=lm;
-
-
-    state.result={
-        leftAngle,
-        rightAngle,
-        angleDifference:difference,
-        symmetry,
-        quality,
-        status
-    };
-
-
-    drawResultImage();
-
-
-    showResult();
+  }
 
 }
 
 
 /* =========================================================
-   OVERRIDE POSE RESULT
+   PROCESS
 ========================================================= */
 
-function failAnalysis(
-    title,
-    text
-){
+function processPhoto(lm){
 
-    document.getElementById(
-        "analysisTitle"
-    ).textContent=
-        title;
+  const Lh=lm[23];
+  const Lk=lm[25];
+  const La=lm[27];
 
+  const Rh=lm[24];
+  const Rk=lm[26];
+  const Ra=lm[28];
 
-    document.getElementById(
-        "analysisText"
-    ).textContent=
-        text;
+  if(
+    !valid(Lh)||!valid(Lk)||!valid(La)||
+    !valid(Rh)||!valid(Rk)||!valid(Ra)
+  ){
 
+    document.getElementById("analysisText")
+    .textContent=
+      "ตรวจพบจุดไม่ครบ กรุณาถ่ายภาพใหม่";
 
     setTimeout(()=>{
+      openCamera();
+    },1000);
 
-        const again=
-            confirm(
-                "AI ไม่สามารถวิเคราะห์ภาพนี้ได้\n\n"+
-                "ต้องการถ่ายภาพใหม่หรือไม่?"
-            );
+    return;
+  }
 
+  const left=angle(Lh,Lk,La);
+  const right=angle(Rh,Rk,Ra);
 
-        if(again){
+  const diff=Math.abs(left-right);
 
-            showPage("camera");
+  const req=[Lh,Lk,La,Rh,Rk,Ra];
 
-            openCamera();
+  const quality=Math.round(
+    req.reduce((s,p)=>s+(p.visibility||0),0)
+    /req.length*100
+  );
 
-        }else{
+  const symptomScore=state.symptoms
+    .reduce((sum,v)=>sum+v,0);
 
-            showPage("posture");
+  let status="ไม่พบความแตกต่างเด่นชัดจากข้อมูลภาพ";
 
-        }
+  /*
+     ใช้เป็น screening prototype เท่านั้น
+  */
 
-    },700);
+  if(
+    diff>10 ||
+    symptomScore>=14
+  ){
+    status="พบปัจจัยที่ควรตรวจเพิ่มเติม";
+  }
 
-}
+  state.landmarks=lm;
 
+  state.result={
+    left,
+    right,
+    diff,
+    quality,
+    symptomScore,
+    status
+  };
 
-/*
-   The Pose callback is switched depending on whether
-   the camera is running or a captured photo is being analyzed.
-*/
+  drawResult();
 
-function unifiedPoseResults(results){
+  savePatient();
 
-    if(state.cameraRunning){
-
-        handleLivePose(results);
-
-    }else{
-
-        handlePhotoResult(results);
-
-    }
-
-}
-
-
-/*
-   Make sure the current Pose instance uses
-   the unified callback.
-*/
-
-async function ensurePoseCallback(){
-
-    await initPose();
-
-}
-
-
-/* Replace callback installed in initPose */
-
-const originalInitPose=initPose;
-
-
-/*
-   Rebuild initPose so MediaPipe uses unified callback.
-*/
-
-initPose=async function(){
-
-    if(state.pose){
-        return;
-    }
-
-
-    state.pose=new Pose({
-
-        locateFile:(file)=>
-            `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
-
-    });
-
-
-    state.pose.setOptions({
-
-        modelComplexity:2,
-
-        smoothLandmarks:true,
-
-        enableSegmentation:false,
-
-        smoothSegmentation:false,
-
-        minDetectionConfidence:.55,
-
-        minTrackingConfidence:.55
-
-    });
-
-
-    state.pose.onResults(
-        unifiedPoseResults
-    );
-
-};
-
-
-/* =========================================================
-   RESULT IMAGE
-========================================================= */
-
-function drawResultImage(){
-
-    const source=
-        state.capturedImage;
-
-
-    const canvas=
-        document.getElementById(
-            "resultCanvas"
-        );
-
-
-    canvas.width=
-        source.width;
-
-    canvas.height=
-        source.height;
-
-
-    const ctx=
-        canvas.getContext("2d");
-
-
-    ctx.drawImage(
-        source,
-        0,
-        0
-    );
-
-
-    const lm=
-        state.landmarks;
-
-
-    /*
-       Photo orientation is already corrected.
-       For front camera, photo was mirrored,
-       so MediaPipe coordinate is mirrored too.
-    */
-
-    function point(index){
-
-        let x=
-            lm[index].x*
-            canvas.width;
-
-
-        const y=
-            lm[index].y*
-            canvas.height;
-
-
-        /*
-           Because front camera capture was mirrored,
-           flip x for overlay.
-        */
-
-        if(state.cameraMode==="user"){
-
-            x=
-                (1-lm[index].x)*
-                canvas.width;
-
-        }
-
-
-        return {
-            x,
-            y
-        };
-
-    }
-
-
-    const connections=[
-
-        [23,25],
-        [25,27],
-
-        [24,26],
-        [26,28],
-
-        [27,31],
-        [28,32],
-
-        [23,24],
-        [27,28]
-
-    ];
-
-
-    ctx.lineWidth=
-        Math.max(
-            5,
-            canvas.width/210
-        );
-
-
-    ctx.strokeStyle=
-        "#22c55e";
-
-
-    connections.forEach(pair=>{
-
-        if(
-            !visible(lm[pair[0]])||
-            !visible(lm[pair[1]])
-        ){
-            return;
-        }
-
-
-        const a=
-            point(pair[0]);
-
-        const b=
-            point(pair[1]);
-
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            a.x,
-            a.y
-        );
-
-        ctx.lineTo(
-            b.x,
-            b.y
-        );
-
-        ctx.stroke();
-
-    });
-
-
-    /*
-       Important joints only
-    */
-
-    const joints=[
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        31,
-        32
-    ];
-
-
-    joints.forEach(index=>{
-
-        if(!visible(lm[index])){
-            return;
-        }
-
-
-        const p=
-            point(index);
-
-
-        ctx.beginPath();
-
-        ctx.arc(
-            p.x,
-            p.y,
-            Math.max(
-                8,
-                canvas.width/110
-            ),
-            0,
-            Math.PI*2
-        );
-
-
-        ctx.fillStyle=
-            "#facc15";
-
-        ctx.fill();
-
-
-        ctx.lineWidth=3;
-
-        ctx.strokeStyle=
-            "#0f172a";
-
-        ctx.stroke();
-
-    });
-
-
-    drawLabel(
-        ctx,
-        point(25),
-        state.result.leftAngle.toFixed(1)+"°"
-    );
-
-
-    drawLabel(
-        ctx,
-        point(26),
-        state.result.rightAngle.toFixed(1)+"°"
-    );
+  showResult();
 
 }
 
 
 /* =========================================================
-   LABEL
+   DRAW RESULT
 ========================================================= */
 
-function drawLabel(
-    ctx,
-    p,
-    text
-){
+function drawResult(){
 
-    ctx.font=
-        "bold 20px Prompt,Arial";
+  const src=state.captured;
 
+  const canvas=document.getElementById("resultCanvas");
 
-    const padding=10;
+  canvas.width=src.width;
+  canvas.height=src.height;
 
-    const width=
-        ctx.measureText(text).width+
-        padding*2;
+  const ctx=canvas.getContext("2d");
 
-    const height=38;
+  ctx.drawImage(src,0,0);
 
+  const lm=state.landmarks;
 
-    let x=p.x+15;
+  const W=canvas.width;
+  const H=canvas.height;
 
-    let y=p.y-height-10;
+  /*
+    Captured image from front camera is mirrored.
+    Therefore landmark x must be mirrored.
+  */
 
+  function p(i){
 
-    if(x+width>ctx.canvas.width){
+    let x=lm[i].x;
 
-        x=
-            p.x-width-15;
+    if(state.cameraMode==="user")
+      x=1-x;
 
-    }
+    return {
+      x:x*W,
+      y:lm[i].y*H
+    };
 
+  }
 
-    if(y<0){
+  const lines=[
+    [23,25],[25,27],
+    [24,26],[26,28],
+    [23,24],[27,28],
+    [27,31],[28,32]
+  ];
 
-        y=
-            p.y+15;
+  ctx.strokeStyle="#22c55e";
+  ctx.lineWidth=Math.max(5,W/210);
 
-    }
+  lines.forEach(([a,b])=>{
 
+    if(!valid(lm[a])||!valid(lm[b])) return;
 
-    ctx.fillStyle=
-        "rgba(15,23,42,.90)";
+    const A=p(a);
+    const B=p(b);
 
+    ctx.beginPath();
+    ctx.moveTo(A.x,A.y);
+    ctx.lineTo(B.x,B.y);
+    ctx.stroke();
+
+  });
+
+  [23,24,25,26,27,28,31,32]
+  .forEach(i=>{
+
+    if(!valid(lm[i])) return;
+
+    const P=p(i);
 
     ctx.beginPath();
 
-    ctx.roundRect(
-        x,
-        y,
-        width,
-        height,
-        10
+    ctx.arc(
+      P.x,
+      P.y,
+      Math.max(8,W/110),
+      0,
+      Math.PI*2
     );
 
+    ctx.fillStyle="#facc15";
     ctx.fill();
 
+    ctx.lineWidth=3;
+    ctx.strokeStyle="#0f172a";
+    ctx.stroke();
 
-    ctx.fillStyle=
-        "#facc15";
+  });
+
+  label(
+    ctx,
+    p(25),
+    state.result.left.toFixed(1)+"°"
+  );
+
+  label(
+    ctx,
+    p(26),
+    state.result.right.toFixed(1)+"°"
+  );
+
+}
 
 
-    ctx.fillText(
-        text,
-        x+padding,
-        y+26
-    );
+function label(ctx,p,text){
+
+  ctx.font="bold 20px Arial";
+
+  const w=ctx.measureText(text).width+20;
+  const h=38;
+
+  let x=p.x+15;
+  let y=p.y-h-10;
+
+  if(x+w>ctx.canvas.width)
+    x=p.x-w-15;
+
+  if(y<0)
+    y=p.y+15;
+
+  ctx.fillStyle="rgba(7,20,43,.92)";
+
+  ctx.beginPath();
+  ctx.roundRect(x,y,w,h,10);
+  ctx.fill();
+
+  ctx.fillStyle="#facc15";
+
+  ctx.fillText(
+    text,
+    x+10,
+    y+26
+  );
 
 }
 
 
 /* =========================================================
-   SHOW RESULT
+   RESULT
 ========================================================= */
 
 function showResult(){
 
-    const r=
-        state.result;
+  const p=state.patient;
+  const r=state.result;
 
+  document.getElementById("resultPatient")
+  .textContent=
+    `${p.name} • ${p.age} ปี • ${p.gender}`;
 
-    document.getElementById(
-        "resultPatient"
-    ).textContent=
-        `${state.patient.name} • อายุ ${state.patient.age} ปี • ${state.patient.gender}`;
+  document.getElementById("leftResult")
+  .textContent=r.left.toFixed(1)+"°";
 
+  document.getElementById("rightResult")
+  .textContent=r.right.toFixed(1)+"°";
 
-    document.getElementById(
-        "leftAngle"
-    ).textContent=
-        r.leftAngle.toFixed(1)+"°";
+  document.getElementById("differenceResult")
+  .textContent=r.diff.toFixed(1)+"°";
 
+  document.getElementById("bmiResult")
+  .textContent=p.bmi.toFixed(1);
 
-    document.getElementById(
-        "rightAngle"
-    ).textContent=
-        r.rightAngle.toFixed(1)+"°";
+  document.getElementById("symptomScore")
+  .textContent=
+    `${r.symptomScore} / ${QUESTIONS.length*3}`;
 
+  document.getElementById("qualityResult")
+  .textContent=r.quality+"%";
 
-    document.getElementById(
-        "symmetry"
-    ).textContent=
-        r.symmetry;
+  document.getElementById("resultId")
+  .textContent=p.id;
 
+  const box=document.getElementById("overallBox");
 
-    document.getElementById(
-        "quality"
-    ).textContent=
-        r.quality+"%";
+  const title=document.getElementById("overallTitle");
 
+  const detail=document.getElementById("overallDetail");
 
-    document.getElementById(
-        "angleDiff"
-    ).textContent=
-        r.angleDifference.toFixed(1)+"°";
+  box.className="result-box";
 
+  if(r.status==="ไม่พบความแตกต่างเด่นชัดจากข้อมูลภาพ"){
 
-    document.getElementById(
-        "hipStatus"
-    ).textContent=
-        "✓ ตรวจพบ";
+    box.classList.add("good");
 
+    title.textContent=
+      "🟢 ไม่พบความแตกต่างเด่นชัดจากข้อมูลภาพ";
 
-    document.getElementById(
-        "kneeStatus"
-    ).textContent=
-        "✓ ตรวจพบ";
+    detail.textContent=
+      "จากภาพที่วิเคราะห์ ไม่พบความแตกต่างของมุมเข่าซ้ายและขวาที่เด่นชัด อย่างไรก็ตามผลนี้ไม่สามารถใช้ยืนยันว่าไม่มีโรคข้อเข่าได้";
 
+  }else{
 
-    document.getElementById(
-        "ankleStatus"
-    ).textContent=
-        "✓ ตรวจพบ";
+    box.classList.add("warn");
 
+    title.textContent=
+      "🟠 พบปัจจัยที่ควรตรวจเพิ่มเติม";
 
-    const box=
-        document.getElementById(
-            "overallBox"
-        );
+    detail.textContent=
+      "ระบบพบความแตกต่างของข้อมูลภาพหรือมีคะแนนอาการสูง ควรนำผลไปประเมินร่วมกับอาการและการตรวจโดยบุคลากรทางการแพทย์";
 
+  }
 
-    const overall=
-        document.getElementById(
-            "overall"
-        );
-
-
-    const detail=
-        document.getElementById(
-            "overallDetail"
-        );
-
-
-    box.className=
-        "p-5 rounded-2xl border";
-
-
-    if(
-        r.status===
-        "ไม่พบความแตกต่างเด่นชัดจากภาพ"
-    ){
-
-        box.classList.add(
-            "result-good"
-        );
-
-
-        overall.textContent=
-            "🟢 ไม่พบความแตกต่างเด่นชัด";
-
-
-        detail.textContent=
-            "ผลจากภาพนี้ไม่พบความแตกต่างของมุมระหว่างสองข้างที่เด่นชัด ทั้งนี้ไม่ใช่การวินิจฉัยโรค";
-
-    }else{
-
-        box.classList.add(
-            "result-warn"
-        );
-
-
-        overall.textContent=
-            "🟠 พบลักษณะที่ควรตรวจเพิ่มเติม";
-
-
-        detail.textContent=
-            "ระบบพบลักษณะจากภาพที่ควรนำไปประเมินร่วมกับอาการและการตรวจโดยบุคลากรทางการแพทย์";
-
-    }
-
-
-    updateDoctor();
-
-
-    showPage("result");
+  go("result");
 
 }
 
 
 /* =========================================================
-   DOCTOR
+   SAVE PATIENT
 ========================================================= */
 
-function updateDoctor(){
+function savePatient(){
 
-    const r=
-        state.result;
+  const records=
+    JSON.parse(
+      localStorage.getItem("kneeai_records")||"[]"
+    );
 
+  const record={
 
-    document.getElementById(
-        "doctorName"
-    ).textContent=
-        state.patient.name||"—";
+    id:state.patient.id,
 
+    name:state.patient.name,
 
-    document.getElementById(
-        "doctorLeft"
-    ).textContent=
-        r.leftAngle!==null
-        ?r.leftAngle.toFixed(1)+"°"
-        :"—";
+    age:state.patient.age,
 
+    gender:state.patient.gender,
 
-    document.getElementById(
-        "doctorRight"
-    ).textContent=
-        r.rightAngle!==null
-        ?r.rightAngle.toFixed(1)+"°"
-        :"—";
+    weight:state.patient.weight,
 
+    height:state.patient.height,
 
-    document.getElementById(
-        "doctorStatus"
-    ).textContent=
-        r.status||"ยังไม่มีข้อมูล";
+    bmi:state.patient.bmi,
+
+    symptoms:state.symptoms,
+
+    symptomScore:state.result.symptomScore,
+
+    leftAngle:state.result.left,
+
+    rightAngle:state.result.right,
+
+    angleDifference:state.result.diff,
+
+    quality:state.result.quality,
+
+    status:state.result.status,
+
+    date:new Date().toISOString(),
+
+    image:state.captured.toDataURL("image/jpeg",.85)
+
+  };
+
+  const index=
+    records.findIndex(x=>x.id===record.id);
+
+  if(index>=0)
+    records[index]=record;
+  else
+    records.push(record);
+
+  localStorage.setItem(
+    "kneeai_records",
+    JSON.stringify(records)
+  );
 
 }
 
 
 /* =========================================================
-   PRINT
+   DOCTOR LOGIN
 ========================================================= */
 
-function printReport(){
+function doctorLogin(){
 
-    window.print();
+  const user=
+    document.getElementById("doctorUser").value;
+
+  const pass=
+    document.getElementById("doctorPass").value;
+
+  if(
+    user==="doctor" &&
+    pass==="kneeai2026"
+  ){
+
+    sessionStorage.setItem(
+      "kneeai_doctor",
+      "true"
+    );
+
+    document.getElementById("doctorLogin")
+    .classList.add("hidden");
+
+    document.getElementById("doctorDashboard")
+    .classList.remove("hidden");
+
+  }else{
+
+    document.getElementById("loginError")
+    .textContent=
+      "รหัสแพทย์หรือรหัสผ่านไม่ถูกต้อง";
+
+  }
+
+}
+
+
+function doctorLogout(){
+
+  sessionStorage.removeItem("kneeai_doctor");
+
+  document.getElementById("doctorLogin")
+  .classList.remove("hidden");
+
+  document.getElementById("doctorDashboard")
+  .classList.add("hidden");
+
+}
+
+
+/* =========================================================
+   DOCTOR SEARCH
+========================================================= */
+
+function searchPatients(){
+
+  const q=
+    document.getElementById("searchPatient")
+    .value.trim()
+    .toLowerCase();
+
+  const records=
+    JSON.parse(
+      localStorage.getItem("kneeai_records")||"[]"
+    );
+
+  const found=records.filter(r=>
+    r.id.toLowerCase().includes(q) ||
+    r.name.toLowerCase().includes(q)
+  );
+
+  const box=
+    document.getElementById("searchResults");
+
+  const detail=
+    document.getElementById("patientDetail");
+
+  detail.classList.add("hidden");
+
+  if(!found.length){
+
+    box.innerHTML=`
+      <div style="
+        padding:20px;
+        margin-top:15px;
+        background:#fff7ed;
+        border-radius:15px;
+        color:#9a3412;
+        font-size:13px">
+        ไม่พบข้อมูลผู้รับการประเมิน
+      </div>
+    `;
+
+    return;
+  }
+
+  box.innerHTML=found.map((r,i)=>`
+
+    <div class="patient-result">
+
+      <div>
+        <strong>${escapeHTML(r.name)}</strong>
+
+        <div style="
+          color:#718096;
+          font-size:11px;
+          margin-top:3px">
+          ${escapeHTML(r.id)}
+          • อายุ ${escapeHTML(r.age)} ปี
+        </div>
+      </div>
+
+      <button
+      class="btn btn-primary"
+      onclick="viewPatient(${i},${JSON.stringify(found.map(x=>x.id))})">
+      ดูข้อมูล
+      </button>
+
+    </div>
+
+  `).join("");
+
+}
+
+
+function viewPatient(index,ids){
+
+  const records=
+    JSON.parse(
+      localStorage.getItem("kneeai_records")||"[]"
+    );
+
+  const id=ids[index];
+
+  const r=records.find(x=>x.id===id);
+
+  if(!r) return;
+
+  const detail=
+    document.getElementById("patientDetail");
+
+  detail.classList.remove("hidden");
+
+  detail.innerHTML=`
+
+    <h3>
+      👤 ${escapeHTML(r.name)}
+    </h3>
+
+    <div class="detail-row">
+      <span>รหัส</span>
+      <strong>${escapeHTML(r.id)}</strong>
+    </div>
+
+    <div class="detail-row">
+      <span>อายุ</span>
+      <strong>${escapeHTML(r.age)} ปี</strong>
+    </div>
+
+    <div class="detail-row">
+      <span>เพศ</span>
+      <strong>${escapeHTML(r.gender)}</strong>
+    </div>
+
+    <div class="detail-row">
+      <span>น้ำหนัก</span>
+      <strong>${escapeHTML(r.weight)} kg</strong>
+    </div>
+
+    <div class="detail-row">
+      <span>ส่วนสูง</span>
+      <strong>${escapeHTML(r.height)} cm</strong>
+    </div>
+
+    <div class="detail-row">
+      <span>BMI</span>
+      <strong>${Number(r.bmi).toFixed(1)}</strong>
+    </div>
+
+    <div class="detail-row">
+      <span>มุมเข่าซ้าย</span>
+      <strong>${Number(r.leftAngle).toFixed(1)}°</strong>
+    </div>
+
+    <div class="detail-row">
+      <span>มุมเข่าขวา</span>
+      <strong>${Number(r.rightAngle).toFixed(1)}°</strong>
+    </div>
+
+    <div class="detail-row">
+      <span>ส่วนต่างมุม</span>
+      <strong>${Number(r.angleDifference).toFixed(1)}°</strong>
+    </div>
+
+    <div class="detail-row">
+      <span>คะแนนอาการ</span>
+      <strong>${r.symptomScore}/${QUESTIONS.length*3}</strong>
+    </div>
+
+    <div class="detail-row">
+      <span>คุณภาพภาพ</span>
+      <strong>${r.quality}%</strong>
+    </div>
+
+    <div class="detail-row">
+      <span>ผลคัดกรอง</span>
+      <strong>${escapeHTML(r.status)}</strong>
+    </div>
+
+    <div style="margin-top:20px">
+
+      <h4>ภาพ AI</h4>
+
+      <img
+      src="${r.image}"
+      style="
+        width:100%;
+        max-width:600px;
+        border-radius:15px;
+        display:block;
+        margin-top:10px">
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   SECURITY HELPER
+========================================================= */
+
+function escapeHTML(str){
+
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
@@ -3136,55 +2517,38 @@ function printReport(){
 
 function restart(){
 
-    stopCamera();
+  stopCamera();
 
-    state.capturedImage=null;
+  state.symptoms=[];
+  state.bmi=null;
+  state.captured=null;
+  state.landmarks=null;
+  state.result=null;
 
-    state.landmarks=null;
+  document.getElementById("patientName").value="";
+  document.getElementById("patientId").value="";
+  document.getElementById("age").value="";
+  document.getElementById("gender").value="";
+  document.getElementById("weight").value="";
+  document.getElementById("height").value="";
 
-    state.result={
-        leftAngle:null,
-        rightAngle:null,
-        angleDifference:null,
-        symmetry:null,
-        quality:null,
-        status:null
-    };
+  document.getElementById("bmi").textContent="—";
 
-
-    document.getElementById(
-        "name"
-    ).value="";
-
-
-    document.getElementById(
-        "age"
-    ).value="";
-
-
-    document.getElementById(
-        "gender"
-    ).value="";
-
-
-    showPage("home");
+  go("home");
 
 }
 
 
 /* =========================================================
-   CLEANUP
+   INIT
 ========================================================= */
 
-window.addEventListener(
-    "beforeunload",
-    ()=>{
-        stopCamera();
-    }
-);
+window.addEventListener("beforeunload",()=>{
+  stopCamera();
+});
+
 
 </script>
 
 </body>
 </html>
-```
