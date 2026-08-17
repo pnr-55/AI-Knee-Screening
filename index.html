@@ -931,7 +931,208 @@ button{
     font-family:"Space Mono",monospace;
     font-size:9px;
 }
+/* ================= CAMERA CONTROLS ================= */
 
+.camera-controls{
+    position:absolute;
+    left:20px;
+    right:20px;
+    bottom:70px;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    z-index:30;
+}
+
+.camera-controls .btn{
+    min-height:42px;
+    padding:0 15px;
+    font-size:10px;
+}
+
+.capture-preview{
+    position:absolute;
+    inset:0;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:15px;
+    padding:30px;
+    background:rgba(2,10,18,.94);
+    z-index:50;
+}
+
+.capture-preview.active{
+    display:flex;
+}
+
+.capture-preview img{
+    max-width:90%;
+    max-height:72%;
+    border-radius:14px;
+    border:1px solid rgba(30,220,255,.3);
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+    object-fit:contain;
+}
+
+.preview-label{
+    color:#8cefff;
+    font-family:"Space Mono",monospace;
+    font-size:9px;
+    letter-spacing:2px;
+}
+
+
+/* ================= QUESTIONNAIRE ================= */
+
+.questionnaire-card{
+    margin-top:22px;
+    padding:28px;
+    border:1px solid var(--line);
+    border-radius:22px;
+    background:var(--glass);
+    box-shadow:0 25px 70px rgba(0,0,0,.2);
+}
+
+.question-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+    margin-top:22px;
+}
+
+.question-item{
+    padding:18px;
+    border:1px solid rgba(70,200,240,.10);
+    border-radius:14px;
+    background:rgba(2,14,24,.55);
+}
+
+.question-item > label{
+    display:block;
+    margin-bottom:13px;
+    color:#9ab2c2;
+    font-size:11px;
+    font-weight:500;
+}
+
+.option-group{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.option{
+    display:flex!important;
+    align-items:center;
+    gap:7px;
+    margin:0!important;
+    padding:8px 12px;
+    border:1px solid rgba(70,200,240,.12);
+    border-radius:9px;
+    color:#7893a5!important;
+    background:rgba(4,25,40,.6);
+    cursor:pointer;
+    transition:.2s;
+}
+
+.option:hover{
+    border-color:rgba(30,220,255,.35);
+    color:#c8f8ff!important;
+}
+
+.option input{
+    accent-color:#16ddff;
+}
+
+.pain-slider-row{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.pain-slider-row input{
+    flex:1;
+    accent-color:#16ddff;
+}
+
+.pain-slider-row strong{
+    width:45px;
+    text-align:center;
+    padding:8px;
+    border-radius:8px;
+    color:#8ef5ff;
+    background:rgba(10,50,70,.7);
+    font-family:"Space Mono",monospace;
+}
+
+.question-item select{
+    width:100%;
+    height:42px;
+    padding:0 12px;
+    color:#dffaff;
+    background:#061722;
+    border:1px solid rgba(70,200,240,.12);
+    border-radius:9px;
+    outline:none;
+}
+
+.question-footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-top:20px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+}
+
+.question-status{
+    color:#617b8e;
+    font-size:9px;
+}
+
+.question-status.success{
+    color:var(--green);
+}
+
+
+/* ================= CAPTURE BUTTON ================= */
+
+#processCaptureBtn{
+    min-width:220px;
+}
+
+
+/* ================= MOBILE ================= */
+
+@media(max-width:700px){
+
+    .question-grid{
+        grid-template-columns:1fr;
+    }
+
+    .camera-controls{
+        bottom:75px;
+    }
+
+    .camera-controls .btn{
+        min-height:38px;
+        font-size:9px;
+    }
+
+    .question-footer{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .question-footer .btn{
+        width:100%;
+    }
+
+}
 /* ================= ANALYSIS ================= */
 
 .analysis-page{
@@ -1675,9 +1876,319 @@ AI <span>CAMERA</span>
 MediaPipe Pose ตรวจจับ Hip • Knee • Ankle และสร้างข้อมูลสำหรับ Mathematical Time-Series Analysis
 </p>
 
-<div class="camera-layout">
+<div class="camera-layout"><!-- =========================================================
+QUESTIONNAIRE
+========================================================= -->
 
-<div class="camera-panel" id="cameraPanel">
+<div class="questionnaire-card">
+
+    <div class="form-title">
+        📝 แบบสอบถามเพื่อเพิ่มความแม่นยำในการคัดกรอง
+    </div>
+
+    <div class="form-subtitle">
+        SYMPTOM QUESTIONNAIRE / SUPPORTING DATA
+    </div>
+
+    <div class="question-grid">
+
+        <div class="question-item">
+
+            <label>
+                01 — มีอาการปวดเข่าหรือไม่?
+            </label>
+
+            <div class="option-group">
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="pain"
+                        value="no">
+                    <span>ไม่มี</span>
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="pain"
+                        value="yes">
+                    <span>มี</span>
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question-item">
+
+            <label>
+                02 — ปวดเข่าข้างใด?
+            </label>
+
+            <div class="option-group">
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="painSide"
+                        value="left">
+                    <span>ซ้าย</span>
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="painSide"
+                        value="right">
+                    <span>ขวา</span>
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="painSide"
+                        value="both">
+                    <span>ทั้งสองข้าง</span>
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question-item">
+
+            <label>
+                03 — ระดับความปวด (0–10)
+            </label>
+
+            <div class="pain-slider-row">
+
+                <input
+                    id="painLevel"
+                    type="range"
+                    min="0"
+                    max="10"
+                    value="0">
+
+                <strong id="painLevelValue">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="question-item">
+
+            <label>
+                04 — มีอาการปวดขณะเดินหรือไม่?
+            </label>
+
+            <div class="option-group">
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="walkingPain"
+                        value="no">
+                    <span>ไม่มี</span>
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="walkingPain"
+                        value="yes">
+                    <span>มี</span>
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question-item">
+
+            <label>
+                05 — ปวดเวลาขึ้นลงบันไดหรือไม่?
+            </label>
+
+            <div class="option-group">
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="stairsPain"
+                        value="no">
+                    <span>ไม่มี</span>
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="stairsPain"
+                        value="yes">
+                    <span>มี</span>
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question-item">
+
+            <label>
+                06 — มีอาการบวม / ฝืด / ตึงหรือไม่?
+            </label>
+
+            <div class="option-group">
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="swelling"
+                        value="no">
+                    <span>ไม่มี</span>
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="swelling"
+                        value="yes">
+                    <span>มี</span>
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question-item">
+
+            <label>
+                07 — เคยได้รับบาดเจ็บบริเวณเข่าหรือไม่?
+            </label>
+
+            <div class="option-group">
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="injury"
+                        value="no">
+                    <span>ไม่เคย</span>
+                </label>
+
+                <label class="option">
+                    <input
+                        type="radio"
+                        name="injury"
+                        value="yes">
+                    <span>เคย</span>
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question-item">
+
+            <label>
+                08 — อาการเป็นมานานเท่าใด?
+            </label>
+
+            <select id="symptomDuration">
+
+                <option value="">
+                    เลือกระยะเวลา
+                </option>
+
+                <option value="less1">
+                    น้อยกว่า 1 สัปดาห์
+                </option>
+
+                <option value="1to4">
+                    1–4 สัปดาห์
+                </option>
+
+                <option value="1to3m">
+                    1–3 เดือน
+                </option>
+
+                <option value="more3m">
+                    มากกว่า 3 เดือน
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div class="question-footer">
+
+        <div id="questionStatus" class="question-status">
+            กรุณาตอบแบบสอบถามเพื่อใช้เป็นข้อมูลประกอบ
+        </div>
+
+        <button
+            id="saveQuestionnaireBtn"
+            class="btn btn-primary">
+            ✓ บันทึกแบบสอบถาม
+        </button>
+
+    </div>
+
+</div>
+
+<div class="camera-panel" id="cameraPanel"><!-- CAMERA CONTROLS -->
+<div class="camera-controls" id="cameraControls">
+
+    <button id="switchCameraBtn" class="btn btn-secondary">
+        🔄 สลับกล้อง
+    </button>
+
+    <label for="imageUpload" class="btn btn-secondary">
+        📎 แนบรูป
+    </label>
+
+    <input
+        id="imageUpload"
+        type="file"
+        accept="image/*"
+        style="display:none"
+    >
+
+    <button id="captureBtn" class="btn btn-primary">
+        📸 ถ่ายภาพ
+    </button>
+
+</div>
+
+<!-- CAPTURE PREVIEW -->
+<div id="capturePreview" class="capture-preview">
+
+    <div class="preview-label">
+        CAPTURED IMAGE
+    </div>
+
+    <img id="capturedImage" alt="Captured Image">
+
+    <button
+        id="processCaptureBtn"
+        class="btn btn-primary">
+        🧠 ถ่ายภาพและประมวลผล
+    </button>
+
+</div>
 
 <div class="camera-placeholder" id="cameraPlaceholder">
 
