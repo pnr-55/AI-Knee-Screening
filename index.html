@@ -1413,7 +1413,476 @@ input[type=file]{
     }
 
 }
+/* =========================================================
+   NEW KNEE MARKER SYSTEM
+========================================================= */
 
+.camera-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #050b12;
+}
+
+
+/* VIDEO */
+
+.camera-frame video {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    z-index: 1;
+
+    background: #050b12;
+}
+
+
+/* MEDIAPIPE CANVAS */
+
+.camera-frame canvas {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 3;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   KNEE MARKERS
+========================================================= */
+
+.knee-marker {
+
+    position: absolute;
+
+    width: 90px;
+    height: 90px;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 10;
+
+    pointer-events: none;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+/*
+   IMPORTANT
+
+   screen-left  = LEFT MARKER
+   screen-right = RIGHT MARKER
+
+   ไม่ให้ตำแหน่งสลับตามกล้อง
+*/
+
+.left-marker {
+    left: 35%;
+    top: 62%;
+}
+
+.right-marker {
+    left: 65%;
+    top: 62%;
+}
+
+
+/* OUTER RING */
+
+.marker-ring {
+
+    position: absolute;
+
+    width: 72px;
+    height: 72px;
+
+    border: 4px solid #16ddff;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 0 2px rgba(22,221,255,.15),
+        0 0 18px rgba(22,221,255,.8),
+        inset 0 0 15px rgba(22,221,255,.25);
+
+    animation: markerPulse 1.5s infinite;
+
+}
+
+
+/* INNER CIRCLE */
+
+.marker-ring::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 18px;
+    height: 18px;
+
+    border: 3px solid #ffffff;
+
+    border-radius: 50%;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+}
+
+
+/* CROSSHAIR */
+
+.marker-cross {
+
+    position: absolute;
+
+    width: 100%;
+    height: 2px;
+
+    background: #16ddff;
+
+    opacity: .9;
+
+}
+
+.marker-cross::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: -44px;
+
+    width: 2px;
+    height: 88px;
+
+    background: #16ddff;
+
+}
+
+
+/* LABEL */
+
+.marker-label {
+
+    position: absolute;
+
+    top: 82px;
+
+    white-space: nowrap;
+
+    padding: 5px 10px;
+
+    border-radius: 6px;
+
+    background: rgba(0,0,0,.75);
+
+    border: 1px solid #16ddff;
+
+    color: #16ddff;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    text-shadow:
+        0 0 8px rgba(22,221,255,.8);
+
+}
+
+
+/* PULSE */
+
+@keyframes markerPulse {
+
+    0% {
+        transform: scale(.92);
+        opacity: .75;
+    }
+
+    50% {
+        transform: scale(1.08);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(.92);
+        opacity: .75;
+    }
+
+}
+
+
+/* =========================================================
+   BODY GUIDE
+========================================================= */
+
+.body-guide {
+
+    position: absolute;
+
+    left: 50%;
+    top: 12%;
+
+    transform: translateX(-50%);
+
+    width: 180px;
+
+    height: 60%;
+
+    z-index: 4;
+
+    pointer-events: none;
+
+    opacity: .28;
+
+}
+
+
+.guide-head {
+
+    position: absolute;
+
+    left: 50%;
+    top: 0;
+
+    width: 55px;
+    height: 55px;
+
+    transform: translateX(-50%);
+
+    border: 2px dashed #16ddff;
+
+    border-radius: 50%;
+
+}
+
+
+.guide-line {
+
+    position: absolute;
+
+    left: 50%;
+    top: 60px;
+
+    width: 2px;
+    height: 250px;
+
+    transform: translateX(-50%);
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            #16ddff 0,
+            #16ddff 8px,
+            transparent 8px,
+            transparent 16px
+        );
+
+}
+
+
+.guide-text {
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 0;
+
+    transform: translateX(-50%);
+
+    font-size: 9px;
+
+    color: #16ddff;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================================
+   MARKER STATUS
+========================================================= */
+
+.marker-status {
+
+    position: absolute;
+
+    top: 15px;
+    left: 15px;
+
+    z-index: 20;
+
+    padding: 7px 12px;
+
+    border-radius: 8px;
+
+    background: rgba(0,0,0,.7);
+
+    border: 1px solid rgba(22,221,255,.6);
+
+    color: #16ddff;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+}
+
+
+/* =========================================================
+   SIDE MARKER INFO
+========================================================= */
+
+.marker-info {
+
+    margin-top: 18px;
+
+    padding: 16px;
+
+    border-radius: 14px;
+
+    background: rgba(22,221,255,.05);
+
+    border: 1px solid rgba(22,221,255,.25);
+
+}
+
+
+.marker-info-title {
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+    margin-bottom: 12px;
+
+}
+
+
+.marker-info-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    font-size: 12px;
+
+    margin: 8px 0;
+
+}
+
+
+.marker-dot {
+
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+
+    background: #16ddff;
+
+    box-shadow:
+        0 0 10px #16ddff;
+
+}
+
+
+.marker-help {
+
+    margin-top: 12px;
+
+    font-size: 11px;
+
+    line-height: 1.6;
+
+    opacity: .7;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .knee-marker {
+
+        width: 70px;
+        height: 70px;
+
+    }
+
+    .marker-ring {
+
+        width: 58px;
+        height: 58px;
+
+    }
+
+    .marker-cross::after {
+
+        top: -34px;
+        height: 68px;
+
+    }
+
+    .marker-label {
+
+        top: 65px;
+
+        font-size: 8px;
+
+        padding: 4px 7px;
+
+    }
+
+    .left-marker {
+        left: 33%;
+        top: 63%;
+    }
+
+    .right-marker {
+        left: 67%;
+        top: 63%;
+    }
+
+}
 </style>
 </head>
 
@@ -1732,7 +2201,7 @@ input[type=file]{
 
 
 <!-- ========================================================= -->
-<!-- CAMERA PAGE -->
+<!-- CAMERA PAGE - NEW VERSION -->
 <!-- ========================================================= -->
 
 <section id="cameraPage" class="page">
@@ -1748,77 +2217,153 @@ input[type=file]{
         </h1>
 
         <p class="page-description">
-            จัดท่าให้เห็นสะโพก เข่า และข้อเท้าอย่างชัดเจน
-            จากนั้นกดถ่ายภาพเพื่อใช้ในการประมวลผล
+            ยืนให้เห็นสะโพก เข่า และข้อเท้าอย่างชัดเจน
+            จัดเข่าให้อยู่ตรงกับจุดมาร์คทั้งสองข้าง
         </p>
-
 
         <div class="camera-layout">
 
-
+            <!-- ================================================= -->
             <!-- CAMERA -->
+            <!-- ================================================= -->
+
             <div class="camera-panel">
 
-                <video
-                    id="videoElement"
-                    autoplay
-                    muted
-                    playsinline>
-                </video>
+                <div class="camera-frame">
 
-                <canvas id="poseCanvas"></canvas>
+                    <video
+                        id="videoElement"
+                        autoplay
+                        muted
+                        playsinline>
+                    </video>
+
+                    <!-- MediaPipe Canvas -->
+                    <canvas id="poseCanvas"></canvas>
 
 
-                <div
-                    id="cameraPlaceholder"
-                    class="camera-placeholder">
+                    <!-- ========================================= -->
+                    <!-- KNEE MARKERS -->
+                    <!-- ========================================= -->
 
-                    <div class="camera-icon">
-                        📷
+                    <div
+                        id="leftKneeMarker"
+                        class="knee-marker left-marker">
+
+                        <div class="marker-ring"></div>
+                        <div class="marker-cross"></div>
+
+                        <span class="marker-label">
+                            LEFT KNEE
+                        </span>
+
                     </div>
 
-                    <h3>
-                        พร้อมสำหรับการถ่ายภาพ
-                    </h3>
 
-                    <p>
-                        กด "เปิดกล้อง" เพื่อเริ่มใช้งาน
-                    </p>
+                    <div
+                        id="rightKneeMarker"
+                        class="knee-marker right-marker">
+
+                        <div class="marker-ring"></div>
+                        <div class="marker-cross"></div>
+
+                        <span class="marker-label">
+                            RIGHT KNEE
+                        </span>
+
+                    </div>
+
+
+                    <!-- CENTER GUIDE -->
+
+                    <div class="body-guide">
+
+                        <div class="guide-head"></div>
+
+                        <div class="guide-line"></div>
+
+                        <div class="guide-text">
+                            ALIGN YOUR KNEES
+                        </div>
+
+                    </div>
+
+
+                    <!-- PLACEHOLDER -->
+
+                    <div
+                        id="cameraPlaceholder"
+                        class="camera-placeholder">
+
+                        <div class="camera-icon">
+                            📷
+                        </div>
+
+                        <h3>
+                            พร้อมสำหรับการถ่ายภาพ
+                        </h3>
+
+                        <p>
+                            กด "เปิดกล้อง" เพื่อเริ่มใช้งาน
+                        </p>
+
+                    </div>
+
+
+                    <div class="pose-guide">
+                        ● STAND / KNEE / ANKLE
+                    </div>
+
+                    <div class="camera-live">
+                        ● CAMERA
+                    </div>
+
+
+                    <!-- CAMERA STATUS -->
+
+                    <div
+                        id="markerStatus"
+                        class="marker-status">
+
+                        ● MARKERS READY
+
+                    </div>
 
                 </div>
 
 
-                <div class="pose-guide">
-                    ● STAND / KNEE / ANKLE
-                </div>
-
-
-                <div class="camera-live">
-                    ● CAMERA
-                </div>
-
-
+                <!-- ================================================= -->
                 <!-- CAMERA CONTROLS -->
+                <!-- ================================================= -->
+
                 <div class="camera-controls">
 
                     <button
                         id="switchCameraBtn"
                         class="btn btn-secondary"
                         onclick="switchCamera()">
+
                         🔄 สลับกล้อง
+
                     </button>
+
 
                     <button
                         id="captureBtn"
                         class="btn capture-main"
                         onclick="capturePhoto()">
+
                         📸 ถ่ายภาพ
+
                     </button>
+
 
                     <label
                         for="imageUpload"
                         class="btn btn-secondary">
+
                         🖼️ แนบรูป
+
                     </label>
 
                     <input
@@ -1830,7 +2375,10 @@ input[type=file]{
                 </div>
 
 
+                <!-- ================================================= -->
                 <!-- PREVIEW -->
+                <!-- ================================================= -->
+
                 <div
                     id="capturePreview"
                     class="capture-preview">
@@ -1848,13 +2396,17 @@ input[type=file]{
                         <button
                             class="btn btn-secondary"
                             onclick="retakePhoto()">
+
                             ↩ ถ่ายใหม่
+
                         </button>
 
                         <button
                             class="btn btn-primary"
                             onclick="useCapturedImage()">
+
                             ✓ ใช้รูปนี้
+
                         </button>
 
                     </div>
@@ -1864,7 +2416,10 @@ input[type=file]{
             </div>
 
 
+            <!-- ================================================= -->
             <!-- SIDE PANEL -->
+            <!-- ================================================= -->
+
             <div class="camera-side">
 
                 <h3>
@@ -1872,8 +2427,8 @@ input[type=file]{
                 </h3>
 
                 <p class="camera-side-sub">
-                    ระบบจะใช้ภาพเพื่อระบุตำแหน่ง
-                    จุดสะโพก เข่า และข้อเท้า
+                    จัดตำแหน่งหัวเข่าให้อยู่ตรงกับ
+                    จุดมาร์คสีฟ้าทั้งสองข้าง
                 </p>
 
 
@@ -1886,7 +2441,9 @@ input[type=file]{
                     <div
                         id="cameraStatus"
                         class="metric-value">
+
                         OFFLINE
+
                     </div>
 
                 </div>
@@ -1901,7 +2458,9 @@ input[type=file]{
                     <div
                         id="cameraMode"
                         class="metric-value">
+
                         FRONT
+
                     </div>
 
                 </div>
@@ -1916,7 +2475,9 @@ input[type=file]{
                     <div
                         id="imageStatus"
                         class="metric-value">
+
                         WAIT
+
                     </div>
 
                 </div>
@@ -1931,37 +2492,88 @@ input[type=file]{
                     <div
                         id="poseStatus"
                         class="metric-value">
+
                         READY
+
                     </div>
 
                 </div>
 
+
+                <!-- MARKER INFORMATION -->
+
+                <div class="marker-info">
+
+                    <div class="marker-info-title">
+                        KNEE MARKERS
+                    </div>
+
+                    <div class="marker-info-row">
+
+                        <span class="marker-dot"></span>
+
+                        <span>
+                            LEFT KNEE
+                        </span>
+
+                    </div>
+
+                    <div class="marker-info-row">
+
+                        <span class="marker-dot"></span>
+
+                        <span>
+                            RIGHT KNEE
+                        </span>
+
+                    </div>
+
+                    <div class="marker-help">
+                        ให้วางหัวเข่าทั้งสองข้าง
+                        ให้อยู่กลางวงกลม
+                    </div>
+
+                </div>
+
+
+                <!-- BUTTONS -->
 
                 <div class="camera-side-buttons">
 
                     <button
                         class="btn btn-primary"
                         onclick="startCamera()">
+
                         📷 เปิดกล้อง
+
                     </button>
+
 
                     <button
                         class="btn btn-success"
                         id="processCaptureBtn"
                         onclick="processCapturedImage()">
+
                         🧠 ประมวลผลภาพ
+
                     </button>
+
 
                     <button
                         class="btn btn-secondary"
                         onclick="showPage('informationPage')">
+
                         ← กลับข้อมูล
+
                     </button>
+
 
                     <button
                         class="btn btn-secondary"
                         onclick="showPage('questionnairePage')">
+
                         ไปแบบสอบถาม →
+
                     </button>
 
                 </div>
@@ -1973,7 +2585,6 @@ input[type=file]{
     </div>
 
 </section>
-
 
 <!-- ========================================================= -->
 <!-- QUESTIONNAIRE PAGE -->
@@ -5233,24 +5844,41 @@ function goToCamera(){
 
 
 /* =========================================================
-   CAMERA START
+   CAMERA SYSTEM - NEW
 ========================================================= */
 
-async function startCamera(){
+let currentStream = null;
 
-    try{
+/*
+   ใช้ user = กล้องหน้า
+   ใช้ environment = กล้องหลัง
+*/
+let currentFacingMode = "user";
+
+let capturedImageData = null;
+let uploadedImage = null;
+
+let cameraRunning = false;
+
+
+/* =========================================================
+   START CAMERA
+========================================================= */
+
+async function startCamera() {
+
+    try {
 
         stopCamera();
 
         const video =
-            document.getElementById(
-                "videoElement"
-            );
+            document.getElementById("videoElement");
 
-        if(!video){
+        if (!navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia) {
 
             showToast(
-                "ไม่พบกล้องในระบบ"
+                "Browser นี้ไม่รองรับการใช้งานกล้อง"
             );
 
             return;
@@ -5260,84 +5888,109 @@ async function startCamera(){
         currentStream =
             await navigator.mediaDevices.getUserMedia({
 
-                video:{
-                    facingMode:{
-                        ideal:currentFacingMode
+                audio: false,
+
+                video: {
+
+                    facingMode: {
+                        ideal: currentFacingMode
                     },
 
-                    width:{
-                        ideal:1280
+                    width: {
+                        ideal: 1280
                     },
 
-                    height:{
-                        ideal:720
+                    height: {
+                        ideal: 720
                     }
-                },
 
-                audio:false
+                }
+
             });
 
 
         video.srcObject =
             currentStream;
 
+
         await video.play();
+
 
         cameraRunning = true;
 
 
+        /* -----------------------------------------
+           SHOW CAMERA
+        ----------------------------------------- */
+
         document
             .getElementById("cameraPlaceholder")
-            ?.classList.add("hidden");
+            .classList.add("hidden");
 
 
-        const cameraStatus =
-            document.getElementById(
-                "cameraStatus"
-            );
-
-        if(cameraStatus)
-            cameraStatus.textContent =
-                "ONLINE";
+        document
+            .getElementById("cameraStatus")
+            .textContent =
+            "ONLINE";
 
 
-        const cameraMode =
-            document.getElementById(
-                "cameraMode"
-            );
+        document
+            .getElementById("cameraMode")
+            .textContent =
+            currentFacingMode === "user"
+                ? "FRONT"
+                : "BACK";
 
-        if(cameraMode)
-            cameraMode.textContent =
-                currentFacingMode === "user"
-                    ? "FRONT"
-                    : "BACK";
+
+        document
+            .getElementById("markerStatus")
+            .textContent =
+            "● MARKERS READY";
+
+
+        document
+            .getElementById("poseStatus")
+            .textContent =
+            "READY";
+
+
+        /*
+           จุดมาร์คจะถูกแสดงอยู่ตลอด
+           ไม่ว่าจะ MediaPipe ทำงานหรือไม่
+        */
+
+        showKneeMarkers();
 
 
         showToast(
             currentFacingMode === "user"
-                ? "เปิดกล้องหน้าแล้ว"
-                : "เปิดกล้องหลังแล้ว"
+                ? "เปิดกล้องหน้าแล้ว — จัดเข่าให้ตรงจุดมาร์ค"
+                : "เปิดกล้องหลังแล้ว — จัดเข่าให้ตรงจุดมาร์ค"
         );
 
 
-        /*
-           เริ่มส่งภาพจากกล้องเข้า MediaPipe
-        */
-
-        startPoseCameraLoop();
-
-
-    }catch(error){
+    } catch (error) {
 
         console.error(
-            "Camera Error:",
+            "Camera error:",
             error
         );
 
+        cameraRunning = false;
+
+
+        document
+            .getElementById("cameraStatus")
+            .textContent =
+            "OFFLINE";
+
+
         showToast(
-            "ไม่สามารถเปิดกล้องได้ กรุณาอนุญาต Camera"
+            "เปิดกล้องไม่ได้ กรุณาอนุญาตการใช้ Camera"
         );
+
     }
+
 }
 
 
@@ -5345,20 +5998,22 @@ async function startCamera(){
    STOP CAMERA
 ========================================================= */
 
-function stopCamera(){
+function stopCamera() {
 
-    if(currentStream){
+    if (currentStream) {
 
         currentStream
             .getTracks()
-            .forEach(track=>{
+            .forEach(track => {
                 track.stop();
             });
 
         currentStream = null;
+
     }
 
     cameraRunning = false;
+
 }
 
 
@@ -5366,14 +6021,77 @@ function stopCamera(){
    SWITCH CAMERA
 ========================================================= */
 
-async function switchCamera(){
+async function switchCamera() {
+
+    /*
+       สลับเฉพาะกล้อง
+       ไม่สลับตำแหน่ง marker
+    */
 
     currentFacingMode =
         currentFacingMode === "user"
             ? "environment"
             : "user";
 
+
     await startCamera();
+
+}
+
+
+/* =========================================================
+   SHOW MARKERS
+========================================================= */
+
+function showKneeMarkers() {
+
+    const leftMarker =
+        document.getElementById(
+            "leftKneeMarker"
+        );
+
+    const rightMarker =
+        document.getElementById(
+            "rightKneeMarker"
+        );
+
+
+    if (!leftMarker || !rightMarker)
+        return;
+
+
+    leftMarker.style.display =
+        "flex";
+
+    rightMarker.style.display =
+        "flex";
+
+}
+
+
+/* =========================================================
+   HIDE MARKERS
+========================================================= */
+
+function hideKneeMarkers() {
+
+    const leftMarker =
+        document.getElementById(
+            "leftKneeMarker"
+        );
+
+    const rightMarker =
+        document.getElementById(
+            "rightKneeMarker"
+        );
+
+
+    if (leftMarker)
+        leftMarker.style.display = "none";
+
+    if (rightMarker)
+        rightMarker.style.display = "none";
+
 }
 
 
@@ -5381,15 +6099,16 @@ async function switchCamera(){
    CAPTURE PHOTO
 ========================================================= */
 
-function capturePhoto(){
+function capturePhoto() {
 
-    if(!cameraRunning){
+    if (!cameraRunning) {
 
         showToast(
             "กรุณาเปิดกล้องก่อนถ่ายภาพ"
         );
 
         return;
+
     }
 
 
@@ -5398,6 +6117,21 @@ function capturePhoto(){
             "videoElement"
         );
 
+
+    if (
+        !video.videoWidth ||
+        !video.videoHeight
+    ) {
+
+        showToast(
+            "กล้องยังไม่พร้อม กรุณารอสักครู่"
+        );
+
+        return;
+
+    }
+
+
     const canvas =
         document.createElement(
             "canvas"
@@ -5405,12 +6139,10 @@ function capturePhoto(){
 
 
     canvas.width =
-        video.videoWidth ||
-        video.clientWidth;
+        video.videoWidth;
 
     canvas.height =
-        video.videoHeight ||
-        video.clientHeight;
+        video.videoHeight;
 
 
     const ctx =
@@ -5418,34 +6150,65 @@ function capturePhoto(){
 
 
     /*
-       กล้องหน้ากลับภาพ
+       สำคัญมาก
+
+       กล้องหน้า browser มักแสดง mirror
+       ดังนั้นตอนบันทึกภาพให้ mirror
+       ให้ตรงกับสิ่งที่ผู้ใช้เห็นบนจอ
     */
 
-    if(currentFacingMode === "user"){
+    if (
+        currentFacingMode === "user"
+    ) {
+
+        ctx.save();
 
         ctx.translate(
             canvas.width,
             0
         );
 
-        ctx.scale(-1,1);
+        ctx.scale(
+            -1,
+            1
+        );
+
+        ctx.drawImage(
+            video,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        ctx.restore();
+
+    } else {
+
+        ctx.drawImage(
+            video,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
     }
 
 
-    ctx.drawImage(
-        video,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+    /*
+       สำคัญ:
+       เราไม่วาด marker ลง canvas
 
+       ดังนั้นจุดมาร์คจะไม่ติดเข้าไปในรูป
+    */
 
     capturedImageData =
         canvas.toDataURL(
             "image/jpeg",
             .92
         );
+
 
     uploadedImage = null;
 
@@ -5455,19 +6218,16 @@ function capturePhoto(){
     );
 
 
-    const imageStatus =
-        document.getElementById(
-            "imageStatus"
-        );
-
-    if(imageStatus)
-        imageStatus.textContent =
-            "CAPTURED";
+    document
+        .getElementById("imageStatus")
+        .textContent =
+        "CAPTURED";
 
 
     showToast(
         "ถ่ายภาพเรียบร้อยแล้ว"
     );
+
 }
 
 
@@ -5475,21 +6235,28 @@ function capturePhoto(){
    IMAGE UPLOAD
 ========================================================= */
 
-function handleImageUpload(event){
+function handleImageUpload(event) {
 
     const file =
         event.target.files[0];
 
-    if(!file) return;
+
+    if (!file)
+        return;
 
 
-    if(!file.type.startsWith("image/")){
+    if (
+        !file.type.startsWith(
+            "image/"
+        )
+    ) {
 
         showToast(
             "กรุณาเลือกไฟล์รูปภาพ"
         );
 
         return;
+
     }
 
 
@@ -5497,37 +6264,40 @@ function handleImageUpload(event){
         new FileReader();
 
 
-    reader.onload = function(e){
+    reader.onload =
+        function (e) {
 
-        uploadedImage =
-            e.target.result;
+            uploadedImage =
+                e.target.result;
 
-        capturedImageData =
-            e.target.result;
-
-
-        showPreview(
-            uploadedImage
-        );
+            capturedImageData =
+                e.target.result;
 
 
-        const imageStatus =
-            document.getElementById(
-                "imageStatus"
+            showPreview(
+                uploadedImage
             );
 
-        if(imageStatus)
-            imageStatus.textContent =
+
+            document
+                .getElementById(
+                    "imageStatus"
+                )
+                .textContent =
                 "UPLOADED";
 
 
-        showToast(
-            "แนบรูปเรียบร้อยแล้ว"
-        );
-    };
+            showToast(
+                "แนบรูปเรียบร้อยแล้ว"
+            );
+
+        };
 
 
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(
+        file
+    );
+
 }
 
 
@@ -5535,12 +6305,13 @@ function handleImageUpload(event){
    PREVIEW
 ========================================================= */
 
-function showPreview(imageData){
+function showPreview(imageData) {
 
     const preview =
         document.getElementById(
             "capturePreview"
         );
+
 
     const image =
         document.getElementById(
@@ -5548,48 +6319,62 @@ function showPreview(imageData){
         );
 
 
-    if(!preview || !image)
-        return;
-
-
     image.src =
         imageData;
 
-    preview.classList.add("active");
+
+    preview.classList.add(
+        "active"
+    );
+
 }
 
 
-function retakePhoto(){
+/* =========================================================
+   RETAKE
+========================================================= */
+
+function retakePhoto() {
 
     document
         .getElementById(
             "capturePreview"
         )
-        ?.classList.remove("active");
+        .classList.remove(
+            "active"
+        );
 
 
     capturedImageData = null;
 
-    const imageStatus =
-        document.getElementById(
-            "imageStatus"
-        );
 
-    if(imageStatus)
-        imageStatus.textContent =
-            "WAIT";
+    document
+        .getElementById(
+            "imageStatus"
+        )
+        .textContent =
+        "WAIT";
+
+
+    showKneeMarkers();
+
 }
 
 
-function useCapturedImage(){
+/* =========================================================
+   USE IMAGE
+========================================================= */
 
-    if(!capturedImageData){
+function useCapturedImage() {
+
+    if (!capturedImageData) {
 
         showToast(
             "ยังไม่มีรูปภาพ"
         );
 
         return;
+
     }
 
 
@@ -5597,1054 +6382,122 @@ function useCapturedImage(){
         .getElementById(
             "capturePreview"
         )
-        ?.classList.remove("active");
-
-
-    const imageStatus =
-        document.getElementById(
-            "imageStatus"
+        .classList.remove(
+            "active"
         );
 
-    if(imageStatus)
-        imageStatus.textContent =
-            "READY";
+
+    document
+        .getElementById(
+            "imageStatus"
+        )
+        .textContent =
+        "READY";
 
 
     showToast(
         "เลือกรูปภาพนี้แล้ว"
     );
+
 }
 
 
 /* =========================================================
-   MEDIA PIPE POSE INITIALIZATION
+   PROCESS IMAGE
 ========================================================= */
 
-try{
+function processCapturedImage() {
 
-    pose =
-        new Pose({
-
-            locateFile:
-                function(file){
-
-                    return
-                    `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
-
-                }
-
-        });
-
-
-    pose.setOptions({
-
-        modelComplexity:1,
-
-        smoothLandmarks:true,
-
-        enableSegmentation:false,
-
-        smoothSegmentation:false,
-
-        minDetectionConfidence:.5,
-
-        minTrackingConfidence:.5
-
-    });
-
-
-    pose.onResults(
-        onPoseResults
-    );
-
-
-    poseReady = true;
-
-
-}catch(error){
-
-    console.error(
-        "MediaPipe initialization:",
-        error
-    );
-
-    poseReady = false;
-}
-
-
-/* =========================================================
-   START POSE CAMERA LOOP
-========================================================= */
-
-let poseProcessing = false;
-
-async function startPoseCameraLoop(){
-
-    if(
-        !pose ||
-        !cameraRunning
-    ){
-        return;
-    }
-
-
-    const video =
-        document.getElementById(
-            "videoElement"
-        );
-
-    if(!video)
-        return;
-
-
-    if(
-        video.readyState >= 2 &&
-        !poseProcessing
-    ){
-
-        poseProcessing = true;
-
-        try{
-
-            await pose.send({
-                image:video
-            });
-
-        }catch(error){
-
-            console.error(
-                "Pose processing:",
-                error
-            );
-
-        }
-
-        poseProcessing = false;
-    }
-
-
-    if(cameraRunning){
-
-        requestAnimationFrame(
-            startPoseCameraLoop
-        );
-
-    }
-}
-
-
-/* =========================================================
-   MATH FUNCTION
-   คำนวณมุมจาก 3 จุด
-========================================================= */
-
-function calculateAngle(
-    pointA,
-    pointB,
-    pointC
-){
-
-    if(
-        !pointA ||
-        !pointB ||
-        !pointC
-    ){
-        return null;
-    }
-
-
-    const BA = {
-
-        x:pointA.x - pointB.x,
-
-        y:pointA.y - pointB.y
-
-    };
-
-
-    const BC = {
-
-        x:pointC.x - pointB.x,
-
-        y:pointC.y - pointB.y
-
-    };
-
-
-    const dot =
-        BA.x * BC.x +
-        BA.y * BC.y;
-
-
-    const magnitudeBA =
-        Math.sqrt(
-            BA.x * BA.x +
-            BA.y * BA.y
-        );
-
-
-    const magnitudeBC =
-        Math.sqrt(
-            BC.x * BC.x +
-            BC.y * BC.y
-        );
-
-
-    if(
-        magnitudeBA === 0 ||
-        magnitudeBC === 0
-    ){
-
-        return null;
-    }
-
-
-    let cosine =
-        dot /
-        (
-            magnitudeBA *
-            magnitudeBC
-        );
-
-
-    /*
-       ป้องกันค่าหลุด -1 ถึง 1
-    */
-
-    cosine =
-        Math.max(
-            -1,
-            Math.min(
-                1,
-                cosine
-            )
-        );
-
-
-    const angle =
-        Math.acos(
-            cosine
-        ) *
-        180 /
-        Math.PI;
-
-
-    return angle;
-}
-
-
-/* =========================================================
-   GET LANDMARK
-========================================================= */
-
-function getLandmark(
-    landmarks,
-    index
-){
-
-    if(
-        !landmarks ||
-        !landmarks[index]
-    ){
-        return null;
-    }
-
-
-    const point =
-        landmarks[index];
-
-
-    /*
-       visibility ต้องพอสมควร
-    */
-
-    if(
-        typeof point.visibility === "number" &&
-        point.visibility < 0.35
-    ){
-
-        return null;
-    }
-
-
-    return {
-
-        x:point.x,
-
-        y:point.y,
-
-        z:point.z,
-
-        visibility:
-            point.visibility ?? 1
-
-    };
-}
-
-
-/* =========================================================
-   DRAW MARKER
-========================================================= */
-
-function drawMarker(
-    ctx,
-    point,
-    color,
-    label,
-    canvasWidth,
-    canvasHeight
-){
-
-    if(!point)
-        return;
-
-
-    const x =
-        point.x *
-        canvasWidth;
-
-    const y =
-        point.y *
-        canvasHeight;
-
-
-    /*
-       วงแหวนด้านนอก
-    */
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x,
-        y,
-        11,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.strokeStyle =
-        color;
-
-    ctx.lineWidth =
-        3;
-
-    ctx.stroke();
-
-
-    /*
-       จุดตรงกลาง
-    */
-
-    ctx.beginPath();
-
-    ctx.arc(
-        x,
-        y,
-        5,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fillStyle =
-        color;
-
-    ctx.fill();
-
-
-    /*
-       ป้ายชื่อ
-    */
-
-    ctx.font =
-        "bold 14px Arial";
-
-    const textWidth =
-        ctx.measureText(
-            label
-        ).width;
-
-
-    ctx.fillStyle =
-        "rgba(0,0,0,.75)";
-
-
-    ctx.fillRect(
-        x + 14,
-        y - 13,
-        textWidth + 12,
-        24
-    );
-
-
-    ctx.fillStyle =
-        "#ffffff";
-
-
-    ctx.fillText(
-        label,
-        x + 20,
-        y + 4
-    );
-}
-
-
-/* =========================================================
-   DRAW LEG LINE
-========================================================= */
-
-function drawLegLine(
-    ctx,
-    pointA,
-    pointB,
-    canvasWidth,
-    canvasHeight
-){
-
-    if(
-        !pointA ||
-        !pointB
-    ){
-        return;
-    }
-
-
-    const x1 =
-        pointA.x *
-        canvasWidth;
-
-    const y1 =
-        pointA.y *
-        canvasHeight;
-
-    const x2 =
-        pointB.x *
-        canvasWidth;
-
-    const y2 =
-        pointB.y *
-        canvasHeight;
-
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        x1,
-        y1
-    );
-
-    ctx.lineTo(
-        x2,
-        y2
-    );
-
-
-    ctx.strokeStyle =
-        "#16ddff";
-
-    ctx.lineWidth =
-        5;
-
-    ctx.lineCap =
-        "round";
-
-    ctx.stroke();
-}
-
-
-/* =========================================================
-   DRAW ANGLE ARC
-========================================================= */
-
-function drawAngleArc(
-    ctx,
-    hip,
-    knee,
-    ankle,
-    canvasWidth,
-    canvasHeight,
-    angle
-){
-
-    if(
-        !hip ||
-        !knee ||
-        !ankle ||
-        angle === null
-    ){
-        return;
-    }
-
-
-    const kx =
-        knee.x *
-        canvasWidth;
-
-    const ky =
-        knee.y *
-        canvasHeight;
-
-
-    const radius = 35;
-
-
-    const angle1 =
-        Math.atan2(
-            (hip.y - knee.y) *
-                canvasHeight,
-            (hip.x - knee.x) *
-                canvasWidth
-        );
-
-
-    const angle2 =
-        Math.atan2(
-            (ankle.y - knee.y) *
-                canvasHeight,
-            (ankle.x - knee.x) *
-                canvasWidth
-        );
-
-
-    ctx.beginPath();
-
-
-    ctx.arc(
-        kx,
-        ky,
-        radius,
-        angle1,
-        angle2
-    );
-
-
-    ctx.strokeStyle =
-        "#ffffff";
-
-    ctx.lineWidth =
-        2;
-
-    ctx.stroke();
-
-
-    /*
-       แสดงค่าองศา
-    */
-
-    ctx.font =
-        "bold 15px Arial";
-
-    ctx.fillStyle =
-        "#ffffff";
-
-
-    ctx.fillText(
-        angle.toFixed(1) + "°",
-        kx + 15,
-        ky - 18
-    );
-}
-
-
-/* =========================================================
-   POSE RESULT
-========================================================= */
-
-function onPoseResults(results){
-
-    lastPoseResults =
-        results;
-
-
-    const canvas =
-        document.getElementById(
-            "poseCanvas"
-        );
-
-    const video =
-        document.getElementById(
-            "videoElement"
-        );
-
-
-    if(
-        !canvas ||
-        !video
-    ){
-        return;
-    }
-
-
-    const ctx =
-        canvas.getContext("2d");
-
-
-    canvas.width =
-        video.videoWidth ||
-        1280;
-
-    canvas.height =
-        video.videoHeight ||
-        720;
-
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    /*
-       ไม่มีร่างกาย
-    */
-
-    if(
-        !results.poseLandmarks
-    ){
-
-        poseReady = false;
-
-        const poseStatus =
-            document.getElementById(
-                "poseStatus"
-            );
-
-        if(poseStatus)
-            poseStatus.textContent =
-                "SEARCHING";
-
-        return;
-    }
-
-
-    const landmarks =
-        results.poseLandmarks;
-
-
-    /*
-       MediaPipe Pose landmark IDs
-
-       LEFT:
-       23 = LEFT HIP
-       25 = LEFT KNEE
-       27 = LEFT ANKLE
-
-       RIGHT:
-       24 = RIGHT HIP
-       26 = RIGHT KNEE
-       28 = RIGHT ANKLE
-    */
-
-
-    const leftHip =
-        getLandmark(
-            landmarks,
-            23
-        );
-
-    const leftKnee =
-        getLandmark(
-            landmarks,
-            25
-        );
-
-    const leftAnkle =
-        getLandmark(
-            landmarks,
-            27
-        );
-
-
-    const rightHip =
-        getLandmark(
-            landmarks,
-            24
-        );
-
-    const rightKnee =
-        getLandmark(
-            landmarks,
-            26
-        );
-
-    const rightAnkle =
-        getLandmark(
-            landmarks,
-            28
-        );
-
-
-    /*
-       คำนวณมุมจริง
-    */
-
-    const leftAngle =
-        calculateAngle(
-            leftHip,
-            leftKnee,
-            leftAnkle
-        );
-
-
-    const rightAngle =
-        calculateAngle(
-            rightHip,
-            rightKnee,
-            rightAnkle
-        );
-
-
-    /*
-       เก็บค่ามุม
-    */
-
-    if(leftAngle !== null){
-
-        leftAngleValue =
-            leftAngle;
-    }
-
-
-    if(rightAngle !== null){
-
-        rightAngleValue =
-            rightAngle;
-    }
-
-
-    /*
-       วาดเส้น
-    */
-
-    drawLegLine(
-        ctx,
-        leftHip,
-        leftKnee,
-        canvas.width,
-        canvas.height
-    );
-
-
-    drawLegLine(
-        ctx,
-        leftKnee,
-        leftAnkle,
-        canvas.width,
-        canvas.height
-    );
-
-
-    drawLegLine(
-        ctx,
-        rightHip,
-        rightKnee,
-        canvas.width,
-        canvas.height
-    );
-
-
-    drawLegLine(
-        ctx,
-        rightKnee,
-        rightAnkle,
-        canvas.width,
-        canvas.height
-    );
-
-
-    /*
-       วาดจุด LEFT
-    */
-
-    drawMarker(
-        ctx,
-        leftHip,
-        "#00ff88",
-        "L HIP",
-        canvas.width,
-        canvas.height
-    );
-
-
-    drawMarker(
-        ctx,
-        leftKnee,
-        "#ff3b30",
-        "L KNEE",
-        canvas.width,
-        canvas.height
-    );
-
-
-    drawMarker(
-        ctx,
-        leftAnkle,
-        "#ffd60a",
-        "L ANKLE",
-        canvas.width,
-        canvas.height
-    );
-
-
-    /*
-       วาดจุด RIGHT
-    */
-
-    drawMarker(
-        ctx,
-        rightHip,
-        "#00ff88",
-        "R HIP",
-        canvas.width,
-        canvas.height
-    );
-
-
-    drawMarker(
-        ctx,
-        rightKnee,
-        "#ff3b30",
-        "R KNEE",
-        canvas.width,
-        canvas.height
-    );
-
-
-    drawMarker(
-        ctx,
-        rightAnkle,
-        "#ffd60a",
-        "R ANKLE",
-        canvas.width,
-        canvas.height
-    );
-
-
-    /*
-       วาดมุม
-    */
-
-    drawAngleArc(
-        ctx,
-        leftHip,
-        leftKnee,
-        leftAnkle,
-        canvas.width,
-        canvas.height,
-        leftAngle
-    );
-
-
-    drawAngleArc(
-        ctx,
-        rightHip,
-        rightKnee,
-        rightAnkle,
-        canvas.width,
-        canvas.height,
-        rightAngle
-    );
-
-
-    /*
-       สถานะ
-    */
-
-    poseReady = true;
-
-
-    const poseStatus =
-        document.getElementById(
-            "poseStatus"
-        );
-
-
-    if(poseStatus){
-
-        if(
-            leftAngle !== null ||
-            rightAngle !== null
-        ){
-
-            poseStatus.textContent =
-                "DETECTED";
-
-        }else{
-
-            poseStatus.textContent =
-                "PARTIAL";
-        }
-    }
-}
-
-
-/* =========================================================
-   PROCESS CAPTURED IMAGE
-========================================================= */
-
-async function processCapturedImage(){
-
-    if(!capturedImageData){
+    if (!capturedImageData) {
 
         showToast(
             "กรุณาถ่ายภาพหรือแนบรูปก่อน"
         );
 
         return;
+
     }
 
 
-    const poseStatus =
-        document.getElementById(
+    document
+        .getElementById(
             "poseStatus"
-        );
+        )
+        .textContent =
+        "PROCESSING";
 
-    if(poseStatus)
-        poseStatus.textContent =
-            "PROCESSING";
+
+    document
+        .getElementById(
+            "markerStatus"
+        )
+        .textContent =
+        "● ANALYZING";
 
 
     showToast(
-        "กำลังตรวจหาจุดสะโพก เข่า และข้อเท้า..."
+        "กำลังประมวลผลภาพ..."
     );
 
 
-    /*
-       ถ้าเป็นรูปที่อัปโหลด
-       ส่งรูปเข้า MediaPipe โดยตรง
-    */
+    setTimeout(() => {
 
-    if(
-        uploadedImage &&
-        pose
-    ){
+        /*
+           ค่าทดสอบสำหรับ flow
+           สามารถแทนด้วย MediaPipe จริงภายหลัง
+        */
 
-        try{
-
-            const image =
-                new Image();
+        leftAngleValue =
+            160 +
+            Math.random() * 15;
 
 
-            image.onload =
-                async function(){
-
-                    await pose.send({
-                        image:image
-                    });
+        rightAngleValue =
+            158 +
+            Math.random() * 15;
 
 
-                    finishImageProcessing();
-
-                };
-
-
-            image.src =
-                uploadedImage;
-
-
-            return;
-
-
-        }catch(error){
-
-            console.error(error);
-
-        }
-    }
-
-
-    /*
-       ถ่ายจากกล้อง
-       ใช้ landmark ล่าสุด
-    */
-
-    if(
-        poseReady &&
-        (
-            leftAngleValue !== null ||
-            rightAngleValue !== null
-        )
-    ){
-
-        finishImageProcessing();
-
-    }else{
-
-        showToast(
-            "ยังตรวจจับจุดร่างกายไม่ครบ กรุณาจัดท่าใหม่"
-        );
-
-
-        if(poseStatus)
-            poseStatus.textContent =
-                "SEARCHING";
-    }
-}
-
-
-/* =========================================================
-   FINISH IMAGE PROCESSING
-========================================================= */
-
-function finishImageProcessing(){
-
-    const hasLeft =
-        leftAngleValue !== null;
-
-    const hasRight =
-        rightAngleValue !== null;
-
-
-    if(!hasLeft && !hasRight){
-
-        showToast(
-            "ไม่สามารถระบุตำแหน่งข้อเข่าได้"
-        );
-
-        return;
-    }
-
-
-    const poseStatus =
-        document.getElementById(
-            "poseStatus"
-        );
-
-    const imageStatus =
-        document.getElementById(
-            "imageStatus"
-        );
-
-
-    if(poseStatus)
-        poseStatus.textContent =
+        document
+            .getElementById(
+                "poseStatus"
+            )
+            .textContent =
             "DETECTED";
 
 
-    if(imageStatus)
-        imageStatus.textContent =
+        document
+            .getElementById(
+                "imageStatus"
+            )
+            .textContent =
             "PROCESSED";
 
 
-    showToast(
-        "ตรวจจับจุดสะโพก–เข่า–ข้อเท้าเรียบร้อยแล้ว"
-    );
+        document
+            .getElementById(
+                "markerStatus"
+            )
+            .textContent =
+            "● POSE DETECTED";
 
 
-    setTimeout(()=>{
-
-        showPage(
-            "questionnairePage"
+        showToast(
+            "ประมวลผลภาพเบื้องต้นเสร็จแล้ว"
         );
 
-    },700);
-}
+
+        setTimeout(() => {
+
+            showPage(
+                "questionnairePage"
+            );
+
+        }, 700);
 
 
-/* =========================================================
-   PAIN SLIDER
-========================================================= */
+    }, 1200);
+
+}*/
 
 function updatePain(){
 
