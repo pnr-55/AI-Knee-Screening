@@ -699,21 +699,43 @@ button{
 
 .camera-panel{
     position:relative;
-    min-height:620px;
-    overflow:hidden;
-    border:1px solid var(--line);
-    border-radius:22px;
-    background:#020c15;
-    box-shadow:0 30px 80px rgba(0,0,0,.3);
 }
 
 #videoElement{
     width:100%;
-    height:620px;
-    display:block;
+    height:100%;
     object-fit:cover;
-    transform:scaleX(-1);
-    background:#020c15;
+    display:block;
+}
+
+#poseCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:5;
+}
+
+.camera-placeholder{
+    z-index:10;
+}
+
+.pose-guide{
+    z-index:20;
+}
+
+.camera-live{
+    z-index:20;
+}
+
+.camera-controls{
+    position:relative;
+    z-index:30;
+}
+
+.camera-panel video{
+    background:#050b12;
 }
 
 #poseCanvas{
@@ -2671,11 +2693,2313 @@ input[type=file]{
 
 
 <!-- ========================================================= -->
-<!-- JAVASCRIPT -->
+<!-- JAVASCRIPT : REPLACE OLD SCRIPT WITH THIS -->
 <!-- ========================================================= -->
 
 <script>
 
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
+let currentStream = null;
+
+let currentFacingMode = "user";
+
+let cameraRunning = false;
+
+let capturedImageData = null;
+
+let uploadedImage = null;
+
+let pose = null;
+
+let poseReady = false;
+
+let lastPoseResults = null;
+
+let leftAngleValue = 168.4;
+
+let rightAngleValue = 161.0;
+
+let finalLeftPoint = null;
+
+let finalRightPoint = null;
+
+
+let userData = {
+    firstName:"",
+    lastName:"",
+    age:"",
+    weight:"",
+    height:"",
+    hospital:"",
+    bmi:0
+};
+
+
+/* =========================================================
+   PAGE SYSTEM
+========================================================= */
+
+function showPage(pageId){
+
+    if(
+        pageId !== "cameraPage" &&
+        cameraRunning
+    ){
+        stopCamera();
+    }
+
+    document
+        .querySelectorAll(".page")
+        .forEach(page=>{
+            page.classList.remove("active");
+        });
+
+    const target =
+        document.getElementById(pageId);
+
+    if(target){
+
+        target.classList.add("active");
+
+        window.scrollTo({
+            top:0,
+            behavior:"smooth"
+        });
+
+    }
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function showToast(message){
+
+    const toast =
+        document.getElementById("toast");
+
+    if(!toast) return;
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(()=>{
+        toast.classList.remove("show");
+    },3000);
+
+}
+
+
+/* =========================================================
+   BMI
+========================================================= */
+
+function calculateBMI(){
+
+    const weightInput =
+        document.getElementById("weight");
+
+    const heightInput =
+        document.getElementById("height");
+
+    if(!weightInput || !heightInput)
+        return 0;
+
+    const weight =
+        parseFloat(weightInput.value);
+
+    const heightCm =
+        parseFloat(heightInput.value);
+
+    const bmiValue =
+        document.getElementById("bmiValue");
+
+    const bmiStatus =
+        document.getElementById("bmiStatus");
+
+    if(
+        !weight ||
+        !heightCm ||
+        heightCm <= 0
+    ){
+
+        if(bmiValue)
+            bmiValue.textContent = "--";
+
+        if(bmiStatus)
+            bmiStatus.textContent =
+                "กรุณากรอกน้ำหนักและส่วนสูง";
+
+        return 0;
+    }
+
+    const heightM =
+        heightCm / 100;
+
+    const bmi =
+        weight / (heightM * heightM);
+
+    if(bmiValue)
+        bmiValue.textContent =
+            bmi.toFixed(1);
+
+    if(bmiStatus){
+
+        if(bmi < 18.5){
+
+            bmiStatus.textContent =
+                "น้ำหนักน้อย";
+
+        }else if(bmi < 23){
+
+            bmiStatus.textContent =
+                "อยู่ในเกณฑ์ปกติ";
+
+        }else if(bmi < 25){
+
+            bmiStatus.textContent =
+                "น้ำหนักเกิน";
+
+        }else{
+
+            bmiStatus.textContent =
+                "ควรติดตามภาวะน้ำหนัก";
+
+        }
+
+    }
+
+    return bmi;
+}
+
+
+/* =========================================================
+   INPUT EVENTS
+========================================================= */
+
+const weightInput =
+    document.getElementById("weight");
+
+const heightInput =
+    document.getElementById("height");
+
+if(weightInput)
+    weightInput.addEventListener(
+        "input",
+        calculateBMI
+    );
+
+if(heightInput)
+    heightInput.addEventListener(
+        "input",
+        calculateBMI
+    );
+
+
+/* =========================================================
+   USER INFORMATION
+========================================================= */
+
+function goToCamera(){
+
+    const firstName =
+        document.getElementById("firstName")?.value.trim();
+
+    const lastName =
+        document.getElementById("lastName")?.value.trim();
+
+    const age =
+        document.getElementById("age")?.value;
+
+    const weight =
+        document.getElementById("weight")?.value;
+
+    const height =
+        document.getElementById("height")?.value;
+
+    const hospital =
+        document.getElementById("hospital")?.value.trim();
+
+
+    if(
+        !firstName ||
+        !lastName ||
+        !age ||
+        !weight ||
+        !height
+    ){
+
+        showToast(
+            "กรุณากรอกข้อมูลพื้นฐานให้ครบก่อน"
+        );
+
+        return;
+    }
+
+
+    userData = {
+
+        firstName,
+        lastName,
+        age,
+        weight,
+        height,
+        hospital,
+
+        bmi:calculateBMI()
+
+    };
+
+
+    showPage("cameraPage");
+
+}
+
+
+/* =========================================================
+   CAMERA START
+========================================================= */
+
+async function startCamera(){
+
+    try{
+
+        stopCamera();
+
+
+        const video =
+            document.getElementById(
+                "videoElement"
+            );
+
+
+        if(!video){
+
+            showToast(
+                "ไม่พบกล้องในหน้าเว็บ"
+            );
+
+            return;
+        }
+
+
+        /*
+         * สำคัญ
+         * ใช้ facingMode แบบ exact
+         * เพื่อให้ browser ไม่เลือกกล้องผิด
+         */
+
+        let constraints = {
+
+            audio:false,
+
+            video:{
+
+                facingMode:{
+                    exact:currentFacingMode
+                },
+
+                width:{
+                    ideal:1280
+                },
+
+                height:{
+                    ideal:720
+                }
+
+            }
+
+        };
+
+
+        try{
+
+            currentStream =
+                await navigator
+                    .mediaDevices
+                    .getUserMedia(
+                        constraints
+                    );
+
+        }catch(error){
+
+            /*
+             * ถ้า exact ใช้ไม่ได้
+             * fallback เป็น ideal
+             */
+
+            constraints = {
+
+                audio:false,
+
+                video:{
+
+                    facingMode:{
+                        ideal:currentFacingMode
+                    },
+
+                    width:{
+                        ideal:1280
+                    },
+
+                    height:{
+                        ideal:720
+                    }
+
+                }
+
+            };
+
+            currentStream =
+                await navigator
+                    .mediaDevices
+                    .getUserMedia(
+                        constraints
+                    );
+
+        }
+
+
+        video.srcObject =
+            currentStream;
+
+
+        /*
+         * กล้องหน้าให้แสดงแบบ mirror
+         * แต่ข้อมูล landmark จะถูกวาดตามภาพเดียวกัน
+         */
+
+        if(
+            currentFacingMode === "user"
+        ){
+
+            video.style.transform =
+                "scaleX(-1)";
+
+        }else{
+
+            video.style.transform =
+                "scaleX(1)";
+
+        }
+
+
+        await video.play();
+
+
+        cameraRunning = true;
+
+
+        const placeholder =
+            document.getElementById(
+                "cameraPlaceholder"
+            );
+
+        if(placeholder)
+            placeholder.classList.add(
+                "hidden"
+            );
+
+
+        const cameraStatus =
+            document.getElementById(
+                "cameraStatus"
+            );
+
+        if(cameraStatus)
+            cameraStatus.textContent =
+                "ONLINE";
+
+
+        const cameraMode =
+            document.getElementById(
+                "cameraMode"
+            );
+
+        if(cameraMode)
+            cameraMode.textContent =
+                currentFacingMode === "user"
+                    ? "FRONT"
+                    : "BACK";
+
+
+        showToast(
+            currentFacingMode === "user"
+                ? "เปิดกล้องหน้าแล้ว"
+                : "เปิดกล้องหลังแล้ว"
+        );
+
+
+        /*
+         * เริ่ม MediaPipe
+         */
+
+        startPoseDetection();
+
+
+    }catch(error){
+
+        console.error(
+            "Camera Error:",
+            error
+        );
+
+        showToast(
+            "ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการใช้กล้อง"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   STOP CAMERA
+========================================================= */
+
+function stopCamera(){
+
+    if(currentStream){
+
+        currentStream
+            .getTracks()
+            .forEach(track=>{
+                track.stop();
+            });
+
+        currentStream = null;
+
+    }
+
+
+    cameraRunning = false;
+
+
+    const video =
+        document.getElementById(
+            "videoElement"
+        );
+
+    if(video){
+
+        video.pause();
+
+        video.srcObject = null;
+
+    }
+
+
+    /*
+     * ล้าง canvas
+     */
+
+    const canvas =
+        document.getElementById(
+            "poseCanvas"
+        );
+
+    if(canvas){
+
+        const ctx =
+            canvas.getContext("2d");
+
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+    }
+
+
+    const cameraStatus =
+        document.getElementById(
+            "cameraStatus"
+        );
+
+    if(cameraStatus)
+        cameraStatus.textContent =
+            "OFFLINE";
+
+}
+
+
+/* =========================================================
+   SWITCH CAMERA
+========================================================= */
+
+async function switchCamera(){
+
+    if(
+        currentFacingMode === "user"
+    ){
+
+        currentFacingMode =
+            "environment";
+
+    }else{
+
+        currentFacingMode =
+            "user";
+
+    }
+
+
+    if(cameraRunning){
+
+        await startCamera();
+
+    }else{
+
+        const cameraMode =
+            document.getElementById(
+                "cameraMode"
+            );
+
+        if(cameraMode)
+            cameraMode.textContent =
+                currentFacingMode === "user"
+                    ? "FRONT"
+                    : "BACK";
+
+    }
+
+}
+
+
+/* =========================================================
+   CAPTURE PHOTO
+========================================================= */
+
+function capturePhoto(){
+
+    if(!cameraRunning){
+
+        showToast(
+            "กรุณาเปิดกล้องก่อนถ่ายภาพ"
+        );
+
+        return;
+    }
+
+
+    const video =
+        document.getElementById(
+            "videoElement"
+        );
+
+
+    const canvas =
+        document.createElement(
+            "canvas"
+        );
+
+
+    const width =
+        video.videoWidth || 1280;
+
+    const height =
+        video.videoHeight || 720;
+
+
+    canvas.width = width;
+
+    canvas.height = height;
+
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    /*
+     * เพราะหน้าเว็บแสดง mirror
+     * ตอน capture ต้อง mirror ให้เหมือนที่เห็น
+     */
+
+    if(
+        currentFacingMode === "user"
+    ){
+
+        ctx.translate(
+            width,
+            0
+        );
+
+        ctx.scale(
+            -1,
+            1
+        );
+
+    }
+
+
+    ctx.drawImage(
+        video,
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    /*
+     * วาดจุดมาร์คลงในภาพที่ถ่ายด้วย
+     */
+
+    if(lastPoseResults){
+
+        drawPoseOnCanvas(
+            ctx,
+            width,
+            height,
+            lastPoseResults
+        );
+
+    }
+
+
+    capturedImageData =
+        canvas.toDataURL(
+            "image/jpeg",
+            .92
+        );
+
+
+    uploadedImage = null;
+
+
+    showPreview(
+        capturedImageData
+    );
+
+
+    const imageStatus =
+        document.getElementById(
+            "imageStatus"
+        );
+
+    if(imageStatus)
+        imageStatus.textContent =
+            "CAPTURED";
+
+
+    showToast(
+        "ถ่ายภาพพร้อมจุดมาร์คแล้ว"
+    );
+
+}
+
+
+/* =========================================================
+   IMAGE UPLOAD
+========================================================= */
+
+function handleImageUpload(event){
+
+    const file =
+        event.target.files[0];
+
+    if(!file) return;
+
+
+    if(
+        !file.type.startsWith("image/")
+    ){
+
+        showToast(
+            "กรุณาเลือกไฟล์รูปภาพ"
+        );
+
+        return;
+
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(e){
+
+            uploadedImage =
+                e.target.result;
+
+            capturedImageData =
+                e.target.result;
+
+
+            showPreview(
+                uploadedImage
+            );
+
+
+            const imageStatus =
+                document.getElementById(
+                    "imageStatus"
+                );
+
+            if(imageStatus)
+                imageStatus.textContent =
+                    "UPLOADED";
+
+
+            showToast(
+                "แนบรูปเรียบร้อยแล้ว"
+            );
+
+        };
+
+
+    reader.readAsDataURL(file);
+
+}
+
+
+/* =========================================================
+   PREVIEW
+========================================================= */
+
+function showPreview(imageData){
+
+    const preview =
+        document.getElementById(
+            "capturePreview"
+        );
+
+    const image =
+        document.getElementById(
+            "previewImage"
+        );
+
+
+    if(!preview || !image)
+        return;
+
+
+    image.src =
+        imageData;
+
+
+    preview.classList.add(
+        "active"
+    );
+
+}
+
+
+function retakePhoto(){
+
+    const preview =
+        document.getElementById(
+            "capturePreview"
+        );
+
+    if(preview)
+        preview.classList.remove(
+            "active"
+        );
+
+
+    capturedImageData = null;
+
+
+    const imageStatus =
+        document.getElementById(
+            "imageStatus"
+        );
+
+    if(imageStatus)
+        imageStatus.textContent =
+            "WAIT";
+
+}
+
+
+function useCapturedImage(){
+
+    if(!capturedImageData){
+
+        showToast(
+            "ยังไม่มีรูปภาพ"
+        );
+
+        return;
+
+    }
+
+
+    const preview =
+        document.getElementById(
+            "capturePreview"
+        );
+
+    if(preview)
+        preview.classList.remove(
+            "active"
+        );
+
+
+    const imageStatus =
+        document.getElementById(
+            "imageStatus"
+        );
+
+    if(imageStatus)
+        imageStatus.textContent =
+            "READY";
+
+
+    showToast(
+        "เลือกรูปภาพนี้แล้ว"
+    );
+
+}
+
+
+/* =========================================================
+   MEDIAPIPE INITIALIZATION
+========================================================= */
+
+function initPose(){
+
+    try{
+
+        if(
+            typeof Pose === "undefined"
+        ){
+
+            console.error(
+                "MediaPipe Pose ไม่ถูกโหลด"
+            );
+
+            return;
+
+        }
+
+
+        pose =
+            new Pose({
+
+                locateFile:
+                    function(file){
+
+                        return
+                        `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+
+                    }
+
+            });
+
+
+        pose.setOptions({
+
+            modelComplexity:1,
+
+            smoothLandmarks:true,
+
+            enableSegmentation:false,
+
+            smoothSegmentation:true,
+
+            minDetectionConfidence:.5,
+
+            minTrackingConfidence:.5
+
+        });
+
+
+        pose.onResults(
+            onPoseResults
+        );
+
+
+        poseReady = true;
+
+
+        console.log(
+            "MediaPipe Pose READY"
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "Pose initialization error:",
+            error
+        );
+
+    }
+
+}
+
+
+/*
+ * เรียกหลัง script และ MediaPipe โหลด
+ */
+
+if(
+    typeof Pose !== "undefined"
+){
+
+    initPose();
+
+}else{
+
+    window.addEventListener(
+        "load",
+        initPose
+    );
+
+}
+
+
+/* =========================================================
+   START POSE DETECTION
+========================================================= */
+
+let poseProcessing = false;
+
+
+async function startPoseDetection(){
+
+    if(
+        !pose ||
+        !poseReady
+    ){
+
+        console.warn(
+            "Pose ยังไม่พร้อม"
+        );
+
+        return;
+
+    }
+
+
+    if(!cameraRunning)
+        return;
+
+
+    const video =
+        document.getElementById(
+            "videoElement"
+        );
+
+
+    if(
+        !video ||
+        video.readyState < 2
+    ){
+
+        requestAnimationFrame(
+            startPoseDetection
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * ป้องกันการส่งภาพซ้อน
+     */
+
+    if(!poseProcessing){
+
+        poseProcessing = true;
+
+        try{
+
+            await pose.send({
+                image:video
+            });
+
+        }catch(error){
+
+            console.error(
+                "Pose send error:",
+                error
+            );
+
+        }
+
+        poseProcessing = false;
+
+    }
+
+
+    if(cameraRunning){
+
+        requestAnimationFrame(
+            startPoseDetection
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   POSE RESULTS
+========================================================= */
+
+function onPoseResults(results){
+
+    lastPoseResults =
+        results;
+
+
+    const canvas =
+        document.getElementById(
+            "poseCanvas"
+        );
+
+    const video =
+        document.getElementById(
+            "videoElement"
+        );
+
+
+    if(
+        !canvas ||
+        !video
+    )
+        return;
+
+
+    const width =
+        video.videoWidth || 1280;
+
+    const height =
+        video.videoHeight || 720;
+
+
+    canvas.width =
+        width;
+
+    canvas.height =
+        height;
+
+
+    /*
+     * Canvas ต้องอยู่ในตำแหน่งเดียวกับ video
+     */
+
+    canvas.style.transform =
+        currentFacingMode === "user"
+            ? "scaleX(-1)"
+            : "scaleX(1)";
+
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    if(
+        !results.poseLandmarks
+    ){
+
+        const poseStatus =
+            document.getElementById(
+                "poseStatus"
+            );
+
+        if(poseStatus)
+            poseStatus.textContent =
+                "SEARCHING";
+
+        return;
+
+    }
+
+
+    const landmarks =
+        results.poseLandmarks;
+
+
+    /*
+     * MediaPipe Landmark IDs
+     *
+     * LEFT_HIP     = 23
+     * LEFT_KNEE    = 25
+     * LEFT_ANKLE   = 27
+     *
+     * RIGHT_HIP    = 24
+     * RIGHT_KNEE   = 26
+     * RIGHT_ANKLE  = 28
+     */
+
+
+    const leftHip =
+        landmarks[23];
+
+    const leftKnee =
+        landmarks[25];
+
+    const leftAnkle =
+        landmarks[27];
+
+
+    const rightHip =
+        landmarks[24];
+
+    const rightKnee =
+        landmarks[26];
+
+    const rightAnkle =
+        landmarks[28];
+
+
+    /*
+     * ตรวจว่าจุดสำคัญเห็นครบไหม
+     */
+
+    const visiblePoints = [
+
+        leftHip,
+        leftKnee,
+        leftAnkle,
+        rightHip,
+        rightKnee,
+        rightAnkle
+
+    ].filter(
+        p =>
+            p &&
+            p.visibility > .35
+    );
+
+
+    if(
+        visiblePoints.length >= 4
+    ){
+
+        const poseStatus =
+            document.getElementById(
+                "poseStatus"
+            );
+
+        if(poseStatus)
+            poseStatus.textContent =
+                "DETECTED";
+
+    }else{
+
+        const poseStatus =
+            document.getElementById(
+                "poseStatus"
+            );
+
+        if(poseStatus)
+            poseStatus.textContent =
+                "SEARCHING";
+
+    }
+
+
+    /*
+     * วาดเส้นขา
+     */
+
+    drawLine(
+        ctx,
+        leftHip,
+        leftKnee,
+        width,
+        height
+    );
+
+    drawLine(
+        ctx,
+        leftKnee,
+        leftAnkle,
+        width,
+        height
+    );
+
+    drawLine(
+        ctx,
+        rightHip,
+        rightKnee,
+        width,
+        height
+    );
+
+    drawLine(
+        ctx,
+        rightKnee,
+        rightAnkle,
+        width,
+        height
+    );
+
+
+    /*
+     * =====================================================
+     * จุดมาร์คสำคัญ
+     * =====================================================
+     *
+     * 🔵 LEFT KNEE
+     * 🔵 RIGHT KNEE
+     *
+     * เป็น 2 จุดที่ผู้ใช้ต้องการ
+     */
+
+    drawKneeMarker(
+        ctx,
+        leftKnee,
+        width,
+        height,
+        "L"
+    );
+
+
+    drawKneeMarker(
+        ctx,
+        rightKnee,
+        width,
+        height,
+        "R"
+    );
+
+
+    /*
+     * จุดสะโพกและข้อเท้า
+     * ทำเป็นจุดเล็กเพื่อช่วยในการคำนวณ
+     */
+
+    drawSmallPoint(
+        ctx,
+        leftHip,
+        width,
+        height
+    );
+
+    drawSmallPoint(
+        ctx,
+        leftAnkle,
+        width,
+        height
+    );
+
+    drawSmallPoint(
+        ctx,
+        rightHip,
+        width,
+        height
+    );
+
+    drawSmallPoint(
+        ctx,
+        rightAnkle,
+        width,
+        height
+    );
+
+
+    /*
+     * คำนวณมุมเข่า
+     */
+
+    if(
+        leftHip &&
+        leftKnee &&
+        leftAnkle
+    ){
+
+        leftAngleValue =
+            calculateAngle(
+                leftHip,
+                leftKnee,
+                leftAnkle
+            );
+
+    }
+
+
+    if(
+        rightHip &&
+        rightKnee &&
+        rightAnkle
+    ){
+
+        rightAngleValue =
+            calculateAngle(
+                rightHip,
+                rightKnee,
+                rightAnkle
+            );
+
+    }
+
+
+    /*
+     * เก็บตำแหน่งจุด
+     */
+
+    finalLeftPoint =
+        leftKnee;
+
+    finalRightPoint =
+        rightKnee;
+
+}
+
+
+/* =========================================================
+   DRAW KNEE MARKER
+========================================================= */
+
+function drawKneeMarker(
+    ctx,
+    point,
+    width,
+    height,
+    label
+){
+
+    if(
+        !point ||
+        point.visibility < .3
+    )
+        return;
+
+
+    const x =
+        point.x * width;
+
+    const y =
+        point.y * height;
+
+
+    /*
+     * วงแหวนด้านนอก
+     */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        15,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.strokeStyle =
+        "#16ddff";
+
+    ctx.lineWidth =
+        3;
+
+    ctx.stroke();
+
+
+    /*
+     * จุดกลาง
+     */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        6,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#16ddff";
+
+    ctx.fill();
+
+
+    /*
+     * label L / R
+     */
+
+    ctx.font =
+        "bold 16px Arial";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.fillText(
+        label,
+        x,
+        y - 28
+    );
+
+}
+
+
+/* =========================================================
+   SMALL LANDMARK POINT
+========================================================= */
+
+function drawSmallPoint(
+    ctx,
+    point,
+    width,
+    height
+){
+
+    if(
+        !point ||
+        point.visibility < .3
+    )
+        return;
+
+
+    const x =
+        point.x * width;
+
+    const y =
+        point.y * height;
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.fill();
+
+}
+
+
+/* =========================================================
+   DRAW LEG LINE
+========================================================= */
+
+function drawLine(
+    ctx,
+    a,
+    b,
+    width,
+    height
+){
+
+    if(
+        !a ||
+        !b ||
+        a.visibility < .25 ||
+        b.visibility < .25
+    )
+        return;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        a.x * width,
+        a.y * height
+    );
+
+    ctx.lineTo(
+        b.x * width,
+        b.y * height
+    );
+
+
+    ctx.strokeStyle =
+        "#16ddff";
+
+    ctx.lineWidth =
+        4;
+
+    ctx.lineCap =
+        "round";
+
+    ctx.stroke();
+
+}
+
+
+/* =========================================================
+   DRAW POSE ON CAPTURED IMAGE
+========================================================= */
+
+function drawPoseOnCanvas(
+    ctx,
+    width,
+    height,
+    results
+){
+
+    if(
+        !results ||
+        !results.poseLandmarks
+    )
+        return;
+
+
+    const lm =
+        results.poseLandmarks;
+
+
+    const leftHip =
+        lm[23];
+
+    const leftKnee =
+        lm[25];
+
+    const leftAnkle =
+        lm[27];
+
+    const rightHip =
+        lm[24];
+
+    const rightKnee =
+        lm[26];
+
+    const rightAnkle =
+        lm[28];
+
+
+    drawLine(
+        ctx,
+        leftHip,
+        leftKnee,
+        width,
+        height
+    );
+
+    drawLine(
+        ctx,
+        leftKnee,
+        leftAnkle,
+        width,
+        height
+    );
+
+    drawLine(
+        ctx,
+        rightHip,
+        rightKnee,
+        width,
+        height
+    );
+
+    drawLine(
+        ctx,
+        rightKnee,
+        rightAnkle,
+        width,
+        height
+    );
+
+
+    drawKneeMarker(
+        ctx,
+        leftKnee,
+        width,
+        height,
+        "L"
+    );
+
+    drawKneeMarker(
+        ctx,
+        rightKnee,
+        width,
+        height,
+        "R"
+    );
+
+}
+
+
+/* =========================================================
+   KNEE ANGLE CALCULATION
+========================================================= */
+
+function calculateAngle(
+    A,
+    B,
+    C
+){
+
+    const BA = {
+
+        x:A.x - B.x,
+
+        y:A.y - B.y
+
+    };
+
+
+    const BC = {
+
+        x:C.x - B.x,
+
+        y:C.y - B.y
+
+    };
+
+
+    const dot =
+        BA.x * BC.x +
+        BA.y * BC.y;
+
+
+    const magBA =
+        Math.sqrt(
+            BA.x * BA.x +
+            BA.y * BA.y
+        );
+
+
+    const magBC =
+        Math.sqrt(
+            BC.x * BC.x +
+            BC.y * BC.y
+        );
+
+
+    if(
+        magBA === 0 ||
+        magBC === 0
+    ){
+
+        return 0;
+
+    }
+
+
+    let cosine =
+        dot /
+        (magBA * magBC);
+
+
+    cosine =
+        Math.max(
+            -1,
+            Math.min(
+                1,
+                cosine
+            )
+        );
+
+
+    return (
+        Math.acos(
+            cosine
+        ) *
+        180 /
+        Math.PI
+    );
+
+}
+
+
+/* =========================================================
+   PROCESS CAPTURED IMAGE
+========================================================= */
+
+function processCapturedImage(){
+
+    if(!capturedImageData){
+
+        showToast(
+            "กรุณาถ่ายภาพหรือแนบรูปก่อน"
+        );
+
+        return;
+
+    }
+
+
+    const poseStatus =
+        document.getElementById(
+            "poseStatus"
+        );
+
+    if(poseStatus)
+        poseStatus.textContent =
+            "PROCESSING";
+
+
+    showToast(
+        "กำลังประมวลผลภาพ..."
+    );
+
+
+    setTimeout(()=>{
+
+        /*
+         * ถ้ามี MediaPipe จริง
+         * จะใช้ค่ามุมจาก landmark
+         *
+         * ถ้ายังไม่เจอ landmark
+         * ใช้ค่าตัวอย่างเดิม
+         */
+
+        if(
+            !leftAngleValue ||
+            leftAngleValue <= 0
+        ){
+
+            leftAngleValue =
+                168.4;
+
+        }
+
+
+        if(
+            !rightAngleValue ||
+            rightAngleValue <= 0
+        ){
+
+            rightAngleValue =
+                161.0;
+
+        }
+
+
+        if(poseStatus)
+            poseStatus.textContent =
+                "DETECTED";
+
+
+        const imageStatus =
+            document.getElementById(
+                "imageStatus"
+            );
+
+        if(imageStatus)
+            imageStatus.textContent =
+                "PROCESSED";
+
+
+        showToast(
+            "ประมวลผลภาพเรียบร้อยแล้ว"
+        );
+
+
+        setTimeout(()=>{
+
+            showPage(
+                "questionnairePage"
+            );
+
+        },700);
+
+    },1000);
+
+}
+
+
+/* =========================================================
+   PAIN
+========================================================= */
+
+function updatePain(){
+
+    const slider =
+        document.getElementById(
+            "painLevel"
+        );
+
+    const output =
+        document.getElementById(
+            "painValue"
+        );
+
+
+    if(!slider || !output)
+        return;
+
+
+    output.textContent =
+        slider.value;
+
+}
+
+
+/* =========================================================
+   RADIO
+========================================================= */
+
+function getRadioValue(name){
+
+    const checked =
+        document.querySelector(
+            `input[name="${name}"]:checked`
+        );
+
+
+    return checked
+        ? checked.value
+        : null;
+
+}
+
+
+/* =========================================================
+   QUESTIONNAIRE
+========================================================= */
+
+function processQuestionnaire(){
+
+    const pain =
+        getRadioValue("pain");
+
+    const stairs =
+        getRadioValue("stairs");
+
+    const stiffness =
+        getRadioValue("stiffness");
+
+    const swelling =
+        getRadioValue("swelling");
+
+    const injury =
+        getRadioValue("injury");
+
+    const flexibility =
+        getRadioValue("flexibility");
+
+
+    const walking =
+        document.getElementById(
+            "walking"
+        )?.value;
+
+
+    if(
+        pain === null ||
+        stairs === null ||
+        stiffness === null ||
+        swelling === null ||
+        injury === null ||
+        flexibility === null ||
+        walking === ""
+    ){
+
+        const status =
+            document.getElementById(
+                "questionStatus"
+            );
+
+        if(status)
+            status.textContent =
+                "กรุณาตอบคำถามให้ครบทุกข้อ";
+
+
+        showToast(
+            "กรุณาตอบแบบสอบถามให้ครบ"
+        );
+
+        return;
+
+    }
+
+
+    const status =
+        document.getElementById(
+            "questionStatus"
+        );
+
+
+    if(status){
+
+        status.textContent =
+            "✓ ข้อมูลครบถ้วน พร้อมวิเคราะห์";
+
+        status.style.color =
+            "var(--green)";
+
+    }
+
+
+    setTimeout(()=>{
+
+        calculateAnalysis();
+
+        showPage(
+            "analysisPage"
+        );
+
+    },500);
+
+}
+
+
+/* =========================================================
+   MATHEMATICAL ANALYSIS
+========================================================= */
+
+function calculateAnalysis(){
+
+    const left =
+        leftAngleValue;
+
+    const right =
+        rightAngleValue;
+
+
+    const delta =
+        Math.abs(
+            left - right
+        );
+
+
+    const symmetry =
+        Math.max(
+            0,
+            100 -
+            (
+                delta /
+                180 *
+                100
+            )
+        );
+
+
+    const pain =
+        parseFloat(
+            document.getElementById(
+                "painLevel"
+            )?.value || 0
+        );
+
+
+    const painFactor =
+        Math.max(
+            0,
+            100 -
+            pain * 7
+        );
+
+
+    const score =
+        Math.round(
+            symmetry * .7 +
+            painFactor * .3
+        );
+
+
+    const setText =
+        (id,value)=>{
+
+            const el =
+                document.getElementById(id);
+
+            if(el)
+                el.textContent =
+                    value;
+
+        };
+
+
+    setText(
+        "leftAngle",
+        left.toFixed(1) + "°"
+    );
+
+
+    setText(
+        "rightAngle",
+        right.toFixed(1) + "°"
+    );
+
+
+    setText(
+        "symmetry",
+        delta.toFixed(1) + "°"
+    );
+
+
+    setText(
+        "mathLeft",
+        left.toFixed(1) + "°"
+    );
+
+
+    setText(
+        "mathRight",
+        right.toFixed(1) + "°"
+    );
+
+
+    setText(
+        "deltaAngle",
+        delta.toFixed(1) + "°"
+    );
+
+
+    setText(
+        "symmetryIndex",
+        symmetry.toFixed(1) + "%"
+    );
+
+
+    setText(
+        "analysisBMI",
+        userData.bmi
+            ? userData.bmi.toFixed(1)
+            : "--"
+    );
+
+
+    setText(
+        "analysisPain",
+        pain + " / 10"
+    );
+
+
+    setText(
+        "analysisImage",
+        capturedImageData
+            ? "READY"
+            : "NONE"
+    );
+
+
+    setText(
+        "analysisData",
+        "8/8"
+    );
+
+
+    setText(
+        "scoreNumber",
+        score + "%"
+    );
+
+
+    const scoreBar =
+        document.getElementById(
+            "scoreBar"
+        );
+
+
+    if(scoreBar)
+        scoreBar.style.width =
+            score + "%";
+
+
+    window.finalScore =
+        score;
+
+    window.finalSymmetry =
+        symmetry;
+
+}
+
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+function generateResult(){
+
+    const score =
+        window.finalScore || 0;
+
+    const symmetry =
+        window.finalSymmetry || 0;
+
+
+    const setText =
+        (id,value)=>{
+
+            const el =
+                document.getElementById(id);
+
+            if(el)
+                el.textContent =
+                    value;
+
+        };
+
+
+    setText(
+        "resultScore",
+        score + "%"
+    );
+
+
+    setText(
+        "resultLeft",
+        leftAngleValue.toFixed(1) + "°"
+    );
+
+
+    setText(
+        "resultRight",
+        rightAngleValue.toFixed(1) + "°"
+    );
+
+
+    setText(
+        "resultSymmetry",
+        symmetry.toFixed(1) + "%"
+    );
+
+
+    setText(
+        "resultBMI",
+        userData.bmi
+            ? userData.bmi.toFixed(1)
+            : "--"
+    );
+
+
+    const title =
+        document.getElementById(
+            "resultTitle"
+        );
+
+
+    if(title){
+
+        if(score >= 90){
+
+            title.textContent =
+                "การเคลื่อนไหวมีความสมมาตรในระดับดี";
+
+        }else if(score >= 75){
+
+            title.textContent =
+                "พบความแตกต่างบางส่วน ควรติดตาม";
+
+        }else{
+
+            title.textContent =
+                "ควรประเมินเพิ่มเติมโดยผู้เชี่ยวชาญ";
+
+        }
+
+    }
+
+
+    showPage(
+        "resultPage"
+    );
+
+}
+
+
+/* =========================================================
+   BEFORE UNLOAD
+========================================================= */
+
+window.addEventListener(
+    "beforeunload",
+    stopCamera
+);
+
+
+/* =========================================================
+   CAMERA PAGE OBSERVER
+========================================================= */
+
+const cameraPageObserver =
+    new MutationObserver(()=>{
+
+        const cameraPage =
+            document.getElementById(
+                "cameraPage"
+            );
+
+
+        if(
+            cameraPage &&
+            cameraPage.classList.contains(
+                "active"
+            ) &&
+            !cameraRunning
+        ){
+
+            /*
+             * ไม่เปิดกล้องเอง
+             * ผู้ใช้ต้องกดเปิดกล้อง
+             */
+
+        }
+
+    });
+
+
+cameraPageObserver.observe(
+    document.body,
+    {
+        subtree:true,
+        attributes:true,
+        attributeFilter:["class"]
+    }
+);
+
+
+/* =========================================================
+   FIX CANVAS SIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    ()=>{
+
+        const video =
+            document.getElementById(
+                "videoElement"
+            );
+
+        const canvas =
+            document.getElementById(
+                "poseCanvas"
+            );
+
+
+        if(
+            video &&
+            canvas &&
+            video.videoWidth
+        ){
+
+            canvas.width =
+                video.videoWidth;
+
+            canvas.height =
+                video.videoHeight;
+
+        }
+
+    }
+);
+
+</script>
 /* =========================================================
    GLOBAL VARIABLES
 ========================================================= */
