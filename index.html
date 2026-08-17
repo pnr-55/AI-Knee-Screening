@@ -1,238 +1,1717 @@
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KneeAI - ระบบคัดกรองและประเมินความเสี่ยงโรคข้อเข่าเสื่อมและภาวะขาโก่ง</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Prompt -->
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- MediaPipe Pose & Camera Utils -->
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-    <style>
-        body { font-family: 'Prompt', sans-serif; }
-        .luxury-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); }
-        .gold-gradient { background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); }
-    </style>
-</head>
-<body class="bg-slate-50 text-slate-800 antialiased" x-data="kneeApp()">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KneeAI V9 — AI Standing Posture Screening</title>
 
-    <!-- Top Warning -->
-    <div class="bg-amber-50 border-b border-amber-200 text-amber-900 px-4 py-2 text-xs md:text-sm text-center sticky top-0 z-50">
-        ⚠️ คำวินิจฉัยจากระบบ AI เป็นการประเมินเบื้องต้นเท่านั้น ควรปรึกษาแพทย์เพื่อรับการวินิจฉัยที่ถูกต้อง
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap');
+
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:'Prompt',sans-serif;
+    background:#f5f7fb;
+    color:#172033;
+}
+
+.gradient{
+    background:linear-gradient(135deg,#0b1736,#164e9b);
+}
+
+.gold{
+    background:linear-gradient(135deg,#d89a24,#f7c95d);
+}
+
+.card{
+    background:#fff;
+    border:1px solid #e8edf5;
+    border-radius:24px;
+    box-shadow:0 12px 40px rgba(15,23,42,.06);
+}
+
+.btn{
+    border:0;
+    border-radius:14px;
+    padding:13px 22px;
+    font-family:inherit;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.btn:hover{
+    transform:translateY(-1px);
+}
+
+.btn-primary{
+    background:#102a56;
+    color:#fff;
+}
+
+.btn-gold{
+    background:linear-gradient(135deg,#d89a24,#f5c451);
+    color:#172033;
+}
+
+.btn-light{
+    background:#eef3fa;
+    color:#24334f;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 12px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+}
+
+input,select{
+    width:100%;
+    padding:13px 14px;
+    border:1px solid #dce3ed;
+    border-radius:13px;
+    background:#f9fbfd;
+    outline:none;
+    font-family:inherit;
+}
+
+input:focus,select:focus{
+    border-color:#2563eb;
+    background:#fff;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+video{
+    width:100%;
+    height:auto;
+    display:block;
+    background:#000;
+}
+
+canvas{
+    width:100%;
+    height:auto;
+    display:block;
+}
+
+.camera-box{
+    position:relative;
+    background:#020617;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.camera-guide{
+    position:absolute;
+    inset:7%;
+    border:2px dashed rgba(255,255,255,.55);
+    border-radius:18px;
+    pointer-events:none;
+}
+
+.guide-text{
+    position:absolute;
+    top:12px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(0,0,0,.65);
+    color:#fff;
+    padding:7px 14px;
+    border-radius:999px;
+    font-size:12px;
+    white-space:nowrap;
+}
+
+.stat{
+    background:#f7f9fc;
+    border:1px solid #e7ecf3;
+    border-radius:17px;
+    padding:17px;
+}
+
+.stat-value{
+    font-size:27px;
+    font-weight:800;
+    color:#0f2f65;
+}
+
+.result-good{
+    background:#ecfdf5;
+    border-color:#bbf7d0;
+    color:#166534;
+}
+
+.result-warn{
+    background:#fff7ed;
+    border-color:#fed7aa;
+    color:#9a3412;
+}
+
+.result-danger{
+    background:#fff1f2;
+    border-color:#fecdd3;
+    color:#be123c;
+}
+
+.small{
+    font-size:12px;
+    color:#64748b;
+}
+
+.step{
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+
+.step-number{
+    width:31px;
+    height:31px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:12px;
+}
+
+.step-active{
+    background:#123b78;
+    color:#fff;
+}
+
+.step-done{
+    background:#16a34a;
+    color:#fff;
+}
+
+.step-idle{
+    background:#e8edf5;
+    color:#64748b;
+}
+</style>
+</head>
+
+<body>
+
+<!-- WARNING -->
+<div class="bg-amber-50 border-b border-amber-200 text-amber-900 text-center text-xs md:text-sm px-4 py-2">
+⚠️ ระบบนี้เป็นการคัดกรองเบื้องต้นจากภาพ ไม่ใช่การวินิจฉัยโรคโดยแพทย์
+</div>
+
+<!-- HEADER -->
+<header class="bg-white border-b border-slate-100 sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-5 py-4 flex justify-between items-center">
+
+    <div class="flex items-center gap-3 cursor-pointer" onclick="showPage('home')">
+        <div class="gradient text-white w-11 h-11 rounded-xl flex items-center justify-center font-bold text-xl">
+            K
+        </div>
+
+        <div>
+            <div class="font-bold text-xl text-blue-950">KneeAI</div>
+            <div class="text-[11px] text-slate-400">
+                AI Standing Posture Screening
+            </div>
+        </div>
     </div>
 
-    <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-md sticky top-[37px] z-40 border-b border-slate-100">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3 cursor-pointer" @click="currentView = 'home'">
-                <div class="luxury-gradient text-white p-2.5 rounded-2xl shadow-md font-bold text-lg">K</div>
-                <div>
-                    <span class="text-xl font-bold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">KneeAI</span>
-                    <span class="text-xs block text-slate-400 font-medium">AI Real-time Assessment</span>
-                </div>
-            </div>
-            <button @click="currentView = 'doctor-dashboard'" class="text-xs md:text-sm bg-slate-900 text-white px-4 py-2.5 rounded-xl font-medium hover:bg-slate-800 transition shadow-md">
-                👨‍⚕️ เข้าสู่ระบบแพทย์
-            </button>
-        </div>
-    </header>
+    <button class="btn btn-primary text-sm" onclick="showPage('doctor')">
+        👨‍⚕️ Doctor Portal
+    </button>
 
-    <main class="max-w-7xl mx-auto px-4 py-8">
+</div>
+</header>
 
-        <!-- 1. หน้าแรก -->
-        <section x-show="currentView === 'home'" class="space-y-12">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-8">
-                <div class="space-y-6">
-                    <span class="bg-blue-50 text-blue-700 text-xs font-bold px-3.5 py-1.5 rounded-full border border-blue-100">
-                        ✨ ขับเคลื่อนด้วย AI Computer Vision ตัวจริง
-                    </span>
-                    <h1 class="text-4xl lg:text-5xl font-bold tracking-tight leading-tight text-slate-900">
-                        ประเมินความเสี่ยง<br><span class="text-blue-600">ข้อเข่าเสื่อม</span>ด้วย AI คำนวณจริง
-                    </h1>
-                    <p class="text-slate-600 text-base leading-relaxed">
-                        ระบบสแกนโครงสร้างร่างกายและวัดองศาข้อเข่าผ่านกล้องแบบ Real-time แม่นยำตามหลักการแพทย์และเรขาคณิต
-                    </p>
-                    <button @click="currentView = 'step1-form'" class="luxury-gradient text-white font-medium px-8 py-4 rounded-2xl shadow-xl transition transform hover:-translate-y-0.5">
-                        🚀 เริ่มต้นใช้งานระบบ
-                    </button>
-                </div>
-                <div class="luxury-gradient rounded-3xl p-8 text-white shadow-2xl text-center space-y-4">
-                    <p class="text-sm text-blue-200">พร้อมเชื่อมต่อกล้องเพื่อวิเคราะห์มุมเข่า</p>
-                    <div class="py-8 text-4xl font-bold text-amber-400">MediaPipe AI Active</div>
-                    <p class="text-xs text-slate-300">ระบบจะทำการจับจุดข้อต่อสะโพก เข่า และข้อเท้า เพื่อคำนวณองศาอัตโนมัติ</p>
-                </div>
-            </div>
-        </section>
+<!-- STEP BAR -->
+<div class="bg-white border-b border-slate-100">
+<div class="max-w-5xl mx-auto px-5 py-4">
+<div class="flex justify-between gap-2">
 
-        <!-- 2. ฟอร์มข้อมูลส่วนตัว -->
-        <section x-show="currentView === 'step1-form'" class="max-w-2xl mx-auto bg-white p-8 rounded-3xl shadow-sm border border-slate-100 space-y-6">
-            <h2 class="text-xl font-bold text-slate-900 border-b pb-4">1. กรอกข้อมูลส่วนตัว</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="md:col-span-2">
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">ชื่อ-นามสกุล</label>
-                    <input type="text" x-model="patient.name" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-600">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">อายุ (ปี)</label>
-                    <input type="number" x-model="patient.age" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">เบอร์โทรศัพท์</label>
-                    <input type="text" x-model="patient.phone" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm">
-                </div>
-            </div>
-            <div class="flex justify-end pt-4">
-                <button @click="currentView = 'step3-camera'; initCamera();" class="luxury-gradient text-white px-8 py-3 rounded-xl text-sm font-medium shadow-md">ถัดไป (เปิดกล้องสแกน AI)</button>
-            </div>
-        </section>
+    <div class="step">
+        <div id="step1Dot" class="step-number step-active">1</div>
+        <span class="hidden sm:block text-xs font-semibold">ข้อมูล</span>
+    </div>
 
-        <!-- 3. หน้าสแกน AI กล้องจริง (MediaPipe) -->
-        <section x-show="currentView === 'step3-camera'" class="max-w-2xl mx-auto bg-slate-900 text-white p-8 rounded-3xl shadow-2xl space-y-6 text-center">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-4 text-left">
-                <h2 class="text-xl font-bold">3. AI กำลังตรวจจับโครงสร้างขา (Real-time)</h2>
-                <span class="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full border border-emerald-400/30">Live Camera</span>
-            </div>
+    <div class="flex-1 border-t self-center"></div>
 
-            <div class="relative w-full flex justify-center bg-black rounded-2xl overflow-hidden border border-slate-700">
-                <video id="input-video" class="hidden" autoplay playsinline></video>
-                <canvas id="output-canvas" width="640" height="480" class="max-w-full h-auto rounded-xl"></canvas>
-            </div>
+    <div class="step">
+        <div id="step2Dot" class="step-number step-idle">2</div>
+        <span class="hidden sm:block text-xs font-semibold">ท่ายืน</span>
+    </div>
 
-            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                <p class="text-sm text-slate-300">มุมเข่าที่วัดได้จริงจากAI:</p>
-                <div class="text-3xl font-bold text-amber-400 mt-1" x-text="liveAngle ? liveAngle.toFixed(1) + ' องศา' : 'กำลังค้นหาข้อต่อขา...'"></div>
-            </div>
+    <div class="flex-1 border-t self-center"></div>
 
-            <div class="flex justify-between pt-2">
-                <button @click="stopCamera(); currentView = 'step1-form';" class="px-6 py-3 rounded-xl border border-slate-700 text-slate-300 text-sm">ย้อนกลับ</button>
-                <button @click="stopCamera(); currentView = 'step5-result';" class="gold-gradient text-slate-950 font-bold px-8 py-3 rounded-xl text-sm shadow-lg">
-                    ✅ บันทึกผลและดูรายงาน
-                </button>
-            </div>
-        </section>
+    <div class="step">
+        <div id="step3Dot" class="step-number step-idle">3</div>
+        <span class="hidden sm:block text-xs font-semibold">ถ่ายภาพ</span>
+    </div>
 
-        <!-- 5. ผลการประเมิน -->
-        <section x-show="currentView === 'step5-result'" class="max-w-4xl mx-auto bg-white p-8 rounded-3xl shadow-sm border border-slate-100 space-y-8">
-            <div class="flex justify-between items-center border-b pb-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-900">ผลการประเมินเบื้องต้นจาก AI</h2>
-                    <p class="text-xs text-slate-400">ผู้รับการประเมิน: <span x-text="patient.name"></span></p>
-                </div>
-                <span :class="finalAngle < 160 ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'" class="border text-sm font-bold px-4 py-2 rounded-2xl" x-text="finalAngle < 160 ? '🔴 ความเสี่ยงสูง (มุมต่ำกว่าเกณฑ์)' : '🟢 ความเสี่ยงต่ำ (ปกติ)'"></span>
-            </div>
+    <div class="flex-1 border-t self-center"></div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div class="bg-slate-900 text-white p-6 rounded-3xl space-y-4">
-                    <span class="text-xs text-slate-400 block">ค่ามุมที่วัดได้จริงจากการสแกน</span>
-                    <div class="text-4xl font-bold text-amber-400" x-text="(finalAngle ? finalAngle.toFixed(1) : '172.5') + ' °'"></div>
-                    <p class="text-xs text-slate-400">ประมวลผลผ่านโมเดล MediaPipe Pose Estimation แม่นยำระดับพิกัดจริง</p>
-                </div>
-                <div class="space-y-4">
-                    <div class="bg-slate-50 p-4 rounded-2xl border flex justify-between">
-                        <span class="text-sm font-medium text-slate-600">สถานะการส่งข้อมูล</span>
-                        <span class="text-sm font-bold text-emerald-600">ส่งไปยังโรงพยาบาลแล้ว</span>
-                    </div>
-                    <button @click="currentView = 'doctor-dashboard'" class="w-full luxury-gradient text-white py-3 rounded-xl text-sm font-medium shadow-md">
-                        👨‍⚕️ ไปยังหน้าจอ Dashboard แพทย์
-                    </button>
-                </div>
-            </div>
-        </section>
+    <div class="step">
+        <div id="step4Dot" class="step-number step-idle">4</div>
+        <span class="hidden sm:block text-xs font-semibold">ผล AI</span>
+    </div>
 
-        <!-- 10. Dashboard แพทย์ -->
-        <section x-show="currentView === 'doctor-dashboard'" class="space-y-8">
-            <div class="flex justify-between items-center bg-white p-4 rounded-2xl border shadow-sm">
-                <h3 class="font-bold text-slate-900">Hospital Portal - ระบบแพทย์</h3>
-                <button @click="currentView = 'home'" class="text-xs bg-slate-100 px-3 py-1.5 rounded-xl">ออกจากระบบแพทย์</button>
-            </div>
-            <div class="bg-white p-6 rounded-3xl border shadow-sm space-y-4">
-                <h4 class="font-bold text-slate-800">รายชื่อผู้ป่วยที่ส่งข้อมูลเข้ามาล่าสุด (Real Data)</h4>
-                <div class="p-4 bg-slate-50 rounded-2xl border flex justify-between items-center">
-                    <div>
-                        <span class="font-bold text-slate-900 block" x-text="patient.name"></span>
-                        <span class="text-xs text-slate-500">มุมเข่าที่วัดได้: <span x-text="finalAngle ? finalAngle.toFixed(1) + '°' : '172.5°'"></span></span>
-                    </div>
-                    <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-semibold">รอแพทย์นัดหมาย</span>
-                </div>
-            </div>
-        </section>
+</div>
+</div>
+</div>
 
-    </main>
+<main class="max-w-7xl mx-auto px-5 py-8">
 
-    <!-- Script สำหรับควบคุมการคำนวณ AI จริง -->
-    <script>
-        function kneeApp() {
-            return {
-                currentView: 'home',
-                patient: { name: 'นางสาว พนัสกร สร้อยวัน', age: 25, phone: '081-234-5678' },
-                liveAngle: null,
-                finalAngle: null,
-                poseInstance: null,
-                cameraInstance: null,
+<!-- HOME -->
+<section id="home" class="page active">
 
-                calculateAngle(a, b, c) {
-                    const radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
-                    let angle = Math.abs(radians * 180.0 / Math.PI);
-                    if (angle > 180.0) angle = 360 - angle;
-                    return angle;
-                },
+<div class="grid lg:grid-cols-2 gap-10 items-center py-8">
 
-                initCamera() {
-                    setTimeout(() => {
-                        const videoElement = document.getElementById('input-video');
-                        const canvasElement = document.getElementById('output-canvas');
-                        const canvasCtx = canvasElement.getContext('2d');
+<div>
+<span class="badge bg-blue-50 text-blue-700 border border-blue-100">
+✨ AI Computer Vision
+</span>
 
-                        this.poseInstance = new Pose({
-                            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
-                        });
-                        this.poseInstance.setOptions({ modelComplexity: 1, smoothLandmarks: true });
+<h1 class="text-4xl md:text-5xl font-bold leading-tight mt-5 text-slate-900">
+วิเคราะห์แนวขา<br>
+<span class="text-blue-600">และมุมข้อเข่า</span><br>
+จากภาพท่ายืน
+</h1>
 
-                        this.poseInstance.onResults((results) => {
-                            canvasCtx.save();
-                            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-                            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+<p class="text-slate-600 leading-8 mt-5 max-w-xl">
+KneeAI ใช้กล้องและ AI Pose Estimation
+เพื่อตรวจจับตำแหน่งสะโพก เข่า และข้อเท้า
+จากภาพท่ายืน แล้วคำนวณมุมและแนวแกนของขา
+เพื่อใช้ในการคัดกรองเบื้องต้น
+</p>
 
-                            if (results.poseLandmarks) {
-                                // ดึงพิกัด สะโพกซ้าย(23), เข่าซ้าย(25), ข้อเท้าซ้าย(27)
-                                const hip = results.poseLandmarks[23];
-                                const knee = results.poseLandmarks[25];
-                                const ankle = results.poseLandmarks[27];
+<button class="btn btn-primary mt-7 px-8 py-4"
+onclick="showPage('profile')">
+🚀 เริ่มการประเมิน
+</button>
+</div>
 
-                                if (hip && knee && ankle) {
-                                    const angle = this.calculateAngle(hip, knee, ankle);
-                                    this.liveAngle = angle;
-                                    this.finalAngle = angle; // บันทึกค่าจริงไว้ใช้หน้าสรุปผล
-                                }
-                            }
-                            canvasCtx.restore();
-                        });
+<div class="gradient rounded-[30px] p-8 text-white shadow-2xl">
 
-                        this.cameraInstance = new Camera(videoElement, {
-                            onFrame: async () => {
-                                if (this.currentView === 'step3-camera') {
-                                    await this.poseInstance.send({ image: videoElement });
-                                }
-                            },
-                            width: 640,
-                            height: 480
-                        });
-                        this.cameraInstance.start();
-                    }, 300);
-                },
+<div class="text-blue-200 text-sm">
+REAL-TIME COMPUTER VISION
+</div>
 
-                stopCamera() {
-                    if (this.cameraInstance) {
-                        try { this.cameraInstance.stop(); } catch(e){}
-                    }
-                }
-            }
+<div class="text-4xl font-bold mt-5">
+PHOTO
+<br>
+<span class="text-amber-400">ANALYSIS</span>
+</div>
+
+<div class="mt-8 space-y-4 text-sm text-blue-100">
+<div>✓ ตรวจจับจุดข้อต่อจากภาพ</div>
+<div>✓ คำนวณมุมเข่าซ้ายและขวา</div>
+<div>✓ วิเคราะห์แนวขา</div>
+<div>✓ ตรวจคุณภาพภาพก่อนประเมิน</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- PROFILE -->
+<section id="profile" class="page">
+
+<div class="max-w-2xl mx-auto card p-7 md:p-9">
+
+<h2 class="text-2xl font-bold">1. ข้อมูลผู้รับการประเมิน</h2>
+
+<p class="small mt-2">
+ข้อมูลใช้ประกอบการประเมินและสร้างรายงาน
+</p>
+
+<div class="grid md:grid-cols-2 gap-5 mt-7">
+
+<div class="md:col-span-2">
+<label class="small font-semibold">ชื่อ–นามสกุล</label>
+<input id="name" placeholder="กรอกชื่อ–นามสกุล">
+</div>
+
+<div>
+<label class="small font-semibold">อายุ</label>
+<input id="age" type="number" min="1" max="120" placeholder="ปี">
+</div>
+
+<div>
+<label class="small font-semibold">เพศ</label>
+<select id="gender">
+<option value="">เลือก</option>
+<option>ชาย</option>
+<option>หญิง</option>
+<option>อื่น ๆ</option>
+</select>
+</div>
+
+</div>
+
+<div class="mt-7 p-4 bg-blue-50 border border-blue-100 rounded-2xl text-sm text-blue-900">
+<strong>ข้อควรทราบ</strong><br>
+การประเมินจากภาพเป็นเพียงการคัดกรองเบื้องต้น
+ไม่สามารถใช้แทนการตรวจโดยแพทย์ได้
+</div>
+
+<div class="flex justify-between mt-7">
+<button class="btn btn-light" onclick="showPage('home')">
+ย้อนกลับ
+</button>
+
+<button class="btn btn-primary" onclick="goPosture()">
+ถัดไป →
+</button>
+</div>
+
+</div>
+
+</section>
+
+<!-- POSTURE -->
+<section id="posture" class="page">
+
+<div class="max-w-3xl mx-auto card p-7 md:p-9">
+
+<h2 class="text-2xl font-bold">
+2. จัดท่ายืนก่อนถ่ายภาพ
+</h2>
+
+<p class="small mt-2">
+เพื่อให้ AI ตรวจตำแหน่งข้อต่อได้ดีที่สุด
+</p>
+
+<div class="grid md:grid-cols-2 gap-4 mt-7">
+
+<div class="p-5 bg-blue-50 rounded-2xl border border-blue-100">
+<div class="text-2xl">🧍</div>
+<div class="font-bold mt-3">ยืนตรง</div>
+<div class="small mt-1">
+ศีรษะ ลำตัว และสะโพกอยู่ในท่าปกติ
+</div>
+</div>
+
+<div class="p-5 bg-blue-50 rounded-2xl border border-blue-100">
+<div class="text-2xl">👣</div>
+<div class="font-bold mt-3">เห็นเท้าทั้งสองข้าง</div>
+<div class="small mt-1">
+ต้องเห็นตั้งแต่ศีรษะจนถึงปลายเท้า
+</div>
+</div>
+
+<div class="p-5 bg-blue-50 rounded-2xl border border-blue-100">
+<div class="text-2xl">📐</div>
+<div class="font-bold mt-3">หันตรงเข้ากล้อง</div>
+<div class="small mt-1">
+ไม่บิดตัวและไม่เอียงไปด้านใดด้านหนึ่ง
+</div>
+</div>
+
+<div class="p-5 bg-blue-50 rounded-2xl border border-blue-100">
+<div class="text-2xl">↔️</div>
+<div class="font-bold mt-3">ไม่ไขว้ขา</div>
+<div class="small mt-1">
+วางเท้าตามธรรมชาติและไม่บังกัน
+</div>
+</div>
+
+</div>
+
+<div class="mt-7 p-5 bg-slate-900 text-white rounded-2xl">
+<div class="font-bold">📷 การจัดกล้อง</div>
+<div class="text-sm text-slate-300 mt-2 leading-7">
+วางกล้องให้อยู่ระดับประมาณลำตัว
+ถอยกล้องจนเห็นร่างกายครบตั้งแต่ศีรษะถึงเท้า
+และให้กล้องอยู่ตรงกลางด้านหน้า
+</div>
+</div>
+
+<div class="flex justify-between mt-7">
+<button class="btn btn-light" onclick="showPage('profile')">
+ย้อนกลับ
+</button>
+
+<button class="btn btn-primary" onclick="openCamera()">
+เปิดกล้อง →
+</button>
+</div>
+
+</div>
+
+</section>
+
+<!-- CAMERA -->
+<section id="camera" class="page">
+
+<div class="max-w-4xl mx-auto">
+
+<div class="card overflow-hidden">
+
+<div class="gradient text-white p-6">
+
+<div class="flex justify-between items-center">
+
+<div>
+<div class="text-xs text-blue-200">STEP 03</div>
+<h2 class="text-2xl font-bold mt-1">
+ถ่ายภาพท่ายืน
+</h2>
+</div>
+
+<span id="cameraStatus"
+class="badge bg-amber-400/20 text-amber-200 border border-amber-300/30">
+กำลังเปิดกล้อง
+</span>
+
+</div>
+
+</div>
+
+<div class="p-5">
+
+<div class="camera-box">
+
+<video id="video"
+autoplay
+playsinline
+muted>
+</video>
+
+<div class="camera-guide"></div>
+
+<div class="guide-text">
+จัดร่างกายให้อยู่ในกรอบ
+</div>
+
+</div>
+
+<div id="cameraMessage"
+class="text-center text-sm text-slate-500 mt-4">
+กำลังตรวจสอบกล้อง...
+</div>
+
+<div class="flex flex-wrap justify-center gap-3 mt-5">
+
+<button class="btn btn-light"
+onclick="stopCamera();showPage('posture')">
+ย้อนกลับ
+</button>
+
+<button id="captureBtn"
+class="btn btn-gold px-8"
+onclick="capturePhoto()"
+disabled>
+📷 ถ่ายภาพ
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ANALYSIS -->
+<section id="analysis" class="page">
+
+<div class="max-w-4xl mx-auto card p-8 text-center">
+
+<div class="gradient text-white rounded-3xl p-8">
+
+<div class="text-blue-200 text-sm">
+KneeAI COMPUTER VISION
+</div>
+
+<div id="analysisTitle"
+class="text-3xl font-bold mt-3">
+กำลังวิเคราะห์ภาพ
+</div>
+
+<div class="mt-8">
+
+<div class="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin mx-auto">
+</div>
+
+</div>
+
+<p id="analysisText"
+class="text-blue-100 text-sm mt-6">
+กำลังตรวจจับจุดข้อต่อ...
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- RESULT -->
+<section id="result" class="page">
+
+<div class="max-w-6xl mx-auto">
+
+<div class="flex flex-col md:flex-row justify-between gap-4 items-start mb-6">
+
+<div>
+<div class="badge bg-blue-50 text-blue-700">
+✓ วิเคราะห์จากภาพที่ถ่ายจริง
+</div>
+
+<h2 class="text-3xl font-bold mt-3">
+ผลการประเมินจาก AI
+</h2>
+
+<p id="resultPatient" class="small mt-1"></p>
+</div>
+
+<button class="btn btn-primary" onclick="printReport()">
+🖨️ พิมพ์รายงาน
+</button>
+
+</div>
+
+<div class="grid lg:grid-cols-2 gap-6">
+
+<!-- IMAGE -->
+<div class="card p-5">
+
+<div class="font-bold mb-4">
+ภาพที่ AI วิเคราะห์
+</div>
+
+<div class="bg-black rounded-2xl overflow-hidden">
+<canvas id="resultCanvas"></canvas>
+</div>
+
+<div class="small mt-3">
+เส้นสีแสดงตำแหน่งข้อต่อที่ AI ตรวจพบ
+</div>
+
+</div>
+
+<!-- DATA -->
+<div class="space-y-5">
+
+<div class="grid grid-cols-2 gap-4">
+
+<div class="stat">
+<div class="small">มุมเข่าซ้าย</div>
+<div id="leftAngle" class="stat-value">—</div>
+<div class="small">องศา</div>
+</div>
+
+<div class="stat">
+<div class="small">มุมเข่าขวา</div>
+<div id="rightAngle" class="stat-value">—</div>
+<div class="small">องศา</div>
+</div>
+
+<div class="stat">
+<div class="small">ความสมมาตร</div>
+<div id="symmetry" class="stat-value text-2xl">—</div>
+</div>
+
+<div class="stat">
+<div class="small">คุณภาพภาพ</div>
+<div id="quality" class="stat-value text-2xl">—</div>
+</div>
+
+</div>
+
+<div id="overallBox" class="p-5 rounded-2xl border">
+<div class="small">ผลการคัดกรองเบื้องต้น</div>
+<div id="overall" class="text-xl font-bold mt-1">
+—
+</div>
+<p id="overallDetail" class="small mt-2"></p>
+</div>
+
+<div class="card p-5">
+
+<div class="font-bold">
+📊 รายละเอียดการวิเคราะห์
+</div>
+
+<div class="space-y-3 mt-4 text-sm">
+
+<div class="flex justify-between border-b pb-3">
+<span>ตรวจพบสะโพก</span>
+<strong id="hipStatus">—</strong>
+</div>
+
+<div class="flex justify-between border-b pb-3">
+<span>ตรวจพบเข่า</span>
+<strong id="kneeStatus">—</strong>
+</div>
+
+<div class="flex justify-between border-b pb-3">
+<span>ตรวจพบข้อเท้า</span>
+<strong id="ankleStatus">—</strong>
+</div>
+
+<div class="flex justify-between">
+<span>ส่วนต่างมุมซ้าย–ขวา</span>
+<strong id="angleDiff">—</strong>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="flex justify-center gap-3 mt-7">
+
+<button class="btn btn-light"
+onclick="restart()">
+🔄 ประเมินใหม่
+</button>
+
+<button class="btn btn-primary"
+onclick="showPage('doctor')">
+👨‍⚕️ Doctor Portal
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- DOCTOR -->
+<section id="doctor" class="page">
+
+<div class="max-w-6xl mx-auto">
+
+<div class="gradient text-white rounded-3xl p-7">
+
+<div class="text-blue-200 text-xs">
+HOSPITAL PORTAL
+</div>
+
+<h2 class="text-3xl font-bold mt-2">
+Doctor Dashboard
+</h2>
+
+<p class="text-blue-100 text-sm mt-2">
+ข้อมูลการประเมินล่าสุดจากระบบ KneeAI
+</p>
+
+</div>
+
+<div class="grid md:grid-cols-4 gap-4 mt-6">
+
+<div class="stat">
+<div class="small">ผู้รับการประเมิน</div>
+<div id="doctorName" class="font-bold text-lg mt-2">—</div>
+</div>
+
+<div class="stat">
+<div class="small">มุมซ้าย</div>
+<div id="doctorLeft" class="stat-value">—</div>
+</div>
+
+<div class="stat">
+<div class="small">มุมขวา</div>
+<div id="doctorRight" class="stat-value">—</div>
+</div>
+
+<div class="stat">
+<div class="small">สถานะ</div>
+<div id="doctorStatus" class="font-bold text-lg mt-2">
+ยังไม่มีข้อมูล
+</div>
+</div>
+
+</div>
+
+<div class="card p-7 mt-6">
+
+<h3 class="font-bold text-lg">
+ข้อเสนอแนะสำหรับแพทย์
+</h3>
+
+<p class="small leading-7 mt-3">
+ผลจากระบบเป็นข้อมูลช่วยคัดกรองเบื้องต้น
+ควรพิจารณาร่วมกับประวัติ อาการ การตรวจร่างกาย
+และการตรวจทางการแพทย์อื่น ๆ ก่อนการวินิจฉัย
+</p>
+
+</div>
+
+<button class="btn btn-light mt-6"
+onclick="showPage('home')">
+← กลับหน้าแรก
+</button>
+
+</div>
+
+</section>
+
+</main>
+
+<script>
+
+/* =========================================================
+   KNEEAI V9
+   PHOTO-BASED STANDING POSTURE SCREENING
+========================================================= */
+
+const state = {
+
+    patient:{
+        name:"",
+        age:"",
+        gender:""
+    },
+
+    stream:null,
+    pose:null,
+    capturedImage:null,
+
+    landmarks:null,
+
+    result:{
+        leftAngle:null,
+        rightAngle:null,
+        angleDifference:null,
+        symmetry:null,
+        quality:null,
+        status:null
+    }
+
+};
+
+
+/* =========================================================
+   PAGE SYSTEM
+========================================================= */
+
+function showPage(id){
+
+    document.querySelectorAll(".page")
+    .forEach(p=>p.classList.remove("active"));
+
+    document.getElementById(id).classList.add("active");
+
+    updateSteps(id);
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+function updateSteps(id){
+
+    const map = {
+        profile:1,
+        posture:2,
+        camera:3,
+        analysis:3,
+        result:4
+    };
+
+    const current = map[id] || 1;
+
+    for(let i=1;i<=4;i++){
+
+        const el=document.getElementById("step"+i+"Dot");
+
+        el.className="step-number ";
+
+        if(i<current){
+            el.classList.add("step-done");
+            el.textContent="✓";
         }
-    </script>
+        else if(i===current){
+            el.classList.add("step-active");
+            el.textContent=i;
+        }
+        else{
+            el.classList.add("step-idle");
+            el.textContent=i;
+        }
+    }
+
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+function goPosture(){
+
+    const name=document.getElementById("name").value.trim();
+    const age=document.getElementById("age").value;
+    const gender=document.getElementById("gender").value;
+
+    if(!name){
+        alert("กรุณากรอกชื่อ–นามสกุล");
+        return;
+    }
+
+    if(!age){
+        alert("กรุณากรอกอายุ");
+        return;
+    }
+
+    if(!gender){
+        alert("กรุณาเลือกเพศ");
+        return;
+    }
+
+    state.patient={
+        name,
+        age,
+        gender
+    };
+
+    showPage("posture");
+}
+
+
+/* =========================================================
+   CAMERA
+========================================================= */
+
+async function openCamera(){
+
+    showPage("camera");
+
+    const video=document.getElementById("video");
+    const status=document.getElementById("cameraStatus");
+    const msg=document.getElementById("cameraMessage");
+    const capture=document.getElementById("captureBtn");
+
+    status.textContent="กำลังเปิดกล้อง";
+    msg.textContent="กำลังขอสิทธิ์ใช้งานกล้อง...";
+
+    try{
+
+        state.stream=await navigator.mediaDevices.getUserMedia({
+            video:{
+                facingMode:"user",
+                width:{ideal:1280},
+                height:{ideal:720}
+            },
+            audio:false
+        });
+
+        video.srcObject=state.stream;
+
+        await video.play();
+
+        status.textContent="กล้องพร้อม";
+        status.className=
+            "badge bg-emerald-400/20 text-emerald-200 border border-emerald-300/30";
+
+        msg.textContent=
+            "จัดร่างกายให้อยู่ในกรอบ แล้วกด “ถ่ายภาพ”";
+
+        capture.disabled=false;
+
+    }catch(error){
+
+        console.error(error);
+
+        status.textContent="เปิดกล้องไม่สำเร็จ";
+
+        msg.innerHTML=
+            "ไม่สามารถเปิดกล้องได้<br>" +
+            "กรุณาอนุญาต Camera ใน Browser แล้วลองใหม่";
+
+        capture.disabled=true;
+
+    }
+
+}
+
+
+function stopCamera(){
+
+    if(state.stream){
+
+        state.stream.getTracks().forEach(track=>{
+            track.stop();
+        });
+
+        state.stream=null;
+    }
+
+}
+
+
+/* =========================================================
+   CAPTURE PHOTO
+========================================================= */
+
+function capturePhoto(){
+
+    const video=document.getElementById("video");
+
+    if(
+        !video.videoWidth ||
+        !video.videoHeight
+    ){
+
+        alert("ยังไม่พบภาพจากกล้อง");
+        return;
+    }
+
+    const canvas=document.createElement("canvas");
+
+    canvas.width=video.videoWidth;
+    canvas.height=video.videoHeight;
+
+    const ctx=canvas.getContext("2d");
+
+    /*
+       Mirror กลับด้านให้เหมือนกระจก
+       เพื่อให้ผู้ใช้เห็นภาพธรรมชาติ
+    */
+
+    ctx.save();
+
+    ctx.translate(canvas.width,0);
+    ctx.scale(-1,1);
+
+    ctx.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.restore();
+
+    state.capturedImage=canvas;
+
+    stopCamera();
+
+    showPage("analysis");
+
+    analyzeCapturedImage();
+
+}
+
+
+/* =========================================================
+   MEDIAPIPE POSE
+========================================================= */
+
+async function analyzeCapturedImage(){
+
+    const image=state.capturedImage;
+
+    document.getElementById("analysisTitle")
+    .textContent="กำลังวิเคราะห์ภาพ";
+
+    document.getElementById("analysisText")
+    .textContent="กำลังตรวจจับตำแหน่งสะโพก เข่า และข้อเท้า...";
+
+    try{
+
+        state.pose=new Pose({
+
+            locateFile:(file)=>{
+                return
+                `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+            }
+
+        });
+
+        state.pose.setOptions({
+
+            modelComplexity:2,
+
+            smoothLandmarks:true,
+
+            enableSegmentation:false,
+
+            smoothSegmentation:false,
+
+            minDetectionConfidence:0.60,
+
+            minTrackingConfidence:0.60
+
+        });
+
+        state.pose.onResults(handlePoseResults);
+
+        await state.pose.send({
+            image:image
+        });
+
+    }catch(error){
+
+        console.error(error);
+
+        document.getElementById("analysisTitle")
+        .textContent="วิเคราะห์ไม่สำเร็จ";
+
+        document.getElementById("analysisText")
+        .textContent=
+            "ไม่สามารถตรวจจับโครงสร้างร่างกายจากภาพนี้ได้";
+
+        setTimeout(()=>{
+            showPage("camera");
+            openCamera();
+        },1800);
+
+    }
+
+}
+
+
+/* =========================================================
+   LANDMARK / VISIBILITY
+========================================================= */
+
+function visible(point){
+
+    return point &&
+           typeof point.x==="number" &&
+           typeof point.y==="number" &&
+           (point.visibility ?? 1) >= 0.45;
+
+}
+
+
+/* =========================================================
+   ANGLE
+========================================================= */
+
+function calculateAngle(a,b,c){
+
+    const ab={
+        x:a.x-b.x,
+        y:a.y-b.y
+    };
+
+    const cb={
+        x:c.x-b.x,
+        y:c.y-b.y
+    };
+
+    const dot=
+        ab.x*cb.x+
+        ab.y*cb.y;
+
+    const mag1=
+        Math.sqrt(
+            ab.x*ab.x+
+            ab.y*ab.y
+        );
+
+    const mag2=
+        Math.sqrt(
+            cb.x*cb.x+
+            cb.y*cb.y
+        );
+
+    if(!mag1 || !mag2){
+        return null;
+    }
+
+    let cos=dot/(mag1*mag2);
+
+    cos=Math.max(-1,Math.min(1,cos));
+
+    return Math.acos(cos)*180/Math.PI;
+
+}
+
+
+/* =========================================================
+   DISTANCE
+========================================================= */
+
+function distance(a,b){
+
+    return Math.sqrt(
+        Math.pow(a.x-b.x,2)+
+        Math.pow(a.y-b.y,2)
+    );
+
+}
+
+
+/* =========================================================
+   POSE RESULT
+========================================================= */
+
+function handlePoseResults(results){
+
+    if(!results.poseLandmarks){
+
+        failAnalysis(
+            "ไม่พบโครงสร้างร่างกาย",
+            "กรุณาถ่ายภาพใหม่โดยให้เห็นร่างกายตั้งแต่ศีรษะถึงเท้า"
+        );
+
+        return;
+    }
+
+    const lm=results.poseLandmarks;
+
+    /*
+       MediaPipe Pose landmarks
+
+       LEFT:
+       23 hip
+       25 knee
+       27 ankle
+
+       RIGHT:
+       24 hip
+       26 knee
+       28 ankle
+    */
+
+    const leftHip=lm[23];
+    const leftKnee=lm[25];
+    const leftAnkle=lm[27];
+
+    const rightHip=lm[24];
+    const rightKnee=lm[26];
+    const rightAnkle=lm[28];
+
+
+    const allRequired=[
+        leftHip,
+        leftKnee,
+        leftAnkle,
+        rightHip,
+        rightKnee,
+        rightAnkle
+    ];
+
+    const good=allRequired.every(visible);
+
+
+    if(!good){
+
+        failAnalysis(
+            "ตรวจพบร่างกายไม่ครบ",
+            "กรุณาถ่ายภาพใหม่และให้เห็นสะโพก เข่า และข้อเท้าทั้งสองข้างชัดเจน"
+        );
+
+        return;
+    }
+
+
+    /* Calculate */
+
+    const leftAngle=
+        calculateAngle(
+            leftHip,
+            leftKnee,
+            leftAnkle
+        );
+
+    const rightAngle=
+        calculateAngle(
+            rightHip,
+            rightKnee,
+            rightAnkle
+        );
+
+
+    if(
+        leftAngle===null ||
+        rightAngle===null
+    ){
+
+        failAnalysis(
+            "คำนวณมุมไม่ได้",
+            "กรุณาถ่ายภาพใหม่"
+        );
+
+        return;
+    }
+
+
+    const diff=
+        Math.abs(
+            leftAngle-rightAngle
+        );
+
+
+    /*
+       Image quality score
+       based on visibility of important landmarks.
+    */
+
+    const important=[
+        23,24,
+        25,26,
+        27,28
+    ];
+
+    const visibilityAverage=
+        important.reduce(
+            (sum,index)=>{
+                return sum+(lm[index].visibility ?? 0);
+            },
+            0
+        )/important.length;
+
+    const quality=
+        Math.round(
+            visibilityAverage*100
+        );
+
+
+    let symmetry="ดี";
+
+    if(diff>8){
+        symmetry="ควรตรวจเพิ่มเติม";
+    }
+
+    let status="ไม่พบสัญญาณผิดปกติเด่นชัด";
+
+    /*
+       ไม่ใช้เกณฑ์ทางการแพทย์แบบล็อกตายตัว
+       ผลจึงถูกนำเสนอเป็น screening
+       และต้องดูร่วมกับภาพ/อาการจริง
+    */
+
+    if(
+        diff>10 ||
+        leftAngle<155 ||
+        rightAngle<155
+    ){
+
+        status="พบลักษณะที่ควรตรวจเพิ่มเติม";
+    }
+
+
+    state.landmarks=lm;
+
+    state.result={
+        leftAngle,
+        rightAngle,
+        angleDifference:diff,
+        symmetry,
+        quality,
+        status
+    };
+
+
+    drawResultImage();
+
+    showResult();
+
+}
+
+
+/* =========================================================
+   FAIL
+========================================================= */
+
+function failAnalysis(title,text){
+
+    document.getElementById("analysisTitle")
+    .textContent=title;
+
+    document.getElementById("analysisText")
+    .textContent=text;
+
+    setTimeout(()=>{
+
+        if(confirm(
+            "AI ไม่สามารถวิเคราะห์ภาพนี้ได้\n\n" +
+            "ต้องการถ่ายภาพใหม่หรือไม่?"
+        )){
+
+            showPage("camera");
+            openCamera();
+
+        }else{
+
+            showPage("posture");
+
+        }
+
+    },700);
+
+}
+
+
+/* =========================================================
+   DRAW RESULT
+========================================================= */
+
+function drawResultImage(){
+
+    const source=state.capturedImage;
+
+    const canvas=document.getElementById("resultCanvas");
+
+    canvas.width=source.width;
+    canvas.height=source.height;
+
+    const ctx=canvas.getContext("2d");
+
+    ctx.drawImage(
+        source,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    const lm=state.landmarks;
+
+
+    /*
+       IMPORTANT
+
+       ภาพถูก mirror ตอน capture
+       ดังนั้น landmark จาก MediaPipe
+       ต้องแปลง x เพื่อ overlay ให้ตรงกับภาพ
+    */
+
+    function point(index){
+
+        return {
+            x:(1-lm[index].x)*canvas.width,
+            y:lm[index].y*canvas.height
+        };
+
+    }
+
+
+    const connections=[
+        [23,25],
+        [25,27],
+        [24,26],
+        [26,28],
+        [23,24],
+        [27,28]
+    ];
+
+
+    ctx.lineWidth=
+        Math.max(4,canvas.width/220);
+
+    ctx.strokeStyle="#22c55e";
+
+    connections.forEach(pair=>{
+
+        const a=point(pair[0]);
+        const b=point(pair[1]);
+
+        ctx.beginPath();
+
+        ctx.moveTo(a.x,a.y);
+
+        ctx.lineTo(b.x,b.y);
+
+        ctx.stroke();
+
+    });
+
+
+    const joints=[
+        23,24,
+        25,26,
+        27,28
+    ];
+
+
+    joints.forEach(index=>{
+
+        const p=point(index);
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            Math.max(7,canvas.width/110),
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle="#facc15";
+
+        ctx.fill();
+
+        ctx.lineWidth=3;
+
+        ctx.strokeStyle="#0f172a";
+
+        ctx.stroke();
+
+    });
+
+
+    /*
+       Draw angle labels
+    */
+
+    drawLabel(
+        ctx,
+        point(25),
+        state.result.leftAngle.toFixed(1)+"°"
+    );
+
+    drawLabel(
+        ctx,
+        point(26),
+        state.result.rightAngle.toFixed(1)+"°"
+    );
+
+}
+
+
+function drawLabel(ctx,p,text){
+
+    ctx.font="bold 18px Prompt, Arial";
+
+    const padding=9;
+
+    const width=
+        ctx.measureText(text).width+
+        padding*2;
+
+    const height=34;
+
+    const x=p.x+12;
+
+    const y=p.y-height-8;
+
+    ctx.fillStyle="rgba(15,23,42,.88)";
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        x,
+        y,
+        width,
+        height,
+        9
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle="#facc15";
+
+    ctx.fillText(
+        text,
+        x+padding,
+        y+23
+    );
+
+}
+
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+function showResult(){
+
+    const r=state.result;
+
+    document.getElementById("resultPatient")
+    .textContent=
+        `${state.patient.name} • อายุ ${state.patient.age} ปี • ${state.patient.gender}`;
+
+
+    document.getElementById("leftAngle")
+    .textContent=
+        r.leftAngle.toFixed(1)+"°";
+
+    document.getElementById("rightAngle")
+    .textContent=
+        r.rightAngle.toFixed(1)+"°";
+
+
+    document.getElementById("symmetry")
+    .textContent=
+        r.symmetry;
+
+
+    document.getElementById("quality")
+    .textContent=
+        r.quality+"%";
+
+
+    document.getElementById("angleDiff")
+    .textContent=
+        r.angleDifference.toFixed(1)+"°";
+
+
+    document.getElementById("hipStatus")
+    .textContent="✓ ตรวจพบ";
+
+    document.getElementById("kneeStatus")
+    .textContent="✓ ตรวจพบ";
+
+    document.getElementById("ankleStatus")
+    .textContent="✓ ตรวจพบ";
+
+
+    const box=
+        document.getElementById("overallBox");
+
+    const overall=
+        document.getElementById("overall");
+
+    const detail=
+        document.getElementById("overallDetail");
+
+
+    box.className=
+        "p-5 rounded-2xl border";
+
+
+    if(
+        r.status==="ไม่พบสัญญาณผิดปกติเด่นชัด"
+    ){
+
+        box.classList.add("result-good");
+
+        overall.textContent=
+            "🟢 ไม่พบสัญญาณผิดปกติเด่นชัด";
+
+        detail.textContent=
+            "ค่าที่ได้จากภาพนี้ไม่มีความแตกต่างของมุมที่เด่นชัด อย่างไรก็ตามผลนี้ไม่ใช่การวินิจฉัยโรค";
+
+    }else{
+
+        box.classList.add("result-warn");
+
+        overall.textContent=
+            "🟠 พบลักษณะที่ควรตรวจเพิ่มเติม";
+
+        detail.textContent=
+            "ระบบพบค่ามุมหรือความแตกต่างระหว่างสองข้างที่ควรนำไปประเมินร่วมกับอาการและการตรวจโดยบุคลากรทางการแพทย์";
+
+    }
+
+
+    updateDoctor();
+
+    showPage("result");
+
+}
+
+
+/* =========================================================
+   DOCTOR
+========================================================= */
+
+function updateDoctor(){
+
+    const r=state.result;
+
+    document.getElementById("doctorName")
+    .textContent=state.patient.name || "—";
+
+    document.getElementById("doctorLeft")
+    .textContent=
+        r.leftAngle ?
+        r.leftAngle.toFixed(1)+"°":
+        "—";
+
+    document.getElementById("doctorRight")
+    .textContent=
+        r.rightAngle ?
+        r.rightAngle.toFixed(1)+"°":
+        "—";
+
+    document.getElementById("doctorStatus")
+    .textContent=
+        r.status || "ยังไม่มีข้อมูล";
+
+}
+
+
+/* =========================================================
+   PRINT
+========================================================= */
+
+function printReport(){
+
+    window.print();
+
+}
+
+
+/* =========================================================
+   RESTART
+========================================================= */
+
+function restart(){
+
+    stopCamera();
+
+    state.capturedImage=null;
+
+    state.landmarks=null;
+
+    state.result={
+        leftAngle:null,
+        rightAngle:null,
+        angleDifference:null,
+        symmetry:null,
+        quality:null,
+        status:null
+    };
+
+    document.getElementById("name").value="";
+    document.getElementById("age").value="";
+    document.getElementById("gender").value="";
+
+    showPage("home");
+
+}
+
+
+/* =========================================================
+   CLEANUP
+========================================================= */
+
+window.addEventListener(
+    "beforeunload",
+    ()=>{
+        stopCamera();
+    }
+);
+
+</script>
+
 </body>
 </html>
+```
