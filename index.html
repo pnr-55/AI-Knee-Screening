@@ -16,6 +16,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
 
 <style>
+
 :root{
     --bg:#020811;
     --bg2:#061522;
@@ -54,7 +55,9 @@ body{
     overflow-x:hidden;
 }
 
-button,input{
+button,
+input,
+select{
     font-family:inherit;
 }
 
@@ -202,17 +205,9 @@ button{
     border-radius:50%;
     background:var(--green);
     box-shadow:0 0 10px var(--green);
-    animation:pulse 1.8s infinite;
 }
 
-@keyframes pulse{
-    50%{
-        transform:scale(1.5);
-        opacity:.5;
-    }
-}
-
-/* ================= GENERAL ================= */
+/* ================= PAGE ================= */
 
 .page{
     display:none;
@@ -222,7 +217,7 @@ button{
 
 .page.active{
     display:block;
-    animation:pageIn .45s ease;
+    animation:pageIn .4s ease;
 }
 
 @keyframes pageIn{
@@ -256,7 +251,7 @@ button{
 }
 
 .btn:hover{
-    transform:translateY(-3px);
+    transform:translateY(-2px);
 }
 
 .btn-primary{
@@ -265,19 +260,22 @@ button{
     box-shadow:0 15px 40px rgba(0,150,255,.2);
 }
 
-.btn-primary:hover{
-    box-shadow:0 20px 50px rgba(0,180,255,.35);
-}
-
 .btn-secondary{
     color:#a5bac9;
     background:rgba(6,25,40,.65);
     border-color:rgba(100,210,255,.15);
 }
 
-.btn-secondary:hover{
-    color:white;
-    border-color:rgba(100,220,255,.4);
+.btn-danger{
+    color:#ff9bad;
+    background:rgba(255,50,90,.08);
+    border-color:rgba(255,70,100,.2);
+}
+
+.btn-success{
+    color:#9fffe0;
+    background:rgba(53,239,173,.08);
+    border-color:rgba(53,239,173,.2);
 }
 
 .page-heading{
@@ -302,7 +300,7 @@ button{
     min-height:calc(100vh - 76px);
     margin:auto;
     display:grid;
-    grid-template-columns:minmax(0,1fr) minmax(500px,.9fr);
+    grid-template-columns:minmax(0,1fr) minmax(400px,.9fr);
     align-items:center;
     gap:50px;
     padding:50px 0;
@@ -417,24 +415,19 @@ button{
     font-weight:700;
 }
 
-.mini-value span{
-    color:#17dcff;
-    font-size:9px;
-}
-
-/* ================= KNEE VISUAL ================= */
+/* ================= VISUAL ================= */
 
 .hero-visual{
     position:relative;
-    height:650px;
+    height:560px;
     display:grid;
     place-items:center;
 }
 
 .visual-core{
     position:relative;
-    width:520px;
-    height:520px;
+    width:450px;
+    height:450px;
     display:grid;
     place-items:center;
 }
@@ -446,21 +439,21 @@ button{
 }
 
 .orbit1{
-    width:510px;
-    height:510px;
+    width:440px;
+    height:440px;
     animation:spin 30s linear infinite;
 }
 
 .orbit2{
-    width:400px;
-    height:400px;
+    width:350px;
+    height:350px;
     border-style:dashed;
     animation:spinReverse 20s linear infinite;
 }
 
 .orbit3{
-    width:300px;
-    height:300px;
+    width:260px;
+    height:260px;
     animation:spin 14s linear infinite;
 }
 
@@ -482,17 +475,17 @@ button{
 }
 
 .dot1{
-    top:45px;
+    top:30px;
     left:50%;
 }
 
 .dot2{
-    right:20px;
+    right:10px;
     top:50%;
 }
 
 .dot3{
-    bottom:40px;
+    bottom:30px;
     left:30%;
 }
 
@@ -500,11 +493,7 @@ button{
     position:relative;
     width:290px;
     height:480px;
-    animation:float 4s ease-in-out infinite;
-}
-
-@keyframes float{
-    50%{transform:translateY(-8px)}
+    transform:scale(.82);
 }
 
 .bone{
@@ -527,7 +516,6 @@ button{
     left:145px;
     top:70px;
     transform:rotate(76deg);
-    animation:thigh 4s ease-in-out infinite;
 }
 
 .bone-shin{
@@ -535,15 +523,6 @@ button{
     left:92px;
     top:250px;
     transform:rotate(112deg);
-    animation:shin 4s ease-in-out infinite;
-}
-
-@keyframes thigh{
-    50%{transform:rotate(91deg)}
-}
-
-@keyframes shin{
-    50%{transform:rotate(129deg)}
 }
 
 .joint{
@@ -554,7 +533,6 @@ button{
     background:#efffff;
     border:3px solid #16dcff;
     box-shadow:0 0 15px #16dcff,0 0 45px rgba(16,220,255,.45);
-    z-index:5;
 }
 
 .joint-hip{
@@ -570,27 +548,6 @@ button{
 .joint-ankle{
     left:175px;
     top:425px;
-}
-
-.scan-line{
-    position:absolute;
-    width:390px;
-    height:2px;
-    background:linear-gradient(90deg,transparent,#16e0ff,transparent);
-    box-shadow:0 0 12px #16e0ff;
-    animation:scan 3.2s ease-in-out infinite;
-}
-
-@keyframes scan{
-    0%,100%{
-        transform:translateY(-190px);
-        opacity:0;
-    }
-    20%{opacity:1}
-    75%{
-        transform:translateY(190px);
-        opacity:1;
-    }
 }
 
 .angle-display{
@@ -609,68 +566,18 @@ button{
     z-index:10;
 }
 
-.angle-display:before{
-    content:"";
-    position:absolute;
-    inset:-7px;
-    border-radius:50%;
-    border:1px dashed rgba(30,220,255,.25);
-    animation:spin 8s linear infinite;
-}
-
-/* ================= INFORMATION ================= */
+/* ================= FORM ================= */
 
 .information{
     width:min(1050px,92%);
     margin:auto;
-    padding:100px 0 70px;
+    padding:80px 0;
 }
 
-.progress{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-top:30px;
-    margin-bottom:25px;
-}
-
-.progress-step{
-    display:flex;
-    align-items:center;
-    gap:7px;
-    color:#587083;
-    font-size:9px;
-}
-
-.progress-step.active{
-    color:#a8f7ff;
-}
-
-.progress-number{
-    width:28px;
-    height:28px;
-    display:grid;
-    place-items:center;
-    border-radius:50%;
-    background:rgba(8,35,53,.8);
-    border:1px solid var(--line);
-    font-family:"Space Mono",monospace;
-}
-
-.progress-step.active .progress-number{
-    background:linear-gradient(135deg,#087cff,#13dfff);
-    color:white;
-    border-color:transparent;
-}
-
-.progress-line{
-    width:45px;
-    height:1px;
-    background:var(--line);
-}
-
-.form-card{
+.form-card,
+.questionnaire-card{
     position:relative;
+    margin-top:30px;
     padding:32px;
     border:1px solid var(--line);
     border-radius:20px;
@@ -704,7 +611,8 @@ button{
     font-size:10px;
 }
 
-.field input{
+.field input,
+.field select{
     width:100%;
     height:47px;
     padding:0 14px;
@@ -715,27 +623,15 @@ button{
     outline:none;
 }
 
-.field input:focus{
-    border-color:rgba(30,220,255,.55);
-    box-shadow:0 0 0 3px rgba(20,210,255,.06);
-}
-
 .bmi-box{
     grid-column:1 / -1;
     display:grid;
     grid-template-columns:1fr 1fr 1fr;
     gap:15px;
-    margin-top:5px;
     padding:18px;
     border:1px solid rgba(30,220,255,.15);
     border-radius:15px;
     background:linear-gradient(135deg,rgba(0,130,255,.08),rgba(0,220,255,.03));
-}
-
-.bmi-main{
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
 }
 
 .bmi-label{
@@ -786,24 +682,24 @@ button{
     max-width:560px;
 }
 
-/* ================= CAMERA ================= */
+/* ================= CAMERA PAGE ================= */
 
 .camera-page{
-    width:min(1250px,92%);
+    width:min(1250px,94%);
     margin:auto;
-    padding:80px 0;
+    padding:65px 0 90px;
 }
 
 .camera-layout{
     display:grid;
-    grid-template-columns:1.4fr .6fr;
+    grid-template-columns:minmax(0,1fr) 330px;
     gap:22px;
     margin-top:30px;
 }
 
 .camera-panel{
     position:relative;
-    min-height:600px;
+    min-height:620px;
     overflow:hidden;
     border:1px solid var(--line);
     border-radius:22px;
@@ -813,11 +709,11 @@ button{
 
 #videoElement{
     width:100%;
-    height:100%;
-    min-height:600px;
+    height:620px;
     display:block;
     object-fit:cover;
     transform:scaleX(-1);
+    background:#020c15;
 }
 
 #poseCanvas{
@@ -840,6 +736,10 @@ button{
     z-index:10;
 }
 
+.camera-placeholder.hidden{
+    display:none;
+}
+
 .camera-icon{
     width:100px;
     height:100px;
@@ -848,7 +748,6 @@ button{
     border:1px solid rgba(30,220,255,.3);
     border-radius:50%;
     font-size:45px;
-    box-shadow:0 0 60px rgba(0,200,255,.15);
 }
 
 .camera-placeholder h3{
@@ -860,41 +759,7 @@ button{
     margin-top:7px;
     color:var(--muted);
     font-size:11px;
-}
-
-.camera-side{
-    padding:24px;
-    border:1px solid var(--line);
-    border-radius:22px;
-    background:var(--glass);
-    height:max-content;
-}
-
-.metric{
-    padding:16px 0;
-    border-bottom:1px solid var(--line);
-}
-
-.metric:last-child{
-    border-bottom:none;
-}
-
-.metric-label{
-    color:#638095;
-    font-size:9px;
-}
-
-.metric-value{
-    margin-top:5px;
-    color:#dffaff;
-    font-family:"Space Mono",monospace;
-    font-size:22px;
-    font-weight:700;
-}
-
-.step-button{
-    width:100%;
-    margin-top:20px;
+    text-align:center;
 }
 
 .pose-guide{
@@ -911,18 +776,10 @@ button{
     z-index:20;
 }
 
-.camera-bottom{
-    position:absolute;
-    bottom:20px;
-    left:20px;
-    right:20px;
-    display:flex;
-    justify-content:space-between;
-    gap:15px;
-    z-index:20;
-}
-
 .camera-live{
+    position:absolute;
+    right:20px;
+    top:20px;
     padding:8px 12px;
     border-radius:8px;
     background:rgba(2,10,18,.8);
@@ -930,26 +787,86 @@ button{
     color:var(--green);
     font-family:"Space Mono",monospace;
     font-size:9px;
+    z-index:20;
 }
-/* ================= CAMERA CONTROLS ================= */
 
 .camera-controls{
     position:absolute;
     left:20px;
     right:20px;
-    bottom:70px;
+    bottom:22px;
     display:flex;
     justify-content:center;
-    gap:10px;
+    gap:9px;
     flex-wrap:wrap;
     z-index:30;
 }
 
 .camera-controls .btn{
-    min-height:42px;
-    padding:0 15px;
+    min-height:45px;
+    padding:0 16px;
     font-size:10px;
+    backdrop-filter:blur(10px);
 }
+
+.capture-main{
+    min-width:150px!important;
+    background:linear-gradient(135deg,#087cff,#16ddff)!important;
+    box-shadow:0 0 30px rgba(22,221,255,.25);
+}
+
+.camera-side{
+    padding:24px;
+    border:1px solid var(--line);
+    border-radius:22px;
+    background:var(--glass);
+    height:max-content;
+}
+
+.camera-side h3{
+    font-size:14px;
+}
+
+.camera-side-sub{
+    margin-top:5px;
+    color:#637d90;
+    font-size:9px;
+    line-height:1.7;
+}
+
+.metric{
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+}
+
+.metric-label{
+    color:#638095;
+    font-size:9px;
+}
+
+.metric-value{
+    margin-top:5px;
+    color:#dffaff;
+    font-family:"Space Mono",monospace;
+    font-size:22px;
+    font-weight:700;
+}
+
+.camera-side-buttons{
+    display:grid;
+    gap:9px;
+    margin-top:20px;
+}
+
+.camera-side-buttons .btn{
+    width:100%;
+}
+
+input[type=file]{
+    display:none;
+}
+
+/* ================= CAPTURE PREVIEW ================= */
 
 .capture-preview{
     position:absolute;
@@ -960,7 +877,7 @@ button{
     justify-content:center;
     gap:15px;
     padding:30px;
-    background:rgba(2,10,18,.94);
+    background:rgba(2,10,18,.96);
     z-index:50;
 }
 
@@ -984,16 +901,17 @@ button{
     letter-spacing:2px;
 }
 
+.preview-buttons{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+}
 
 /* ================= QUESTIONNAIRE ================= */
 
 .questionnaire-card{
-    margin-top:22px;
-    padding:28px;
-    border:1px solid var(--line);
-    border-radius:22px;
-    background:var(--glass);
-    box-shadow:0 25px 70px rgba(0,0,0,.2);
+    margin-top:30px;
 }
 
 .question-grid{
@@ -1028,19 +946,12 @@ button{
     display:flex!important;
     align-items:center;
     gap:7px;
-    margin:0!important;
     padding:8px 12px;
     border:1px solid rgba(70,200,240,.12);
     border-radius:9px;
     color:#7893a5!important;
     background:rgba(4,25,40,.6);
     cursor:pointer;
-    transition:.2s;
-}
-
-.option:hover{
-    border-color:rgba(30,220,255,.35);
-    color:#c8f8ff!important;
 }
 
 .option input{
@@ -1094,51 +1005,12 @@ button{
     font-size:9px;
 }
 
-.question-status.success{
-    color:var(--green);
-}
-
-
-/* ================= CAPTURE BUTTON ================= */
-
-#processCaptureBtn{
-    min-width:220px;
-}
-
-
-/* ================= MOBILE ================= */
-
-@media(max-width:700px){
-
-    .question-grid{
-        grid-template-columns:1fr;
-    }
-
-    .camera-controls{
-        bottom:75px;
-    }
-
-    .camera-controls .btn{
-        min-height:38px;
-        font-size:9px;
-    }
-
-    .question-footer{
-        flex-direction:column;
-        align-items:stretch;
-    }
-
-    .question-footer .btn{
-        width:100%;
-    }
-
-}
 /* ================= ANALYSIS ================= */
 
 .analysis-page{
     width:min(1250px,92%);
     margin:auto;
-    padding:90px 0;
+    padding:80px 0;
 }
 
 .analysis-grid{
@@ -1156,7 +1028,7 @@ button{
 }
 
 .analysis-card h3{
-    font-size:12px;
+    font-size:11px;
     color:#7591a4;
     letter-spacing:1px;
 }
@@ -1166,24 +1038,6 @@ button{
     font-family:"Space Mono",monospace;
     font-size:32px;
     color:var(--cyan2);
-}
-
-.bar{
-    width:100%;
-    height:7px;
-    margin-top:15px;
-    overflow:hidden;
-    border-radius:99px;
-    background:#0a2435;
-}
-
-.bar span{
-    display:block;
-    width:0%;
-    height:100%;
-    border-radius:99px;
-    background:linear-gradient(90deg,#087cff,#16ddff);
-    transition:width .6s ease;
 }
 
 .math-dashboard{
@@ -1244,8 +1098,6 @@ button{
     font-size:18px;
 }
 
-/* EXTRA MATHEMATICAL CARDS */
-
 .advanced-math{
     margin-top:22px;
     display:grid;
@@ -1274,19 +1126,12 @@ button{
     font-weight:700;
 }
 
-.advanced-card .sub{
-    margin-top:7px;
-    color:#526d80;
-    font-size:8px;
-}
-
 .score-panel{
     margin-top:22px;
     padding:28px;
     border:1px solid rgba(30,220,255,.16);
     border-radius:20px;
-    background:
-        linear-gradient(135deg,rgba(0,120,255,.08),rgba(0,220,255,.03));
+    background:linear-gradient(135deg,rgba(0,120,255,.08),rgba(0,220,255,.03));
 }
 
 .score-header{
@@ -1324,38 +1169,12 @@ button{
     transition:1s;
 }
 
-.score-components{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:10px;
-    margin-top:18px;
-}
-
-.score-component{
-    padding:12px;
-    border-radius:10px;
-    background:rgba(2,15,25,.6);
-}
-
-.score-component small{
-    display:block;
-    color:#5e7789;
-    font-size:8px;
-}
-
-.score-component strong{
-    display:block;
-    margin-top:4px;
-    font-family:"Space Mono",monospace;
-    color:#dffaff;
-}
-
 /* ================= RESULT ================= */
 
 .result-page{
     width:min(1100px,92%);
     margin:auto;
-    padding:90px 0;
+    padding:80px 0;
 }
 
 .result-card{
@@ -1416,11 +1235,28 @@ button{
     color:#b9f7ff;
 }
 
-.result-extra{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
-    margin-top:12px;
+/* ================= TOAST ================= */
+
+.toast{
+    position:fixed;
+    right:25px;
+    bottom:25px;
+    padding:14px 18px;
+    border-radius:12px;
+    background:rgba(3,18,30,.95);
+    border:1px solid rgba(30,220,255,.25);
+    color:#bff7ff;
+    font-size:10px;
+    opacity:0;
+    transform:translateY(20px);
+    pointer-events:none;
+    transition:.3s;
+    z-index:9999;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateY(0);
 }
 
 /* ================= RESPONSIVE ================= */
@@ -1442,13 +1278,12 @@ button{
         justify-content:center;
     }
 
-    .mini-data{
-        margin-left:auto;
-        margin-right:auto;
-    }
-
     .camera-layout{
         grid-template-columns:1fr;
+    }
+
+    .camera-side{
+        order:2;
     }
 
     .advanced-math{
@@ -1459,7 +1294,15 @@ button{
 @media(max-width:700px){
 
     .header{
-        padding:0 20px;
+        height:68px;
+    }
+
+    .page{
+        padding-top:68px;
+    }
+
+    .brand-title{
+        font-size:11px;
     }
 
     .system-status{
@@ -1467,15 +1310,8 @@ button{
     }
 
     .hero-title{
-        font-size:50px;
-    }
-
-    .hero-actions{
-        flex-direction:column;
-    }
-
-    .btn{
-        width:100%;
+        font-size:52px;
+        letter-spacing:-3px;
     }
 
     .mini-data{
@@ -1487,7 +1323,17 @@ button{
         border-bottom:1px solid var(--line);
     }
 
-    .form-grid{
+    .hero-visual{
+        height:420px;
+    }
+
+    .visual-core{
+        transform:scale(.72);
+    }
+
+    .form-grid,
+    .question-grid,
+    .math-dashboard{
         grid-template-columns:1fr;
     }
 
@@ -1495,55 +1341,76 @@ button{
         grid-template-columns:1fr;
     }
 
-    .form-footer{
+    .form-footer,
+    .question-footer{
         flex-direction:column;
         align-items:stretch;
     }
 
-    .analysis-grid,
-    .math-dashboard,
-    .result-summary,
-    .result-extra{
+    .camera-panel{
+        min-height:520px;
+    }
+
+    #videoElement{
+        height:520px;
+        min-height:520px;
+    }
+
+    #poseCanvas{
+        height:520px;
+    }
+
+    .camera-controls{
+        bottom:18px;
+    }
+
+    .camera-controls .btn{
+        min-height:40px;
+        padding:0 11px;
+        font-size:9px;
+    }
+
+    .capture-main{
+        min-width:130px!important;
+    }
+
+    .analysis-grid{
         grid-template-columns:1fr;
     }
 
     .advanced-math{
-        grid-template-columns:1fr;
-    }
-
-    .score-components{
         grid-template-columns:1fr 1fr;
     }
 
-    .hero-visual{
-        transform:scale(.68);
-        height:500px;
+    .result-summary{
+        grid-template-columns:1fr 1fr;
     }
 
-    .camera-panel{
-        min-height:450px;
+    .page-heading{
+        font-size:32px;
     }
 
-    #videoElement{
-        min-height:450px;
-    }
-
-    #poseCanvas{
-        min-height:450px;
-    }
 }
+
 </style>
 </head>
 
 <body>
 
+<!-- BACKGROUND -->
 <div class="background">
     <div class="grid"></div>
     <div class="glow glow1"></div>
     <div class="glow glow2"></div>
-    <div class="particles" id="particles"></div>
+    <div class="particles">
+        <span class="particle" style="left:12%;top:70%;animation-delay:1s"></span>
+        <span class="particle" style="left:30%;top:80%;animation-delay:3s"></span>
+        <span class="particle" style="left:55%;top:60%;animation-delay:5s"></span>
+        <span class="particle" style="left:80%;top:75%;animation-delay:2s"></span>
+    </div>
 </div>
 
+<!-- HEADER -->
 <header class="header">
 
     <div class="brand">
@@ -1555,1265 +1422,1289 @@ button{
             </div>
 
             <div class="brand-sub">
-                MEDICAL MATHEMATICAL MOTION ANALYSIS
+                MATHEMATICAL MOTION ANALYSIS
             </div>
         </div>
     </div>
 
     <div class="system-status">
         <span class="status-dot"></span>
-        SYSTEM READY
-        <span>•</span>
-        AI ENGINE ONLINE
+        SYSTEM ONLINE
     </div>
 
 </header>
 
 
-<!-- =========================================================
-HOME
-========================================================= -->
+<!-- ========================================================= -->
+<!-- HOME -->
+<!-- ========================================================= -->
 
 <section id="homePage" class="page active">
 
-<div class="home">
+    <div class="home">
 
-<div>
+        <div>
 
-<div class="eyebrow">
-    AI-ASSISTED BIOMECHANICS
-</div>
+            <div class="eyebrow">
+                AI + MATHEMATICS + COMPUTER VISION
+            </div>
 
-<h1 class="hero-title">
-    KNEE
-    <span class="blue">MOTION</span>
-    <span class="outline">ANALYSIS</span>
-</h1>
+            <h1 class="hero-title">
+                <span>AI KNEE</span>
+                <span class="blue">SCREENING</span>
+                <span class="outline">SYSTEM</span>
+            </h1>
 
-<p class="hero-description">
-    ระบบต้นแบบสำหรับการคัดกรองสุขภาพข้อเข่าเบื้องต้น
-    โดยผสาน Artificial Intelligence, Computer Vision
-    และ Mathematical Analysis เพื่อวิเคราะห์รูปแบบ
-    การเคลื่อนไหวของข้อเข่าอย่างเป็นระบบ
-</p>
+            <p class="hero-description">
+                ระบบคัดกรองการเคลื่อนไหวข้อเข่าเบื้องต้น
+                โดยใช้ Computer Vision, Geometry และ Mathematical Motion Analysis
+                เพื่อช่วยประเมินความสมมาตรและมุมการเคลื่อนไหวของข้อเข่า
+            </p>
 
-<div class="math-strip">
+            <div class="math-strip">
 
-<div class="math-chip">
-θ = cos⁻¹((u·v)/|u||v|)
-</div>
+                <div class="math-chip">
+                    θ = cos⁻¹(u·v / |u||v|)
+                </div>
 
-<div class="math-chip">
-v(t) = Δθ/Δt
-</div>
+                <div class="math-chip">
+                    BMI = m / h²
+                </div>
 
-<div class="math-chip">
-a(t) = Δv/Δt
-</div>
+                <div class="math-chip">
+                    Symmetry = |L-R|
+                </div>
 
-<div class="math-chip">
-ROM = θmax − θmin
-</div>
+                <div class="math-chip">
+                    Δθ / Δt
+                </div>
 
-<div class="math-chip">
-σ = √Σ(x−μ)²/n
-</div>
+            </div>
 
-<div class="math-chip">
-SI = 100 − Δθ/θmax×100
-</div>
+            <div class="hero-actions">
 
-<div class="math-chip">
-BMI = m/h²
-</div>
+                <button
+                    class="btn btn-primary"
+                    onclick="showPage('informationPage')">
+                    🚀 เริ่มการประเมิน
+                </button>
 
-</div>
+                <button
+                    class="btn btn-secondary"
+                    onclick="showPage('informationPage')">
+                    ดูขั้นตอน
+                </button>
 
-<div class="hero-actions">
+            </div>
 
-<button id="startBtn" class="btn btn-primary">
-เริ่มการประเมิน
-<span>→</span>
-</button>
+            <div class="mini-data">
 
-<button id="mathBtn" class="btn btn-secondary">
-ดู Mathematical Model
-</button>
+                <div class="mini-card">
+                    <div class="mini-label">ANGLE ANALYSIS</div>
+                    <div class="mini-value">
+                        3D θ
+                    </div>
+                </div>
 
-</div>
+                <div class="mini-card">
+                    <div class="mini-label">BODY SYMMETRY</div>
+                    <div class="mini-value">
+                        L ↔ R
+                    </div>
+                </div>
 
-<div class="mini-data">
+                <div class="mini-card">
+                    <div class="mini-label">AI ENGINE</div>
+                    <div class="mini-value">
+                        POSE AI
+                    </div>
+                </div>
 
-<div class="mini-card">
-<div class="mini-label">KNEE ANGLE</div>
-<div class="mini-value" id="homeAngle">
-168.4<span>°</span>
-</div>
-</div>
+            </div>
 
-<div class="mini-card">
-<div class="mini-label">AI CONFIDENCE</div>
-<div class="mini-value">
-96.2<span>%</span>
-</div>
-</div>
-
-<div class="mini-card">
-<div class="mini-label">MOTION FRAME</div>
-<div class="mini-value" id="homeFrame">
-0248
-</div>
-</div>
-
-</div>
-
-</div>
+        </div>
 
 
-<div class="hero-visual">
+        <div class="hero-visual">
 
-<div class="visual-core">
+            <div class="visual-core">
 
-<div class="orbit orbit1">
-<div class="orbit-dot dot1"></div>
-</div>
+                <div class="orbit orbit1">
+                    <span class="orbit-dot dot1"></span>
+                </div>
 
-<div class="orbit orbit2">
-<div class="orbit-dot dot2"></div>
-</div>
+                <div class="orbit orbit2">
+                    <span class="orbit-dot dot2"></span>
+                </div>
 
-<div class="orbit orbit3">
-<div class="orbit-dot dot3"></div>
-</div>
+                <div class="orbit orbit3">
+                    <span class="orbit-dot dot3"></span>
+                </div>
 
-<div class="scan-line"></div>
+                <div class="knee-model">
 
-<div class="knee-model">
+                    <div class="bone bone-hip"></div>
+                    <div class="bone bone-thigh"></div>
+                    <div class="bone bone-shin"></div>
 
-<div class="bone bone-hip"></div>
-<div class="bone bone-thigh"></div>
-<div class="bone bone-shin"></div>
+                    <div class="joint joint-hip"></div>
+                    <div class="joint joint-knee"></div>
+                    <div class="joint joint-ankle"></div>
 
-<div class="joint joint-hip"></div>
-<div class="joint joint-knee"></div>
-<div class="joint joint-ankle"></div>
+                </div>
 
-</div>
+                <div class="angle-display">
+                    168.4°
+                </div>
 
-<div class="angle-display">
-<span id="heroAngle">168.4°</span>
-</div>
+            </div>
 
-</div>
+        </div>
 
-</div>
-
-</div>
+    </div>
 
 </section>
 
 
-<!-- =========================================================
-PATIENT INFORMATION
-========================================================= -->
+<!-- ========================================================= -->
+<!-- INFORMATION PAGE -->
+<!-- ========================================================= -->
 
-<section id="infoPage" class="page">
+<section id="informationPage" class="page">
 
-<div class="information">
+    <div class="information">
 
-<button id="backHomeBtn" class="btn btn-secondary">
-← กลับหน้าแรก
-</button>
+        <div class="eyebrow">
+            STEP 01 / USER INFORMATION
+        </div>
 
-<h2 class="page-heading" style="margin-top:25px">
-PATIENT <span>INFORMATION</span>
-</h2>
+        <h1 class="page-heading">
+            ข้อมูล<span>ผู้รับการประเมิน</span>
+        </h1>
 
-<p class="page-description">
-กรุณากรอกข้อมูลเบื้องต้นก่อนเข้าสู่ระบบวิเคราะห์การเคลื่อนไหว
-</p>
+        <p class="page-description">
+            ข้อมูลพื้นฐานจะถูกนำไปใช้ประกอบการวิเคราะห์และเพิ่มความแม่นยำของผลการคัดกรอง
+        </p>
 
-<div class="progress">
 
-<div class="progress-step active">
-<div class="progress-number">01</div>
-ข้อมูล
-</div>
+        <div class="form-card">
 
-<div class="progress-line"></div>
+            <div class="form-title">
+                Personal Information
+            </div>
 
-<div class="progress-step">
-<div class="progress-number">02</div>
-AI Camera
-</div>
+            <div class="form-subtitle">
+                กรุณากรอกข้อมูลให้ครบถ้วน
+            </div>
 
-<div class="progress-line"></div>
 
-<div class="progress-step">
-<div class="progress-number">03</div>
-Analysis
-</div>
+            <div class="form-grid">
 
-<div class="progress-line"></div>
+                <div class="field">
+                    <label>ชื่อ</label>
+                    <input
+                        id="firstName"
+                        type="text"
+                        placeholder="ชื่อ">
+                </div>
 
-<div class="progress-step">
-<div class="progress-number">04</div>
-Result
-</div>
+                <div class="field">
+                    <label>นามสกุล</label>
+                    <input
+                        id="lastName"
+                        type="text"
+                        placeholder="นามสกุล">
+                </div>
 
-</div>
+                <div class="field">
+                    <label>อายุ (ปี)</label>
+                    <input
+                        id="age"
+                        type="number"
+                        min="1"
+                        max="120"
+                        placeholder="อายุ">
+                </div>
 
-<div class="form-card">
+                <div class="field">
+                    <label>น้ำหนัก (kg)</label>
+                    <input
+                        id="weight"
+                        type="number"
+                        step="0.1"
+                        placeholder="น้ำหนัก">
+                </div>
 
-<div class="form-title">
-ข้อมูลผู้เข้ารับการคัดกรอง
-</div>
+                <div class="field">
+                    <label>ส่วนสูง (cm)</label>
+                    <input
+                        id="height"
+                        type="number"
+                        step="0.1"
+                        placeholder="ส่วนสูง">
+                </div>
 
-<div class="form-subtitle">
-PATIENT PROFILE / BASIC PARAMETERS
-</div>
+                <div class="field">
+                    <label>โรงพยาบาลสำหรับส่งต่อ</label>
 
-<div class="form-grid">
+                    <input
+                        id="hospital"
+                        type="text"
+                        placeholder="ชื่อโรงพยาบาล">
+                </div>
 
-<div class="field">
-<label>ชื่อ</label>
-<input id="firstName" type="text" placeholder="กรอกชื่อ">
-</div>
 
-<div class="field">
-<label>นามสกุล</label>
-<input id="lastName" type="text" placeholder="กรอกนามสกุล">
-</div>
+                <div class="bmi-box">
 
-<div class="field">
-<label>อายุ</label>
-<input id="age" type="number" min="1" max="120" placeholder="ปี">
-</div>
+                    <div>
+                        <div class="bmi-label">
+                            BODY MASS INDEX
+                        </div>
 
-<div class="field">
-<label>น้ำหนัก</label>
-<input id="weight" type="number" min="1" step="0.1" placeholder="กิโลกรัม">
-</div>
+                        <div
+                            id="bmiValue"
+                            class="bmi-value">
+                            -- 
+                        </div>
+                    </div>
 
-<div class="field">
-<label>ส่วนสูง</label>
-<input id="height" type="number" min="50" step="0.1" placeholder="เซนติเมตร">
-</div>
 
-<div class="field">
-<label>โรงพยาบาลสำหรับส่งต่อ</label>
-<input id="hospital" type="text" placeholder="ชื่อโรงพยาบาล">
-</div>
+                    <div
+                        id="bmiStatus"
+                        class="bmi-status">
+                        กรุณากรอกน้ำหนักและส่วนสูง
+                    </div>
 
-<div class="bmi-box">
 
-<div class="bmi-main">
+                    <div class="bmi-formula">
+                        BMI = น้ำหนัก(kg) ÷
+                        ส่วนสูง(m)²
+                    </div>
 
-<div class="bmi-label">
-BODY MASS INDEX
-</div>
+                </div>
 
-<div id="bmiValue" class="bmi-value">
---.-
-</div>
+            </div>
 
-</div>
 
-<div id="bmiStatus" class="bmi-status">
-กรุณากรอกน้ำหนักและส่วนสูง
-</div>
+            <div class="form-footer">
 
-<div class="bmi-formula">
-BMI = น้ำหนัก(kg) ÷ [ส่วนสูง(m)]²
-</div>
+                <div class="notice">
+                    ⚠ ระบบนี้เป็นการคัดกรองเบื้องต้น
+                    ไม่ใช่การวินิจฉัยโรค และผลลัพธ์อาจคลาดเคลื่อนได้
+                    หากมีอาการผิดปกติควรพบแพทย์
+                </div>
 
-</div>
+                <button
+                    class="btn btn-primary"
+                    onclick="goToCamera()">
+                    ต่อไป → เปิดกล้อง
+                </button>
 
-</div>
+            </div>
 
-<div class="form-footer">
+        </div>
 
-<div class="notice">
-
-⚠ ระบบนี้เป็นระบบต้นแบบสำหรับ
-<b>การคัดกรองเบื้องต้น</b> เท่านั้น
-ผลลัพธ์ไม่ถือเป็นการวินิจฉัยโรค
-และไม่สามารถใช้แทนการตรวจโดยแพทย์ได้
-
-</div>
-
-<button id="continueBtn" class="btn btn-primary">
-ดำเนินการต่อ
-<span>→</span>
-</button>
-
-</div>
-
-</div>
-
-</div>
+    </div>
 
 </section>
 
 
-<!-- =========================================================
-CAMERA
-========================================================= -->
+<!-- ========================================================= -->
+<!-- CAMERA PAGE -->
+<!-- ========================================================= -->
 
 <section id="cameraPage" class="page">
 
-<div class="camera-page">
+    <div class="camera-page">
 
-<button id="cameraBackBtn" class="btn btn-secondary">
-← กลับข้อมูลผู้รับการประเมิน
-</button>
+        <div class="eyebrow">
+            STEP 02 / AI CAMERA
+        </div>
 
-<h2 class="page-heading" style="margin-top:25px">
-AI <span>CAMERA</span>
-</h2>
+        <h1 class="page-heading">
+            ถ่ายภาพ<span>ข้อเข่า</span>
+        </h1>
 
-<p class="page-description">
-MediaPipe Pose ตรวจจับ Hip • Knee • Ankle และสร้างข้อมูลสำหรับ Mathematical Time-Series Analysis
-</p>
+        <p class="page-description">
+            จัดท่าให้เห็นสะโพก เข่า และข้อเท้าอย่างชัดเจน
+            จากนั้นกดถ่ายภาพเพื่อใช้ในการประมวลผล
+        </p>
 
-<div class="camera-layout"><!-- =========================================================
-QUESTIONNAIRE
-========================================================= -->
 
-<div class="questionnaire-card">
+        <div class="camera-layout">
 
-    <div class="form-title">
-        📝 แบบสอบถามเพื่อเพิ่มความแม่นยำในการคัดกรอง
-    </div>
 
-    <div class="form-subtitle">
-        SYMPTOM QUESTIONNAIRE / SUPPORTING DATA
-    </div>
+            <!-- CAMERA -->
+            <div class="camera-panel">
 
-    <div class="question-grid">
+                <video
+                    id="videoElement"
+                    autoplay
+                    muted
+                    playsinline>
+                </video>
 
-        <div class="question-item">
+                <canvas id="poseCanvas"></canvas>
 
-            <label>
-                01 — มีอาการปวดเข่าหรือไม่?
-            </label>
 
-            <div class="option-group">
+                <div
+                    id="cameraPlaceholder"
+                    class="camera-placeholder">
 
-                <label class="option">
+                    <div class="camera-icon">
+                        📷
+                    </div>
+
+                    <h3>
+                        พร้อมสำหรับการถ่ายภาพ
+                    </h3>
+
+                    <p>
+                        กด "เปิดกล้อง" เพื่อเริ่มใช้งาน
+                    </p>
+
+                </div>
+
+
+                <div class="pose-guide">
+                    ● STAND / KNEE / ANKLE
+                </div>
+
+
+                <div class="camera-live">
+                    ● CAMERA
+                </div>
+
+
+                <!-- CAMERA CONTROLS -->
+                <div class="camera-controls">
+
+                    <button
+                        id="switchCameraBtn"
+                        class="btn btn-secondary"
+                        onclick="switchCamera()">
+                        🔄 สลับกล้อง
+                    </button>
+
+                    <button
+                        id="captureBtn"
+                        class="btn capture-main"
+                        onclick="capturePhoto()">
+                        📸 ถ่ายภาพ
+                    </button>
+
+                    <label
+                        for="imageUpload"
+                        class="btn btn-secondary">
+                        🖼️ แนบรูป
+                    </label>
+
                     <input
-                        type="radio"
-                        name="pain"
-                        value="no">
-                    <span>ไม่มี</span>
-                </label>
+                        id="imageUpload"
+                        type="file"
+                        accept="image/*"
+                        onchange="handleImageUpload(event)">
 
-                <label class="option">
-                    <input
-                        type="radio"
-                        name="pain"
-                        value="yes">
-                    <span>มี</span>
-                </label>
+                </div>
+
+
+                <!-- PREVIEW -->
+                <div
+                    id="capturePreview"
+                    class="capture-preview">
+
+                    <div class="preview-label">
+                        IMAGE PREVIEW
+                    </div>
+
+                    <img
+                        id="previewImage"
+                        alt="ภาพที่เลือก">
+
+                    <div class="preview-buttons">
+
+                        <button
+                            class="btn btn-secondary"
+                            onclick="retakePhoto()">
+                            ↩ ถ่ายใหม่
+                        </button>
+
+                        <button
+                            class="btn btn-primary"
+                            onclick="useCapturedImage()">
+                            ✓ ใช้รูปนี้
+                        </button>
+
+                    </div>
+
+                </div>
 
             </div>
 
-        </div>
+
+            <!-- SIDE PANEL -->
+            <div class="camera-side">
+
+                <h3>
+                    Camera Analysis
+                </h3>
+
+                <p class="camera-side-sub">
+                    ระบบจะใช้ภาพเพื่อระบุตำแหน่ง
+                    จุดสะโพก เข่า และข้อเท้า
+                </p>
 
 
-        <div class="question-item">
+                <div class="metric">
 
-            <label>
-                02 — ปวดเข่าข้างใด?
-            </label>
+                    <div class="metric-label">
+                        CAMERA
+                    </div>
 
-            <div class="option-group">
+                    <div
+                        id="cameraStatus"
+                        class="metric-value">
+                        OFFLINE
+                    </div>
 
-                <label class="option">
-                    <input
-                        type="radio"
-                        name="painSide"
-                        value="left">
-                    <span>ซ้าย</span>
-                </label>
-
-                <label class="option">
-                    <input
-                        type="radio"
-                        name="painSide"
-                        value="right">
-                    <span>ขวา</span>
-                </label>
-
-                <label class="option">
-                    <input
-                        type="radio"
-                        name="painSide"
-                        value="both">
-                    <span>ทั้งสองข้าง</span>
-                </label>
-
-            </div>
-
-        </div>
+                </div>
 
 
-        <div class="question-item">
+                <div class="metric">
 
-            <label>
-                03 — ระดับความปวด (0–10)
-            </label>
+                    <div class="metric-label">
+                        CAMERA MODE
+                    </div>
 
-            <div class="pain-slider-row">
+                    <div
+                        id="cameraMode"
+                        class="metric-value">
+                        FRONT
+                    </div>
 
-                <input
-                    id="painLevel"
-                    type="range"
-                    min="0"
-                    max="10"
-                    value="0">
-
-                <strong id="painLevelValue">
-                    0
-                </strong>
-
-            </div>
-
-        </div>
+                </div>
 
 
-        <div class="question-item">
+                <div class="metric">
 
-            <label>
-                04 — มีอาการปวดขณะเดินหรือไม่?
-            </label>
+                    <div class="metric-label">
+                        IMAGE STATUS
+                    </div>
 
-            <div class="option-group">
+                    <div
+                        id="imageStatus"
+                        class="metric-value">
+                        WAIT
+                    </div>
 
-                <label class="option">
-                    <input
-                        type="radio"
-                        name="walkingPain"
-                        value="no">
-                    <span>ไม่มี</span>
-                </label>
-
-                <label class="option">
-                    <input
-                        type="radio"
-                        name="walkingPain"
-                        value="yes">
-                    <span>มี</span>
-                </label>
-
-            </div>
-
-        </div>
+                </div>
 
 
-        <div class="question-item">
+                <div class="metric">
 
-            <label>
-                05 — ปวดเวลาขึ้นลงบันไดหรือไม่?
-            </label>
+                    <div class="metric-label">
+                        POSE DETECTION
+                    </div>
 
-            <div class="option-group">
+                    <div
+                        id="poseStatus"
+                        class="metric-value">
+                        READY
+                    </div>
 
-                <label class="option">
-                    <input
-                        type="radio"
-                        name="stairsPain"
-                        value="no">
-                    <span>ไม่มี</span>
-                </label>
+                </div>
 
-                <label class="option">
-                    <input
-                        type="radio"
-                        name="stairsPain"
-                        value="yes">
-                    <span>มี</span>
-                </label>
+
+                <div class="camera-side-buttons">
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="startCamera()">
+                        📷 เปิดกล้อง
+                    </button>
+
+                    <button
+                        class="btn btn-success"
+                        id="processCaptureBtn"
+                        onclick="processCapturedImage()">
+                        🧠 ประมวลผลภาพ
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        onclick="showPage('informationPage')">
+                        ← กลับข้อมูล
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        onclick="showPage('questionnairePage')">
+                        ไปแบบสอบถาม →
+                    </button>
+
+                </div>
 
             </div>
-
-        </div>
-
-
-        <div class="question-item">
-
-            <label>
-                06 — มีอาการบวม / ฝืด / ตึงหรือไม่?
-            </label>
-
-            <div class="option-group">
-
-                <label class="option">
-                    <input
-                        type="radio"
-                        name="swelling"
-                        value="no">
-                    <span>ไม่มี</span>
-                </label>
-
-                <label class="option">
-                    <input
-                        type="radio"
-                        name="swelling"
-                        value="yes">
-                    <span>มี</span>
-                </label>
-
-            </div>
-
-        </div>
-
-
-        <div class="question-item">
-
-            <label>
-                07 — เคยได้รับบาดเจ็บบริเวณเข่าหรือไม่?
-            </label>
-
-            <div class="option-group">
-
-                <label class="option">
-                    <input
-                        type="radio"
-                        name="injury"
-                        value="no">
-                    <span>ไม่เคย</span>
-                </label>
-
-                <label class="option">
-                    <input
-                        type="radio"
-                        name="injury"
-                        value="yes">
-                    <span>เคย</span>
-                </label>
-
-            </div>
-
-        </div>
-
-
-        <div class="question-item">
-
-            <label>
-                08 — อาการเป็นมานานเท่าใด?
-            </label>
-
-            <select id="symptomDuration">
-
-                <option value="">
-                    เลือกระยะเวลา
-                </option>
-
-                <option value="less1">
-                    น้อยกว่า 1 สัปดาห์
-                </option>
-
-                <option value="1to4">
-                    1–4 สัปดาห์
-                </option>
-
-                <option value="1to3m">
-                    1–3 เดือน
-                </option>
-
-                <option value="more3m">
-                    มากกว่า 3 เดือน
-                </option>
-
-            </select>
 
         </div>
 
     </div>
-
-
-    <div class="question-footer">
-
-        <div id="questionStatus" class="question-status">
-            กรุณาตอบแบบสอบถามเพื่อใช้เป็นข้อมูลประกอบ
-        </div>
-
-        <button
-            id="saveQuestionnaireBtn"
-            class="btn btn-primary">
-            ✓ บันทึกแบบสอบถาม
-        </button>
-
-    </div>
-
-</div>
-
-<div class="camera-panel" id="cameraPanel"><!-- CAMERA CONTROLS -->
-<div class="camera-controls" id="cameraControls">
-
-    <button id="switchCameraBtn" class="btn btn-secondary">
-        🔄 สลับกล้อง
-    </button>
-
-    <label for="imageUpload" class="btn btn-secondary">
-        📎 แนบรูป
-    </label>
-
-    <input
-        id="imageUpload"
-        type="file"
-        accept="image/*"
-        style="display:none"
-    >
-
-    <button id="captureBtn" class="btn btn-primary">
-        📸 ถ่ายภาพ
-    </button>
-
-</div>
-
-<!-- CAPTURE PREVIEW -->
-<div id="capturePreview" class="capture-preview">
-
-    <div class="preview-label">
-        CAPTURED IMAGE
-    </div>
-
-    <img id="capturedImage" alt="Captured Image">
-
-    <button
-        id="processCaptureBtn"
-        class="btn btn-primary">
-        🧠 ถ่ายภาพและประมวลผล
-    </button>
-
-</div>
-
-<div class="camera-placeholder" id="cameraPlaceholder">
-
-<div class="camera-icon">
-◉
-</div>
-
-<h3>
-AI Pose Detection
-</h3>
-
-<p>
-ยืนให้เห็นร่างกายด้านข้างเต็มตัว
-</p>
-
-<button id="cameraStartBtn"
-class="btn btn-primary"
-style="margin-top:25px">
-เริ่มกล้อง
-</button>
-
-</div>
-
-<div class="pose-guide" id="poseGuide">
-WAITING FOR CAMERA
-</div>
-
-<div class="camera-bottom">
-
-<div class="camera-live" id="cameraLive">
-● CAMERA OFFLINE
-</div>
-
-<div class="camera-live">
-HIP • KNEE • ANKLE
-</div>
-
-</div>
-
-</div>
-
-
-<div class="camera-side">
-
-<div class="metric">
-<div class="metric-label">PATIENT</div>
-<div id="cameraPatient" class="metric-value">—</div>
-</div>
-
-<div class="metric">
-<div class="metric-label">BMI</div>
-<div id="cameraBMI" class="metric-value">—</div>
-</div>
-
-<div class="metric">
-<div class="metric-label">KNEE ANGLE θ</div>
-<div id="cameraAngle" class="metric-value">— °</div>
-</div>
-
-<div class="metric">
-<div class="metric-label">ANGULAR VELOCITY</div>
-<div id="cameraVelocity" class="metric-value">— °/s</div>
-</div>
-
-<div class="metric">
-<div class="metric-label">AI CONFIDENCE</div>
-<div id="cameraConfidence" class="metric-value">— %</div>
-</div>
-
-<div class="metric">
-<div class="metric-label">DETECTION POINTS</div>
-<div id="detectionPoints" class="metric-value">0 / 3</div>
-</div>
-
-<div class="metric">
-<div class="metric-label">FRAME COUNT</div>
-<div id="cameraFrame" class="metric-value">0000</div>
-</div>
-
-<div class="metric">
-<div class="metric-label">STATUS</div>
-<div id="cameraStatus"
-class="metric-value"
-style="color:var(--yellow)">
-READY
-</div>
-</div>
-
-<button id="analysisBtn"
-class="btn btn-primary step-button">
-เริ่ม Mathematical Analysis →
-</button>
-
-</div>
-
-</div>
-
-</div>
 
 </section>
 
 
-<!-- =========================================================
-MATHEMATICAL ANALYSIS
-========================================================= -->
+<!-- ========================================================= -->
+<!-- QUESTIONNAIRE PAGE -->
+<!-- ========================================================= -->
+
+<section id="questionnairePage" class="page">
+
+    <div class="information">
+
+        <div class="eyebrow">
+            STEP 03 / QUESTIONNAIRE
+        </div>
+
+        <h1 class="page-heading">
+            แบบสอบถาม<span>เพิ่มเติม</span>
+        </h1>
+
+        <p class="page-description">
+            ข้อมูลจากแบบสอบถามจะถูกนำไปประกอบกับข้อมูลภาพ
+            เพื่อช่วยให้การประเมินมีข้อมูลมากขึ้น
+        </p>
+
+
+        <div class="questionnaire-card">
+
+            <div class="form-title">
+                Knee Health Questionnaire
+            </div>
+
+            <div class="form-subtitle">
+                กรุณาตอบตามอาการจริงของคุณ
+            </div>
+
+
+            <div class="question-grid">
+
+
+                <!-- Q1 -->
+                <div class="question-item">
+
+                    <label>
+                        1. ปัจจุบันมีอาการปวดเข่าหรือไม่?
+                    </label>
+
+                    <div class="option-group">
+
+                        <label class="option">
+                            <input
+                                type="radio"
+                                name="pain"
+                                value="0">
+                            ไม่มี
+                        </label>
+
+                        <label class="option">
+                            <input
+                                type="radio"
+                                name="pain"
+                                value="1">
+                            มี
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Q2 -->
+                <div class="question-item">
+
+                    <label>
+                        2. ระดับความปวดในขณะนี้
+                    </label>
+
+                    <div class="pain-slider-row">
+
+                        <input
+                            id="painLevel"
+                            type="range"
+                            min="0"
+                            max="10"
+                            value="0"
+                            oninput="updatePain()">
+
+                        <strong id="painValue">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Q3 -->
+                <div class="question-item">
+
+                    <label>
+                        3. มีอาการปวดเวลาขึ้นลงบันไดหรือไม่?
+                    </label>
+
+                    <div class="option-group">
+
+                        <label class="option">
+                            <input
+                                type="radio"
+                                name="stairs"
+                                value="0">
+                            ไม่
+                        </label>
+
+                        <label class="option">
+                            <input
+                                type="radio"
+                                name="stairs"
+                                value="1">
+                            มี
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Q4 -->
+                <div class="question-item">
+
+                    <label>
+                        4. มีอาการเข่าฝืดหลังตื่นนอนหรือไม่?
+                    </label>
+
+                    <div class="option-group">
+
+                        <label class="option">
+                            <input
+                                type="radio"
+                                name="stiffness"
+                                value="0">
+                            ไม่
+                        </label>
+
+                        <label class="option">
+                            <input
+                                type="radio"
+                                name="stiffness"
+                                value="1">
+                            มี
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Q5 -->
+                <div class="question-item">
+
+                    <label>
+                        5. เคยมีอาการเข่าบวมไหม?
+                    </label>
+
+                    <div class="option-group">
+
+                        <label class="option">
+                            <input
+                                type="radio"
+                                name="swelling"
+                                value="0">
+                            ไม่เคย
+                        </label>
+
+                        <label class="option">
+                            <input
+                                type="radio"
+                                name="swelling"
+                                value="1">
+                            เคย
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Q6 -->
+                <div class="question-item">
+
+                    <label>
+                        6. เคยได้รับบาดเจ็บบริเวณเข่าหรือไม่?
+                    </label>
+
+                    <div class="option-group">
+
+                        <label class="option">
+                            <input
+                                type="radio"
+                                name="injury"
+                                value="0">
+                            ไม่เคย
+                        </label>
+
+                        <label class="option">
+                            <input
+                                type="radio"
+                                name="injury"
+                                value="1">
+                            เคย
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Q7 -->
+                <div class="question-item">
+
+                    <label>
+                        7. การเดินในชีวิตประจำวัน
+                    </label>
+
+                    <select id="walking">
+                        <option value="">
+                            เลือกคำตอบ
+                        </option>
+
+                        <option value="0">
+                            ปกติ
+                        </option>
+
+                        <option value="1">
+                            เดินลำบากเล็กน้อย
+                        </option>
+
+                        <option value="2">
+                            เดินลำบากมาก
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Q8 -->
+                <div class="question-item">
+
+                    <label>
+                        8. สามารถงอเข่าได้เต็มที่หรือไม่?
+                    </label>
+
+                    <div class="option-group">
+
+                        <label class="option">
+                            <input
+                                type="radio"
+                                name="flexibility"
+                                value="0">
+                            ได้
+                        </label>
+
+                        <label class="option">
+                            <input
+                                type="radio"
+                                name="flexibility"
+                                value="1">
+                            ไม่ได้
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="question-footer">
+
+                <div
+                    id="questionStatus"
+                    class="question-status">
+                    กรุณาตอบแบบสอบถามเพื่อดำเนินการต่อ
+                </div>
+
+                <div style="display:flex;gap:10px">
+
+                    <button
+                        class="btn btn-secondary"
+                        onclick="showPage('cameraPage')">
+                        ← กลับกล้อง
+                    </button>
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="processQuestionnaire()">
+                        🧠 วิเคราะห์ข้อมูล →
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ========================================================= -->
+<!-- ANALYSIS PAGE -->
+<!-- ========================================================= -->
 
 <section id="analysisPage" class="page">
 
-<div class="analysis-page">
+    <div class="analysis-page">
 
-<button id="analysisBackBtn" class="btn btn-secondary">
-← กลับหน้า AI Camera
-</button>
+        <div class="eyebrow">
+            STEP 04 / MATHEMATICAL ANALYSIS
+        </div>
 
-<h2 class="page-heading" style="margin-top:25px">
-MATHEMATICAL <span>ANALYSIS</span>
-</h2>
+        <h1 class="page-heading">
+            Mathematical <span>Analysis</span>
+        </h1>
 
-<p class="page-description">
-เปลี่ยนพิกัดจาก AI Pose Detection ให้เป็นตัวแปรทางคณิตศาสตร์
-</p>
+        <p class="page-description">
+            ระบบนำข้อมูลภาพ การเคลื่อนไหว และแบบสอบถาม
+            มาประกอบเป็นค่าการวิเคราะห์เบื้องต้น
+        </p>
 
 
-<!-- TOP METRICS -->
+        <div class="analysis-grid">
 
-<div class="analysis-grid">
+            <div class="analysis-card">
 
-<div class="analysis-card">
+                <h3>
+                    LEFT KNEE ANGLE
+                </h3>
 
-<h3>KNEE ANGLE θ</h3>
+                <div
+                    id="leftAngle"
+                    class="analysis-number">
+                    168.4°
+                </div>
 
-<div id="analysisAngle"
-class="analysis-number">
-—°
-</div>
+            </div>
 
-<div class="bar">
-<span id="angleBar"></span>
-</div>
 
-</div>
+            <div class="analysis-card">
 
+                <h3>
+                    RIGHT KNEE ANGLE
+                </h3>
 
-<div class="analysis-card">
+                <div
+                    id="rightAngle"
+                    class="analysis-number">
+                    161.0°
+                </div>
 
-<h3>SYMMETRY INDEX</h3>
+            </div>
 
-<div id="symmetryValue"
-class="analysis-number">
-—%
-</div>
 
-<div class="bar">
-<span id="symmetryBar"></span>
-</div>
+            <div class="analysis-card">
 
-</div>
+                <h3>
+                    SYMMETRY DIFFERENCE
+                </h3>
 
+                <div
+                    id="symmetry"
+                    class="analysis-number">
+                    7.4°
+                </div>
 
-<div class="analysis-card">
+            </div>
 
-<h3>AI CONFIDENCE</h3>
+        </div>
 
-<div id="confidenceValue"
-class="analysis-number">
-—%
-</div>
 
-<div class="bar">
-<span id="confidenceBar"></span>
-</div>
+        <div class="math-dashboard">
 
-</div>
+            <div class="math-card">
 
-</div>
+                <h3>
+                    📐 Knee Angle Calculation
+                </h3>
 
+                <div class="formula">
 
-<!-- MAIN MATH -->
+                    θ =
+                    cos⁻¹
+                    (
+                    (u · v)
+                    /
+                    (|u||v|)
+                    )
 
-<div class="math-dashboard">
+                    <br><br>
 
+                    u = P₁ - P₂
 
-<div class="math-card">
+                    <br>
 
-<h3>📐 01 — KNEE ANGLE</h3>
+                    v = P₃ - P₂
 
-<div class="formula">
-θ = cos⁻¹((u · v) / |u||v|)
-<br><br>
-u = Hip − Knee
-<br>
-v = Ankle − Knee
-<br><br>
-ใช้ Dot Product + Euclidean Norm
-</div>
+                </div>
 
-<div class="math-values">
+                <div class="math-values">
 
-<div class="math-value">
-<small>ANGLE θ</small>
-<strong id="mathAngle">—</strong>
-</div>
+                    <div class="math-value">
 
-<div class="math-value">
-<small>REFERENCE</small>
-<strong>180°</strong>
-</div>
+                        <small>
+                            LEFT
+                        </small>
 
-</div>
+                        <strong id="mathLeft">
+                            168.4°
+                        </strong>
 
-</div>
+                    </div>
 
+                    <div class="math-value">
 
-<div class="math-card">
+                        <small>
+                            RIGHT
+                        </small>
 
-<h3>⚖️ 02 — SYMMETRY INDEX</h3>
+                        <strong id="mathRight">
+                            161.0°
+                        </strong>
 
-<div class="formula">
-Δθ = |θL − θR|
-<br><br>
-SI = 100 − (Δθ / θmax × 100)
-<br><br>
-SI → 100% = สมมาตรมาก
-</div>
+                    </div>
 
-<div class="math-values">
+                </div>
 
-<div class="math-value">
-<small>ANGLE DIFFERENCE</small>
-<strong id="deltaAngle">—</strong>
-</div>
+            </div>
 
-<div class="math-value">
-<small>SYMMETRY</small>
-<strong id="mathSymmetry">—</strong>
-</div>
 
-</div>
+            <div class="math-card">
 
-</div>
+                <h3>
+                    📊 Symmetry Equation
+                </h3>
 
+                <div class="formula">
 
-<div class="math-card">
+                    Δθ = |θL - θR|
 
-<h3>📈 03 — ANGULAR VELOCITY</h3>
+                    <br><br>
 
-<div class="formula">
-ω(t) = dθ/dt
-<br><br>
-Approximation:
-<br>
-ω ≈ Δθ / Δt
-<br><br>
-หน่วย = degrees / second
-</div>
+                    Symmetry Index =
+                    1 -
+                    (Δθ / 180)
 
-<div class="math-values">
+                </div>
 
-<div class="math-value">
-<small>VELOCITY</small>
-<strong id="mathVelocity">—</strong>
-</div>
+                <div class="math-values">
 
-<div class="math-value">
-<small>FRAME</small>
-<strong id="mathFrame">—</strong>
-</div>
+                    <div class="math-value">
 
-</div>
+                        <small>
+                            Δθ
+                        </small>
 
-</div>
+                        <strong id="deltaAngle">
+                            7.4°
+                        </strong>
 
+                    </div>
 
-<div class="math-card">
+                    <div class="math-value">
 
-<h3>⚡ 04 — ANGULAR ACCELERATION</h3>
+                        <small>
+                            INDEX
+                        </small>
 
-<div class="formula">
-α(t) = d²θ/dt²
-<br><br>
-Approximation:
-<br>
-α ≈ Δω / Δt
-<br><br>
-หน่วย = degrees / s²
-</div>
+                        <strong id="symmetryIndex">
+                            95.9%
+                        </strong>
 
-<div class="math-values">
+                    </div>
 
-<div class="math-value">
-<small>ACCELERATION</small>
-<strong id="mathAcceleration">—</strong>
-</div>
+                </div>
 
-<div class="math-value">
-<small>Δt</small>
-<strong id="mathDeltaTime">—</strong>
-</div>
+            </div>
 
-</div>
+        </div>
 
-</div>
 
+        <div class="advanced-math">
 
-<div class="math-card">
+            <div class="advanced-card">
 
-<h3>📏 05 — RANGE OF MOTION</h3>
+                <div class="small-title">
+                    BMI
+                </div>
 
-<div class="formula">
-ROM = θmax − θmin
-<br><br>
-วัดช่วงการเคลื่อนไหว
-<br>
-จากข้อมูลหลาย Frame
-</div>
+                <div
+                    id="analysisBMI"
+                    class="big-value">
+                    --
+                </div>
 
-<div class="math-values">
+            </div>
 
-<div class="math-value">
-<small>ROM</small>
-<strong id="mathROM">—</strong>
-</div>
 
-<div class="math-value">
-<small>MIN → MAX</small>
-<strong id="mathMinMax">—</strong>
-</div>
+            <div class="advanced-card">
 
-</div>
+                <div class="small-title">
+                    PAIN
+                </div>
 
-</div>
+                <div
+                    id="analysisPain"
+                    class="big-value">
+                    -- / 10
+                </div>
 
+            </div>
 
-<div class="math-card">
 
-<h3>📊 06 — STANDARD DEVIATION</h3>
+            <div class="advanced-card">
 
-<div class="formula">
-μ = Σx / n
-<br><br>
-σ = √[Σ(x−μ)² / n]
-<br><br>
-วัดความแปรปรวนของการเคลื่อนไหว
-</div>
+                <div class="small-title">
+                    IMAGE
+                </div>
 
-<div class="math-values">
+                <div
+                    id="analysisImage"
+                    class="big-value">
+                    READY
+                </div>
 
-<div class="math-value">
-<small>MEAN</small>
-<strong id="mathMean">—</strong>
-</div>
+            </div>
 
-<div class="math-value">
-<small>SD</small>
-<strong id="mathSD">—</strong>
-</div>
 
-</div>
+            <div class="advanced-card">
 
-</div>
+                <div class="small-title">
+                    DATA
+                </div>
 
+                <div
+                    id="analysisData"
+                    class="big-value">
+                    8/8
+                </div>
 
-<div class="math-card">
+            </div>
 
-<h3>⚖️ 07 — BMI</h3>
+        </div>
 
-<div class="formula">
-BMI = m / h²
-<br><br>
-m = body mass (kg)
-<br>
-h = height (m)
-</div>
 
-<div class="math-values">
+        <div class="score-panel">
 
-<div class="math-value">
-<small>BMI</small>
-<strong id="analysisBMI">—</strong>
-</div>
+            <div class="score-header">
 
-<div class="math-value">
-<small>BODY MASS</small>
-<strong id="analysisWeight">— kg</strong>
-</div>
+                <h3>
+                    MATHEMATICAL SCREENING SCORE
+                </h3>
 
-</div>
+                <div
+                    id="scoreNumber"
+                    class="score-number">
+                    0%
+                </div>
 
-</div>
+            </div>
 
+            <div class="score-track">
 
-<div class="math-card">
+                <span id="scoreBar"></span>
 
-<h3>🤖 08 — AI CONFIDENCE</h3>
+            </div>
 
-<div class="formula">
-C = (Cₕ + Cₖ + Cₐ) / 3
-<br><br>
-Cₕ = Hip visibility
-<br>
-Cₖ = Knee visibility
-<br>
-Cₐ = Ankle visibility
-</div>
+        </div>
 
-<div class="math-values">
 
-<div class="math-value">
-<small>CONFIDENCE</small>
-<strong id="mathConfidence">—</strong>
-</div>
+        <div style="display:flex;justify-content:center;margin-top:25px">
 
-<div class="math-value">
-<small>POINTS</small>
-<strong id="mathPoints">—</strong>
-</div>
+            <button
+                class="btn btn-primary"
+                onclick="generateResult()">
+                ดูผลการคัดกรอง →
+            </button>
 
-</div>
+        </div>
 
-</div>
-
-</div>
-
-
-<!-- ADVANCED DATA -->
-
-<div class="advanced-math">
-
-<div class="advanced-card">
-<div class="small-title">SAMPLE SIZE</div>
-<div id="sampleCount" class="big-value">0</div>
-<div class="sub">number of valid frames</div>
-</div>
-
-<div class="advanced-card">
-<div class="small-title">TIME WINDOW</div>
-<div id="timeWindow" class="big-value">0.0 s</div>
-<div class="sub">motion observation</div>
-</div>
-
-<div class="advanced-card">
-<div class="small-title">MAX VELOCITY</div>
-<div id="maxVelocity" class="big-value">—</div>
-<div class="sub">peak angular velocity</div>
-</div>
-
-<div class="advanced-card">
-<div class="small-title">MAX ACCELERATION</div>
-<div id="maxAcceleration" class="big-value">—</div>
-<div class="sub">peak angular acceleration</div>
-</div>
-
-</div>
-
-
-<!-- COMPOSITE SCORE -->
-
-<div class="score-panel">
-
-<div class="score-header">
-
-<h3>
-🧠 COMPOSITE MATHEMATICAL SCREENING SCORE
-</h3>
-
-<div id="compositeScore"
-class="score-number">
-—%
-</div>
-
-</div>
-
-<div class="score-track">
-<span id="compositeBar"></span>
-</div>
-
-<div class="score-components">
-
-<div class="score-component">
-<small>ANGLE SCORE</small>
-<strong id="scoreAngle">—</strong>
-</div>
-
-<div class="score-component">
-<small>SYMMETRY SCORE</small>
-<strong id="scoreSymmetry">—</strong>
-</div>
-
-<div class="score-component">
-<small>ROM SCORE</small>
-<strong id="scoreROM">—</strong>
-</div>
-
-<div class="score-component">
-<small>AI SCORE</small>
-<strong id="scoreAI">—</strong>
-</div>
-
-</div>
-
-</div>
-
-
-<div style="text-align:center;margin-top:35px">
-
-<button id="resultBtn"
-class="btn btn-primary">
-ประมวลผลผลลัพธ์ →
-</button>
-
-</div>
-
-</div>
+    </div>
 
 </section>
 
 
-<!-- =========================================================
-RESULT
-========================================================= -->
+<!-- ========================================================= -->
+<!-- RESULT PAGE -->
+<!-- ========================================================= -->
 
 <section id="resultPage" class="page">
 
-<div class="result-page">
+    <div class="result-page">
 
-<button id="resultBackBtn" class="btn btn-secondary">
-← กลับ Mathematical Analysis
-</button>
+        <div class="eyebrow">
+            FINAL SCREENING RESULT
+        </div>
 
-<div class="result-card">
+        <h1 class="page-heading">
+            ผลการ<span>คัดกรอง</span>
+        </h1>
 
-<div class="bmi-label">
-AI-ASSISTED PRELIMINARY SCREENING
-</div>
+        <div class="result-card">
 
-<div id="resultScore"
-class="result-score">
-—%
-</div>
+            <div
+                id="resultScore"
+                class="result-score">
+                0%
+            </div>
 
-<div id="resultTitle"
-class="result-title">
-กำลังประมวลผล
-</div>
-
-
-<div class="result-summary">
-
-<div class="summary-box">
-<small>BMI</small>
-<strong id="resultBMI">—</strong>
-</div>
-
-<div class="summary-box">
-<small>KNEE ANGLE</small>
-<strong id="resultAngle">—</strong>
-</div>
-
-<div class="summary-box">
-<small>SYMMETRY</small>
-<strong id="resultSymmetry">—</strong>
-</div>
-
-<div class="summary-box">
-<small>AI CONFIDENCE</small>
-<strong id="resultConfidence">—</strong>
-</div>
-
-</div>
+            <div
+                id="resultTitle"
+                class="result-title">
+                กำลังประเมิน
+            </div>
 
 
-<div class="result-extra">
+            <div class="result-summary">
 
-<div class="summary-box">
-<small>ROM</small>
-<strong id="resultROM">—</strong>
-</div>
+                <div class="summary-box">
 
-<div class="summary-box">
-<small>VELOCITY</small>
-<strong id="resultVelocity">—</strong>
-</div>
+                    <small>
+                        LEFT ANGLE
+                    </small>
 
-<div class="summary-box">
-<small>ACCELERATION</small>
-<strong id="resultAcceleration">—</strong>
-</div>
+                    <strong id="resultLeft">
+                        --
+                    </strong>
 
-</div>
+                </div>
+
+                <div class="summary-box">
+
+                    <small>
+                        RIGHT ANGLE
+                    </small>
+
+                    <strong id="resultRight">
+                        --
+                    </strong>
+
+                </div>
+
+                <div class="summary-box">
+
+                    <small>
+                        SYMMETRY
+                    </small>
+
+                    <strong id="resultSymmetry">
+                        --
+                    </strong>
+
+                </div>
+
+                <div class="summary-box">
+
+                    <small>
+                        BMI
+                    </small>
+
+                    <strong id="resultBMI">
+                        --
+                    </strong>
+
+                </div>
+
+            </div>
 
 
-<div class="result-warning">
+            <div class="result-warning">
 
-⚠ ผลนี้เป็นเพียงผลการคัดกรองเบื้องต้นจาก
-<b>AI Pose Detection + Mathematical Motion Analysis</b>
-ไม่ใช่การวินิจฉัยโรค
+                ⚠️ ผลลัพธ์นี้เป็นเพียง
+                <b>การคัดกรองเบื้องต้น</b>
+                ไม่สามารถใช้แทนการวินิจฉัยจากแพทย์ได้
+                หากมีอาการปวด บวม เดินผิดปกติ
+                หรือมีอาการรุนแรง ควรพบแพทย์หรือบุคลากรทางการแพทย์
 
-<br><br>
-
-หากมีอาการปวด บวม ข้อฝืด
-หรือความผิดปกติในการเดิน
-ควรเข้ารับการประเมินจากบุคลากรทางการแพทย์
-
-</div>
+            </div>
 
 
-<button id="restartBtn"
-class="btn btn-primary"
-style="margin-top:25px">
-เริ่มการประเมินใหม่
-</button>
+            <div style="display:flex;justify-content:center;gap:10px;margin-top:25px;flex-wrap:wrap">
 
-</div>
+                <button
+                    class="btn btn-secondary"
+                    onclick="showPage('analysisPage')">
+                    ← ดู Analysis
+                </button>
 
-</div>
+                <button
+                    class="btn btn-primary"
+                    onclick="location.reload()">
+                    เริ่มการประเมินใหม่
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </section>
 
 
+<!-- TOAST -->
+
+<div
+    id="toast"
+    class="toast">
+</div>
+
+
+<!-- ========================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ========================================================= -->
+
 <script>
 
-document.addEventListener("DOMContentLoaded",function(){
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
+let currentStream = null;
+let currentFacingMode = "user";
+
+let capturedImageData = null;
+let uploadedImage = null;
+
+let pose = null;
+let cameraRunning = false;
+
+let leftAngleValue = 168.4;
+let rightAngleValue = 161.0;
+
+let userData = {
+    firstName:"",
+    lastName:"",
+    age:"",
+    weight:"",
+    height:"",
+    hospital:"",
+    bmi:0
+};
+
 
 /* =========================================================
-PAGE NAVIGATION
+   PAGE SYSTEM
 ========================================================= */
 
 function showPage(pageId){
@@ -2822,1835 +2713,1116 @@ function showPage(pageId){
         page.classList.remove("active");
     });
 
-    const target=document.getElementById(pageId);
+    const target = document.getElementById(pageId);
 
-    if(!target){
-        console.error("ไม่พบหน้า:",pageId);
-        return;
+    if(target){
+        target.classList.add("active");
+        window.scrollTo({
+            top:0,
+            behavior:"smooth"
+        });
     }
 
-    target.classList.add("active");
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
 }
 
 
 /* =========================================================
-ELEMENTS
+   TOAST
 ========================================================= */
 
-const startBtn=document.getElementById("startBtn");
-const backHomeBtn=document.getElementById("backHomeBtn");
-const continueBtn=document.getElementById("continueBtn");
-const cameraBackBtn=document.getElementById("cameraBackBtn");
-const analysisBtn=document.getElementById("analysisBtn");
-const analysisBackBtn=document.getElementById("analysisBackBtn");
-const resultBtn=document.getElementById("resultBtn");
-const resultBackBtn=document.getElementById("resultBackBtn");
-const restartBtn=document.getElementById("restartBtn");
+function showToast(message){
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(()=>{
+        toast.classList.remove("show");
+    },3000);
+
+}
 
 
 /* =========================================================
-NAVIGATION
+   USER INFORMATION
 ========================================================= */
-
-startBtn?.addEventListener("click",()=>{
-    showPage("infoPage");
-});
-
-backHomeBtn?.addEventListener("click",()=>{
-    showPage("homePage");
-});
-
-cameraBackBtn?.addEventListener("click",()=>{
-    showPage("infoPage");
-});
-
-analysisBackBtn?.addEventListener("click",()=>{
-    showPage("cameraPage");
-});
-
-resultBackBtn?.addEventListener("click",()=>{
-    showPage("analysisPage");
-});
-
-
-/* =========================================================
-BMI
-========================================================= */
-
-const weightInput=document.getElementById("weight");
-const heightInput=document.getElementById("height");
 
 function calculateBMI(){
 
-    const weight=parseFloat(weightInput?.value);
-    const heightCm=parseFloat(heightInput?.value);
+    const weight =
+        parseFloat(document.getElementById("weight").value);
 
-    const bmiValue=document.getElementById("bmiValue");
-    const bmiStatus=document.getElementById("bmiStatus");
+    const heightCm =
+        parseFloat(document.getElementById("height").value);
 
-    if(!weight || !heightCm || weight<=0 || heightCm<=0){
+    const bmiValue =
+        document.getElementById("bmiValue");
 
-        bmiValue.textContent="--.-";
+    const bmiStatus =
+        document.getElementById("bmiStatus");
 
-        bmiStatus.textContent=
-        "กรุณากรอกน้ำหนักและส่วนสูง";
+    if(!weight || !heightCm || heightCm <= 0){
 
-        bmiStatus.style.color="var(--muted)";
+        bmiValue.textContent = "--";
 
-        return null;
+        bmiStatus.textContent =
+            "กรุณากรอกน้ำหนักและส่วนสูง";
+
+        return 0;
     }
 
-    const heightM=heightCm/100;
+    const heightM = heightCm / 100;
 
-    const bmi=weight/(heightM*heightM);
+    const bmi =
+        weight / (heightM * heightM);
 
-    bmiValue.textContent=bmi.toFixed(1);
+    bmiValue.textContent =
+        bmi.toFixed(1);
 
-    let status="";
-    let color="";
+    if(bmi < 18.5){
 
-    /*
-      เกณฑ์ตัวอย่างสำหรับการแสดงผลในระบบต้นแบบ
-      ไม่ใช่เกณฑ์วินิจฉัยทางการแพทย์
-    */
+        bmiStatus.textContent =
+            "น้ำหนักน้อย";
 
-    if(bmi<18.5){
-        status="ต่ำกว่าเกณฑ์";
-        color="var(--yellow)";
+    }else if(bmi < 23){
+
+        bmiStatus.textContent =
+            "อยู่ในเกณฑ์ปกติ";
+
+    }else if(bmi < 25){
+
+        bmiStatus.textContent =
+            "น้ำหนักเกิน";
+
+    }else{
+
+        bmiStatus.textContent =
+            "ควรติดตามภาวะน้ำหนัก";
+
     }
-    else if(bmi<23){
-        status="อยู่ในเกณฑ์";
-        color="var(--green)";
-    }
-    else if(bmi<25){
-        status="เริ่มสูง";
-        color="var(--yellow)";
-    }
-    else if(bmi<30){
-        status="สูง";
-        color="var(--yellow)";
-    }
-    else{
-        status="สูงมาก";
-        color="var(--red)";
-    }
-
-    bmiStatus.textContent=status;
-    bmiStatus.style.color=color;
 
     return bmi;
 }
 
-weightInput?.addEventListener("input",calculateBMI);
-heightInput?.addEventListener("input",calculateBMI);
+
+document
+    .getElementById("weight")
+    .addEventListener("input",calculateBMI);
+
+document
+    .getElementById("height")
+    .addEventListener("input",calculateBMI);
 
 
 /* =========================================================
-PATIENT DATA
+   GO TO CAMERA
 ========================================================= */
 
-continueBtn?.addEventListener("click",()=>{
+function goToCamera(){
 
-    const firstName=document.getElementById("firstName").value.trim();
-    const lastName=document.getElementById("lastName").value.trim();
-    const age=document.getElementById("age").value;
-    const weight=document.getElementById("weight").value;
-    const height=document.getElementById("height").value;
-    const hospital=document.getElementById("hospital").value.trim();
+    const firstName =
+        document.getElementById("firstName").value.trim();
 
-    const bmi=calculateBMI();
+    const lastName =
+        document.getElementById("lastName").value.trim();
+
+    const age =
+        document.getElementById("age").value;
+
+    const weight =
+        document.getElementById("weight").value;
+
+    const height =
+        document.getElementById("height").value;
+
+    const hospital =
+        document.getElementById("hospital").value.trim();
+
 
     if(
         !firstName ||
         !lastName ||
         !age ||
         !weight ||
-        !height ||
-        !hospital
+        !height
     ){
 
-        alert("กรุณากรอกข้อมูลให้ครบทุกช่องก่อนดำเนินการต่อ");
+        showToast(
+            "กรุณากรอกข้อมูลพื้นฐานให้ครบก่อน"
+        );
+
         return;
     }
 
-    if(!bmi){
 
-        alert("กรุณาตรวจสอบน้ำหนักและส่วนสูง");
-        return;
-    }
+    userData.firstName = firstName;
+    userData.lastName = lastName;
+    userData.age = age;
+    userData.weight = weight;
+    userData.height = height;
+    userData.hospital = hospital;
+    userData.bmi = calculateBMI();
 
-    const patient={
-
-        firstName:firstName,
-        lastName:lastName,
-
-        age:Number(age),
-
-        weight:Number(weight),
-
-        height:Number(height),
-
-        bmi:Number(bmi.toFixed(1)),
-
-        hospital:hospital,
-
-        timestamp:new Date().toISOString()
-
-    };
-
-    sessionStorage.setItem(
-        "kneePatient",
-        JSON.stringify(patient)
-    );
-
-    loadPatient();
 
     showPage("cameraPage");
 
-});
-
-
-/* =========================================================
-LOAD PATIENT
-========================================================= */
-
-function loadPatient(){
-
-    const raw=sessionStorage.getItem("kneePatient");
-
-    if(!raw)return;
-
-    try{
-
-        const patient=JSON.parse(raw);
-
-        const name=
-        patient.firstName+" "+patient.lastName;
-
-        document.getElementById("cameraPatient").textContent=name;
-
-        document.getElementById("cameraBMI").textContent=
-        patient.bmi;
-
-        document.getElementById("analysisBMI").textContent=
-        patient.bmi;
-
-        document.getElementById("analysisWeight").textContent=
-        patient.weight+" kg";
-
-        document.getElementById("resultBMI").textContent=
-        patient.bmi;
-
-    }catch(error){
-
-        console.error("Patient data error:",error);
-
-    }
 }
 
 
 /* =========================================================
-AI CAMERA + MATHEMATICAL DATA
-========================================================= */
-
-let videoElement=null;
-let canvasElement=null;
-let canvasCtx=null;
-let pose=null;
-let camera=null;
-
-let currentAngle=168.4;
-
-let frameCounter=0;
-
-let previousAngle=null;
-let previousVelocity=null;
-let previousTimestamp=null;
-
-let currentVelocity=0;
-let currentAcceleration=0;
-
-let currentConfidence=0;
-
-let angleHistory=[];
-let velocityHistory=[];
-let accelerationHistory=[];
-let confidenceHistory=[];
-let timestampHistory=[];
-
-const cameraStartBtn=
-document.getElementById("cameraStartBtn");
-
-
-/* =========================================================
-MATHEMATICAL FUNCTIONS
-========================================================= */
-
-/*
-    Euclidean Distance
-
-    d = √[(x₂-x₁)² + (y₂-y₁)²]
-*/
-
-function distance(A,B){
-
-    if(!A || !B)return null;
-
-    return Math.sqrt(
-        Math.pow(A.x-B.x,2)+
-        Math.pow(A.y-B.y,2)
-    );
-}
-
-
-/*
-    Knee Angle
-
-    θ = cos⁻¹((u·v)/|u||v|)
-*/
-
-function calculateAngle(A,B,C){
-
-    if(!A || !B || !C)return null;
-
-    const BA={
-        x:A.x-B.x,
-        y:A.y-B.y
-    };
-
-    const BC={
-        x:C.x-B.x,
-        y:C.y-B.y
-    };
-
-    const dot=
-        BA.x*BC.x+
-        BA.y*BC.y;
-
-    const magBA=
-        Math.sqrt(
-            BA.x**2+
-            BA.y**2
-        );
-
-    const magBC=
-        Math.sqrt(
-            BC.x**2+
-            BC.y**2
-        );
-
-    if(!magBA || !magBC)return null;
-
-    let value=
-        dot/(magBA*magBC);
-
-    value=Math.max(-1,Math.min(1,value));
-
-    return Math.acos(value)*180/Math.PI;
-}
-
-
-/*
-    Mean
-
-    μ = Σx/n
-*/
-
-function mean(array){
-
-    if(!array.length)return 0;
-
-    return array.reduce(
-        (sum,value)=>sum+value,
-        0
-    )/array.length;
-}
-
-
-/*
-    Standard Deviation
-
-    σ = √[Σ(x-μ)²/n]
-*/
-
-function standardDeviation(array){
-
-    if(!array.length)return 0;
-
-    const avg=mean(array);
-
-    const variance=
-        array.reduce(
-            (sum,value)=>{
-                return sum+
-                    Math.pow(value-avg,2);
-            },
-            0
-        )/array.length;
-
-    return Math.sqrt(variance);
-}
-
-
-/*
-    Linear interpolation / clamp
-*/
-
-function clamp(value,min,max){
-
-    return Math.max(
-        min,
-        Math.min(max,value)
-    );
-}
-
-
-/* =========================================================
-UPDATE POSE METRICS
-========================================================= */
-
-function updatePoseMetrics(results){
-
-    if(!results.poseLandmarks){
-
-        document.getElementById("detectionPoints").textContent=
-        "0 / 3";
-
-        document.getElementById("cameraConfidence").textContent=
-        "0 %";
-
-        currentConfidence=0;
-
-        return;
-    }
-
-    const landmarks=results.poseLandmarks;
-
-    /*
-        MediaPipe Pose indices
-
-        23 = left hip
-        24 = right hip
-
-        25 = left knee
-        26 = right knee
-
-        27 = left ankle
-        28 = right ankle
-    */
-
-    const hipLeft=landmarks[23];
-    const hipRight=landmarks[24];
-
-    const kneeLeft=landmarks[25];
-    const kneeRight=landmarks[26];
-
-    const ankleLeft=landmarks[27];
-    const ankleRight=landmarks[28];
-
-
-    /*
-        เลือกด้านที่มี visibility สูงกว่า
-    */
-
-    const candidates=[
-
-        {
-            hip:hipLeft,
-            knee:kneeLeft,
-            ankle:ankleLeft,
-            side:"LEFT"
-        },
-
-        {
-            hip:hipRight,
-            knee:kneeRight,
-            ankle:ankleRight,
-            side:"RIGHT"
-        }
-
-    ];
-
-
-    let best=null;
-    let bestConfidence=0;
-
-    candidates.forEach(item=>{
-
-        const h=item.hip?.visibility || 0;
-        const k=item.knee?.visibility || 0;
-        const a=item.ankle?.visibility || 0;
-
-        const confidence=(h+k+a)/3;
-
-        if(
-            confidence>bestConfidence &&
-            confidence>.35
-        ){
-
-            best=item;
-            bestConfidence=confidence;
-        }
-
-    });
-
-
-    /*
-        AI Confidence
-    */
-
-    currentConfidence=
-        clamp(bestConfidence*100,0,100);
-
-
-    document.getElementById("cameraConfidence").textContent=
-        currentConfidence.toFixed(1)+" %";
-
-
-    document.getElementById("mathConfidence").textContent=
-        currentConfidence.toFixed(1)+" %";
-
-
-    confidenceHistory.push(
-        currentConfidence
-    );
-
-
-    /*
-        Detection Points
-    */
-
-    if(!best){
-
-        document.getElementById("detectionPoints").textContent=
-        "0 / 3";
-
-        return;
-    }
-
-
-    const visiblePoints=[
-        best.hip,
-        best.knee,
-        best.ankle
-    ].filter(
-        p=>p && p.visibility>.45
-    ).length;
-
-
-    document.getElementById("detectionPoints").textContent=
-        visiblePoints+" / 3";
-
-
-    /*
-        Calculate Knee Angle
-    */
-
-    if(visiblePoints===3){
-
-        const angle=
-            calculateAngle(
-                best.hip,
-                best.knee,
-                best.ankle
-            );
-
-        if(angle!==null){
-
-            currentAngle=angle;
-
-            /*
-                Timestamp
-            */
-
-            const now=
-                performance.now()/1000;
-
-            /*
-                Angular Velocity
-
-                ω ≈ Δθ / Δt
-            */
-
-            if(
-                previousAngle!==null &&
-                previousTimestamp!==null
-            ){
-
-                const dt=
-                    now-previousTimestamp;
-
-                if(dt>0.001 && dt<1){
-
-                    currentVelocity=
-                        (angle-previousAngle)/dt;
-
-                    velocityHistory.push(
-                        currentVelocity
-                    );
-
-                    /*
-                        Angular Acceleration
-
-                        α ≈ Δω / Δt
-                    */
-
-                    if(previousVelocity!==null){
-
-                        currentAcceleration=
-                            (currentVelocity-
-                             previousVelocity)/dt;
-
-                        accelerationHistory.push(
-                            currentAcceleration
-                        );
-
-                    }
-
-                }
-
-            }
-
-
-            previousAngle=angle;
-            previousVelocity=currentVelocity;
-            previousTimestamp=now;
-
-
-            /*
-                Store Time Series
-            */
-
-            angleHistory.push(angle);
-
-            timestampHistory.push(now);
-
-
-            /*
-                จำกัด memory
-                ป้องกันข้อมูลเยอะเกิน
-            */
-
-            if(angleHistory.length>1000){
-
-                angleHistory.shift();
-            }
-
-            if(velocityHistory.length>1000){
-
-                velocityHistory.shift();
-            }
-
-            if(accelerationHistory.length>1000){
-
-                accelerationHistory.shift();
-            }
-
-            if(confidenceHistory.length>1000){
-
-                confidenceHistory.shift();
-            }
-
-            if(timestampHistory.length>1000){
-
-                timestampHistory.shift();
-            }
-
-
-            /*
-                Update UI
-            */
-
-            document.getElementById("cameraAngle").textContent=
-                angle.toFixed(1)+" °";
-
-            document.getElementById("cameraVelocity").textContent=
-                Math.abs(currentVelocity).toFixed(1)+" °/s";
-
-
-            document.getElementById("poseGuide").textContent=
-                "POSE LOCKED • AI TRACKING";
-
-
-            document.getElementById("cameraStatus").textContent=
-                "AI TRACKING";
-
-
-            document.getElementById("cameraStatus").style.color=
-                "var(--green)";
-
-        }
-
-    }else{
-
-        document.getElementById("poseGuide").textContent=
-            "MOVE INTO FRAME";
-
-    }
-
-}
-
-
-/* =========================================================
-POSE DRAW
-========================================================= */
-
-function onPoseResults(results){
-
-    if(!canvasCtx)return;
-
-    canvasCtx.clearRect(
-        0,
-        0,
-        canvasElement.width,
-        canvasElement.height
-    );
-
-
-    if(results.poseLandmarks){
-
-        drawConnectors(
-            canvasCtx,
-            results.poseLandmarks,
-            POSE_CONNECTIONS,
-            {
-                color:"#16ddff",
-                lineWidth:4
-            }
-        );
-
-        drawLandmarks(
-            canvasCtx,
-            results.poseLandmarks,
-            {
-                color:"#ffffff",
-                fillColor:"#1688ff",
-                lineWidth:2,
-                radius:5
-            }
-        );
-
-    }
-
-    updatePoseMetrics(results);
-}
-
-
-/* =========================================================
-START CAMERA
+   CAMERA START
 ========================================================= */
 
 async function startCamera(){
 
-    if(
-        !navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia
-    ){
-
-        alert(
-            "Browser นี้ไม่รองรับการใช้งานกล้อง"
-        );
-
-        return;
-    }
-
-
-    /*
-        Reset motion arrays
-    */
-
-    frameCounter=0;
-
-    previousAngle=null;
-    previousVelocity=null;
-    previousTimestamp=null;
-
-    currentVelocity=0;
-    currentAcceleration=0;
-
-    angleHistory=[];
-    velocityHistory=[];
-    accelerationHistory=[];
-    confidenceHistory=[];
-    timestampHistory=[];
-
-
     try{
 
-        videoElement=
-            document.createElement("video");
+        stopCamera();
 
-        videoElement.id="videoElement";
+        const video =
+            document.getElementById("videoElement");
 
-        videoElement.autoplay=true;
-        videoElement.playsInline=true;
+        currentStream =
+            await navigator.mediaDevices.getUserMedia({
 
-        canvasElement=
-            document.createElement("canvas");
+                video:{
+                    facingMode:{
+                        ideal:currentFacingMode
+                    },
 
-        canvasElement.id="poseCanvas";
+                    width:{
+                        ideal:1280
+                    },
 
-
-        const panel=
-            document.getElementById("cameraPanel");
-
-
-        const placeholder=
-            document.getElementById("cameraPlaceholder");
-
-
-        placeholder.style.display="none";
-
-
-        /*
-            Remove old camera
-            if user starts again
-        */
-
-        const oldVideo=
-            panel.querySelector("#videoElement");
-
-        const oldCanvas=
-            panel.querySelector("#poseCanvas");
-
-        if(oldVideo)oldVideo.remove();
-        if(oldCanvas)oldCanvas.remove();
-
-
-        panel.appendChild(videoElement);
-        panel.appendChild(canvasElement);
-
-
-        canvasCtx=
-            canvasElement.getContext("2d");
-
-
-        /*
-            MediaPipe Pose
-        */
-
-        pose=new Pose({
-
-            locateFile:(file)=>{
-
-                return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
-
-            }
-
-        });
-
-
-        pose.setOptions({
-
-            modelComplexity:1,
-
-            smoothLandmarks:true,
-
-            enableSegmentation:false,
-
-            smoothSegmentation:false,
-
-            minDetectionConfidence:.55,
-
-            minTrackingConfidence:.55
-
-        });
-
-
-        pose.onResults(onPoseResults);
-
-
-        /*
-            MediaPipe Camera
-        */
-
-        camera=new Camera(
-
-            videoElement,
-
-            {
-
-                onFrame:async()=>{
-
-                    canvasElement.width=
-                        videoElement.videoWidth ||
-                        640;
-
-                    canvasElement.height=
-                        videoElement.videoHeight ||
-                        480;
-
-
-                    frameCounter++;
-
-
-                    document.getElementById(
-                        "cameraFrame"
-                    ).textContent=
-                        String(frameCounter)
-                        .padStart(4,"0");
-
-
-                    await pose.send({
-                        image:videoElement
-                    });
-
+                    height:{
+                        ideal:720
+                    }
                 },
 
-                width:640,
+                audio:false
 
-                height:480
+            });
 
-            }
 
+        video.srcObject =
+            currentStream;
+
+        await video.play();
+
+        cameraRunning = true;
+
+
+        document
+            .getElementById("cameraPlaceholder")
+            .classList.add("hidden");
+
+
+        document
+            .getElementById("cameraStatus")
+            .textContent =
+            "ONLINE";
+
+
+        document
+            .getElementById("cameraMode")
+            .textContent =
+            currentFacingMode === "user"
+                ? "FRONT"
+                : "BACK";
+
+
+        showToast(
+            currentFacingMode === "user"
+                ? "เปิดกล้องหน้าแล้ว"
+                : "เปิดกล้องหลังแล้ว"
         );
-
-
-        await camera.start();
-
-
-        document.getElementById("cameraLive").textContent=
-            "● CAMERA ONLINE";
-
-        document.getElementById("cameraLive").style.color=
-            "var(--green)";
-
-
-        document.getElementById("cameraStatus").textContent=
-            "AI ONLINE";
-
-        document.getElementById("cameraStatus").style.color=
-            "var(--green)";
 
 
     }catch(error){
 
         console.error(error);
 
-        alert(
-            "ไม่สามารถเปิดกล้องได้ กรุณาอนุญาตการเข้าถึงกล้อง"
+        showToast(
+            "ไม่สามารถเปิดกล้องได้ กรุณาอนุญาต Camera"
         );
-
-
-        document.getElementById("cameraStatus").textContent=
-            "CAMERA ERROR";
-
-        document.getElementById("cameraStatus").style.color=
-            "var(--red)";
 
     }
 
 }
 
 
-cameraStartBtn?.addEventListener(
-    "click",
-    startCamera
-);
+/* =========================================================
+   STOP CAMERA
+========================================================= */
+
+function stopCamera(){
+
+    if(currentStream){
+
+        currentStream
+            .getTracks()
+            .forEach(track=>{
+                track.stop();
+            });
+
+        currentStream = null;
+    }
+
+    cameraRunning = false;
+}
 
 
 /* =========================================================
-CALCULATE MATHEMATICAL ANALYSIS
+   SWITCH CAMERA
+========================================================= */
+
+async function switchCamera(){
+
+    currentFacingMode =
+        currentFacingMode === "user"
+            ? "environment"
+            : "user";
+
+
+    await startCamera();
+
+}
+
+
+/* =========================================================
+   CAPTURE PHOTO
+========================================================= */
+
+function capturePhoto(){
+
+    if(!cameraRunning){
+
+        showToast(
+            "กรุณาเปิดกล้องก่อนถ่ายภาพ"
+        );
+
+        return;
+    }
+
+
+    const video =
+        document.getElementById("videoElement");
+
+    const canvas =
+        document.createElement("canvas");
+
+
+    canvas.width =
+        video.videoWidth ||
+        video.clientWidth;
+
+    canvas.height =
+        video.videoHeight ||
+        video.clientHeight;
+
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    /*
+       กล้องหน้าใช้ภาพ mirror
+       กล้องหลังไม่ mirror
+    */
+
+    if(currentFacingMode === "user"){
+
+        ctx.translate(
+            canvas.width,
+            0
+        );
+
+        ctx.scale(-1,1);
+
+    }
+
+
+    ctx.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    capturedImageData =
+        canvas.toDataURL(
+            "image/jpeg",
+            .92
+        );
+
+    uploadedImage = null;
+
+
+    showPreview(
+        capturedImageData
+    );
+
+
+    document
+        .getElementById("imageStatus")
+        .textContent =
+        "CAPTURED";
+
+
+    showToast(
+        "ถ่ายภาพเรียบร้อยแล้ว"
+    );
+
+}
+
+
+/* =========================================================
+   IMAGE UPLOAD
+========================================================= */
+
+function handleImageUpload(event){
+
+    const file =
+        event.target.files[0];
+
+    if(!file) return;
+
+
+    if(!file.type.startsWith("image/")){
+
+        showToast(
+            "กรุณาเลือกไฟล์รูปภาพ"
+        );
+
+        return;
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload = function(e){
+
+        uploadedImage =
+            e.target.result;
+
+        capturedImageData =
+            e.target.result;
+
+
+        showPreview(
+            uploadedImage
+        );
+
+
+        document
+            .getElementById("imageStatus")
+            .textContent =
+            "UPLOADED";
+
+
+        showToast(
+            "แนบรูปเรียบร้อยแล้ว"
+        );
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+}
+
+
+/* =========================================================
+   PREVIEW
+========================================================= */
+
+function showPreview(imageData){
+
+    const preview =
+        document.getElementById(
+            "capturePreview"
+        );
+
+    const image =
+        document.getElementById(
+            "previewImage"
+        );
+
+
+    image.src =
+        imageData;
+
+    preview.classList.add("active");
+
+}
+
+
+function retakePhoto(){
+
+    document
+        .getElementById("capturePreview")
+        .classList.remove("active");
+
+    capturedImageData = null;
+
+    document
+        .getElementById("imageStatus")
+        .textContent =
+        "WAIT";
+
+}
+
+
+function useCapturedImage(){
+
+    if(!capturedImageData){
+
+        showToast(
+            "ยังไม่มีรูปภาพ"
+        );
+
+        return;
+    }
+
+
+    document
+        .getElementById("capturePreview")
+        .classList.remove("active");
+
+
+    document
+        .getElementById("imageStatus")
+        .textContent =
+        "READY";
+
+
+    showToast(
+        "เลือกรูปภาพนี้แล้ว"
+    );
+
+}
+
+
+/* =========================================================
+   PROCESS CAPTURED IMAGE
+========================================================= */
+
+function processCapturedImage(){
+
+    if(!capturedImageData){
+
+        showToast(
+            "กรุณาถ่ายภาพหรือแนบรูปก่อน"
+        );
+
+        return;
+    }
+
+
+    document
+        .getElementById("poseStatus")
+        .textContent =
+        "PROCESSING";
+
+
+    showToast(
+        "กำลังประมวลผลภาพ..."
+    );
+
+
+    /*
+       ส่วนนี้จำลองผลจากภาพเพื่อให้หน้าเว็บ
+       ทำงานครบ flow ได้ก่อน
+
+       เมื่อนำ AI จริงมาเชื่อมต่อ
+       สามารถเปลี่ยนค่าตรงนี้เป็น
+       MediaPipe landmarks ได้
+    */
+
+    setTimeout(()=>{
+
+        leftAngleValue =
+            160 +
+            Math.random() * 15;
+
+        rightAngleValue =
+            158 +
+            Math.random() * 15;
+
+
+        document
+            .getElementById("poseStatus")
+            .textContent =
+            "DETECTED";
+
+
+        document
+            .getElementById("imageStatus")
+            .textContent =
+            "PROCESSED";
+
+
+        showToast(
+            "ประมวลผลภาพเบื้องต้นเสร็จแล้ว"
+        );
+
+
+        /*
+           ไปแบบสอบถามแยกหน้า
+        */
+
+        setTimeout(()=>{
+
+            showPage(
+                "questionnairePage"
+            );
+
+        },700);
+
+
+    },1200);
+
+}
+
+
+/* =========================================================
+   PAIN SLIDER
+========================================================= */
+
+function updatePain(){
+
+    const value =
+        document.getElementById(
+            "painLevel"
+        ).value;
+
+    document
+        .getElementById(
+            "painValue"
+        )
+        .textContent =
+        value;
+
+}
+
+
+/* =========================================================
+   QUESTIONNAIRE
+========================================================= */
+
+function getRadioValue(name){
+
+    const checked =
+        document.querySelector(
+            `input[name="${name}"]:checked`
+        );
+
+    return checked
+        ? checked.value
+        : null;
+}
+
+
+function processQuestionnaire(){
+
+    const pain =
+        getRadioValue("pain");
+
+    const stairs =
+        getRadioValue("stairs");
+
+    const stiffness =
+        getRadioValue("stiffness");
+
+    const swelling =
+        getRadioValue("swelling");
+
+    const injury =
+        getRadioValue("injury");
+
+    const flexibility =
+        getRadioValue("flexibility");
+
+    const walking =
+        document.getElementById(
+            "walking"
+        ).value;
+
+
+    if(
+        pain === null ||
+        stairs === null ||
+        stiffness === null ||
+        swelling === null ||
+        injury === null ||
+        flexibility === null ||
+        walking === ""
+    ){
+
+        document
+            .getElementById(
+                "questionStatus"
+            )
+            .textContent =
+            "กรุณาตอบคำถามให้ครบทุกข้อ";
+
+        showToast(
+            "กรุณาตอบแบบสอบถามให้ครบ"
+        );
+
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "questionStatus"
+        )
+        .textContent =
+        "✓ ข้อมูลครบถ้วน พร้อมวิเคราะห์";
+
+
+    document
+        .getElementById(
+            "questionStatus"
+        )
+        .style.color =
+        "var(--green)";
+
+
+    setTimeout(()=>{
+
+        calculateAnalysis();
+
+        showPage(
+            "analysisPage"
+        );
+
+    },500);
+
+}
+
+
+/* =========================================================
+   ANALYSIS
 ========================================================= */
 
 function calculateAnalysis(){
 
-    /*
-        ถ้าไม่มีข้อมูลจากกล้อง
-        ใช้ข้อมูลเริ่มต้นสำหรับ demo
-    */
+    const left =
+        leftAngleValue;
 
-    const angles=
-        angleHistory.length
-        ? angleHistory
-        : [currentAngle];
+    const right =
+        rightAngleValue;
 
-
-    const velocities=
-        velocityHistory.length
-        ? velocityHistory
-        : [0];
-
-
-    const accelerations=
-        accelerationHistory.length
-        ? accelerationHistory
-        : [0];
-
-
-    const avgAngle=
-        mean(angles);
-
-
-    const minAngle=
-        Math.min(...angles);
-
-
-    const maxAngle=
-        Math.max(...angles);
-
-
-    /*
-        ROM
-
-        ROM = θmax - θmin
-    */
-
-    const rom=
-        maxAngle-minAngle;
-
-
-    /*
-        Standard Deviation
-    */
-
-    const sd=
-        standardDeviation(angles);
-
-
-    /*
-        Velocity
-    */
-
-    const avgVelocity=
-        mean(
-            velocities.map(v=>Math.abs(v))
-        );
-
-
-    const maxVelocity=
-        Math.max(
-            ...velocities.map(
-                v=>Math.abs(v)
-            )
-        );
-
-
-    /*
-        Acceleration
-    */
-
-    const avgAcceleration=
-        mean(
-            accelerations.map(
-                a=>Math.abs(a)
-            )
-        );
-
-
-    const maxAcceleration=
-        Math.max(
-            ...accelerations.map(
-                a=>Math.abs(a)
-            )
-        );
-
-
-    /*
-        AI Confidence
-    */
-
-    const aiConfidence=
-        confidenceHistory.length
-        ? mean(confidenceHistory)
-        : 0;
-
-
-    /*
-        Symmetry
-
-        เนื่องจากการเลือกด้านที่ดีที่สุดในกล้อง
-        ระบบ prototype ใช้ deviation
-        จาก reference angle เป็นตัวแทน
-
-        หากมีข้อมูลซ้าย/ขวาในอนาคต
-        สามารถเปลี่ยนเป็น |θL-θR| ได้โดยตรง
-    */
-
-    const referenceAngle=168.4;
-
-    const deltaAngle=
+    const delta =
         Math.abs(
-            avgAngle-referenceAngle
+            left - right
         );
 
 
-    const symmetry=
-        clamp(
-            100-
-            (deltaAngle/180*100),
+    const symmetry =
+        Math.max(
             0,
-            100
+            100 -
+            (delta / 180 * 100)
+        );
+
+
+    const pain =
+        parseFloat(
+            document.getElementById(
+                "painLevel"
+            ).value
         );
 
 
     /*
-        ANGLE SCORE
-
-        ใกล้ reference → score สูง
+       Screening score
+       ใช้เป็นคะแนนเชิงระบบตัวอย่าง
     */
 
-    const angleScore=
-        clamp(
-            100-
-            Math.abs(
-                avgAngle-referenceAngle
-            )*2,
+    const painFactor =
+        Math.max(
             0,
-            100
+            100 - pain * 7
         );
 
 
-    /*
-        ROM SCORE
-
-        เป็นคะแนนเชิงต้นแบบ
-        ไม่ใช่เกณฑ์วินิจฉัย
-    */
-
-    const romScore=
-        clamp(
-            100-
-            Math.abs(
-                rom-30
-            )*1.5,
-            0,
-            100
+    const score =
+        Math.round(
+            symmetry * .7 +
+            painFactor * .3
         );
 
 
-    /*
-        Composite Score
-
-        35% Angle
-        30% Symmetry
-        20% ROM
-        15% AI Confidence
-    */
-
-    const composite=
-        (
-            angleScore*.35+
-            symmetry*.30+
-            romScore*.20+
-            aiConfidence*.15
-        );
+    document
+        .getElementById("leftAngle")
+        .textContent =
+        left.toFixed(1) + "°";
 
 
-    return{
+    document
+        .getElementById("rightAngle")
+        .textContent =
+        right.toFixed(1) + "°";
 
-        avgAngle,
-        minAngle,
-        maxAngle,
-        rom,
 
-        sd,
+    document
+        .getElementById("symmetry")
+        .textContent =
+        delta.toFixed(1) + "°";
 
-        avgVelocity,
-        maxVelocity,
 
-        avgAcceleration,
-        maxAcceleration,
+    document
+        .getElementById("mathLeft")
+        .textContent =
+        left.toFixed(1) + "°";
 
-        aiConfidence,
 
-        deltaAngle,
-        symmetry,
+    document
+        .getElementById("mathRight")
+        .textContent =
+        right.toFixed(1) + "°";
 
-        angleScore,
-        romScore,
 
-        composite
+    document
+        .getElementById("deltaAngle")
+        .textContent =
+        delta.toFixed(1) + "°";
 
-    };
+
+    document
+        .getElementById("symmetryIndex")
+        .textContent =
+        symmetry.toFixed(1) + "%";
+
+
+    document
+        .getElementById("analysisBMI")
+        .textContent =
+        userData.bmi
+            ? userData.bmi.toFixed(1)
+            : "--";
+
+
+    document
+        .getElementById("analysisPain")
+        .textContent =
+        pain + " / 10";
+
+
+    document
+        .getElementById("analysisImage")
+        .textContent =
+        capturedImageData
+            ? "READY"
+            : "NONE";
+
+
+    document
+        .getElementById("analysisData")
+        .textContent =
+        "8/8";
+
+
+    document
+        .getElementById("scoreNumber")
+        .textContent =
+        score + "%";
+
+
+    document
+        .getElementById("scoreBar")
+        .style.width =
+        score + "%";
+
+
+    window.finalScore =
+        score;
+
+    window.finalSymmetry =
+        symmetry;
 
 }
 
 
 /* =========================================================
-DISPLAY ANALYSIS
+   RESULT
 ========================================================= */
 
-analysisBtn?.addEventListener(
-"click",
-()=>{
+function generateResult(){
 
-    const data=
-        calculateAnalysis();
+    const score =
+        window.finalScore || 0;
 
+    const symmetry =
+        window.finalSymmetry || 0;
 
-    /*
-        Basic metrics
-    */
 
-    document.getElementById(
-        "analysisAngle"
-    ).textContent=
-        data.avgAngle.toFixed(1)+"°";
+    document
+        .getElementById("resultScore")
+        .textContent =
+        score + "%";
 
 
-    document.getElementById(
-        "mathAngle"
-    ).textContent=
-        data.avgAngle.toFixed(1)+"°";
+    document
+        .getElementById("resultLeft")
+        .textContent =
+        leftAngleValue.toFixed(1) + "°";
 
 
-    document.getElementById(
-        "angleBar"
-    ).style.width=
-        clamp(
-            data.avgAngle/1.8,
-            0,
-            100
-        )+"%";
+    document
+        .getElementById("resultRight")
+        .textContent =
+        rightAngleValue.toFixed(1) + "°";
 
 
-    /*
-        Symmetry
-    */
+    document
+        .getElementById("resultSymmetry")
+        .textContent =
+        symmetry.toFixed(1) + "%";
 
-    document.getElementById(
-        "symmetryValue"
-    ).textContent=
-        data.symmetry.toFixed(1)+"%";
 
+    document
+        .getElementById("resultBMI")
+        .textContent =
+        userData.bmi
+            ? userData.bmi.toFixed(1)
+            : "--";
 
-    document.getElementById(
-        "mathSymmetry"
-    ).textContent=
-        data.symmetry.toFixed(1)+"%";
 
-
-    document.getElementById(
-        "symmetryBar"
-    ).style.width=
-        data.symmetry+"%";
-
-
-    document.getElementById(
-        "deltaAngle"
-    ).textContent=
-        data.deltaAngle.toFixed(1)+"°";
-
-
-    /*
-        Confidence
-    */
-
-    document.getElementById(
-        "confidenceValue"
-    ).textContent=
-        data.aiConfidence.toFixed(1)+"%";
-
-
-    document.getElementById(
-        "mathConfidence"
-    ).textContent=
-        data.aiConfidence.toFixed(1)+"%";
-
-
-    document.getElementById(
-        "confidenceBar"
-    ).style.width=
-        data.aiConfidence+"%";
-
-
-    /*
-        Velocity
-    */
-
-    document.getElementById(
-        "mathVelocity"
-    ).textContent=
-        data.avgVelocity.toFixed(2)+"°/s";
-
-
-    /*
-        Acceleration
-    */
-
-    document.getElementById(
-        "mathAcceleration"
-    ).textContent=
-        data.avgAcceleration.toFixed(2)+"°/s²";
-
-
-    /*
-        Delta time
-    */
-
-    let totalTime=0;
-
-    if(timestampHistory.length>=2){
-
-        totalTime=
-            timestampHistory[
-                timestampHistory.length-1
-            ]-
-            timestampHistory[0];
-
-    }
-
-
-    document.getElementById(
-        "mathDeltaTime"
-    ).textContent=
-        totalTime.toFixed(2)+" s";
-
-
-    /*
-        ROM
-    */
-
-    document.getElementById(
-        "mathROM"
-    ).textContent=
-        data.rom.toFixed(2)+"°";
-
-
-    document.getElementById(
-        "mathMinMax"
-    ).textContent=
-        data.minAngle.toFixed(1)+
-        " → "+
-        data.maxAngle.toFixed(1)+"°";
-
-
-    /*
-        Mean / SD
-    */
-
-    document.getElementById(
-        "mathMean"
-    ).textContent=
-        data.avgAngle.toFixed(2)+"°";
-
-
-    document.getElementById(
-        "mathSD"
-    ).textContent=
-        data.sd.toFixed(2)+"°";
-
-
-    /*
-        Frame
-    */
-
-    document.getElementById(
-        "mathFrame"
-    ).textContent=
-        String(frameCounter)
-        .padStart(4,"0");
-
-
-    document.getElementById(
-        "mathPoints"
-    ).textContent=
-        "3 / 3";
-
-
-    /*
-        Advanced
-    */
-
-    document.getElementById(
-        "sampleCount"
-    ).textContent=
-        anglesLength();
-
-
-    document.getElementById(
-        "timeWindow"
-    ).textContent=
-        totalTime.toFixed(2)+" s";
-
-
-    document.getElementById(
-        "maxVelocity"
-    ).textContent=
-        data.maxVelocity.toFixed(2)+"°/s";
-
-
-    document.getElementById(
-        "maxAcceleration"
-    ).textContent=
-        data.maxAcceleration.toFixed(2)+"°/s²";
-
-
-    /*
-        Composite
-    */
-
-    document.getElementById(
-        "compositeScore"
-    ).textContent=
-        data.composite.toFixed(1)+"%";
-
-
-    document.getElementById(
-        "compositeBar"
-    ).style.width=
-        data.composite+"%";
-
-
-    document.getElementById(
-        "scoreAngle"
-    ).textContent=
-        data.angleScore.toFixed(1)+"%";
-
-
-    document.getElementById(
-        "scoreSymmetry"
-    ).textContent=
-        data.symmetry.toFixed(1)+"%";
-
-
-    document.getElementById(
-        "scoreROM"
-    ).textContent=
-        data.romScore.toFixed(1)+"%";
-
-
-    document.getElementById(
-        "scoreAI"
-    ).textContent=
-        data.aiConfidence.toFixed(1)+"%";
-
-
-    /*
-        Save latest analysis
-    */
-
-    sessionStorage.setItem(
-        "kneeAnalysis",
-        JSON.stringify(data)
-    );
-
-
-    showPage("analysisPage");
-
-});
-
-
-function anglesLength(){
-
-    return angleHistory.length || 1;
-
-}
-
-
-/* =========================================================
-RESULT
-========================================================= */
-
-resultBtn?.addEventListener(
-"click",
-()=>{
-
-    const raw=
-        sessionStorage.getItem(
-            "kneeAnalysis"
-        );
-
-
-    const data=
-        raw
-        ? JSON.parse(raw)
-        : calculateAnalysis();
-
-
-    /*
-        Score
-    */
-
-    document.getElementById(
-        "resultScore"
-    ).textContent=
-        data.composite.toFixed(1)+"%";
-
-
-    /*
-        Angle
-    */
-
-    document.getElementById(
-        "resultAngle"
-    ).textContent=
-        data.avgAngle.toFixed(1)+"°";
-
-
-    /*
-        Symmetry
-    */
-
-    document.getElementById(
-        "resultSymmetry"
-    ).textContent=
-        data.symmetry.toFixed(1)+"%";
-
-
-    /*
-        Confidence
-    */
-
-    document.getElementById(
-        "resultConfidence"
-    ).textContent=
-        data.aiConfidence.toFixed(1)+"%";
-
-
-    /*
-        ROM
-    */
-
-    document.getElementById(
-        "resultROM"
-    ).textContent=
-        data.rom.toFixed(1)+"°";
-
-
-    /*
-        Velocity
-    */
-
-    document.getElementById(
-        "resultVelocity"
-    ).textContent=
-        data.avgVelocity.toFixed(1)+"°/s";
-
-
-    /*
-        Acceleration
-    */
-
-    document.getElementById(
-        "resultAcceleration"
-    ).textContent=
-        data.avgAcceleration.toFixed(1)+"°/s²";
-
-
-    /*
-        Result interpretation
-    */
-
-    const title=
+    const title =
         document.getElementById(
             "resultTitle"
         );
 
-    const score=
-        document.getElementById(
-            "resultScore"
-        );
 
+    if(score >= 90){
 
-    if(data.composite>=85){
+        title.textContent =
+            "การเคลื่อนไหวมีความสมมาตรในระดับดี";
 
-        title.textContent=
-        "รูปแบบการเคลื่อนไหวอยู่ในระดับดีจากการคัดกรองเบื้องต้น";
+    }else if(score >= 75){
 
-        score.style.color=
-            "var(--green)";
+        title.textContent =
+            "พบความแตกต่างบางส่วน ควรติดตาม";
 
-    }
-    else if(data.composite>=70){
+    }else{
 
-        title.textContent=
-        "พบค่าความแตกต่างบางส่วน ควรติดตามการเคลื่อนไหว";
-
-        score.style.color=
-            "var(--yellow)";
-
-    }
-    else{
-
-        title.textContent=
-        "พบค่าที่ควรประเมินเพิ่มเติมโดยบุคลากรทางการแพทย์";
-
-        score.style.color=
-            "var(--red)";
+        title.textContent =
+            "ควรประเมินเพิ่มเติมโดยผู้เชี่ยวชาญ";
 
     }
 
 
-    showPage("resultPage");
+    showPage(
+        "resultPage"
+    );
 
-});
+}
 
 
 /* =========================================================
-RESTART
+   INITIAL
 ========================================================= */
 
-restartBtn?.addEventListener(
-"click",
-()=>{
+window.addEventListener(
+    "beforeunload",
+    stopCamera
+);
 
-    if(camera){
 
-        try{
-            camera.stop();
-        }
-        catch(e){
-            console.warn(e);
-        }
+/*
+   ป้องกันไม่ให้กล้องทำงานค้าง
+   เมื่อเปลี่ยนออกจากหน้ากล้อง
+*/
+
+const originalShowPage =
+    showPage;
+
+
+showPage = function(pageId){
+
+    if(
+        pageId !== "cameraPage" &&
+        cameraRunning
+    ){
+
+        stopCamera();
 
     }
 
+    originalShowPage(pageId);
 
-    /*
-        Reset data
-    */
+};
 
-    sessionStorage.removeItem(
-        "kneePatient"
+
+/* =========================================================
+   MEDIA PIPE POSE
+========================================================= */
+
+try{
+
+    pose =
+        new Pose({
+            locateFile:(
+                file
+            ) =>
+                `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+        });
+
+
+    pose.setOptions({
+
+        modelComplexity:1,
+
+        smoothLandmarks:true,
+
+        enableSegmentation:false,
+
+        smoothSegmentation:true,
+
+        minDetectionConfidence:.5,
+
+        minTrackingConfidence:.5
+
+    });
+
+
+    pose.onResults(
+        onPoseResults
     );
 
-    sessionStorage.removeItem(
-        "kneeAnalysis"
+}catch(error){
+
+    console.log(
+        "MediaPipe initialization:",
+        error
+    );
+
+}
+
+
+/* =========================================================
+   POSE RESULT
+========================================================= */
+
+function onPoseResults(results){
+
+    const canvas =
+        document.getElementById(
+            "poseCanvas"
+        );
+
+    const video =
+        document.getElementById(
+            "videoElement"
+        );
+
+
+    if(!canvas || !video)
+        return;
+
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    canvas.width =
+        video.videoWidth ||
+        1280;
+
+    canvas.height =
+        video.videoHeight ||
+        720;
+
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
     );
 
 
-    angleHistory=[];
-    velocityHistory=[];
-    accelerationHistory=[];
-    confidenceHistory=[];
-    timestampHistory=[];
+    if(
+        results.poseLandmarks &&
+        typeof drawConnectors !== "undefined"
+    ){
+
+        drawConnectors(
+            ctx,
+            results.poseLandmarks,
+            POSE_CONNECTIONS,
+            {
+                color:"#16ddff",
+                lineWidth:3
+            }
+        );
 
 
-    previousAngle=null;
-    previousVelocity=null;
-    previousTimestamp=null;
+        drawLandmarks(
+            ctx,
+            results.poseLandmarks,
+            {
+                color:"#ffffff",
+                lineWidth:1,
+                radius:4
+            }
+        );
+
+    }
+
+}
 
 
-    currentVelocity=0;
-    currentAcceleration=0;
+/* =========================================================
+   AUTO START CAMERA WHEN ENTER CAMERA PAGE
+========================================================= */
 
-    frameCounter=0;
+const cameraPageObserver =
+    new MutationObserver(()=>{
 
+        const cameraPage =
+            document.getElementById(
+                "cameraPage"
+            );
 
-    /*
-        Reset form
-    */
+        if(
+            cameraPage &&
+            cameraPage.classList.contains(
+                "active"
+            ) &&
+            !cameraRunning
+        ){
 
-    [
-        "firstName",
-        "lastName",
-        "age",
-        "weight",
-        "height",
-        "hospital"
-    ].forEach(id=>{
-
-        const element=
-            document.getElementById(id);
-
-        if(element){
-
-            element.value="";
+            /*
+               ไม่เปิดกล้องอัตโนมัติทันที
+               เพื่อให้ browser ขอ permission
+               เมื่อผู้ใช้กดปุ่มเท่านั้น
+            */
 
         }
 
     });
 
 
-    document.getElementById(
-        "bmiValue"
-    ).textContent=
-        "--.-";
-
-
-    document.getElementById(
-        "bmiStatus"
-    ).textContent=
-        "กรุณากรอกน้ำหนักและส่วนสูง";
-
-
-    document.getElementById(
-        "bmiStatus"
-    ).style.color=
-        "var(--muted)";
-
-
-    /*
-        Remove video
-    */
-
-    const oldVideo=
-        document.getElementById(
-            "videoElement"
-        );
-
-    const oldCanvas=
-        document.getElementById(
-            "poseCanvas"
-        );
-
-
-    oldVideo?.remove();
-    oldCanvas?.remove();
-
-
-    document.getElementById(
-        "cameraPlaceholder"
-    ).style.display=
-        "flex";
-
-
-    document.getElementById(
-        "cameraLive"
-    ).textContent=
-        "● CAMERA OFFLINE";
-
-
-    document.getElementById(
-        "cameraStatus"
-    ).textContent=
-        "READY";
-
-
-    document.getElementById(
-        "cameraStatus"
-    ).style.color=
-        "var(--yellow)";
-
-
-    document.getElementById(
-        "cameraFrame"
-    ).textContent=
-        "0000";
-
-
-    showPage("infoPage");
-
-});
-
-
-/* =========================================================
-MATH BUTTON
-========================================================= */
-
-document.getElementById(
-    "mathBtn"
-)?.addEventListener(
-"click",
-()=>{
-
-    document
-        .querySelector(".math-strip")
-        .scrollIntoView({
-            behavior:"smooth",
-            block:"center"
-        });
-
-});
-
-
-/* =========================================================
-PARTICLES
-========================================================= */
-
-const particleContainer=
-    document.getElementById(
-        "particles"
-    );
-
-
-for(let i=0;i<45;i++){
-
-    const particle=
-        document.createElement("span");
-
-    particle.className=
-        "particle";
-
-    particle.style.left=
-        Math.random()*100+"%";
-
-    particle.style.top=
-        Math.random()*100+"%";
-
-    particle.style.animationDuration=
-        (5+Math.random()*8)+"s";
-
-    particle.style.animationDelay=
-        (-Math.random()*8)+"s";
-
-    particleContainer.appendChild(
-        particle
-    );
-
-}
-
-
-/* =========================================================
-HOME LIVE DEMO
-========================================================= */
-
-let frame=248;
-
-function motionDemo(){
-
-    const time=
-        performance.now()/1000;
-
-
-    const angle=
-        164+
-        Math.sin(time*1.4)*6;
-
-
-    document.getElementById(
-        "heroAngle"
-    ).textContent=
-        angle.toFixed(1)+"°";
-
-
-    document.getElementById(
-        "homeAngle"
-    ).innerHTML=
-        angle.toFixed(1)+
-        "<span>°</span>";
-
-
-    frame++;
-
-
-    if(frame>9999){
-        frame=0;
+cameraPageObserver.observe(
+    document.body,
+    {
+        subtree:true,
+        attributes:true,
+        attributeFilter:["class"]
     }
+);
 
-
-    document.getElementById(
-        "homeFrame"
-    ).textContent=
-        String(frame)
-        .padStart(4,"0");
-
-
-    requestAnimationFrame(
-        motionDemo
-    );
-
-}
-
-motionDemo();
-
-
-/* =========================================================
-INITIALIZE
-========================================================= */
-
-calculateBMI();
-
-loadPatient();
-
-});
 </script>
 
 </body>
